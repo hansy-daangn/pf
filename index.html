@@ -224,8 +224,8 @@ function contactHTML(){return `<section class="contact" id="contact"><div class=
 /* ---- edits (content.json + localStorage) ---- */
 let EDITS={};
 async function loadEdits(){
+  try{localStorage.removeItem("pf_edits");}catch(e){}
   try{const r=await fetch("content.json?"+Date.now());if(r.ok)EDITS=await r.json();}catch(e){}
-  try{const l=JSON.parse(localStorage.getItem("pf_edits")||"null");if(l)EDITS=Object.assign(EDITS,l);}catch(e){}
 }
 function applyEdits(){for(const k in EDITS){
   if(k.indexOf("photo.")===0){const f=document.getElementById("photoFrame");if(f&&EDITS[k]!=null)f.style.setProperty("--"+k.slice(6),EDITS[k]);continue;}
@@ -273,18 +273,18 @@ fab.onclick=()=>{editing=!editing;document.body.classList.toggle("editing",editi
 async function saveEdits(){
   const E={};document.querySelectorAll("[data-k]").forEach(el=>{E[el.dataset.k]=el.textContent.replace(/\s+$/,"");});
   const _pf=document.getElementById("photoFrame");if(_pf){["bs","bx","by"].forEach(p=>{const v=_pf.style.getPropertyValue("--"+p);if(v)E["photo."+p]=v.trim();});}
-  EDITS=Object.assign(EDITS,E);localStorage.setItem("pf_edits",JSON.stringify(E));
   let pat=localStorage.getItem("pf_pat");
-  if(!pat){pat=prompt("GitHub에 영구 저장하려면 토큰을 한 번만 입력하세요.\n(github.com → Settings → Developer settings → Fine-grained token, 저장소 hansy-daangn/pf 의 Contents: Read and write)\n토큰은 이 브라우저에만 저장됩니다. 비워두면 이 브라우저에만 저장됩니다.");if(pat)localStorage.setItem("pf_pat",pat);}
-  if(!pat){alert("이 브라우저에 영구 저장했습니다. (GitHub 반영은 토큰 입력 시)");return;}
+  if(!pat){pat=prompt("GitHub에 저장하려면 토큰을 입력하세요.\n(github.com → Settings → Developer settings → Fine-grained token, 저장소 hansy-daangn/pf 의 Contents: Read and write)\n비워두면 저장되지 않고 변경 내용은 사라집니다.");if(pat)localStorage.setItem("pf_pat",pat);}
+  if(!pat){alert("토큰이 없어 저장하지 않았습니다. 새로고침하면 변경 내용은 사라집니다.");return;}
+  const NEXT=Object.assign({},EDITS,E);
   try{
     const api="https://api.github.com/repos/hansy-daangn/pf/contents/content.json";
     let sha=null;const g=await fetch(api,{headers:{Authorization:"Bearer "+pat}});if(g.ok)sha=(await g.json()).sha;
-    const body={message:"edit: update site text",content:btoa(unescape(encodeURIComponent(JSON.stringify(EDITS,null,1))))};if(sha)body.sha=sha;
+    const body={message:"edit: update site text",content:btoa(unescape(encodeURIComponent(JSON.stringify(NEXT,null,1))))};if(sha)body.sha=sha;
     const r=await fetch(api,{method:"PUT",headers:{Authorization:"Bearer "+pat,"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(r.ok)alert("저장 완료 — GitHub에 반영했습니다. 약 30초 뒤 모든 기기에서 영구 적용됩니다.");
-    else{const e=await r.json().catch(()=>({}));alert("GitHub 저장 실패: "+(e.message||r.status)+"\n(이 브라우저에는 저장됨)");if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");}
-  }catch(e){alert("네트워크 오류 — 이 브라우저에는 저장됨. "+e.message);}
+    if(r.ok){EDITS=NEXT;alert("저장 완료 — GitHub에 반영했습니다. 약 30초 뒤 모든 기기에서 영구 적용됩니다.");}
+    else{const e=await r.json().catch(()=>({}));alert("GitHub 저장 실패: "+(e.message||r.status));if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");}
+  }catch(e){alert("네트워크 오류 — 저장 실패. "+e.message);}
 }
 /* nav reveal */
 addEventListener("scroll",()=>document.querySelector("header.top").style.boxShadow=scrollY>20?"0 1px 0 var(--line)":"none",{passive:true});
