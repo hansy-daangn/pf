@@ -237,8 +237,33 @@ function setupPhotoAdjust(){
   const end=()=>drag=false;f.addEventListener("pointerup",end);f.addEventListener("pointercancel",end);
   f.addEventListener("wheel",e=>{if(!editing)return;e.preventDefault();let s=gv("bs",178);s=Math.min(360,Math.max(110,s-e.deltaY*0.09));f.style.setProperty("--bs",s+"%");},{passive:false});
 }
+/* ---- preview range-loop (cards play a short silent clip) ---- */
+const PREVIEW_RANGE=[0,8];
+function attachRangeLoop(v){
+  if(v._rangeBound)return;
+  v._rangeBound=true;
+  const [ra,rb]=PREVIEW_RANGE;
+  v.addEventListener("timeupdate",()=>{if(v.currentTime>=rb){try{v.currentTime=ra;}catch(_){}}});
+  v.addEventListener("loadedmetadata",()=>{if(v.currentTime<ra)try{v.currentTime=ra;}catch(_){}});
+}
+function pauseAllPreviews(){
+  document.querySelectorAll(".bcard video,.acard video").forEach(v=>v.pause());
+  document.querySelectorAll(".media.playing").forEach(m=>m.classList.remove("playing"));
+}
+function resumeVisiblePreviews(){
+  document.querySelectorAll(".bcard,.acard").forEach(c=>{
+    if(c.style.display==="none")return;
+    const r=c.getBoundingClientRect();
+    if(r.top<innerHeight+90&&r.bottom>-90){
+      const v=c.querySelector("video"),m=c.querySelector(".media");if(!v)return;
+      if(!v.src&&v.dataset.src)v.src=v.dataset.src;
+      attachRangeLoop(v);
+      v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});
+    }
+  });
+}
 /* ---- render ---- */
-const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting){if(!v.src&&v.dataset.src)v.src=v.dataset.src;v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();}}),{rootMargin:"90px 0px",threshold:.25});
+const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting&&!lbOpen&&!editing){if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();}}),{rootMargin:"90px 0px",threshold:.25});
 function render(){
   document.getElementById("main").innerHTML=resumeHTML()+bestHTML()+archiveHTML()+contactHTML();
   applyEdits();
@@ -250,21 +275,24 @@ function render(){
 }
 /* ---- lightbox ---- */
 const lb=document.getElementById("lb");
+let lbOpen=false;
 function openLB(id){const w=W.find(x=>x.id===id);if(!w)return;const t=k=>(EDITS["w."+id+"."+k]!=null?EDITS["w."+id+"."+k]:w[k]);
   document.getElementById("lbt").textContent=t("title");
   document.getElementById("lbr").textContent=t("role")+" · "+w.year;document.getElementById("lbd").textContent=t("desc");
+  lbOpen=true;pauseAllPreviews();
   const v=document.getElementById("lbv");v.muted=false;v.volume=1;v.src=lbVid(id);v.poster=pos(id);v.play().catch(()=>{});lb.classList.add("on");}
-document.getElementById("lbx").onclick=()=>{lb.classList.remove("on");document.getElementById("lbv").pause();};
-lb.onclick=e=>{if(e.target===lb){lb.classList.remove("on");document.getElementById("lbv").pause();}};
-addEventListener("keydown",e=>{if(e.key==="Escape")lb.classList.remove("on");});
+function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");const v=document.getElementById("lbv");v.pause();v.removeAttribute("src");v.load();resumeVisiblePreviews();}
+document.getElementById("lbx").onclick=closeLB;
+lb.onclick=e=>{if(e.target===lb)closeLB();};
+addEventListener("keydown",e=>{if(e.key==="Escape")closeLB();});
 
 /* ---- edit mode ---- */
 let editing=false;
 const fab=document.getElementById("editFab");
 fab.onclick=()=>{editing=!editing;document.body.classList.toggle("editing",editing);fab.classList.toggle("on",editing);fab.textContent=editing?"✔":"✎";document.getElementById("editHint").classList.toggle("on",editing);
   document.querySelectorAll("[data-k]").forEach(el=>el.contentEditable=editing);
-  if(editing){document.querySelectorAll(".acard,.bcard").forEach(c=>{const v=c.querySelector("video");if(v)v.pause();});}
-  else saveEdits();
+  if(editing)pauseAllPreviews();
+  else{saveEdits();resumeVisiblePreviews();}
 };
 async function saveEdits(){
   const E={};document.querySelectorAll("[data-k]").forEach(el=>{E[el.dataset.k]=el.textContent.replace(/\s+$/,"");});
