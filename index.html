@@ -109,7 +109,7 @@ section{position:relative}
 footer{border-top:1px solid var(--line);padding:24px 0 60px;color:var(--faint);font-family:var(--mono);font-size:12px;text-align:center}
 
 /* lightbox */
-#lb{position:fixed;inset:0;z-index:80;background:rgba(247,246,243,.94);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:24px}
+#lb{position:fixed;inset:0;z-index:80;background:#fff;display:none;align-items:center;justify-content:center;padding:24px}
 #lb.on{display:flex}
 #lb .bx{display:grid;grid-template-columns:auto 320px;gap:28px;max-width:1080px;width:100%;align-items:center}
 #lb video{max-height:84vh;border-radius:12px;border:1px solid var(--line2);background:#000}
@@ -275,13 +275,20 @@ function render(){
 }
 /* ---- lightbox ---- */
 const lb=document.getElementById("lb");
-let lbOpen=false;
+let lbOpen=false,lbScrollY=0;
 function openLB(id){const w=W.find(x=>x.id===id);if(!w)return;const t=k=>(EDITS["w."+id+"."+k]!=null?EDITS["w."+id+"."+k]:w[k]);
   document.getElementById("lbt").textContent=t("title");
   document.getElementById("lbr").textContent=t("role")+" · "+w.year;document.getElementById("lbd").textContent=t("desc");
-  lbOpen=true;pauseAllPreviews();
+  lbOpen=true;lbScrollY=window.scrollY;pauseAllPreviews();
+  document.getElementById("main").style.display="none";
+  document.body.style.overflow="hidden";
   const v=document.getElementById("lbv");v.muted=false;v.volume=1;v.src=lbVid(id);v.poster=pos(id);v.play().catch(()=>{});lb.classList.add("on");}
-function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");const v=document.getElementById("lbv");v.pause();v.removeAttribute("src");v.load();resumeVisiblePreviews();}
+function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");
+  const v=document.getElementById("lbv");v.pause();v.removeAttribute("src");v.load();
+  document.getElementById("main").style.display="";
+  document.body.style.overflow="";
+  window.scrollTo(0,lbScrollY);
+  resumeVisiblePreviews();}
 document.getElementById("lbx").onclick=closeLB;
 lb.onclick=e=>{if(e.target===lb)closeLB();};
 addEventListener("keydown",e=>{if(e.key==="Escape")closeLB();});
