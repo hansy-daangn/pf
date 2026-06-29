@@ -189,6 +189,49 @@ button{font-family:inherit;cursor:pointer}
 #edit .ft button{flex:1;border:1px solid var(--line2);background:#fff;padding:10px;border-radius:9px;font-weight:600;font-size:12.5px}
 #edit .ft .exp{background:var(--ink);color:#fff;border-color:var(--ink)}
 .editmode .idxrow,.editmode .bcard,.editmode .c-wrow{outline:1px dashed transparent}
+
+/* ---- RESUME (balanced, improved) ---- */
+.about .ey{display:block}
+.rh{display:grid;grid-template-columns:142px 1fr;gap:clamp(20px,4vw,46px);align-items:center;margin-top:16px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.rh-photo{width:142px;height:178px;border-radius:14px;overflow:hidden;background:#eceae5;border:1px solid var(--line2);flex:none}
+.rh-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.rh-name{font-weight:850;font-size:clamp(1.4rem,3vw,2.1rem);letter-spacing:-.03em}
+.rh-name span{font-family:var(--mono);font-size:12px;color:var(--faint);font-weight:500;margin-left:9px;letter-spacing:.12em}
+.rh-main .ab-tag{font-size:clamp(1.05rem,2vw,1.5rem);line-height:1.32;margin-top:8px;max-width:30ch;font-weight:750}
+.rh-desc{margin-top:13px;color:var(--ink2);font-size:14.5px;max-width:60ch}
+.rh-meta{margin-top:16px;display:flex;flex-wrap:wrap;gap:9px 20px}
+.ab-meta{font-size:13px;color:var(--ink)}
+.ab-meta b{font-family:var(--mono);font-size:11px;color:var(--faint);font-weight:500;margin-right:7px}
+.rh-comp{display:flex;flex-wrap:wrap;gap:10px 26px;padding:18px 0;border-bottom:1px solid var(--line)}
+.rh-comp .c{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink)}
+.rh-comp .lab{font-family:var(--mono);font-size:10px;color:#fff;background:var(--ink);border-radius:5px;padding:4px 8px;white-space:nowrap}
+.r3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3.4vw,40px);padding:26px 0 8px}
+@media(max-width:840px){.rh{grid-template-columns:104px 1fr;gap:20px}.rh-photo{width:104px;height:130px}.r3{grid-template-columns:1fr;gap:22px}}
+/* ---- VARIANT C extras: best3 + archive grid + contact ---- */
+.c-bestwrap{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:16px 0 42px}
+.c-best{cursor:pointer}
+.c-best .media{border-radius:12px;border:1px solid var(--line);overflow:hidden}
+.c-best .media>img{aspect-ratio:9/16}
+.c-best .no{font-family:var(--mono);font-size:11px;color:var(--accentink);margin-top:13px;display:block;letter-spacing:.06em}
+.c-best h3{font-weight:800;font-size:18px;letter-spacing:-.02em;margin-top:6px}
+.c-best .ro{color:var(--ink2);font-size:13px;margin-top:5px}
+.c-best .de{color:var(--ink2);font-size:13px;margin-top:8px}
+@media(max-width:840px){.c-bestwrap{grid-template-columns:1fr;gap:30px}}
+.cg-grid{columns:4;column-gap:16px;padding:22px 0 44px}
+@media(max-width:980px){.cg-grid{columns:3}}@media(max-width:640px){.cg-grid{columns:2}}
+.cg-card{break-inside:avoid;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff;cursor:pointer;transition:transform .4s var(--ease),box-shadow .4s}
+.cg-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px -24px rgba(0,0,0,.24)}
+.cg-card .media>img{aspect-ratio:9/16}
+.cg-cap{padding:11px 13px;display:flex;flex-direction:column;gap:7px}
+.cg-cap .ti{font-weight:680;font-size:13px;letter-spacing:-.02em;line-height:1.3}
+.contact{border-top:1px solid var(--line);padding:clamp(54px,9vh,94px) 0;text-align:center}
+.ct-h{font-weight:850;font-size:clamp(2rem,6vw,3.6rem);letter-spacing:-.035em;margin-top:12px}
+.ct-mail{display:inline-block;margin-top:22px;font-size:clamp(16px,2.4vw,22px);font-weight:600;border-bottom:2px solid var(--ink);padding-bottom:4px}
+.ct-mail:hover{color:var(--accentink);border-color:var(--accent)}
+.ct-soc{margin-top:26px;display:flex;gap:22px;justify-content:center;flex-wrap:wrap}
+.ct-soc a{font-family:var(--mono);font-size:12.5px;color:var(--ink2)}
+.ct-soc a:hover{color:var(--accent)}
+
 </style>
 </head>
 <body>
@@ -292,27 +335,33 @@ const esc=s=>(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"
 
 /* ---------- ABOUT (Figma resume structure) ---------- */
 function aboutHTML(){
- return `<section class="about"><div class="wrap">
-  <div class="ey">About · 약력</div>
-  <div class="ab-tag" style="margin-top:14px">${ABOUT.tagline}</div>
-  <div class="ab-grid">
-   <div>
-     <div class="ab-id">
-       <div class="ab-photo"><span>PHOTO</span></div>
-       <div class="ab-info">${ABOUT.info.map(r=>`<div class="row"><span class="k">${r[0]}</span><span class="v">${esc(r[1])}</span></div>`).join("")}</div>
-     </div>
-     <p class="ab-desc">${esc(ABOUT.desc)}</p>
-     <div class="ab-comp">${ABOUT.comp.map(c=>`<div class="c"><span class="lab">${c[0]}</span><span class="tx">${esc(c[1])}</span></div>`).join("")}</div>
-   </div>
-   <div>
-     <div class="ab-block"><h5>학력 사항 <span>Education</span></h5>${ABOUT.edu.map(e=>`<div class="ab-row"><span class="yr">${e[0]}</span><span class="bd"><b>${esc(e[1])}</b><small>${esc(e[2])}</small></span></div>`).join("")}</div>
-     <div class="ab-block"><h5>경력 사항 <span>Career</span></h5>${ABOUT.career.map(e=>`<div class="ab-row"><span class="yr">${e[0]}</span><span class="bd"><b>${esc(e[1])}</b><small>${esc(e[2])}</small></span></div>`).join("")}</div>
-     <div class="ab-block"><h5>기술 사항 <span>Toolset</span></h5>${ABOUT.skills.map(s=>`<div class="ab-skill"><span class="k">${s[0]}</span><span class="v">${s[1].map(t=>`<span>${esc(t)}</span>`).join("")}</span></div>`).join("")}</div>
-     <div class="ab-block"><h5>수상 경력 <span>Awards · 12</span></h5><div class="awtable">${ABOUT.awards.map(a=>`<div class="awrow"><span class="pz">${a[0]}</span><span class="d">${esc(a[1])}<small>${esc(a[2])}</small></span></div>`).join("")}</div></div>
-   </div>
+ const inf=ABOUT.info.map(r=>`<span class="ab-meta"><b>${r[0]}</b>${esc(r[1])}</span>`).join("");
+ return `<section class="about" id="resume"><div class="wrap">
+  <div class="ey">About · 이력서</div>
+  <div class="rh">
+    <div class="rh-photo"><img src="${BASE}img/profile.jpg" alt="김한결"/></div>
+    <div class="rh-main">
+      <div class="rh-name">김한결 <span>HANSY</span></div>
+      <div class="ab-tag">${ABOUT.tagline}</div>
+      <p class="rh-desc">${esc(ABOUT.desc)}</p>
+      <div class="rh-meta">${inf}</div>
+    </div>
   </div>
+  <div class="rh-comp">${ABOUT.comp.map(c=>`<div class="c"><span class="lab">${c[0]}</span><span class="tx">${esc(c[1])}</span></div>`).join("")}</div>
+  <div class="r3">
+    <div class="ab-block"><h5>학력 <span>Education</span></h5>${ABOUT.edu.map(x=>`<div class="ab-row"><span class="yr">${x[0]}</span><span class="bd"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span></div>`).join("")}</div>
+    <div class="ab-block"><h5>경력 <span>Career</span></h5>${ABOUT.career.map(x=>`<div class="ab-row"><span class="yr">${x[0]}</span><span class="bd"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span></div>`).join("")}</div>
+    <div class="ab-block"><h5>기술 <span>Toolset</span></h5>${ABOUT.skills.map(x=>`<div class="ab-skill"><span class="k">${x[0]}</span><span class="v">${x[1].map(t=>`<span>${esc(t)}</span>`).join("")}</span></div>`).join("")}</div>
+  </div>
+  <div class="ab-block" style="margin-top:6px"><h5>수상 경력 <span>Awards · 12</span></h5><div class="awtable">${ABOUT.awards.map(a=>`<div class="awrow"><span class="pz">${a[0]}</span><span class="d">${esc(a[1])}<small>${esc(a[2])}</small></span></div>`).join("")}</div></div>
  </div></section>`;
 }
+function contactHTML(){return `<section class="contact" id="contact"><div class="wrap"><div class="ey">Get in touch</div>
+  <h2 class="ct-h">같이 만들어요.</h2>
+  <a class="ct-mail" href="mailto:hansy@daangn.com">hansy@daangn.com →</a>
+  <div class="ct-soc"><a href="#" target="_blank">Behance ↗</a><a href="#" target="_blank">Instagram ↗</a><a href="#" target="_blank">YouTube ↗</a><a href="#" target="_blank">Vimeo ↗</a></div>
+ </div></section>`;}
+
 const footHTML=`<div class="wrap"><div class="pfoot"><span>© ${new Date().getFullYear()} 김한결 (HANSY)</span><span>영상 디자이너 · 화이트 / 미니멀 시안</span></div></div>`;
 
 /* ---------- VARIANT RENDERERS ---------- */
@@ -342,16 +391,20 @@ function renderB(){
    ${aboutHTML()}${footHTML}`;
 }
 function renderC(){
- const rows=vis().map((w,i)=>`<div class="c-wrow ${w.orient}" data-id="${w.id}">
+ const best=vis().slice(0,3);
+ const bestHTML=best.map((w,i)=>`<div class="c-best" data-id="${w.id}">
    <div class="media"><img src="${purl(w)}" alt=""/><video muted loop playsinline preload="none" data-src="${vurl(w)}"></video></div>
-   <div><span class="no">CASE ${String(i+1).padStart(2,"0")} · ${CAT[w.cat]}</span><h3>${esc(w.title)}</h3>
-     <div class="ro">${esc(w.role)} · ${w.year}</div><p class="de">${esc(w.desc)}</p>
-     <div class="tp">${w.tools.map(t=>`<span>${esc(t)}</span>`).join("")}</div></div></div>`).join("");
- return `<div class="wrap c-top"><div class="c-kicker"><h1>김한결 · 영상 디자이너</h1>
-    <div class="r">HANSY — VIDEO / MOTION<br/>당근 · KARROT</div></div></div>
+   <div><span class="no">BEST 0${i+1} · ${CAT[w.cat]}</span><h3>${esc(w.title)}</h3><div class="ro">${esc(w.role)} · ${w.year}</div><p class="de">${esc(w.desc)}</p></div></div>`).join("");
+ const cards=vis().map(w=>`<div class="cg-card" data-cat="${w.cat}" data-id="${w.id}">
+   <div class="media"><img src="${purl(w)}" alt=""/><video muted loop playsinline preload="none" data-src="${vurl(w)}"></video></div>
+   <div class="cg-cap"><span class="catpill">${CAT[w.cat]}</span><div class="ti">${esc(w.title)}</div></div></div>`).join("");
+ return `<div class="wrap c-top"><div class="c-kicker"><h1>김한결 · 영상 디자이너</h1><div class="r">HANSY — VIDEO / MOTION<br/>당근 · KARROT</div></div></div>
    ${aboutHTML()}
-   <div class="wrap"><div class="ey" style="padding-top:20px">Selected Work · 선호 순서</div><div class="c-worklist">${rows}</div></div>
-   ${footHTML}`;
+   <div class="wrap"><div class="ey" style="padding-top:18px">Selected · 베스트 3</div><div class="c-bestwrap">${bestHTML}</div></div>
+   <div class="wrap"><div class="ey">Archive · 분야별 영상</div>
+     <div class="b-fil" id="cfil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button></div>
+     <div class="cg-grid" id="cgrid">${cards}</div></div>
+   ${contactHTML()}${footHTML}`;
 }
 const R={a:renderA,b:renderB,c:renderC};
 
@@ -366,6 +419,7 @@ function mount(){
  document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",ev=>{if(document.body.classList.contains("editmode"))return;openLB(el.dataset.id);}));
  if(activeV==="a")bindHover();
  if(activeV==="b")bindFilter();
+ if(activeV==="c")bindCFilter();
 }
 function bindFilter(){
   const g=document.getElementById("bgrid");
@@ -375,6 +429,16 @@ function bindFilter(){
       b.classList.add("on");
       const f=b.dataset.f;
       g.querySelectorAll(".bcard").forEach(c=>{const w=WORKS.find(x=>x.id===c.dataset.id);c.style.display=(f==="all"||w.cat===f)?"":"none";});
+    };
+  });
+}
+function bindCFilter(){
+  const g=document.getElementById("cgrid");
+  document.querySelectorAll("#cfil button").forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll("#cfil button").forEach(x=>x.classList.remove("on"));
+      b.classList.add("on");const f=b.dataset.f;
+      g.querySelectorAll(".cg-card").forEach(c=>{c.style.display=(f==="all"||c.dataset.cat===f)?"":"none";});
     };
   });
 }
