@@ -40,8 +40,13 @@ section{position:relative}
 /* ---- RESUME (grid, balanced) ---- */
 .resume{padding:clamp(40px,7vh,76px) 0 8px}
 .rh{display:grid;grid-template-columns:150px 1fr;gap:clamp(22px,4vw,48px);align-items:center;margin-top:14px;padding-bottom:28px;border-bottom:1px solid var(--line)}
-.rh-photo{width:150px;height:188px;border-radius:14px;overflow:hidden;background:#eceae5;border:1px solid var(--line2);flex:none}
-.rh-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.rh-photo{width:152px;height:190px;flex:none;background:#fff;border:1px solid var(--line2);border-radius:14px;padding:8px;box-shadow:0 10px 26px -14px rgba(0,0,0,.22);position:relative}
+.rh-photo .frame{width:100%;height:100%;border-radius:8px;overflow:hidden;background-color:#eceae5;background-repeat:no-repeat;background-size:var(--bs,178%);background-position:var(--bx,50%) var(--by,18%);position:relative}
+.rh-photo .frame::after{content:"";position:absolute;inset:0;border-radius:8px;box-shadow:inset 0 0 22px rgba(0,0,0,.10),inset 0 0 0 1px rgba(0,0,0,.05);pointer-events:none}
+.editing .rh-photo{outline:2px dashed var(--accent);outline-offset:3px}
+.editing .rh-photo .frame{cursor:grab}.editing .rh-photo .frame:active{cursor:grabbing}
+.photohint{display:none}
+.editing .photohint{display:block;position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:9px;color:#fff;background:var(--accent);border-radius:100px;padding:3px 9px}
 .rh-name{font-weight:850;font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:-.03em}
 .rh-name span{font-family:var(--mono);font-size:12px;color:var(--faint);font-weight:500;margin-left:9px;letter-spacing:.12em}
 .rh-tag{font-size:clamp(1.05rem,2vw,1.5rem);line-height:1.32;margin-top:8px;max-width:30ch;font-weight:760}
@@ -182,7 +187,7 @@ function brow(key,e){return `<div class="brow"><span class="yr" data-k="${key}.y
 function resumeHTML(){return `<section class="resume" id="resume"><div class="wrap">
   <span class="ey" data-k="ui.reEy">Résumé · 이력서</span>
   <div class="rh">
-    <div class="rh-photo"><img src="assets/img/profile.jpg" alt="김한결"/></div>
+    <div class="rh-photo"><div class="frame" id="photoFrame" style="background-image:url(assets/img/profile.jpg?v=2)"></div><span class="photohint">드래그로 위치 · 스크롤로 확대</span></div>
     <div>
       <div class="rh-name"><span data-k="r.name">김한결</span> <span class="mono" style="font-size:12px;color:var(--faint);font-weight:500;margin-left:9px;letter-spacing:.12em">HANSY</span></div>
       <div class="rh-tag" data-k="r.tag">${esc(A.tag)}</div>
@@ -222,13 +227,26 @@ async function loadEdits(){
   try{const r=await fetch("content.json?"+Date.now());if(r.ok)EDITS=await r.json();}catch(e){}
   try{const l=JSON.parse(localStorage.getItem("pf_edits")||"null");if(l)EDITS=Object.assign(EDITS,l);}catch(e){}
 }
-function applyEdits(){for(const k in EDITS){const el=document.querySelector('[data-k="'+k+'"]');if(el&&EDITS[k]!=null)el.textContent=EDITS[k];}}
+function applyEdits(){for(const k in EDITS){
+  if(k.indexOf("photo.")===0){const f=document.getElementById("photoFrame");if(f&&EDITS[k]!=null)f.style.setProperty("--"+k.slice(6),EDITS[k]);continue;}
+  const el=document.querySelector('[data-k="'+k+'"]');if(el&&EDITS[k]!=null)el.textContent=EDITS[k];}}
 
+/* ---- photo crop adjust ---- */
+function setupPhotoAdjust(){
+  const f=document.getElementById("photoFrame");if(!f)return;
+  const gv=(p,d)=>parseFloat(f.style.getPropertyValue("--"+p))||d;
+  let drag=false,sx,sy,bx0,by0;
+  f.addEventListener("pointerdown",e=>{if(!editing)return;drag=true;sx=e.clientX;sy=e.clientY;bx0=gv("bx",50);by0=gv("by",18);try{f.setPointerCapture(e.pointerId);}catch(_){}});
+  f.addEventListener("pointermove",e=>{if(!drag)return;const dx=e.clientX-sx,dy=e.clientY-sy;f.style.setProperty("--bx",Math.max(-60,Math.min(160,bx0-dx*0.22))+"%");f.style.setProperty("--by",Math.max(-60,Math.min(160,by0-dy*0.22))+"%");});
+  const end=()=>drag=false;f.addEventListener("pointerup",end);f.addEventListener("pointercancel",end);
+  f.addEventListener("wheel",e=>{if(!editing)return;e.preventDefault();let s=gv("bs",178);s=Math.min(360,Math.max(110,s-e.deltaY*0.09));f.style.setProperty("--bs",s+"%");},{passive:false});
+}
 /* ---- render ---- */
 const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting){if(!v.src&&v.dataset.src)v.src=v.dataset.src;v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();}}),{rootMargin:"90px 0px",threshold:.25});
 function render(){
   document.getElementById("main").innerHTML=resumeHTML()+bestHTML()+archiveHTML()+contactHTML();
   applyEdits();
+  setupPhotoAdjust();
   document.querySelectorAll(".bcard,.acard").forEach(c=>io.observe(c));
   document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>{if(!editing)openLB(el.dataset.id);}));
   const g=document.getElementById("agrid");
@@ -254,6 +272,7 @@ fab.onclick=()=>{editing=!editing;document.body.classList.toggle("editing",editi
 };
 async function saveEdits(){
   const E={};document.querySelectorAll("[data-k]").forEach(el=>{E[el.dataset.k]=el.textContent.replace(/\s+$/,"");});
+  const _pf=document.getElementById("photoFrame");if(_pf){["bs","bx","by"].forEach(p=>{const v=_pf.style.getPropertyValue("--"+p);if(v)E["photo."+p]=v.trim();});}
   EDITS=Object.assign(EDITS,E);localStorage.setItem("pf_edits",JSON.stringify(E));
   let pat=localStorage.getItem("pf_pat");
   if(!pat){pat=prompt("GitHub에 영구 저장하려면 토큰을 한 번만 입력하세요.\n(github.com → Settings → Developer settings → Fine-grained token, 저장소 hansy-daangn/pf 의 Contents: Read and write)\n토큰은 이 브라우저에만 저장됩니다. 비워두면 이 브라우저에만 저장됩니다.");if(pat)localStorage.setItem("pf_pat",pat);}
