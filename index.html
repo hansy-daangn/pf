@@ -144,13 +144,15 @@ section{position:relative}
 /* manage (edit-mode asset curation) */
 #ngFab{position:fixed;right:22px;bottom:84px;z-index:70;height:44px;padding:0 16px;border-radius:100px;background:#fff;color:var(--ink);border:1px solid var(--ink);font-size:13px;font-weight:700;display:none;align-items:center;gap:6px;box-shadow:0 8px 22px -8px rgba(0,0,0,.35)}
 .editing #ngFab{display:inline-flex}
-#mg{position:fixed;inset:0;z-index:90;background:rgba(23,20,15,.42);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:5vh 20px;overflow:auto}
+#mg{position:fixed;inset:0;z-index:90;background:rgba(23,20,15,.42);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:4vh 16px}
 #mg.on{display:flex}
-.mg-bx{background:#fff;border-radius:16px;max-width:720px;width:100%;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);overflow:hidden}
-.mg-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
-.mg-head b{font-size:15px;font-weight:800}
-.mg-x{width:32px;height:32px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:15px}
-.mg-sec{padding:16px 20px;border-bottom:1px solid var(--line)}
+.mg-bx{background:#fff;border-radius:16px;max-width:720px;width:100%;max-height:92vh;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.mg-head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.mg-head b{font-size:15px;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mg-x{flex:none;width:32px;height:32px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:15px}
+.mg-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.mg-name{flex:none;margin:14px 18px 0;font-size:14px;font-weight:700;padding:9px 12px;border:1px solid var(--line2);border-radius:8px;width:calc(100% - 36px)}
+.mg-sec{padding:14px 18px;border-bottom:1px solid var(--line)}
 .mg-sec:last-child{border-bottom:0}
 .mg-lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:10px}
 .mg-lbl small{text-transform:none;letter-spacing:0;color:var(--faint);font-weight:400;margin-left:6px}
@@ -165,17 +167,19 @@ section{position:relative}
 .mg-tile.off{opacity:.32}
 .mg-tile .chk{position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;display:grid;place-items:center;line-height:1}
 .mg-tile.off .chk{background:var(--faint)}
-.mg-search{width:100%;font-size:13px;padding:9px 12px;border:1px solid var(--line2);border-radius:8px;margin-bottom:10px}
-.mg-cat{max-height:280px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.mg-search{width:100%;font-size:13px;padding:9px 12px;border:1px solid var(--line2);border-radius:8px;margin-bottom:10px;position:sticky;top:-14px;background:#fff;z-index:2}
+.mg-cat{min-height:34vh;display:flex;flex-direction:column;gap:6px}
+.mg-hint{font-size:12px;color:var(--ink2);line-height:1.5;background:var(--paper);border-radius:8px;padding:10px 12px;margin-bottom:12px}
 .mg-row{border:1px solid var(--line);border-radius:9px;overflow:hidden}
 .mg-rowh{display:flex;align-items:center;gap:10px;padding:9px 11px;cursor:pointer}
 .mg-rowh .nm{flex:1;min-width:0;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mg-rowh .meta{font-family:var(--mono);font-size:10px;color:var(--faint);white-space:nowrap}
-.mg-rowh .go{font-size:11px;font-weight:700;color:var(--accentink);border:1px solid var(--line2);border-radius:100px;padding:4px 10px;white-space:nowrap}
+.mg-rowh .meta{font-family:var(--mono);font-size:10px;color:var(--faint);white-space:nowrap;flex:none}
+.mg-rowh .go{font-size:11px;font-weight:700;color:#fff;background:var(--accent);border:0;border-radius:100px;padding:5px 11px;white-space:nowrap;flex:none}
+.mg-rowh .go.added{background:var(--faint)}
 .mg-assets{display:none;flex-wrap:wrap;gap:6px;padding:0 11px 11px}
 .mg-row.open .mg-assets{display:flex}
-.mg-del{font-size:12px;color:#c0392b;border:1px solid #e6b0aa;background:#fff;border-radius:100px;padding:5px 12px;font-weight:600}
-.mg-mk{width:100%;margin-top:12px;font-size:13px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:11px}
+.mg-del{font-size:12px;color:#c0392b;border:1px solid #e6b0aa;background:#fff;border-radius:100px;padding:6px 13px;font-weight:600}
+@media(max-width:560px){#mg{padding:0}.mg-bx{max-height:100vh;border-radius:0}.mg-tile,.mg-tile img,.mg-tile .ph{width:56px}.mg-tile img,.mg-tile .ph{height:56px}}
 
 /* edit */
 #editFab{position:fixed;right:22px;bottom:22px;z-index:70;width:52px;height:52px;border-radius:50%;background:var(--ink);color:#fff;border:0;font-size:20px;display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(0,0,0,.4);transition:.25s}
@@ -205,10 +209,14 @@ section{position:relative}
 
 <div id="mg"><div class="mg-bx">
   <div class="mg-head"><b id="mgTitle">소재 관리</b><button class="mg-x" id="mgX">✕</button></div>
-  <div class="mg-sec" id="mgCurSec"><div class="mg-lbl">현재 소재 <small>클릭해서 숨김/표시</small></div><div class="mg-cats" id="mgCats" style="display:none"></div><div class="mg-grid" id="mgCur"></div><button class="mg-del" id="mgDel" style="display:none;margin-top:12px">이 그룹 삭제</button></div>
-  <div class="mg-sec"><div class="mg-lbl" id="mgAddLbl">CreativeReporter에서 소재 추가</div>
-    <input class="mg-search" id="mgSearch" placeholder="이름 검색 (예: rent, keyword, jobs, raffle)"/>
-    <div class="mg-cat" id="mgCat"></div></div>
+  <input class="mg-name" id="mgName" placeholder="그룹 이름" style="display:none"/>
+  <div class="mg-body">
+    <div class="mg-sec" id="mgCurSec"><div class="mg-lbl">현재 소재 <small>클릭해서 숨김 / 표시</small></div><div class="mg-cats" id="mgCats" style="display:none"></div><div class="mg-grid" id="mgCur"></div><button class="mg-del" id="mgDel" style="display:none;margin-top:14px">이 그룹 삭제</button></div>
+    <div class="mg-sec"><div class="mg-lbl" id="mgAddLbl">CreativeReporter에서 소재 추가</div>
+      <div class="mg-hint" id="mgHint" style="display:none"></div>
+      <input class="mg-search" id="mgSearch" placeholder="이름 검색 (예: rent, keyword, jobs, raffle)"/>
+      <div class="mg-cat" id="mgCat"></div></div>
+  </div>
 </div></div>
 
 <script>
@@ -452,12 +460,14 @@ function addAssetsToWork(w,assets){
   else{const x=getJSON("w."+w.id+".xadd",[]),have=new Set(x.map(a=>a.url).concat(baseGallery(w).map(m=>m.url).filter(Boolean)));
     assets.forEach(a=>{if(!have.has(a.url)){x.push({res:a.res,type:a.type,url:a.url});have.add(a.url);}});setJSON("w."+w.id+".xadd",x);}
   const o=getJSON("w."+w.id+".off",[]),o2=o.filter(k=>!assets.some(a=>a.url===k));if(o2.length!==o.length)setJSON("w."+w.id+".off",o2);}
+function pkgAdded(c){if(!mgWork)return false;const keys=new Set(candidateGallery(mgWork).map(m=>m.key));return c.assets.length&&c.assets.every(a=>keys.has(a.url));}
+function goLabel(c){return mgMode==="pick"?"새 그룹":(pkgAdded(c)?"✓ 추가됨":"＋ 전체");}
 function renderMgCat(q){const wrap=document.getElementById("mgCat"),cat=CATALOG||[],qq=(q||"").trim().toLowerCase();
   const list=(qq?cat.filter(c=>c.base.toLowerCase().includes(qq)||(c.cat||"").includes(qq)):cat).slice(0,60);
-  wrap.innerHTML=list.length?list.map(c=>`<div class="mg-row" data-i="${cat.indexOf(c)}"><div class="mg-rowh"><span class="nm">${esc(prettyBase(c.base))}</span><span class="meta">${esc(c.cat)} · ▶${c.nv} ■${c.ni} · ₩${big(c.perf.cost)}</span><span class="go">${mgMode==="pick"?"새 그룹":"＋ 전체"}</span></div><div class="mg-assets"></div></div>`).join(""):'<span style="font-size:12px;color:var(--faint)">결과 없음</span>';
+  wrap.innerHTML=list.length?list.map(c=>`<div class="mg-row" data-i="${cat.indexOf(c)}"><div class="mg-rowh"><span class="nm">${esc(prettyBase(c.base))}</span><span class="meta">${esc(c.cat)} · ▶${c.nv} ■${c.ni} · ₩${big(c.perf.cost)}</span><span class="go${pkgAdded(c)?" added":""}">${goLabel(c)}</span></div><div class="mg-assets"></div></div>`).join(""):'<span style="font-size:12px;color:var(--faint)">검색 결과가 없어요.</span>';
   wrap.querySelectorAll(".mg-row").forEach(row=>{const c=cat[+row.dataset.i];
     row.querySelector(".mg-rowh").onclick=e=>{
-      if(e.target.classList.contains("go")){if(mgMode==="pick")createGroup(c);else{addAssetsToWork(mgWork,c.assets);renderMgCur();e.target.textContent="✓ 추가됨";}return;}
+      if(e.target.classList.contains("go")){if(mgMode==="pick")createGroup(c);else{addAssetsToWork(mgWork,c.assets);renderMgCur();renderMgCat(document.getElementById("mgSearch").value);}return;}
       row.classList.toggle("open");const box=row.querySelector(".mg-assets");
       if(row.classList.contains("open")&&!box.dataset.done){box.dataset.done="1";
         box.innerHTML=c.assets.map(a=>mgTile(cdnItem(a),false,"+")).join("");
@@ -468,17 +478,30 @@ function createGroup(pkg,onlyAssets){const assets=(onlyAssets||pkg.assets).map(a
   const w={id,u:true,cat:guessFmt(pkg),title:prettyBase(pkg.base),role:"퍼포먼스 소재",year:"",campaign:pkg.base,desc:"",assets,perf:pkg.perf,pv:computePV(assets)};
   const arr=getJSON("works.add",[]);if(!arr.find(x=>x.id===w.id))arr.push(w);setJSON("works.add",arr);openManage(findWork(id));}
 async function openManage(w){mgWork=w;mgMode=w?"manage":"pick";
-  document.getElementById("mgTitle").textContent=w?("소재 관리 — "+(w.title||"")):"새 그룹 만들기";
+  const nameEl=document.getElementById("mgName"),hint=document.getElementById("mgHint");
+  const wt=w?(EDITS["w."+w.id+".title"]||w.title||""):"";
+  document.getElementById("mgTitle").textContent=!w?"새 그룹 만들기":(w.u?"소재 관리":"소재 관리 — "+wt);
   document.getElementById("mgCurSec").style.display=w?"":"none";
-  document.getElementById("mgAddLbl").textContent=w?"CreativeReporter에서 소재 추가":"CreativeReporter에서 그룹 선택";
+  document.getElementById("mgAddLbl").textContent=w?"CreativeReporter에서 소재 추가":"CreativeReporter 패키지 선택";
+  if(!w){hint.style.display="";hint.textContent="아래 목록에서 소재 패키지를 고르세요. ‘새 그룹’을 누르면 그 패키지의 모든 사이즈가 담긴 카드가 만들어지고, 이어서 개별 소재를 켜고 끌 수 있어요.";}
+  else hint.style.display="none";
+  if(w&&w.u){nameEl.style.display="";nameEl.value=wt;
+    nameEl.oninput=()=>{const arr=getJSON("works.add",[]),e=arr.find(x=>x.id===w.id);if(e){e.title=nameEl.value;setJSON("works.add",arr);w.title=nameEl.value;}};}
+  else nameEl.style.display="none";
   const cats=document.getElementById("mgCats"),del=document.getElementById("mgDel");
   if(w&&w.u){cats.style.display="flex";del.style.display="";
     cats.innerHTML=[["motion","모션그래픽"],["3d","3D"],["ai","AI"]].map(c=>`<button data-c="${c[0]}" class="${w.cat===c[0]?"on":""}">${c[1]}</button>`).join("");
     cats.querySelectorAll("button").forEach(b=>b.onclick=()=>{const arr=getJSON("works.add",[]),e=arr.find(x=>x.id===w.id);if(e){e.cat=b.dataset.c;setJSON("works.add",arr);w.cat=b.dataset.c;}cats.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");});
     del.onclick=()=>{if(!confirm("이 그룹을 삭제할까요?"))return;setJSON("works.add",getJSON("works.add",[]).filter(x=>x.id!==w.id));closeManage();};}
   else{cats.style.display="none";del.style.display="none";}
-  renderMgCur();mg.classList.add("on");document.body.style.overflow="hidden";
-  await loadCatalog();renderMgCat(document.getElementById("mgSearch").value);}
+  renderMgCur();
+  const searchEl=document.getElementById("mgSearch");searchEl.value="";
+  document.getElementById("mgCat").innerHTML='<span style="font-size:12px;color:var(--faint)">불러오는 중…</span>';
+  mg.classList.add("on");document.body.style.overflow="hidden";
+  const body=mg.querySelector(".mg-body");if(body)body.scrollTop=0;
+  await loadCatalog();
+  if(!CATALOG||!CATALOG.length){document.getElementById("mgCat").innerHTML='<span style="font-size:12px;color:#c0392b">카탈로그를 불러오지 못했어요. 새로고침 후 다시 시도하세요.</span>';return;}
+  renderMgCat("");}
 function closeManage(){mg.classList.remove("on");document.body.style.overflow="";mgWork=null;rerender();}
 document.getElementById("mgX").onclick=closeManage;
 mg.onclick=e=>{if(e.target===mg)closeManage();};
