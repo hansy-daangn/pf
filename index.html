@@ -137,8 +137,45 @@ section{position:relative}
 #lb .perf .tile .v{font-weight:820;font-size:17px;letter-spacing:-.02em;color:var(--ink)}
 #lb .perf .tile .l{font-size:10.5px;color:var(--ink2);margin-top:2px}
 #lb .perf .src{font-size:10px;color:var(--faint);margin-top:9px;font-family:var(--mono)}
+#lb .lb-thumbs .thgap{width:16px;height:1px;flex:0 0 16px;pointer-events:none}
 #lb .x{position:fixed;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:18px;display:grid;place-items:center;z-index:1}
 @media(max-width:780px){#lb .bx{grid-template-columns:1fr}#lb .lb-stage video,#lb .lb-stage img{max-height:56vh}}
+
+/* manage (edit-mode asset curation) */
+#ngFab{position:fixed;right:22px;bottom:84px;z-index:70;height:44px;padding:0 16px;border-radius:100px;background:#fff;color:var(--ink);border:1px solid var(--ink);font-size:13px;font-weight:700;display:none;align-items:center;gap:6px;box-shadow:0 8px 22px -8px rgba(0,0,0,.35)}
+.editing #ngFab{display:inline-flex}
+#mg{position:fixed;inset:0;z-index:90;background:rgba(23,20,15,.42);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:5vh 20px;overflow:auto}
+#mg.on{display:flex}
+.mg-bx{background:#fff;border-radius:16px;max-width:720px;width:100%;box-shadow:0 30px 80px -20px rgba(0,0,0,.5);overflow:hidden}
+.mg-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.mg-head b{font-size:15px;font-weight:800}
+.mg-x{width:32px;height:32px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:15px}
+.mg-sec{padding:16px 20px;border-bottom:1px solid var(--line)}
+.mg-sec:last-child{border-bottom:0}
+.mg-lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:10px}
+.mg-lbl small{text-transform:none;letter-spacing:0;color:var(--faint);font-weight:400;margin-left:6px}
+.mg-cats{display:flex;gap:6px;margin-bottom:12px}
+.mg-cats button{font-size:12px;border:1px solid var(--line2);background:#fff;color:var(--ink2);padding:5px 12px;border-radius:100px;font-weight:600}
+.mg-cats button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mg-grid{display:flex;flex-wrap:wrap;gap:8px}
+.mg-tile{position:relative;width:66px;border-radius:8px;overflow:hidden;border:1px solid var(--line2);cursor:pointer;background:#eceae5}
+.mg-tile img{display:block;width:66px;height:66px;object-fit:cover}
+.mg-tile .ph{width:66px;height:66px;display:grid;place-items:center;color:var(--faint);font-size:18px}
+.mg-tile .lab{display:block;font-family:var(--mono);font-size:8px;text-align:center;padding:2px;color:var(--ink2);background:#fff;border-top:1px solid var(--line)}
+.mg-tile.off{opacity:.32}
+.mg-tile .chk{position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;display:grid;place-items:center;line-height:1}
+.mg-tile.off .chk{background:var(--faint)}
+.mg-search{width:100%;font-size:13px;padding:9px 12px;border:1px solid var(--line2);border-radius:8px;margin-bottom:10px}
+.mg-cat{max-height:280px;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.mg-row{border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.mg-rowh{display:flex;align-items:center;gap:10px;padding:9px 11px;cursor:pointer}
+.mg-rowh .nm{flex:1;min-width:0;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mg-rowh .meta{font-family:var(--mono);font-size:10px;color:var(--faint);white-space:nowrap}
+.mg-rowh .go{font-size:11px;font-weight:700;color:var(--accentink);border:1px solid var(--line2);border-radius:100px;padding:4px 10px;white-space:nowrap}
+.mg-assets{display:none;flex-wrap:wrap;gap:6px;padding:0 11px 11px}
+.mg-row.open .mg-assets{display:flex}
+.mg-del{font-size:12px;color:#c0392b;border:1px solid #e6b0aa;background:#fff;border-radius:100px;padding:5px 12px;font-weight:600}
+.mg-mk{width:100%;margin-top:12px;font-size:13px;font-weight:700;background:var(--ink);color:#fff;border:0;border-radius:9px;padding:11px}
 
 /* edit */
 #editFab{position:fixed;right:22px;bottom:22px;z-index:70;width:52px;height:52px;border-radius:50%;background:var(--ink);color:#fff;border:0;font-size:20px;display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(0,0,0,.4);transition:.25s}
@@ -162,8 +199,17 @@ section{position:relative}
   <div class="lb-info"><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div><div class="kv" id="lbKv"></div><div class="perf" id="lbPerf" style="display:none"></div></div>
 </div></div>
 
+<button id="ngFab">＋ 새 그룹</button>
 <button id="editFab" title="편집">✎</button>
-<div id="editHint"><span>편집 모드 · 다시 누르면 저장됩니다</span></div>
+<div id="editHint"><span>편집 모드 · 카드를 누르면 소재를 관리할 수 있어요 · ✎ 다시 누르면 저장</span></div>
+
+<div id="mg"><div class="mg-bx">
+  <div class="mg-head"><b id="mgTitle">소재 관리</b><button class="mg-x" id="mgX">✕</button></div>
+  <div class="mg-sec" id="mgCurSec"><div class="mg-lbl">현재 소재 <small>클릭해서 숨김/표시</small></div><div class="mg-cats" id="mgCats" style="display:none"></div><div class="mg-grid" id="mgCur"></div><button class="mg-del" id="mgDel" style="display:none;margin-top:12px">이 그룹 삭제</button></div>
+  <div class="mg-sec"><div class="mg-lbl" id="mgAddLbl">CreativeReporter에서 소재 추가</div>
+    <input class="mg-search" id="mgSearch" placeholder="이름 검색 (예: rent, keyword, jobs, raffle)"/>
+    <div class="mg-cat" id="mgCat"></div></div>
+</div></div>
 
 <script>
 const A={
@@ -233,11 +279,18 @@ function bestHTML(){const b=W.slice(0,3);return `<section id="best" class="sec">
    <div class="media" style="aspect-ratio:${arOf(w.id)}">${g}<img src="${pos(w.id)}" alt=""/><video muted loop playsinline preload="none" data-src="${vid(w.id)}"></video></div>
    <h3 data-k="w.${w.id}.title">${esc(w.title)}</h3><div class="ro" data-k="w.${w.id}.role">${esc(w.role)}</div><p class="de" data-k="w.${w.id}.desc">${esc(w.desc)}</p></div>`;}).join("")}</div></div></section>`;}
 
+function cardExtra(w){return (w.variants&&w.variants.length)||(w.assets?Math.max(0,w.assets.length-1):0)||0;}
+function cardHTML(w){
+  const ex=cardExtra(w),gtag=ex>0?`<span class="grouptag">+${ex}</span>`:"";
+  let media;
+  if(w.u){const ar=(w.pv&&w.pv.ar)||"9 / 16",poster=(w.pv&&w.pv.poster)?`<img src="${w.pv.poster}" alt=""/>`:"",video=(w.pv&&w.pv.video)?`<video muted loop playsinline preload="none" data-src="${w.pv.video}"></video>`:"";
+    media=`<div class="media" style="aspect-ratio:${ar}">${gtag}${poster}${video}</div>`;}
+  else media=`<div class="media" style="aspect-ratio:${arOf(w.id)}">${gtag}<img src="${pos(w.id)}" alt=""/><video muted loop playsinline preload="none" data-src="${vid(w.id)}"></video></div>`;
+  const ti=w.u?`<div class="ti">${esc(w.title)}</div>`:`<div class="ti" data-k="w.${w.id}.title">${esc(w.title)}</div>`;
+  return `<div class="acard" data-cat="${w.cat}" data-id="${w.id}">${media}<div class="acap"><span class="catpill">${CAT[w.cat]||w.cat}</span>${ti}</div></div>`;}
 function archiveHTML(){return `<section id="archive" class="sec"><div class="wrap">
   <div class="afil" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button></div>
-  <div class="agrid" id="agrid">${W.map(w=>{const g=(w.variants&&w.variants.length)?`<span class="grouptag">+${w.variants.length}</span>`:"";return `<div class="acard" data-cat="${w.cat}" data-id="${w.id}">
-   <div class="media" style="aspect-ratio:${arOf(w.id)}">${g}<img src="${pos(w.id)}" alt=""/><video muted loop playsinline preload="none" data-src="${vid(w.id)}"></video></div>
-   <div class="acap"><span class="catpill">${CAT[w.cat]}</span><div class="ti" data-k="w.${w.id}.title">${esc(w.title)}</div></div></div>`;}).join("")}</div></div></section>`;}
+  <div class="agrid" id="agrid">${archiveWorks().map(cardHTML).join("")}</div></div></section>`;}
 
 function contactHTML(){return `<section class="contact" id="contact"><div class="wrap">
   <h2 class="ct-h" data-k="ui.ctH">Contact</h2>
@@ -285,7 +338,7 @@ function render(){
   applyEdits();
   setupPhotoAdjust();
   document.querySelectorAll(".bcard,.acard").forEach(c=>io.observe(c));
-  document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>{if(!editing)openLB(el.dataset.id);}));
+  document.querySelectorAll("[data-id]").forEach(el=>el.addEventListener("click",()=>{editing?openManage(findWork(el.dataset.id)):openLB(el.dataset.id);}));
   const g=document.getElementById("agrid");
   document.querySelectorAll("#afil button").forEach(b=>b.onclick=()=>{if(editing)return;document.querySelectorAll("#afil button").forEach(x=>x.classList.remove("on"));b.classList.add("on");const f=b.dataset.f;g.querySelectorAll(".acard").forEach(c=>c.style.display=(f==="all"||c.dataset.cat===f)?"":"none");});
 }
@@ -299,31 +352,53 @@ const resFmt=r=>String(r||"").replace("x","×");
 function stageVideo(src,poster){const v=document.getElementById("lbv"),i=document.getElementById("lbi");i.style.display="none";i.removeAttribute("src");v.style.display="";v.muted=false;v.volume=1;if(poster)v.poster=poster;else v.removeAttribute("poster");v.src=src;try{v.currentTime=0;}catch(_){}v.play().catch(()=>{});}
 function stageImage(src){const v=document.getElementById("lbv"),i=document.getElementById("lbi");v.pause();v.removeAttribute("src");v.style.display="none";i.onerror=()=>{i.onerror=null;i.src=wsrv(src);};i.src=src;i.style.display="";}
 function showMedia(m){if(m.kind==="video")stageVideo(m.src,m.poster);else stageImage(m.src);}
+/* ---- user overrides (stored in content.json via EDITS) ---- */
+function getJSON(k,dflt){try{const v=EDITS[k];return v!=null?JSON.parse(v):dflt;}catch(e){return dflt;}}
+function setJSON(k,val){EDITS[k]=JSON.stringify(val);}
+function userWorks(){return getJSON("works.add",[]).map(w=>Object.assign({u:true,role:w.role||"",year:w.year||"",desc:w.desc||"",campaign:w.campaign||"",variants:[]},w));}
+function archiveWorks(){return W.concat(userWorks());}
+function findWork(id){return archiveWorks().find(x=>x.id===id);}
+function cdnItem(md){return md.type==="video"?{kind:"video",src:md.url,poster:"",thumb:"",label:resFmt(md.res),key:md.url,type:"video",res:md.res,url:md.url}:{kind:"image",src:md.url,thumb:wsrv(md.url,120),label:resFmt(md.res),key:md.url,type:"image",res:md.res,url:md.url};}
+function computePV(assets){const vert=a=>{const p=(a.res||"0x0").split("x").map(Number);return p[1]>=p[0];};
+  const vids=assets.filter(a=>a.type==="video"),imgs=assets.filter(a=>a.type==="image");
+  const pv={video:null,poster:null,ar:"9 / 16"};const vv=vids.find(vert)||vids[0],ii=imgs.find(vert)||imgs[0];
+  if(vv){pv.video=vv.url;const p=vv.res.split("x").map(Number);if(p[0]&&p[1])pv.ar=p[0]+" / "+p[1];}
+  if(ii){pv.poster=wsrv(ii.url,420);if(!vv){const p=ii.res.split("x").map(Number);if(p[0]&&p[1])pv.ar=p[0]+" / "+p[1];}}
+  return pv;}
+/* base gallery items (before add/off overrides) */
+function baseGallery(w){
+  if(w.u)return (w.assets||[]).map(cdnItem);
+  const g=[{kind:"video",src:full(w.id),poster:pos(w.id),thumb:pos(w.id),label:w.plabel||"세로",key:"self:"+w.id}];
+  (w.variants||[]).forEach(v=>g.push({kind:"video",src:full(v.id),poster:pos(v.id),thumb:pos(v.id),label:v.label||v.id,key:"self:"+v.id}));
+  const pk=PKG[w.id];if(pk&&pk.media)pk.media.forEach(md=>g.push(cdnItem(md)));
+  return g;}
+/* full candidate list incl. user-added, deduped (ignores off) */
+function candidateGallery(w){
+  let g=baseGallery(w).concat(getJSON("w."+w.id+".xadd",[]).map(cdnItem));
+  const seen=new Set();return g.filter(m=>{if(seen.has(m.key))return false;seen.add(m.key);return true;});}
 function buildGallery(w){
-  const g=[{kind:"video",src:full(w.id),poster:pos(w.id),thumb:pos(w.id),label:w.plabel||"세로"}];
-  (w.variants||[]).forEach(v=>g.push({kind:"video",src:full(v.id),poster:pos(v.id),thumb:pos(v.id),label:v.label||v.id}));
-  const pk=PKG[w.id];
-  if(pk&&pk.media)pk.media.forEach(md=>{
-    if(md.type==="video")g.push({kind:"video",src:md.url,poster:"",thumb:"",label:resFmt(md.res)});
-    else g.push({kind:"image",src:md.url,thumb:wsrv(md.url,120),label:resFmt(md.res)});
-  });
+  const off=new Set(getJSON("w."+w.id+".off",[]));
+  let g=candidateGallery(w).filter(m=>!off.has(m.key));
+  g.sort((a,b)=>(a.kind==="image"?1:0)-(b.kind==="image"?1:0));
   return g;}
 function renderGallery(w){const wrap=document.getElementById("lbThumbs"),g=buildGallery(w);
   if(g.length<2){wrap.innerHTML="";wrap.style.display="none";return g;}
-  wrap.style.display="flex";
-  wrap.innerHTML=g.map((m,i)=>`<button class="lb-thumb${i===0?' active':''}${m.kind==='video'?' vid':''}" data-i="${i}">${m.thumb?`<img src="${m.thumb}" alt="" loading="lazy"/>`:""}<span class="lab">${esc(m.label)}</span></button>`).join("");
+  wrap.style.display="flex";let html="",prev=null;
+  g.forEach((m,i)=>{if(prev==="video"&&m.kind==="image")html+='<span class="thgap"></span>';
+    html+=`<button class="lb-thumb${i===0?' active':''}${m.kind==='video'?' vid':''}" data-i="${i}">${m.thumb?`<img src="${m.thumb}" alt="" loading="lazy"/>`:""}<span class="lab">${esc(m.label)}</span></button>`;prev=m.kind;});
+  wrap.innerHTML=html;
   wrap.querySelectorAll(".lb-thumb").forEach(b=>b.onclick=()=>{wrap.querySelectorAll(".lb-thumb").forEach(x=>x.classList.remove("active"));b.classList.add("active");showMedia(g[+b.dataset.i]);});
   return g;}
-function renderKV(w){const kv=document.getElementById("lbKv"),rows=[],pk=PKG[w.id];
+function renderKV(w){const kv=document.getElementById("lbKv"),rows=[];
   if(w.campaign)rows.push(["Campaign",w.campaign]);
   rows.push(["Year",w.year]);
   rows.push(["Category",CAT[w.cat]||w.cat]);
-  const count=1+((w.variants&&w.variants.length)||0)+((pk&&pk.media&&pk.media.length)||0);
+  const count=buildGallery(w).length;
   if(count>1)rows.push(["패키지 소재",count+"개 (사이즈·포맷)"]);
   kv.innerHTML=rows.map(r=>`<div class="row"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("");}
 function won(n){if(n>=1e8)return"₩"+(n/1e8).toFixed(n>=1e9?0:2)+"억";if(n>=1e4)return"₩"+Math.round(n/1e4).toLocaleString()+"만";return"₩"+Math.round(n).toLocaleString();}
 function big(n){if(n>=1e8)return(n/1e8).toFixed(1)+"억";if(n>=1e4)return Math.round(n/1e4).toLocaleString()+"만";return Math.round(n).toLocaleString();}
-function renderPerf(id){const el=document.getElementById("lbPerf"),pk=PKG[id];
+function renderPerf(w){const el=document.getElementById("lbPerf"),pk=w.u?{perf:w.perf}:PKG[w.id];
   if(!pk||!pk.perf){el.style.display="none";el.innerHTML="";return;}
   const p=pk.perf,t=[["광고비",won(p.cost)],["노출 수",big(p.imp)]];
   if(p.ctr!=null)t.push(["클릭률",p.ctr+"%"]);
@@ -333,15 +408,15 @@ function renderPerf(id){const el=document.getElementById("lbPerf"),pk=PKG[id];
   if(p.roas!=null)t.push(["ROAS","×"+p.roas]);
   el.style.display="";
   el.innerHTML=`<div class="ph"><i></i>소재 성과</div><div class="tiles">${t.map(x=>`<div class="tile"><div class="v">${x[1]}</div><div class="l">${esc(x[0])}</div></div>`).join("")}</div><div class="src">CreativeReporter · Moloco·Meta 집행 누적</div>`;}
-function openLB(id){const w=W.find(x=>x.id===id);if(!w)return;const t=k=>(EDITS["w."+id+"."+k]!=null?EDITS["w."+id+"."+k]:w[k]);
+function openLB(id){const w=findWork(id);if(!w)return;const t=k=>(EDITS["w."+id+"."+k]!=null?EDITS["w."+id+"."+k]:w[k]);
   document.getElementById("lbt").textContent=t("title");
-  document.getElementById("lbr").textContent=t("role")+" · "+w.year;
-  document.getElementById("lbd").textContent=t("desc");
-  renderKV(w);const g=renderGallery(w);renderPerf(id);
+  document.getElementById("lbr").textContent=(t("role")||"")+(w.year?" · "+w.year:"");
+  document.getElementById("lbd").textContent=t("desc")||"";
+  renderKV(w);const g=renderGallery(w);renderPerf(w);
   lbOpen=true;lbScrollY=window.scrollY;pauseAllPreviews();
   document.getElementById("main").style.display="none";
   document.body.style.overflow="hidden";
-  showMedia(g[0]);lb.classList.add("on");lb.scrollTop=0;}
+  if(g.length)showMedia(g[0]);lb.classList.add("on");lb.scrollTop=0;}
 function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");
   const v=document.getElementById("lbv");v.pause();v.removeAttribute("src");v.load();
   const i=document.getElementById("lbi");i.removeAttribute("src");i.style.display="none";
@@ -353,13 +428,69 @@ function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");
   resumeVisiblePreviews();}
 document.getElementById("lbx").onclick=closeLB;
 lb.onclick=e=>{if(e.target===lb)closeLB();};
-addEventListener("keydown",e=>{if(e.key==="Escape")closeLB();});
+addEventListener("keydown",e=>{if(e.key==="Escape"){if(mg.classList.contains("on"))closeManage();else closeLB();}});
+
+/* ---- manage (edit-mode asset curation) ---- */
+const mg=document.getElementById("mg");let mgWork=null,mgMode="manage",CATALOG=null;
+async function loadCatalog(){if(CATALOG)return CATALOG;try{const r=await fetch("creatives.json?"+Date.now());if(r.ok)CATALOG=await r.json();}catch(e){}return CATALOG||[];}
+function slug(s){return "cr_"+String(s).toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,36);}
+function prettyBase(b){return String(b).replace(/^(maugrowth_|img_|vid_|video_|image_|meta_ua_)/i,"").replace(/_/g," ").trim()||"소재";}
+function guessFmt(pkg){const b=(pkg.base||"").toLowerCase();
+  if(/ai|newyear.?bogum|closet_ai|jjindaangn/.test(b))return "ai";
+  if(/3d|isometric|raffle|godaangn|nintendo/.test(b))return "3d";
+  return "motion";}
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return h;}
+function mgTile(m,active,sym){return `<div class="mg-tile${active?"":" off"}" data-key="${esc(m.key)}"><span class="chk">${sym||(active?"✓":"+")}</span>${m.thumb?`<img src="${m.thumb}" alt="" loading="lazy"/>`:'<div class="ph">▶</div>'}<span class="lab">${esc(m.label)}${m.kind==="video"?" ▶":""}</span></div>`;}
+function renderMgCur(){const cur=document.getElementById("mgCur");if(!mgWork){cur.innerHTML="";return;}
+  const off=new Set(getJSON("w."+mgWork.id+".off",[])),items=candidateGallery(mgWork);
+  cur.innerHTML=items.length?items.map(m=>mgTile(m,!off.has(m.key))).join(""):'<span style="font-size:12px;color:var(--faint)">아직 소재가 없습니다. 아래에서 추가하세요.</span>';
+  cur.querySelectorAll(".mg-tile").forEach(t=>t.onclick=()=>{const key=t.dataset.key,o=getJSON("w."+mgWork.id+".off",[]),i=o.indexOf(key);
+    if(i<0)o.push(key);else o.splice(i,1);setJSON("w."+mgWork.id+".off",o);renderMgCur();});}
+function addAssetsToWork(w,assets){
+  if(w.u){const arr=getJSON("works.add",[]),e=arr.find(x=>x.id===w.id);if(!e)return;e.assets=e.assets||[];
+    const have=new Set(e.assets.map(a=>a.url));assets.forEach(a=>{if(!have.has(a.url)){e.assets.push({res:a.res,type:a.type,url:a.url});have.add(a.url);}});setJSON("works.add",arr);}
+  else{const x=getJSON("w."+w.id+".xadd",[]),have=new Set(x.map(a=>a.url).concat(baseGallery(w).map(m=>m.url).filter(Boolean)));
+    assets.forEach(a=>{if(!have.has(a.url)){x.push({res:a.res,type:a.type,url:a.url});have.add(a.url);}});setJSON("w."+w.id+".xadd",x);}
+  const o=getJSON("w."+w.id+".off",[]),o2=o.filter(k=>!assets.some(a=>a.url===k));if(o2.length!==o.length)setJSON("w."+w.id+".off",o2);}
+function renderMgCat(q){const wrap=document.getElementById("mgCat"),cat=CATALOG||[],qq=(q||"").trim().toLowerCase();
+  const list=(qq?cat.filter(c=>c.base.toLowerCase().includes(qq)||(c.cat||"").includes(qq)):cat).slice(0,60);
+  wrap.innerHTML=list.length?list.map(c=>`<div class="mg-row" data-i="${cat.indexOf(c)}"><div class="mg-rowh"><span class="nm">${esc(prettyBase(c.base))}</span><span class="meta">${esc(c.cat)} · ▶${c.nv} ■${c.ni} · ₩${big(c.perf.cost)}</span><span class="go">${mgMode==="pick"?"새 그룹":"＋ 전체"}</span></div><div class="mg-assets"></div></div>`).join(""):'<span style="font-size:12px;color:var(--faint)">결과 없음</span>';
+  wrap.querySelectorAll(".mg-row").forEach(row=>{const c=cat[+row.dataset.i];
+    row.querySelector(".mg-rowh").onclick=e=>{
+      if(e.target.classList.contains("go")){if(mgMode==="pick")createGroup(c);else{addAssetsToWork(mgWork,c.assets);renderMgCur();e.target.textContent="✓ 추가됨";}return;}
+      row.classList.toggle("open");const box=row.querySelector(".mg-assets");
+      if(row.classList.contains("open")&&!box.dataset.done){box.dataset.done="1";
+        box.innerHTML=c.assets.map(a=>mgTile(cdnItem(a),false,"+")).join("");
+        box.querySelectorAll(".mg-tile").forEach((t,j)=>t.onclick=ev=>{ev.stopPropagation();
+          if(mgMode==="pick"){createGroup(c,[c.assets[j]]);return;}addAssetsToWork(mgWork,[c.assets[j]]);renderMgCur();t.querySelector(".chk").textContent="✓";});}};});}
+function createGroup(pkg,onlyAssets){const assets=(onlyAssets||pkg.assets).map(a=>({res:a.res,type:a.type,url:a.url}));
+  const id=slug(pkg.base)+"_"+Math.abs(hashStr(pkg.base+assets.length)).toString(36).slice(0,4);
+  const w={id,u:true,cat:guessFmt(pkg),title:prettyBase(pkg.base),role:"퍼포먼스 소재",year:"",campaign:pkg.base,desc:"",assets,perf:pkg.perf,pv:computePV(assets)};
+  const arr=getJSON("works.add",[]);if(!arr.find(x=>x.id===w.id))arr.push(w);setJSON("works.add",arr);openManage(findWork(id));}
+async function openManage(w){mgWork=w;mgMode=w?"manage":"pick";
+  document.getElementById("mgTitle").textContent=w?("소재 관리 — "+(w.title||"")):"새 그룹 만들기";
+  document.getElementById("mgCurSec").style.display=w?"":"none";
+  document.getElementById("mgAddLbl").textContent=w?"CreativeReporter에서 소재 추가":"CreativeReporter에서 그룹 선택";
+  const cats=document.getElementById("mgCats"),del=document.getElementById("mgDel");
+  if(w&&w.u){cats.style.display="flex";del.style.display="";
+    cats.innerHTML=[["motion","모션그래픽"],["3d","3D"],["ai","AI"]].map(c=>`<button data-c="${c[0]}" class="${w.cat===c[0]?"on":""}">${c[1]}</button>`).join("");
+    cats.querySelectorAll("button").forEach(b=>b.onclick=()=>{const arr=getJSON("works.add",[]),e=arr.find(x=>x.id===w.id);if(e){e.cat=b.dataset.c;setJSON("works.add",arr);w.cat=b.dataset.c;}cats.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.add("on");});
+    del.onclick=()=>{if(!confirm("이 그룹을 삭제할까요?"))return;setJSON("works.add",getJSON("works.add",[]).filter(x=>x.id!==w.id));closeManage();};}
+  else{cats.style.display="none";del.style.display="none";}
+  renderMgCur();mg.classList.add("on");document.body.style.overflow="hidden";
+  await loadCatalog();renderMgCat(document.getElementById("mgSearch").value);}
+function closeManage(){mg.classList.remove("on");document.body.style.overflow="";mgWork=null;rerender();}
+document.getElementById("mgX").onclick=closeManage;
+mg.onclick=e=>{if(e.target===mg)closeManage();};
+document.getElementById("mgSearch").addEventListener("input",e=>renderMgCat(e.target.value));
+document.getElementById("ngFab").onclick=()=>openManage(null);
 
 /* ---- edit mode ---- */
 let editing=false;
 const fab=document.getElementById("editFab");
 function skillsToEditMode(){const el=document.querySelector("[data-sk]");if(!el)return;const chips=[...el.querySelectorAll("span")].map(s=>s.textContent.trim()).filter(Boolean);el.textContent=chips.join(", ");el.contentEditable=true;el.classList.add("editing-csv");}
 function skillsToViewMode(){const el=document.querySelector("[data-sk]");if(!el)return;const csv=el.textContent.trim();el.contentEditable=false;el.classList.remove("editing-csv");el.innerHTML=skillChipsHTML(csv);}
+function rerender(){render();if(editing){document.body.classList.add("editing");document.querySelectorAll("[data-k]").forEach(el=>el.contentEditable=true);skillsToEditMode();}}
 fab.onclick=()=>{editing=!editing;document.body.classList.toggle("editing",editing);fab.classList.toggle("on",editing);fab.textContent=editing?"✔":"✎";document.getElementById("editHint").classList.toggle("on",editing);
   document.querySelectorAll("[data-k]").forEach(el=>el.contentEditable=editing);
   if(editing){pauseAllPreviews();skillsToEditMode();}
