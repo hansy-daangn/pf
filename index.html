@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <title>김한결 · 영상 디자이너 — HANSY</title>
 <meta name="description" content="당근(Karrot) 퍼포먼스 마케팅 영상 디자이너 김한결의 포트폴리오. 3D · 모션그래픽 · AI."/>
 <meta property="og:title" content="김한결 · 영상 디자이너 — HANSY"/>
@@ -32,12 +35,10 @@ nav.menu a.cta:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
 @media(max-width:680px){nav.menu a:not(.cta){display:none}}
 
 section{position:relative}
-.rv{opacity:0;transform:translateY(18px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-.rv.in{opacity:1;transform:none}
 
-/* RESUME — minimal, compact, only 2 dividers */
+/* RESUME — minimal, only 2 dividers */
 .resume{padding:clamp(32px,6vh,60px) 0 6px}
-.rh{display:grid;grid-template-columns:140px 1fr;gap:clamp(20px,4vw,44px);align-items:center;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.rh{display:grid;grid-template-columns:140px 1fr;gap:clamp(20px,4vw,44px);align-items:start;padding-bottom:24px;border-bottom:1px solid var(--line)}
 .rh-photo{width:140px;height:176px;flex:none;background:#fff;border:1px solid var(--line2);border-radius:13px;padding:7px;box-shadow:0 10px 26px -16px rgba(0,0,0,.22);position:relative}
 .rh-photo .frame{width:100%;height:100%;border-radius:7px;overflow:hidden;background-color:#eceae5;background-repeat:no-repeat;background-size:var(--bs,178%);background-position:var(--bx,50%) var(--by,18%);position:relative}
 .rh-photo .frame::after{content:"";position:absolute;inset:0;border-radius:7px;box-shadow:inset 0 0 22px rgba(0,0,0,.10),inset 0 0 0 1px rgba(0,0,0,.05);pointer-events:none}
@@ -46,9 +47,9 @@ section{position:relative}
 .photohint{display:none}
 .editing .photohint{display:block;position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:9px;color:#fff;background:var(--accent);border-radius:100px;padding:3px 9px}
 .rh-name{font-weight:850;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:-.03em}
-.rh-tag{font-size:clamp(1.05rem,2vw,1.4rem);line-height:1.35;margin-top:10px;max-width:32ch;font-weight:760}
-.rh-desc{margin-top:11px;color:var(--ink2);font-size:14px;max-width:60ch;line-height:1.62}
-.rh-meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:7px 18px}
+.rh-tag{font-size:clamp(1.05rem,1.7vw,1.3rem);line-height:1.45;margin-top:12px;max-width:30rem;font-weight:760}
+.rh-desc{margin-top:14px;color:var(--ink2);font-size:14px;line-height:1.65;max-width:30rem}
+.rh-meta{margin-top:16px;display:flex;flex-wrap:wrap;gap:7px 18px}
 .ab-meta{font-size:13px;color:var(--ink)}.ab-meta b{font-family:var(--mono);font-size:10.5px;color:var(--faint);font-weight:500;margin-right:6px;text-transform:uppercase;letter-spacing:.03em}
 .rh-comp{display:flex;flex-wrap:wrap;gap:7px 26px;padding:15px 0 2px}
 .rh-comp .c{display:flex;gap:9px;align-items:baseline;font-size:13px;color:var(--ink2)}
@@ -60,6 +61,8 @@ section{position:relative}
 .brow .bd b{font-weight:700}.brow .bd small{display:block;color:var(--ink2);font-size:12px;margin-top:1px}
 .skills{display:flex;flex-wrap:wrap;gap:6px}
 .skills span{font-size:12px;border:1px solid var(--line2);border-radius:6px;padding:3px 8px;color:var(--ink2)}
+.skills.editing-csv{display:block;font-size:13px;padding:8px 12px;border:1px dashed var(--accent);border-radius:8px;background:#fff7f0;line-height:1.7;color:var(--ink);white-space:normal}
+.skills.editing-csv span{all:unset}
 .awblk{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
 .awblk h5{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-bottom:11px}
 .awtable{columns:3;column-gap:26px}
@@ -69,24 +72,23 @@ section{position:relative}
 @media(max-width:880px){.r3{grid-template-columns:1fr;gap:18px}.awtable{columns:2}}
 @media(max-width:560px){.awtable{columns:1}.rh{grid-template-columns:104px 1fr;gap:18px}.rh-photo{width:104px;height:130px}}
 
-/* sections */
-.sec-l{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:clamp(40px,7vh,80px) 0 4px}
-.sec-l h2{font-weight:840;letter-spacing:-.03em;font-size:clamp(1.4rem,3vw,2.1rem)}
+/* sections — no visible section headings */
+.sec{padding:clamp(40px,7vh,80px) 0 4px}
 
 .media{position:relative;overflow:hidden;background:#eceae5}
 .media>img{width:100%;height:100%;object-fit:cover;display:block}
 .media>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s}
 .media.playing>video{opacity:1}
 .catpill{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);border:1px solid var(--line2);border-radius:100px;padding:4px 9px;background:#fff;display:inline-block}
+.grouptag{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.94);border:1px solid var(--line2);border-radius:100px;padding:3px 8px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--ink);z-index:1;font-weight:600}
 
 /* best 3 */
-.best{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:16px 0 6px}
-.bcard{cursor:pointer}
+.best{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding:8px 0 6px}
+.bcard{cursor:pointer;position:relative}
 .bcard .media{border-radius:13px;border:1px solid var(--line)}
-.bcard .no{font-family:var(--mono);font-size:11px;color:var(--accentink);margin-top:12px;display:block;letter-spacing:.06em}
-.bcard h3{font-weight:800;font-size:17px;letter-spacing:-.02em;margin-top:6px}
-.bcard .ro{color:var(--ink2);font-size:13px;margin-top:4px}
-.bcard .de{color:var(--ink2);font-size:13px;margin-top:7px;line-height:1.55}
+.bcard h3{font-weight:800;font-size:17px;letter-spacing:-.02em;margin-top:14px}
+.bcard .ro{color:var(--ink2);font-size:13px;margin-top:5px}
+.bcard .de{color:var(--ink2);font-size:13px;margin-top:8px;line-height:1.55}
 @media(max-width:840px){.best{grid-template-columns:1fr;gap:26px}}
 
 /* archive */
@@ -95,7 +97,7 @@ section{position:relative}
 .afil button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .agrid{columns:4;column-gap:16px;padding:16px 0 40px}
 @media(max-width:980px){.agrid{columns:3}}@media(max-width:640px){.agrid{columns:2}}
-.acard{break-inside:avoid;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff;cursor:pointer;transition:transform .4s var(--ease),box-shadow .4s}
+.acard{break-inside:avoid;margin-bottom:16px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff;cursor:pointer;transition:transform .4s var(--ease),box-shadow .4s;position:relative}
 .acard:hover{transform:translateY(-4px);box-shadow:0 18px 36px -24px rgba(0,0,0,.22)}
 .acap{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
 .acap .ti{font-weight:680;font-size:13px;letter-spacing:-.02em;line-height:1.3}
@@ -107,14 +109,25 @@ section{position:relative}
 .ct-mail:hover{color:var(--accentink);border-color:var(--accent)}
 
 /* lightbox */
-#lb{position:fixed;inset:0;z-index:80;background:#fff;display:none;align-items:center;justify-content:center;padding:28px}
+#lb{position:fixed;inset:0;z-index:80;background:#fff;display:none;align-items:flex-start;justify-content:center;padding:28px;overflow:auto}
 #lb.on{display:flex}
-#lb .bx{display:grid;grid-template-columns:auto 300px;gap:30px;max-width:1040px;width:100%;align-items:center}
-#lb video{max-height:84vh;border-radius:12px;border:1px solid var(--line2);background:#000}
-#lb .ey{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accentink)}
-#lb h3{font-weight:820;font-size:clamp(1.3rem,2.6vw,1.9rem);letter-spacing:-.02em;margin-top:8px}
-#lb .ro{color:var(--ink2);font-weight:600;margin-top:9px;font-size:14px}#lb .de{color:var(--ink2);margin-top:13px;font-size:14.5px;line-height:1.6}
-#lb .x{position:fixed;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:18px;display:grid;place-items:center}
+#lb .bx{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:30px;max-width:1140px;width:100%;align-items:start}
+#lb .lb-media{display:flex;flex-direction:column;gap:10px;min-width:0}
+#lb video{width:100%;max-height:82vh;height:auto;border-radius:12px;border:1px solid var(--line2);background:#000;object-fit:contain}
+#lb .lb-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+#lb .lb-thumb{border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#fff;padding:0;position:relative;cursor:pointer;transition:.2s;display:block}
+#lb .lb-thumb.active{outline:2px solid var(--ink);outline-offset:-1px}
+#lb .lb-thumb:hover:not(.active){border-color:var(--ink)}
+#lb .lb-thumb img{display:block;width:64px;height:64px;object-fit:cover}
+#lb .lb-thumb .lab{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,.72);color:#fff;font-size:9px;padding:2px 6px;border-radius:100px;font-family:var(--mono);letter-spacing:.06em}
+#lb h3{font-weight:820;font-size:clamp(1.3rem,2.6vw,1.9rem);letter-spacing:-.02em}
+#lb .ro{color:var(--ink2);font-weight:600;margin-top:9px;font-size:14px}
+#lb .de{color:var(--ink2);margin-top:14px;font-size:14.5px;line-height:1.65}
+#lb .kv{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+#lb .kv .row{font-size:12px;min-width:0}
+#lb .kv .row b{display:block;font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:500;letter-spacing:.04em;margin-bottom:3px;text-transform:uppercase}
+#lb .kv .row span{color:var(--ink);word-break:break-word}
+#lb .x{position:fixed;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:18px;display:grid;place-items:center;z-index:1}
 @media(max-width:780px){#lb .bx{grid-template-columns:1fr}#lb video{max-height:56vh}}
 
 /* edit */
@@ -124,74 +137,73 @@ section{position:relative}
 .editing [data-k]{outline:1px dashed var(--accent);outline-offset:2px;border-radius:3px;cursor:text}
 .editing [data-k]:focus{outline:2px solid var(--accent);background:#fff7f0}
 #editHint{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:70;background:var(--ink);color:#fff;font-size:13px;padding:11px 18px;border-radius:100px;display:none;align-items:center;gap:10px;box-shadow:0 12px 30px -10px rgba(0,0,0,.4)}
-#editHint.on{display:flex}#editHint b{color:#ffd9bd}
+#editHint.on{display:flex}
 </style>
 </head>
 <body>
 <header class="top"><div class="in">
   <a href="#resume" class="brand"><i></i><span data-k="ui.brand">김한결</span></a>
-  <nav class="menu"><a href="#resume" data-k="ui.navAbout">소개</a><a href="#best" data-k="ui.navWork">작업</a><a href="mailto:hansy@daangn.com" class="cta" data-k="ui.navCta">연락하기</a></nav>
+  <nav class="menu"><a href="#resume" data-k="ui.navAbout">About</a><a href="#best" data-k="ui.navWork">Work</a><a href="mailto:hansy@daangn.com" class="cta" data-k="ui.navCta">Contact</a></nav>
 </div></header>
 <main id="main"></main>
 
 <div id="lb"><button class="x" id="lbx">✕</button><div class="bx">
-  <video id="lbv" controls playsinline></video>
-  <div><div class="ey" id="lbc"></div><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div></div>
+  <div class="lb-media"><video id="lbv" controls playsinline></video><div class="lb-thumbs" id="lbThumbs"></div></div>
+  <div class="lb-info"><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div><div class="kv" id="lbKv"></div></div>
 </div></div>
 
 <button id="editFab" title="편집">✎</button>
-<div id="editHint"><span>편집 모드 — 글자를 클릭해 수정하세요. <b>연필(✎)</b>을 다시 누르면 저장됩니다.</span></div>
+<div id="editHint"><span>편집 모드 · 다시 누르면 저장됩니다</span></div>
 
 <script>
 const A={
  name:"김한결",
- tag:"시선을 유도해 의미를 전하는 김한결입니다.",
- desc:"영화·전시·공모전을 통해 시선과 설득의 원리를 익혔고, 학술 논문과 콘텐츠로 영상 제작의 방법을 연구했습니다. 그 원리를 퍼포먼스 광고에 적용해, 한 컷 안에서 시선이 흐르는 길을 설계합니다.",
- info:[["직무","영상 디자이너 · 당근(Karrot)"],["생년","2000.01.14"],["연락처","010-5765-7132"],["이메일","hansy@daangn.com"]],
+ tag:"자동화로 더 많은 시선 유도, 모션감에 시간을 투자하는 김한결입니다.",
+ desc:"퍼포먼스 및 캠페인 광고소재(모션그래픽, 3D, AI, 숏폼 영상/이미지 소재) 제작으로 MAU 2200만 성장에 기여. AI 기반 자동화 파이프라인 개발, 업무 보조 프로그램 개발로 자동화 및 예산 효율화.",
+ info:[["직무","영상 디자이너 · 당근"],["생년","2000.01.14"],["연락처","010-5765-7132"],["이메일","hansy@daangn.com"]],
  comp:[["보유 역량","기획·연출·편집까지 한 사람이 끝까지 끌고 가는 풀사이클 제작"],["기술 역량","3D 모션그래픽 · 익스프레션 템플릿 시스템 · AI 비주얼"]],
- career:[["현재","당근 (Karrot)","영상 디자이너 · 퍼포먼스 마케팅 영상"]],
+ career:[["현재","(주) 당근마켓","영상 디자이너 · 퍼포먼스 마케팅 영상"]],
  edu:[["2024 — 2025","동아방송예술대학교","콘텐츠제작과 전공심화 졸업"],["2019 — 2024","동아방송예술대학교","영상제작과 졸업"],["2016 — 2019","인천마전고등학교","졸업"]],
- skills:[["2D",["After Effects","Expressions/JS","Premiere Pro","Photoshop","Illustrator","DaVinci Resolve"]],["3D",["Cinema 4D","Xpresso·Python","Redshift","Blender","Marvelous","Reality Capture","Unreal Engine"]],["AI",["Stable Diffusion","ComfyUI","img2video"]],["etc",["Figma","PowerPoint","Notion","Obsidian"]]],
+ skills:"After Effects, Expressions/JS, Premiere Pro, Photoshop, Illustrator, DaVinci Resolve, Cinema 4D, Xpresso·Python, Redshift, Blender, Marvelous, ComfyUI, Figma",
  awards:[["2등상","제이비피코리아 영상 공모전","3D 영상 · 개인 작품 · 2025"],["최우수상","한국방송미디어공학회 — 대학생·주니어 논문 경진대회","모션그래픽 학술 논문 · 제1저자 · 2024"],["특별상","큰사람커넥트 — 제2회 이야기 모바일 영상 공모전","모션그래픽 · 개인 작품 · 2024"],["대상","동아방송예술대학교 — 제24회 졸업작품전","단편영화 · 감독·편집 · 2023"],["특별상","자생의료재단 — 독립운동 콘텐츠 공모전","3D 영상 · 개인 작품 · 2023"],["우수상","한국연구재단 — 랩스튜디오 영상 경진대회","홍보영상 · 연출 · 2020"],["최우수상","I&CO 성형외과 — UCC 공모전","3D 영상 · 개인 작품 · 2019"],["우수상","상시 수기 UCC 공모전","3D 영상 · 개인 작품 · 2018"],["은상","국세청 — 2018 청렴 콘텐츠 공모전","영상 촬영 · 개인 작품 · 2018"],["대상","남양주시청 — 정약용 홍보영상 공모전","3D 영상 · 개인 작품 · 2018"],["동상","한국복지대학교 — 제3회 전국 고등학생 UCC 공모전","모션그래픽 · 개인 작품 · 2017"],["대상","경기도청 — 제2회 남한산성 청소년 영상제","모션그래픽 · 개인 작품 · 2017"]]
 };
 const CAT={ai:"AI",'3d':"3D",motion:"모션그래픽"};
 const W=[
- ["td_review2605","3d","당근비즈니스 단골·리뷰 — 5월","3D · 아이소메트릭 모션","2026","사장님을 위한 단골·리뷰 기능을 아이소메트릭 3D 마을로 따뜻하게 시각화한 핵심 캠페인."],
- ["mg_bizreview","3d","당근비즈니스 단골·리뷰 — 6월","3D · 아이소메트릭 모션","2026","동일 세계관을 이어받아 메시지를 다듬은 후속 버전. 톤과 모션 리듬을 한 단계 정교화."],
- ["td_declutter","3d","안 쓰는 짐 정리 — 아이소메트릭 3D","3D · 모션","2025","집 안 물건을 아이소메트릭 3D 공간으로 풀어 ‘정리·나눔’의 흐름을 따뜻한 톤으로."],
- ["sf_10000walk","motion","만보 걷기 — 게이미피케이션","모션그래픽 · UI","2025","매일 만보 걷기 리워드를 경쾌한 UI 모션으로 전달한 게이미피케이션 소재."],
- ["mg_ars","motion","ARS 콘텐츠","모션그래픽 · 편집","2025","ARS 포맷 콘텐츠를 군더더기 없는 모션으로 구성한 퍼포먼스 소재."],
- ["ai_article","ai","AI 자동 글쓰기 — 매물 생성","모션그래픽 · AI 비주얼","2025","사진만 올리면 AI가 글을 써주는 기능을 화면 시연과 모션으로 한눈에."],
- ["td_raffle_v","motion","당근 래플 — 3D 모션","3D · 모션그래픽","2025","매주 바뀌는 경품을 3D로 렌더링한 래플 이벤트. 질감·라이팅으로 ‘받고 싶다’를."],
- ["td_mapwalk","motion","동네 걷기 — 보물상자 3D","3D · 게이미피케이션","2025","걷기 리워드를 3D 보물상자·코인으로. 바운스와 파티클로 보상의 쾌감을."],
- ["td_nintendo","motion","당근가 — 3D 프로덕트 카드","3D · 모션그래픽","2026","중고 시세 ‘당근가’ 포맷에 3D 프로덕트를 얹은 프라이스 카드."],
- ["mg_simbatdan","motion","심봤단 — 브랜드 혜택 모션","모션그래픽 · 편집","2025","수많은 브랜드 로고와 혜택을 리듬감 있게 엮은 베네핏 모션."],
- ["mg_ahnabada","motion","아나바다 — 키네틱 타이포","모션그래픽 · 타이포","2025","‘아껴 쓰고 나눠 쓰고’를 경쾌한 키네틱 타이포그래피로."],
- ["mg_rent1","motion","당근 부동산 — 전월세 프로모션","모션그래픽 · UI","2026","초신상 매물·지역 선택 흐름을 깔끔한 UI 모션으로."],
- ["td_godaangn","3d","당근 중고차 — 3D 캐릭터","3D · 캐릭터 모션","2025","중고차 카테고리를 3D 캐릭터로 의인화한 프로모션."],
- ["ai_closet1","ai","당근 옷장 — AI 자동 판매글","AI · UI 모션","2026","올리면 AI가 판매글을 써주는 기능. 판매 흐름을 군더더기 없는 UI 모션으로."],
- ["sf_bizjul","ai","비즈니스 프로모션 — AI 숏폼","AI · 편집","2026","사장님 프로모션을 AI 비주얼과 빠른 호흡의 숏폼으로."],
- ["mg_keyword_spring","motion","당근가 키워드 — 템플릿 시스템","모션그래픽 · AE 익스프레션","2025","익스프레션 기반 키네틱 타이포 템플릿 하나로 시즌·카테고리를 갈아끼우며 대량 양산."],
- ["ai_closet2","ai","당근 옷장 — AI 비주얼 (확장)","AI · UI 모션","2026","옷장 정리 캠페인의 또 다른 버전. AI 비주얼로 메시지를 변주한 소재."],
- ["ai_sea","ai","시네마틱 — 물결","AI 비주얼 · 컴포지팅","2025","AI로 생성한 바다 질감을 시네마틱 톤으로 다듬은 비주얼 습작."],
- ["3d_sew","3d","3D 모션 — 오브제","3D · 룩 디벨롭","2025","일상의 오브제를 3D로 재해석한 컬러풀한 모션 실험."],
- ["td_pickup","3d","월간 픽업 — 인트로 모션","3D · 모션그래픽","2026","매월 콘텐츠를 모아 보여주는 픽업 인트로. 리듬감 있는 전환으로."],
- ["mg_jobs_spring","motion","당근 알바 — 봄 시즌 프로모션","모션그래픽 · UI","2024","봄 시즌 알바 채용 프로모션. 산뜻한 컬러와 UI 모션으로."],
- ["mg_rent2","motion","당근 부동산 — 전월세 프로모션 (2)","모션그래픽 · UI","2026","전월세 프로모션 후속 버전. 매물 탐색 흐름을 더 단순하게."],
- ["mg_charge","motion","CHARGE PLAYLIST — 뮤직 비주얼라이저","모션그래픽 · 오디오 리액티브","2025","사운드 파형에 반응하는 플레이리스트 비주얼라이저."],
- ["mg_lyric","motion","리릭 비디오 — feel like U","모션그래픽 · 타이포","2025","타이포그래피와 무드 비주얼로 구성한 리릭 비디오."]
-].map(a=>({id:a[0],cat:a[1],title:a[2],role:a[3],year:a[4],desc:a[5]}));
+ {id:"td_review2605",cat:"3d",title:"당근비즈니스 단골·리뷰 — 5월",role:"3D · 아이소메트릭 모션",year:"2026",campaign:"중고거래 · Business Review · 2605",desc:"사장님을 위한 단골·리뷰 기능을 아이소메트릭 3D 마을로 따뜻하게 시각화한 핵심 캠페인.",variants:[]},
+ {id:"mg_bizreview",cat:"3d",title:"당근비즈니스 단골·리뷰 — 6월",role:"3D · 아이소메트릭 모션",year:"2026",campaign:"중고거래 · Business Review · 2606",desc:"동일 세계관을 이어받아 메시지를 다듬은 후속 버전. 톤과 모션 리듬을 한 단계 정교화.",variants:[]},
+ {id:"td_declutter",cat:"3d",title:"안 쓰는 짐 정리 — 아이소메트릭 3D",role:"3D · 모션그래픽",year:"2025",campaign:"중고거래 · declutter · 2510",desc:"집 안 물건을 아이소메트릭 3D 공간으로 풀어 ‘정리·나눔’의 흐름을 따뜻한 톤으로. Google 검색 확장 소재 “안 입는 옷들 당근으로 정리하고 30만 원 벌었어요!” 카피와 연계 운영.",variants:[]},
+ {id:"sf_10000walk",cat:"motion",title:"만보 걷기 — 게이미피케이션",role:"모션그래픽 · UI",year:"2025",campaign:"map · manboki · 2511",desc:"매일 만보 걷기 리워드를 경쾌한 UI 모션으로 전달한 게이미피케이션 소재.",variants:[]},
+ {id:"mg_ars",cat:"motion",title:"캠페인 부스팅 ARS 콘텐츠",role:"모션그래픽 · 편집",year:"2025",campaign:"ARS · Boosting",desc:"ARS 포맷 콘텐츠를 군더더기 없는 모션으로 구성한 퍼포먼스 소재.",variants:[]},
+ {id:"ai_article",cat:"ai",title:"AI 자동 글쓰기 — 매물 생성",role:"모션그래픽 · AI 비주얼",year:"2025",campaign:"중고거래 · AI Article",desc:"사진만 올리면 AI가 글을 써주는 기능을 화면 시연과 모션으로 한눈에.",variants:[]},
+ {id:"td_raffle_v",cat:"motion",title:"당근 래플 — 3D 모션",role:"3D · 모션그래픽",year:"2025",campaign:"Raffle · Weekly Prize",desc:"매주 바뀌는 경품을 3D로 렌더링한 래플 이벤트. 질감·라이팅으로 ‘받고 싶다’를.",variants:[]},
+ {id:"td_mapwalk",cat:"motion",title:"동네 걷기 — 보물상자 3D",role:"3D · 게이미피케이션",year:"2025",campaign:"동네 걷기 · Treasure",desc:"걷기 리워드를 3D 보물상자·코인으로. 바운스와 파티클로 보상의 쾌감을.",variants:[]},
+ {id:"td_nintendo",cat:"motion",title:"당근알바 — 설날 시즌 캠페인",role:"3D · 모션그래픽",year:"2026",campaign:"알바 · Newyear · 2602",desc:"설 명절 특수를 겨냥한 당근알바 시즌 캠페인. 3D 프로덕트 카드로 프라이스와 임팩트를 동시에.",variants:[]},
+ {id:"mg_simbatdan",cat:"motion",title:"심봤단 — 브랜드 혜택 모션",role:"모션그래픽 · 편집",year:"2025",campaign:"중고거래 · simbatdan · 2605",desc:"수많은 브랜드 로고와 혜택을 리듬감 있게 엮은 베네핏 모션.",variants:[]},
+ {id:"mg_ahnabada",cat:"motion",title:"아나바다 — 키네틱 타이포",role:"모션그래픽 · 타이포",year:"2025",campaign:"중고거래 · Ahnabada",desc:"‘아껴 쓰고 나눠 쓰고’를 경쾌한 키네틱 타이포그래피로.",variants:[]},
+ {id:"mg_rent1",cat:"motion",title:"당근 부동산 — 전월세 프로모션",role:"모션그래픽 · UI",year:"2026",campaign:"부동산 · 2601",desc:"초신상 매물·지역 선택 흐름을 깔끔한 UI 모션으로. 지역·매물 리스트 각각을 강조한 두 개 세로 소재로 A/B 운영.",variants:[{id:"mg_rent2",label:"v2"}]},
+ {id:"td_godaangn",cat:"3d",title:"당근 중고차 — 3D 캐릭터",role:"3D · 캐릭터 모션",year:"2025",campaign:"Branding · Godaangn",desc:"중고차 카테고리를 3D 캐릭터로 의인화한 프로모션.",variants:[]},
+ {id:"ai_closet1",cat:"ai",title:"당근 옷장 — AI 자동 판매글",role:"AI · UI 모션",year:"2026",campaign:"중고거래 · AI Closet",desc:"올리면 AI가 판매글을 써주는 기능. 판매 흐름을 군더더기 없는 UI 모션으로. 두 개 세로 소재로 편집 리듬을 A/B 운영.",variants:[{id:"ai_closet2",label:"v2"}]},
+ {id:"sf_bizjul",cat:"ai",title:"비즈니스 프로모션 — AI 숏폼",role:"AI · 편집",year:"2026",campaign:"동네업체 · AI Shortform",desc:"사장님 프로모션을 AI 비주얼과 빠른 호흡의 숏폼으로.",variants:[]},
+ {id:"mg_keyword_spring",cat:"motion",title:"당근가 키워드 — 템플릿 시스템",role:"모션그래픽 · AE 익스프레션",year:"2025",campaign:"중고거래 · keywordSpring · 2603",desc:"익스프레션 기반 키네틱 타이포 템플릿 하나로 시즌·카테고리를 갈아끼우며 대량 양산.",variants:[]},
+ {id:"mg_jobs_spring",cat:"motion",title:"당근 알바 — 봄 시즌 프로모션",role:"모션그래픽 · UI",year:"2024",campaign:"알바 · jobs_spring · 2402",desc:"봄 시즌 알바 채용 프로모션. 산뜻한 컬러와 UI 모션으로.",variants:[]},
+ {id:"ai_sea",cat:"ai",title:"시네마틱 — 물결",role:"AI 비주얼 · 컴포지팅",year:"2025",campaign:"Personal · Cinematic",desc:"AI로 생성한 바다 질감을 시네마틱 톤으로 다듬은 비주얼 습작.",variants:[]},
+ {id:"3d_sew",cat:"3d",title:"3D 모션 — 오브제",role:"3D · 룩 디벨롭",year:"2025",campaign:"Personal · 3D Object",desc:"일상의 오브제를 3D로 재해석한 컬러풀한 모션 실험.",variants:[]},
+ {id:"td_pickup",cat:"3d",title:"월간 픽업 — 인트로 모션",role:"3D · 모션그래픽",year:"2026",campaign:"Monthly Pickup",desc:"매월 콘텐츠를 모아 보여주는 픽업 인트로. 리듬감 있는 전환으로.",variants:[]},
+ {id:"mg_charge",cat:"motion",title:"CHARGE PLAYLIST — 뮤직 비주얼라이저",role:"모션그래픽 · 오디오 리액티브",year:"2025",campaign:"Personal · Music Visualizer",desc:"사운드 파형에 반응하는 플레이리스트 비주얼라이저.",variants:[]},
+ {id:"mg_lyric",cat:"motion",title:"리릭 비디오 — feel like U",role:"모션그래픽 · 타이포",year:"2025",campaign:"Personal · Lyric Video",desc:"타이포그래피와 무드 비주얼로 구성한 리릭 비디오.",variants:[]}
+];
 const esc=s=>(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const vid=id=>"assets/video/"+id+".mp4", full=id=>"assets/full/"+id+".mp4", pos=id=>"assets/poster/"+id+".jpg";
-const SQ=new Set(["td_review2605","mg_bizreview","td_declutter"]), LS=new Set(["3d_sew","mg_charge"]);
+const vid=id=>"assets/video/"+id+".mp4",full=id=>"assets/full/"+id+".mp4",pos=id=>"assets/poster/"+id+".jpg";
+const SQ=new Set(["td_review2605","mg_bizreview","td_declutter"]),LS=new Set(["3d_sew","mg_charge"]);
 const arOf=id=>SQ.has(id)?"1 / 1":LS.has(id)?"16 / 9":"9 / 16";
 
 function brow(key,e){return `<div class="brow"><span class="yr" data-k="${key}.yr">${esc(e[0])}</span><span class="bd"><b data-k="${key}.org">${esc(e[1])}</b><small data-k="${key}.det">${esc(e[2])}</small></span></div>`;}
+function skillChipsHTML(csv){return csv.split(/,\s*/).filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join("");}
 function resumeHTML(){return `<section class="resume" id="resume"><div class="wrap">
   <div class="rh">
     <div class="rh-photo"><div class="frame" id="photoFrame" style="background-image:url(assets/img/profile.jpg?v=2)"></div><span class="photohint">드래그로 위치 · 스크롤로 확대</span></div>
     <div>
-      <div class="rh-name" data-k="r.name">김한결</div>
+      <div class="rh-name" data-k="r.name">${esc(A.name)}</div>
       <div class="rh-tag" data-k="r.tag">${esc(A.tag)}</div>
       <p class="rh-desc" data-k="r.desc">${esc(A.desc)}</p>
       <div class="rh-meta">${A.info.map((r,i)=>`<span class="ab-meta"><b>${esc(r[0])}</b><span data-k="r.info.${i}">${esc(r[1])}</span></span>`).join("")}</div>
@@ -201,35 +213,45 @@ function resumeHTML(){return `<section class="resume" id="resume"><div class="wr
   <div class="r3">
     <div class="blk"><h5>경력</h5>${A.career.map((e,i)=>brow("r.car."+i,e)).join("")}</div>
     <div class="blk"><h5>학력</h5>${A.edu.map((e,i)=>brow("r.edu."+i,e)).join("")}</div>
-    <div class="blk"><h5>기술</h5><div class="skills">${A.skills.map((s,i)=>s[1].map((t,j)=>`<span data-k="r.sk.${i}.${j}">${esc(t)}</span>`).join("")).join("")}</div></div>
+    <div class="blk"><h5>기술</h5><div class="skills" data-sk>${skillChipsHTML(A.skills)}</div></div>
   </div>
   <div class="awblk"><h5>수상</h5><div class="awtable">${A.awards.map((a,i)=>`<div class="awrow"><span class="pz" data-k="r.aw.${i}.pz">${esc(a[0])}</span><span class="d"><span data-k="r.aw.${i}.org">${esc(a[1])}</span><small data-k="r.aw.${i}.det">${esc(a[2])}</small></span></div>`).join("")}</div></div>
  </div></section>`;}
 
-function bestHTML(){const b=W.slice(0,3);return `<section id="best"><div class="wrap"><div class="sec-l"><h2 data-k="ui.bestH">베스트 3</h2></div>
-  <div class="best">${b.map((w,i)=>`<div class="bcard" data-id="${w.id}">
-   <div class="media" style="aspect-ratio:${arOf(w.id)}"><img src="${pos(w.id)}" alt=""/><video muted loop playsinline preload="none" data-src="${vid(w.id)}"></video></div>
-   <span class="no">BEST 0${i+1} · ${CAT[w.cat]}</span><h3 data-k="w.${w.id}.title">${esc(w.title)}</h3><div class="ro" data-k="w.${w.id}.role">${esc(w.role)}</div><p class="de" data-k="w.${w.id}.desc">${esc(w.desc)}</p></div>`).join("")}</div></div></section>`;}
+function bestHTML(){const b=W.slice(0,3);return `<section id="best" class="sec"><div class="wrap">
+  <div class="best">${b.map(w=>{const g=(w.variants&&w.variants.length)?`<span class="grouptag">+${w.variants.length}</span>`:"";return `<div class="bcard" data-id="${w.id}">
+   <div class="media" style="aspect-ratio:${arOf(w.id)}">${g}<img src="${pos(w.id)}" alt=""/><video muted loop playsinline preload="none" data-src="${vid(w.id)}"></video></div>
+   <h3 data-k="w.${w.id}.title">${esc(w.title)}</h3><div class="ro" data-k="w.${w.id}.role">${esc(w.role)}</div><p class="de" data-k="w.${w.id}.desc">${esc(w.desc)}</p></div>`;}).join("")}</div></div></section>`;}
 
-function archiveHTML(){return `<section id="archive"><div class="wrap"><div class="sec-l"><h2 data-k="ui.archH">분야별 영상</h2></div>
+function archiveHTML(){return `<section id="archive" class="sec"><div class="wrap">
   <div class="afil" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button></div>
-  <div class="agrid" id="agrid">${W.map(w=>`<div class="acard" data-cat="${w.cat}" data-id="${w.id}">
-   <div class="media" style="aspect-ratio:${arOf(w.id)}"><img src="${pos(w.id)}" alt=""/><video muted loop playsinline preload="none" data-src="${vid(w.id)}"></video></div>
-   <div class="acap"><span class="catpill">${CAT[w.cat]}</span><div class="ti" data-k="w.${w.id}.title">${esc(w.title)}</div></div></div>`).join("")}</div></div></section>`;}
+  <div class="agrid" id="agrid">${W.map(w=>{const g=(w.variants&&w.variants.length)?`<span class="grouptag">+${w.variants.length}</span>`:"";return `<div class="acard" data-cat="${w.cat}" data-id="${w.id}">
+   <div class="media" style="aspect-ratio:${arOf(w.id)}">${g}<img src="${pos(w.id)}" alt=""/><video muted loop playsinline preload="none" data-src="${vid(w.id)}"></video></div>
+   <div class="acap"><span class="catpill">${CAT[w.cat]}</span><div class="ti" data-k="w.${w.id}.title">${esc(w.title)}</div></div></div>`;}).join("")}</div></div></section>`;}
 
 function contactHTML(){return `<section class="contact" id="contact"><div class="wrap">
-  <h2 class="ct-h" data-k="ui.ctH">같이 만들어요.</h2>
+  <h2 class="ct-h" data-k="ui.ctH">Contact</h2>
   <a class="ct-mail" href="mailto:hansy@daangn.com"><span data-k="ui.email">hansy@daangn.com</span> →</a>
  </div></section>`;}
 
+/* ---- edits (content.json = single source of truth) ---- */
 let EDITS={};
 async function loadEdits(){
+  try{localStorage.removeItem("pf_edits");}catch(e){}
   try{const r=await fetch("content.json?"+Date.now());if(r.ok)EDITS=await r.json();}catch(e){}
-  try{const l=JSON.parse(localStorage.getItem("pf_edits")||"null");if(l)EDITS=Object.assign(EDITS,l);}catch(e){}
 }
-function applyEdits(){for(const k in EDITS){
-  if(k.indexOf("photo.")===0){const f=document.getElementById("photoFrame");if(f&&EDITS[k]!=null)f.style.setProperty("--"+k.slice(6),EDITS[k]);continue;}
-  const el=document.querySelector('[data-k="'+k+'"]');if(el&&EDITS[k]!=null)el.textContent=EDITS[k];}}
+function applyEdits(){
+  for(const k in EDITS){
+    if(k.indexOf("photo.")===0){const f=document.getElementById("photoFrame");if(f&&EDITS[k]!=null)f.style.setProperty("--"+k.slice(6),EDITS[k]);continue;}
+    if(k==="r.sk"){const el=document.querySelector("[data-sk]");if(el&&EDITS[k]!=null)el.innerHTML=skillChipsHTML(EDITS[k]);continue;}
+    const el=document.querySelector('[data-k="'+k+'"]');if(el&&EDITS[k]!=null)el.textContent=EDITS[k];
+  }
+  document.querySelectorAll(".brow").forEach(row=>{
+    const org=row.querySelector('[data-k$=".org"]'),det=row.querySelector('[data-k$=".det"]');
+    const empty=(!org||!org.textContent.trim())&&(!det||!det.textContent.trim());
+    row.style.display=empty?"none":"";
+  });
+}
 
 function setupPhotoAdjust(){
   const f=document.getElementById("photoFrame");if(!f)return;
@@ -240,7 +262,14 @@ function setupPhotoAdjust(){
   const end=()=>drag=false;f.addEventListener("pointerup",end);f.addEventListener("pointercancel",end);
   f.addEventListener("wheel",e=>{if(!editing)return;e.preventDefault();let s=gv("bs",178);s=Math.min(360,Math.max(110,s-e.deltaY*0.09));f.style.setProperty("--bs",s+"%");},{passive:false});
 }
-const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting){if(!v.src&&v.dataset.src)v.src=v.dataset.src;v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();}}),{rootMargin:"90px 0px",threshold:.25});
+
+/* ---- preview (silent, first 8s loop) ---- */
+const PREVIEW_RANGE=[0,8];
+function attachRangeLoop(v){if(v._rangeBound)return;v._rangeBound=true;const[ra,rb]=PREVIEW_RANGE;v.addEventListener("timeupdate",()=>{if(v.currentTime>=rb){try{v.currentTime=ra;}catch(_){}}});}
+function pauseAllPreviews(){document.querySelectorAll(".bcard video,.acard video").forEach(v=>v.pause());document.querySelectorAll(".media.playing").forEach(m=>m.classList.remove("playing"));}
+function resumeVisiblePreviews(){document.querySelectorAll(".bcard,.acard").forEach(c=>{if(c.style.display==="none")return;const r=c.getBoundingClientRect();if(r.top<innerHeight+90&&r.bottom>-90){const v=c.querySelector("video"),m=c.querySelector(".media");if(!v)return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}});}
+
+const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting&&!lbOpen&&!editing){if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();}}),{rootMargin:"90px 0px",threshold:.25});
 function render(){
   document.getElementById("main").innerHTML=resumeHTML()+bestHTML()+archiveHTML()+contactHTML();
   applyEdits();
@@ -250,38 +279,68 @@ function render(){
   const g=document.getElementById("agrid");
   document.querySelectorAll("#afil button").forEach(b=>b.onclick=()=>{if(editing)return;document.querySelectorAll("#afil button").forEach(x=>x.classList.remove("on"));b.classList.add("on");const f=b.dataset.f;g.querySelectorAll(".acard").forEach(c=>c.style.display=(f==="all"||c.dataset.cat===f)?"":"none");});
 }
-const lb=document.getElementById("lb");
-function openLB(id){const w=W.find(x=>x.id===id);if(!w)return;const t=k=>(EDITS["w."+id+"."+k]!=null?EDITS["w."+id+"."+k]:w[k]);
-  document.getElementById("lbc").textContent=CAT[w.cat];document.getElementById("lbt").textContent=t("title");
-  document.getElementById("lbr").textContent=t("role")+" · "+w.year;document.getElementById("lbd").textContent=t("desc");
-  const v=document.getElementById("lbv");document.querySelectorAll(".bcard video,.acard video").forEach(x=>{try{x.pause();}catch(e){}});
-  v.src=full(id);v.poster=pos(id);v.muted=false;v.volume=1;try{v.currentTime=0;}catch(e){}v.play().catch(()=>{});lb.classList.add("on");}
-document.getElementById("lbx").onclick=()=>{lb.classList.remove("on");document.getElementById("lbv").pause();};
-lb.onclick=e=>{if(e.target===lb){lb.classList.remove("on");document.getElementById("lbv").pause();}};
-addEventListener("keydown",e=>{if(e.key==="Escape"){lb.classList.remove("on");document.getElementById("lbv").pause();}});
 
+/* ---- lightbox ---- */
+const lb=document.getElementById("lb");
+let lbOpen=false,lbScrollY=0;
+function loadLbVideo(id){const v=document.getElementById("lbv");v.muted=false;v.volume=1;v.src=full(id);v.poster=pos(id);try{v.currentTime=0;}catch(_){}v.play().catch(()=>{});}
+function renderKV(w){const kv=document.getElementById("lbKv");const rows=[];
+  if(w.campaign)rows.push(["Campaign",w.campaign]);
+  rows.push(["Year",w.year]);
+  rows.push(["Category",CAT[w.cat]||w.cat]);
+  const count=1+((w.variants&&w.variants.length)||0);
+  if(count>1)rows.push(["소재 수",count+"개 (A/B)"]);
+  kv.innerHTML=rows.map(r=>`<div class="row"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("");}
+function renderThumbs(w){const wrap=document.getElementById("lbThumbs");const all=[{id:w.id,label:"v1"}].concat((w.variants||[]).map(v=>({id:v.id,label:v.label||v.id})));
+  if(all.length<2){wrap.innerHTML="";wrap.style.display="none";return;}
+  wrap.style.display="flex";
+  wrap.innerHTML=all.map((v,i)=>`<button class="lb-thumb${i===0?' active':''}" data-vid="${v.id}"><img src="${pos(v.id)}" alt=""/><span class="lab">${esc(v.label)}</span></button>`).join("");
+  wrap.querySelectorAll(".lb-thumb").forEach(b=>b.onclick=()=>{wrap.querySelectorAll(".lb-thumb").forEach(x=>x.classList.remove("active"));b.classList.add("active");loadLbVideo(b.dataset.vid);});}
+function openLB(id){const w=W.find(x=>x.id===id);if(!w)return;const t=k=>(EDITS["w."+id+"."+k]!=null?EDITS["w."+id+"."+k]:w[k]);
+  document.getElementById("lbt").textContent=t("title");
+  document.getElementById("lbr").textContent=t("role")+" · "+w.year;
+  document.getElementById("lbd").textContent=t("desc");
+  renderKV(w);renderThumbs(w);
+  lbOpen=true;lbScrollY=window.scrollY;pauseAllPreviews();
+  document.getElementById("main").style.display="none";
+  document.body.style.overflow="hidden";
+  loadLbVideo(id);lb.classList.add("on");lb.scrollTop=0;}
+function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");
+  const v=document.getElementById("lbv");v.pause();v.removeAttribute("src");v.load();
+  document.getElementById("main").style.display="";
+  document.body.style.overflow="";
+  window.scrollTo(0,lbScrollY);
+  resumeVisiblePreviews();}
+document.getElementById("lbx").onclick=closeLB;
+lb.onclick=e=>{if(e.target===lb)closeLB();};
+addEventListener("keydown",e=>{if(e.key==="Escape")closeLB();});
+
+/* ---- edit mode ---- */
 let editing=false;
 const fab=document.getElementById("editFab");
+function skillsToEditMode(){const el=document.querySelector("[data-sk]");if(!el)return;const chips=[...el.querySelectorAll("span")].map(s=>s.textContent.trim()).filter(Boolean);el.textContent=chips.join(", ");el.contentEditable=true;el.classList.add("editing-csv");}
+function skillsToViewMode(){const el=document.querySelector("[data-sk]");if(!el)return;const csv=el.textContent.trim();el.contentEditable=false;el.classList.remove("editing-csv");el.innerHTML=skillChipsHTML(csv);}
 fab.onclick=()=>{editing=!editing;document.body.classList.toggle("editing",editing);fab.classList.toggle("on",editing);fab.textContent=editing?"✔":"✎";document.getElementById("editHint").classList.toggle("on",editing);
   document.querySelectorAll("[data-k]").forEach(el=>el.contentEditable=editing);
-  if(editing){document.querySelectorAll(".acard,.bcard").forEach(c=>{const v=c.querySelector("video");if(v)v.pause();});}
-  else saveEdits();
+  if(editing){pauseAllPreviews();skillsToEditMode();}
+  else{saveEdits().finally(()=>{skillsToViewMode();resumeVisiblePreviews();});}
 };
 async function saveEdits(){
   const E={};document.querySelectorAll("[data-k]").forEach(el=>{E[el.dataset.k]=el.textContent.replace(/\s+$/,"");});
+  const sk=document.querySelector("[data-sk]");if(sk)E["r.sk"]=sk.textContent.trim();
   const _pf=document.getElementById("photoFrame");if(_pf){["bs","bx","by"].forEach(p=>{const v=_pf.style.getPropertyValue("--"+p);if(v)E["photo."+p]=v.trim();});}
-  EDITS=Object.assign(EDITS,E);localStorage.setItem("pf_edits",JSON.stringify(E));
   let pat=localStorage.getItem("pf_pat");
-  if(!pat){pat=prompt("GitHub에 영구 저장하려면 토큰을 한 번만 입력하세요.\n(github.com → Settings → Developer settings → Fine-grained token, 저장소 hansy-daangn/pf 의 Contents: Read and write)\n토큰은 이 브라우저에만 저장됩니다.");if(pat)localStorage.setItem("pf_pat",pat);}
-  if(!pat){alert("이 브라우저에 저장했습니다. (GitHub 반영은 토큰 입력 시)");return;}
+  if(!pat){pat=prompt("GitHub에 저장하려면 토큰을 입력하세요.\n(github.com → Settings → Developer settings → Fine-grained token, 저장소 hansy-daangn/pf 의 Contents: Read and write)\n비워두면 저장되지 않고 변경 내용은 사라집니다.");if(pat)localStorage.setItem("pf_pat",pat);}
+  if(!pat){alert("토큰이 없어 저장하지 않았습니다. 새로고침하면 변경 내용은 사라집니다.");return;}
+  const NEXT=Object.assign({},EDITS,E);
   try{
     const api="https://api.github.com/repos/hansy-daangn/pf/contents/content.json";
     let sha=null;const g=await fetch(api,{headers:{Authorization:"Bearer "+pat}});if(g.ok)sha=(await g.json()).sha;
-    const body={message:"edit: update site text",content:btoa(unescape(encodeURIComponent(JSON.stringify(EDITS,null,1))))};if(sha)body.sha=sha;
+    const body={message:"edit: update site text",content:btoa(unescape(encodeURIComponent(JSON.stringify(NEXT,null,1))))};if(sha)body.sha=sha;
     const r=await fetch(api,{method:"PUT",headers:{Authorization:"Bearer "+pat,"Content-Type":"application/json"},body:JSON.stringify(body)});
-    if(r.ok)alert("저장 완료 — GitHub에 반영했습니다. 약 30초 뒤 모든 기기에서 적용됩니다.");
-    else{const e=await r.json().catch(()=>({}));alert("GitHub 저장 실패: "+(e.message||r.status)+"\n(이 브라우저에는 저장됨)");if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");}
-  }catch(e){alert("네트워크 오류 — 이 브라우저에는 저장됨. "+e.message);}
+    if(r.ok){EDITS=NEXT;alert("저장 완료 — GitHub에 반영했습니다. 약 30초 뒤 모든 기기에서 영구 적용됩니다.");}
+    else{const e=await r.json().catch(()=>({}));alert("GitHub 저장 실패: "+(e.message||r.status));if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");}
+  }catch(e){alert("네트워크 오류 — 저장 실패. "+e.message);}
 }
 addEventListener("scroll",()=>document.querySelector("header.top").style.boxShadow=scrollY>20?"0 1px 0 var(--line)":"none",{passive:true});
 loadEdits().then(render);
