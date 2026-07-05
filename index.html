@@ -47,8 +47,8 @@ section{position:relative}
 .photohint{display:none}
 .editing .photohint{display:block;position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:9px;color:#fff;background:var(--accent);border-radius:100px;padding:3px 9px}
 .rh-name{font-weight:850;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:-.03em}
-.rh-tag{font-size:clamp(1.05rem,1.7vw,1.3rem);line-height:1.45;margin-top:12px;max-width:30rem;font-weight:760}
-.rh-desc{margin-top:14px;color:var(--ink2);font-size:14px;line-height:1.65;max-width:30rem}
+.rh-tag{font-size:clamp(1.05rem,1.7vw,1.3rem);line-height:1.45;margin-top:12px;font-weight:760}
+.rh-desc{margin-top:14px;color:var(--ink2);font-size:14px;line-height:1.65}
 .rh-meta{margin-top:16px;display:flex;flex-wrap:wrap;gap:7px 18px}
 .ab-meta{font-size:13px;color:var(--ink)}.ab-meta b{font-family:var(--mono);font-size:10.5px;color:var(--faint);font-weight:500;margin-right:6px;text-transform:uppercase;letter-spacing:.03em}
 .rh-comp{display:flex;flex-wrap:wrap;gap:7px 26px;padding:15px 0 2px}
@@ -180,11 +180,11 @@ const W=[
  {id:"td_nintendo",cat:"motion",title:"당근알바 — 설날 시즌 캠페인",role:"3D · 모션그래픽",year:"2026",campaign:"알바 · Newyear · 2602",desc:"설 명절 특수를 겨냥한 당근알바 시즌 캠페인. 3D 프로덕트 카드로 프라이스와 임팩트를 동시에.",variants:[]},
  {id:"mg_simbatdan",cat:"motion",title:"심봤단 — 브랜드 혜택 모션",role:"모션그래픽 · 편집",year:"2025",campaign:"중고거래 · simbatdan · 2605",desc:"수많은 브랜드 로고와 혜택을 리듬감 있게 엮은 베네핏 모션.",variants:[]},
  {id:"mg_ahnabada",cat:"motion",title:"아나바다 — 키네틱 타이포",role:"모션그래픽 · 타이포",year:"2025",campaign:"중고거래 · Ahnabada",desc:"‘아껴 쓰고 나눠 쓰고’를 경쾌한 키네틱 타이포그래피로.",variants:[]},
- {id:"mg_rent1",cat:"motion",title:"당근 부동산 — 전월세 프로모션",role:"모션그래픽 · UI",year:"2026",campaign:"부동산 · 2601",desc:"초신상 매물·지역 선택 흐름을 깔끔한 UI 모션으로. 지역·매물 리스트 각각을 강조한 두 개 세로 소재로 A/B 운영.",variants:[{id:"mg_rent2",label:"v2"}]},
+ {id:"mg_rent1",cat:"motion",title:"당근 부동산 — 전월세 프로모션",role:"모션그래픽 · UI",year:"2026",campaign:"부동산 · 2601",plabel:"v1",desc:"초신상 매물·지역 선택 흐름을 깔끔한 UI 모션으로. 지역·매물 리스트 각각을 강조한 두 개 세로 소재로 A/B 운영.",variants:[{id:"mg_rent2",label:"v2"}]},
  {id:"td_godaangn",cat:"3d",title:"당근 중고차 — 3D 캐릭터",role:"3D · 캐릭터 모션",year:"2025",campaign:"Branding · Godaangn",desc:"중고차 카테고리를 3D 캐릭터로 의인화한 프로모션.",variants:[]},
- {id:"ai_closet1",cat:"ai",title:"당근 옷장 — AI 자동 판매글",role:"AI · UI 모션",year:"2026",campaign:"중고거래 · AI Closet",desc:"올리면 AI가 판매글을 써주는 기능. 판매 흐름을 군더더기 없는 UI 모션으로. 두 개 세로 소재로 편집 리듬을 A/B 운영.",variants:[{id:"ai_closet2",label:"v2"}]},
+ {id:"ai_closet1",cat:"ai",title:"당근 옷장 — AI 자동 판매글",role:"AI · UI 모션",year:"2026",campaign:"중고거래 · AI Closet",plabel:"v1",desc:"올리면 AI가 판매글을 써주는 기능. 판매 흐름을 군더더기 없는 UI 모션으로. 두 개 세로 소재로 편집 리듬을 A/B 운영.",variants:[{id:"ai_closet2",label:"v2"}]},
  {id:"sf_bizjul",cat:"ai",title:"비즈니스 프로모션 — AI 숏폼",role:"AI · 편집",year:"2026",campaign:"동네업체 · AI Shortform",desc:"사장님 프로모션을 AI 비주얼과 빠른 호흡의 숏폼으로.",variants:[]},
- {id:"mg_keyword_spring",cat:"motion",title:"당근가 키워드 — 템플릿 시스템",role:"모션그래픽 · AE 익스프레션",year:"2025",campaign:"중고거래 · keywordSpring · 2603",desc:"익스프레션 기반 키네틱 타이포 템플릿 하나로 시즌·카테고리를 갈아끼우며 대량 양산.",variants:[]},
+ {id:"mg_keyword_spring",cat:"motion",title:"당근가 키워드 — 시즌 템플릿 시스템",role:"모션그래픽 · AE 익스프레션",year:"2025",campaign:"중고거래 · keyword · 2601–2603",plabel:"봄",desc:"익스프레션 기반 키네틱 타이포 템플릿 하나로 시즌·카테고리를 갈아끼우며 대량 양산. 봄(keywordSpring·2603)·신년(keywordNewyear·2601)·가을 세 시즌을 동일 템플릿에서 자동 산출.",variants:[{id:"mg_keyword_newyr",label:"신년"},{id:"mg_keyword_fall",label:"가을"}]},
  {id:"mg_jobs_spring",cat:"motion",title:"당근 알바 — 봄 시즌 프로모션",role:"모션그래픽 · UI",year:"2024",campaign:"알바 · jobs_spring · 2402",desc:"봄 시즌 알바 채용 프로모션. 산뜻한 컬러와 UI 모션으로.",variants:[]},
  {id:"ai_sea",cat:"ai",title:"시네마틱 — 물결",role:"AI 비주얼 · 컴포지팅",year:"2025",campaign:"Personal · Cinematic",desc:"AI로 생성한 바다 질감을 시네마틱 톤으로 다듬은 비주얼 습작.",variants:[]},
  {id:"3d_sew",cat:"3d",title:"3D 모션 — 오브제",role:"3D · 룩 디벨롭",year:"2025",campaign:"Personal · 3D Object",desc:"일상의 오브제를 3D로 재해석한 컬러풀한 모션 실험.",variants:[]},
@@ -291,7 +291,7 @@ function renderKV(w){const kv=document.getElementById("lbKv");const rows=[];
   const count=1+((w.variants&&w.variants.length)||0);
   if(count>1)rows.push(["소재 수",count+"개 (A/B)"]);
   kv.innerHTML=rows.map(r=>`<div class="row"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("");}
-function renderThumbs(w){const wrap=document.getElementById("lbThumbs");const all=[{id:w.id,label:"v1"}].concat((w.variants||[]).map(v=>({id:v.id,label:v.label||v.id})));
+function renderThumbs(w){const wrap=document.getElementById("lbThumbs");const all=[{id:w.id,label:w.plabel||"v1"}].concat((w.variants||[]).map(v=>({id:v.id,label:v.label||v.id})));
   if(all.length<2){wrap.innerHTML="";wrap.style.display="none";return;}
   wrap.style.display="flex";
   wrap.innerHTML=all.map((v,i)=>`<button class="lb-thumb${i===0?' active':''}" data-vid="${v.id}"><img src="${pos(v.id)}" alt=""/><span class="lab">${esc(v.label)}</span></button>`).join("");
