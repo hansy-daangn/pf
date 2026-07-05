@@ -112,14 +112,16 @@ section{position:relative}
 #lb{position:fixed;inset:0;z-index:80;background:#fff;display:none;align-items:flex-start;justify-content:center;padding:28px;overflow:auto}
 #lb.on{display:flex}
 #lb .bx{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:30px;max-width:1140px;width:100%;align-items:start}
-#lb .lb-media{display:flex;flex-direction:column;gap:10px;min-width:0}
-#lb video{width:100%;max-height:82vh;height:auto;border-radius:12px;border:1px solid var(--line2);background:#000;object-fit:contain}
+#lb .lb-media{display:flex;flex-direction:column;gap:12px;min-width:0}
+#lb .lb-stage{display:flex;align-items:center;justify-content:center;min-width:0}
+#lb .lb-stage video,#lb .lb-stage img{width:auto;max-width:100%;max-height:78vh;border-radius:12px;border:1px solid var(--line2);background:#000;object-fit:contain}
 #lb .lb-thumbs{display:flex;gap:8px;flex-wrap:wrap}
-#lb .lb-thumb{border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#fff;padding:0;position:relative;cursor:pointer;transition:.2s;display:block}
+#lb .lb-thumb{border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:#eceae5;padding:0;position:relative;cursor:pointer;transition:.2s;display:block;width:58px;height:58px}
 #lb .lb-thumb.active{outline:2px solid var(--ink);outline-offset:-1px}
 #lb .lb-thumb:hover:not(.active){border-color:var(--ink)}
-#lb .lb-thumb img{display:block;width:64px;height:64px;object-fit:cover}
-#lb .lb-thumb .lab{position:absolute;bottom:3px;left:3px;background:rgba(0,0,0,.72);color:#fff;font-size:9px;padding:2px 6px;border-radius:100px;font-family:var(--mono);letter-spacing:.06em}
+#lb .lb-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+#lb .lb-thumb .lab{position:absolute;bottom:2px;left:2px;right:2px;background:rgba(0,0,0,.72);color:#fff;font-size:8px;padding:2px 4px;border-radius:4px;font-family:var(--mono);letter-spacing:.02em;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#lb .lb-thumb.vid .lab::before{content:"▶ "}
 #lb h3{font-weight:820;font-size:clamp(1.3rem,2.6vw,1.9rem);letter-spacing:-.02em}
 #lb .ro{color:var(--ink2);font-weight:600;margin-top:9px;font-size:14px}
 #lb .de{color:var(--ink2);margin-top:14px;font-size:14.5px;line-height:1.65}
@@ -127,8 +129,16 @@ section{position:relative}
 #lb .kv .row{font-size:12px;min-width:0}
 #lb .kv .row b{display:block;font-family:var(--mono);font-size:10px;color:var(--faint);font-weight:500;letter-spacing:.04em;margin-bottom:3px;text-transform:uppercase}
 #lb .kv .row span{color:var(--ink);word-break:break-word}
+#lb .perf{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+#lb .perf .ph{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accentink);font-weight:600;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+#lb .perf .ph i{width:5px;height:5px;border-radius:50%;background:var(--accent);display:inline-block}
+#lb .perf .tiles{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+#lb .perf .tile{background:#fff;padding:11px 12px}
+#lb .perf .tile .v{font-weight:820;font-size:17px;letter-spacing:-.02em;color:var(--ink)}
+#lb .perf .tile .l{font-size:10.5px;color:var(--ink2);margin-top:2px}
+#lb .perf .src{font-size:10px;color:var(--faint);margin-top:9px;font-family:var(--mono)}
 #lb .x{position:fixed;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line2);background:#fff;font-size:18px;display:grid;place-items:center;z-index:1}
-@media(max-width:780px){#lb .bx{grid-template-columns:1fr}#lb video{max-height:56vh}}
+@media(max-width:780px){#lb .bx{grid-template-columns:1fr}#lb .lb-stage video,#lb .lb-stage img{max-height:56vh}}
 
 /* edit */
 #editFab{position:fixed;right:22px;bottom:22px;z-index:70;width:52px;height:52px;border-radius:50%;background:var(--ink);color:#fff;border:0;font-size:20px;display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(0,0,0,.4);transition:.25s}
@@ -148,8 +158,8 @@ section{position:relative}
 <main id="main"></main>
 
 <div id="lb"><button class="x" id="lbx">✕</button><div class="bx">
-  <div class="lb-media"><video id="lbv" controls playsinline></video><div class="lb-thumbs" id="lbThumbs"></div></div>
-  <div class="lb-info"><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div><div class="kv" id="lbKv"></div></div>
+  <div class="lb-media"><div class="lb-stage"><video id="lbv" controls playsinline></video><img id="lbi" alt="" style="display:none"/></div><div class="lb-thumbs" id="lbThumbs"></div></div>
+  <div class="lb-info"><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div><div class="kv" id="lbKv"></div><div class="perf" id="lbPerf" style="display:none"></div></div>
 </div></div>
 
 <button id="editFab" title="편집">✎</button>
@@ -280,36 +290,66 @@ function render(){
   document.querySelectorAll("#afil button").forEach(b=>b.onclick=()=>{if(editing)return;document.querySelectorAll("#afil button").forEach(x=>x.classList.remove("on"));b.classList.add("on");const f=b.dataset.f;g.querySelectorAll(".acard").forEach(c=>c.style.display=(f==="all"||c.dataset.cat===f)?"":"none");});
 }
 
-/* ---- lightbox ---- */
+/* ---- lightbox (gallery + performance from CreativeReporter) ---- */
+const PKG={"mg_keyword_spring":{"perf":{"cost":28330971,"imp":22282054,"ctr":1.68,"act":20855,"ecpa":1358,"vcr":64.6,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mg0d0g9h_vjskwzm_lpbrdjwxo9rgxnwn_transcoded.mp4"},{"res":"720x1280","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b5zi_smldxil_k0fvcdghpoqga5el_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b617_jkozc9q_rs7txreksw4sumsh_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b644_otusycf_betet8mczqqrktrk_transcoded.mp4"},{"res":"1280x720","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b637_gtxzbdu_vwvsj8dr7vyyi0cr_transcoded.mp4"}]},"mg_rent1":{"perf":{"cost":142778253,"imp":29584352,"ctr":8.76,"act":250926,"ecpa":569,"vcr":46.6,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgikxq_kkd9sqt_yuvfxuqgn1jfyl8n_transcoded.mp4"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgjee9_znfmksm_mrh4iv0t3aerr3fj.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgerzb_mei5glg_elklaqkifro9wzuf.png"},{"res":"720x860","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgj3qa_grhhrlz_dc3pmiyugfhpd1uc.png"},{"res":"360x640","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgje7c_gchwhp8_u0vak57egpotcyxi.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgerur_zksgvgu_ofdcvxw8myha1l8n.png"}]},"td_nintendo":{"perf":{"cost":9209403,"imp":5343483,"ctr":2.38,"act":4208,"ecpa":2189,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbjw8_cdhph0x_efb7h6yjuc986noh.jpg"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vcaiq_yrkbnzn_wofktz5nzdaxjykp.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbjwp_kknvy8f_noevke2bgpbxudoi.png"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbjuk_uvuev73_nf6irrffv9tcqv1b.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbju2_n38qn8e_eymzgkgfl9bi92hv.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbzer_eqtzjso_ux9fzmoefxcsecva.png"}]},"mg_jobs_spring":{"perf":{"cost":1273314,"imp":47869,"ctr":null,"act":548,"ecpa":2324,"vcr":47.8,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mm4bvdvl_nags4md_izcnrdaacmixwogd_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mm4bvdv5_pz6a5q2_xrnl4cg23myutdnu_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mm4bvdvl_gy6iovu_vzlctt1pfbzdq2z0_transcoded.mp4"}]},"sf_10000walk":{"perf":{"cost":9690972,"imp":4665078,"ctr":1.47,"act":2877,"ecpa":3368,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mhxieldf_j0lpaxf_lc3mfyaray5vwwgk.png"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihsy9u_fqzrskz_uao9fzliveznfjxi.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihprzq_zakpz3d_pnwsym2l2bi1qze8.png"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihprqb_n072w88_rzab6i2yf7mjwtib.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihprpe_tkok4hf_ypgqrriwqtden0bw.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihsy9d_iolodoh_casamebska4y8tsp.png"}]},"td_godaangn":{"perf":{"cost":12604763,"imp":6546569,"ctr":1.46,"act":5162,"ecpa":2442,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvvdm_ztoqscr_dpzlphe14jjbbtpu.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv9n_nt4fzx8_twogruhot9taxcav.png"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv83_n0cuunk_rpb1nuwjbdqxujap.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv61_fpbgddx_fa9zkyycynsnqdn4.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv7h_r9ydona_no8bjrdysrgthkck.png"},{"res":"1200x628","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv9z_yyszlbn_oujsqc7bdy62w2yz.png"}]},"td_raffle_v":{"perf":{"cost":22217895,"imp":7851367,"ctr":3.43,"act":16732,"ecpa":1328,"vcr":48.2,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja29b92_ir3uv0y_lmn9yfknfckbmom7_transcoded.mp4"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja27t13_sw8dsuq_e9ymspjnlibgmbcn.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja246cz_xkl6ldc_h1ylcnce8rrjcbbr.png"},{"res":"1920x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja29bcy_dd8zu7j_qmzr2ixjjtfi9zym_transcoded.mp4"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja27szw_j4zwnmp_wvguww2ybicxzqcf.png"},{"res":"1920x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja29b8d_b07fjpq_sebotwzo6elonwcg_transcoded.mp4"}]},"td_pickup":{"perf":{"cost":3766134,"imp":2407824,"ctr":2.56,"act":2120,"ecpa":1776,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae0388_vykwvbl_svc67h3fwj83gylk.jpg"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae6zvd_madijaw_u1b8lvr5pflvkjor.jpg"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae03c5_dsbutow_gnkyuo8wz4gtneos.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae03aq_pac84v6_pan2altitvhq8eae.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae6zwj_oz7t6ee_eli7tkiysvdapy9z.png"},{"res":"1200x628","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae6zwa_nnzjgvm_r2py6oychlvjclow.png"}]},"td_declutter":{"perf":{"cost":9473819,"imp":1953474,"ctr":0.45,"act":2249,"ecpa":4212,"vcr":null,"roas":null},"media":[]},"mg_simbatdan":{"perf":{"cost":9590512,"imp":2489988,"ctr":0.87,"act":15311,"ecpa":626,"vcr":null,"roas":null},"media":[]},"ai_closet1":{"perf":{"cost":12095549,"imp":2573542,"ctr":0.34,"act":10869,"ecpa":1113,"vcr":null,"roas":null},"media":[]}};
 const lb=document.getElementById("lb");
 let lbOpen=false,lbScrollY=0;
-function loadLbVideo(id){const v=document.getElementById("lbv");v.muted=false;v.volume=1;v.src=full(id);v.poster=pos(id);try{v.currentTime=0;}catch(_){}v.play().catch(()=>{});}
-function renderKV(w){const kv=document.getElementById("lbKv");const rows=[];
+const wsrv=(u,w)=>"https://wsrv.nl/?url="+encodeURIComponent(u)+(w?"&w="+w:"")+"&output=jpg";
+const resFmt=r=>String(r||"").replace("x","×");
+function stageVideo(src,poster){const v=document.getElementById("lbv"),i=document.getElementById("lbi");i.style.display="none";i.removeAttribute("src");v.style.display="";v.muted=false;v.volume=1;if(poster)v.poster=poster;else v.removeAttribute("poster");v.src=src;try{v.currentTime=0;}catch(_){}v.play().catch(()=>{});}
+function stageImage(src){const v=document.getElementById("lbv"),i=document.getElementById("lbi");v.pause();v.removeAttribute("src");v.style.display="none";i.onerror=()=>{i.onerror=null;i.src=wsrv(src);};i.src=src;i.style.display="";}
+function showMedia(m){if(m.kind==="video")stageVideo(m.src,m.poster);else stageImage(m.src);}
+function buildGallery(w){
+  const g=[{kind:"video",src:full(w.id),poster:pos(w.id),thumb:pos(w.id),label:w.plabel||"세로"}];
+  (w.variants||[]).forEach(v=>g.push({kind:"video",src:full(v.id),poster:pos(v.id),thumb:pos(v.id),label:v.label||v.id}));
+  const pk=PKG[w.id];
+  if(pk&&pk.media)pk.media.forEach(md=>{
+    if(md.type==="video")g.push({kind:"video",src:md.url,poster:"",thumb:"",label:resFmt(md.res)});
+    else g.push({kind:"image",src:md.url,thumb:wsrv(md.url,120),label:resFmt(md.res)});
+  });
+  return g;}
+function renderGallery(w){const wrap=document.getElementById("lbThumbs"),g=buildGallery(w);
+  if(g.length<2){wrap.innerHTML="";wrap.style.display="none";return g;}
+  wrap.style.display="flex";
+  wrap.innerHTML=g.map((m,i)=>`<button class="lb-thumb${i===0?' active':''}${m.kind==='video'?' vid':''}" data-i="${i}">${m.thumb?`<img src="${m.thumb}" alt="" loading="lazy"/>`:""}<span class="lab">${esc(m.label)}</span></button>`).join("");
+  wrap.querySelectorAll(".lb-thumb").forEach(b=>b.onclick=()=>{wrap.querySelectorAll(".lb-thumb").forEach(x=>x.classList.remove("active"));b.classList.add("active");showMedia(g[+b.dataset.i]);});
+  return g;}
+function renderKV(w){const kv=document.getElementById("lbKv"),rows=[],pk=PKG[w.id];
   if(w.campaign)rows.push(["Campaign",w.campaign]);
   rows.push(["Year",w.year]);
   rows.push(["Category",CAT[w.cat]||w.cat]);
-  const count=1+((w.variants&&w.variants.length)||0);
-  if(count>1)rows.push(["소재 수",count+"개 (A/B)"]);
+  const count=1+((w.variants&&w.variants.length)||0)+((pk&&pk.media&&pk.media.length)||0);
+  if(count>1)rows.push(["패키지 소재",count+"개 (사이즈·포맷)"]);
   kv.innerHTML=rows.map(r=>`<div class="row"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("");}
-function renderThumbs(w){const wrap=document.getElementById("lbThumbs");const all=[{id:w.id,label:w.plabel||"v1"}].concat((w.variants||[]).map(v=>({id:v.id,label:v.label||v.id})));
-  if(all.length<2){wrap.innerHTML="";wrap.style.display="none";return;}
-  wrap.style.display="flex";
-  wrap.innerHTML=all.map((v,i)=>`<button class="lb-thumb${i===0?' active':''}" data-vid="${v.id}"><img src="${pos(v.id)}" alt=""/><span class="lab">${esc(v.label)}</span></button>`).join("");
-  wrap.querySelectorAll(".lb-thumb").forEach(b=>b.onclick=()=>{wrap.querySelectorAll(".lb-thumb").forEach(x=>x.classList.remove("active"));b.classList.add("active");loadLbVideo(b.dataset.vid);});}
+function won(n){if(n>=1e8)return"₩"+(n/1e8).toFixed(n>=1e9?0:2)+"억";if(n>=1e4)return"₩"+Math.round(n/1e4).toLocaleString()+"만";return"₩"+Math.round(n).toLocaleString();}
+function big(n){if(n>=1e8)return(n/1e8).toFixed(1)+"억";if(n>=1e4)return Math.round(n/1e4).toLocaleString()+"만";return Math.round(n).toLocaleString();}
+function renderPerf(id){const el=document.getElementById("lbPerf"),pk=PKG[id];
+  if(!pk||!pk.perf){el.style.display="none";el.innerHTML="";return;}
+  const p=pk.perf,t=[["광고비",won(p.cost)],["노출 수",big(p.imp)]];
+  if(p.ctr!=null)t.push(["클릭률",p.ctr+"%"]);
+  if(p.act)t.push(["활성 유저",big(p.act)]);
+  if(p.ecpa!=null)t.push(["활성 유저당 비용","₩"+p.ecpa.toLocaleString()]);
+  if(p.vcr!=null)t.push(["영상 완주율",p.vcr+"%"]);
+  if(p.roas!=null)t.push(["ROAS","×"+p.roas]);
+  el.style.display="";
+  el.innerHTML=`<div class="ph"><i></i>소재 성과</div><div class="tiles">${t.map(x=>`<div class="tile"><div class="v">${x[1]}</div><div class="l">${esc(x[0])}</div></div>`).join("")}</div><div class="src">CreativeReporter · Moloco·Meta 집행 누적</div>`;}
 function openLB(id){const w=W.find(x=>x.id===id);if(!w)return;const t=k=>(EDITS["w."+id+"."+k]!=null?EDITS["w."+id+"."+k]:w[k]);
   document.getElementById("lbt").textContent=t("title");
   document.getElementById("lbr").textContent=t("role")+" · "+w.year;
   document.getElementById("lbd").textContent=t("desc");
-  renderKV(w);renderThumbs(w);
+  renderKV(w);const g=renderGallery(w);renderPerf(id);
   lbOpen=true;lbScrollY=window.scrollY;pauseAllPreviews();
   document.getElementById("main").style.display="none";
   document.body.style.overflow="hidden";
-  loadLbVideo(id);lb.classList.add("on");lb.scrollTop=0;}
+  showMedia(g[0]);lb.classList.add("on");lb.scrollTop=0;}
 function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");
   const v=document.getElementById("lbv");v.pause();v.removeAttribute("src");v.load();
+  const i=document.getElementById("lbi");i.removeAttribute("src");i.style.display="none";
+  const html=document.documentElement,prev=html.style.scrollBehavior;html.style.scrollBehavior="auto";
   document.getElementById("main").style.display="";
   document.body.style.overflow="";
   window.scrollTo(0,lbScrollY);
+  html.style.scrollBehavior=prev;
   resumeVisiblePreviews();}
 document.getElementById("lbx").onclick=closeLB;
 lb.onclick=e=>{if(e.target===lb)closeLB();};
