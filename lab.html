@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>김한결 · 도구 개발 — 워크플로우 연구</title>
+<meta name="description" content="영상 디자이너 김한결의 자동화 도구 개발과 워크플로우 연구."/>
+<meta name="theme-color" content="#ffffff"/>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"/>
+<style>
+:root{
+ --ink:#111114;--red2:#cc1433;--tlab:rgba(0,0,0,.56);--tblk:rgba(0,0,0,.9);--tbody:rgba(0,0,0,.95);
+ --line2:rgba(17,17,20,.14);
+ --san:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+ --maxw:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:#fff;color:var(--ink);font-family:var(--san);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+::selection{background:var(--red2);color:#fff}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,3.5vw,60px)}
+.back{display:inline-block;margin-top:26px;font-weight:300;font-size:14px;color:var(--tlab)}
+.back:hover{color:var(--red2)}
+h1{font-weight:200;font-size:clamp(26px,3vw,44px);color:var(--tblk);line-height:1.2;margin-top:clamp(24px,4vh,44px)}
+.lead{margin-top:10px;font-weight:300;font-size:clamp(14px,1.2vw,17px);color:var(--tlab);max-width:60ch}
+.items{margin:clamp(30px,5vh,54px) 0 clamp(60px,9vh,100px)}
+.item{display:grid;grid-template-columns:clamp(110px,14vw,180px) 1fr;gap:clamp(14px,2.4vw,40px);padding:clamp(18px,2.6vh,26px) 2px;border-top:1px solid var(--line2)}
+.item:last-child{border-bottom:1px solid var(--line2)}
+.item .tag{font-weight:700;font-size:clamp(12.5px,.95vw,14px);color:var(--red2);line-height:1.5}
+.item h2{font-weight:700;font-size:clamp(16px,1.4vw,20px);line-height:1.4}
+.item p{margin-top:5px;font-weight:300;font-size:clamp(13px,1.05vw,15.5px);line-height:1.75;color:var(--tbody);max-width:64ch}
+.item .tools{margin-top:7px;font-weight:300;font-size:clamp(11px,.85vw,12.5px);color:var(--tlab)}
+@media(max-width:560px){.item{grid-template-columns:1fr;gap:6px}}
+footer{border-top:1px solid var(--line2);padding:22px 0 48px;text-align:center;font-weight:300;font-size:13.5px;color:var(--tlab)}
+footer a:hover{color:var(--red2)}
+#editFab{position:fixed;right:22px;bottom:22px;z-index:70;width:52px;height:52px;border-radius:50%;background:var(--red2);color:#fff;border:0;font-size:20px;display:grid;place-items:center;cursor:pointer}
+.editing [data-k]{outline:1px dashed var(--red2);outline-offset:2px;border-radius:3px;cursor:text}
+.editing [data-k]:focus{outline:2px solid var(--red2);background:rgba(204,20,51,.06)}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <a class="back" href="index.html">← 김한결 · 포트폴리오</a>
+ <h1 data-k="l.h">도구 개발 · 워크플로우 연구</h1>
+ <p class="lead" data-k="l.lead">영상을 만드는 것과 같은 무게로, 영상을 만드는 방식을 만듭니다. 제작 파이프라인의 반복을 코드로 줄이고, 결과를 데이터로 확인합니다.</p>
+ <div class="items">
+  <div class="item"><span class="tag" data-k="l.0.tag">성과 도구</span><div>
+    <h2 data-k="l.0.t">CreativeReporter — 광고 소재 성과 리포팅 도구</h2>
+    <p data-k="l.0.d">집행한 광고 소재의 광고비·노출·클릭·전환 성과를 소재 단위로 자동 집계해 보여주는 사내 웹 도구. 채널별로 흩어진 집행 데이터를 한 화면에서 조회하고, 소재 미리보기와 성과를 함께 확인한다.</p>
+    <p class="tools" data-k="l.0.k">Web · Supabase · JavaScript</p></div></div>
+  <div class="item"><span class="tag" data-k="l.1.tag">제작 자동화</span><div>
+    <h2 data-k="l.1.t">모션 템플릿 자동화 시스템</h2>
+    <p data-k="l.1.d">After Effects 익스프레션 기반의 파라메트릭 템플릿. 메시지 개수·길이·타이밍을 값으로 제어해, 시즌·카피만 바꾸면 캠페인 소재가 자동으로 완성된다. 동일 템플릿으로 여러 시즌 캠페인을 양산.</p>
+    <p class="tools" data-k="l.1.k">After Effects Expressions · JavaScript</p></div></div>
+  <div class="item"><span class="tag" data-k="l.2.tag">AI 파이프라인</span><div>
+    <h2 data-k="l.2.t">AI 제작 파이프라인</h2>
+    <p data-k="l.2.d">생성형 AI를 소재 제작 워크플로우에 통합해 비주얼 생성과 반복 작업을 자동화. 예산 효율화와 제작 속도 개선에 기여.</p>
+    <p class="tools" data-k="l.2.k">ComfyUI · 생성형 AI</p></div></div>
+  <div class="item"><span class="tag" data-k="l.3.tag">학술 연구</span><div>
+    <h2 data-k="l.3.t">생성형 AI를 활용한 3D 스캐닝 기반의 가상 현실 제작 연구</h2>
+    <p data-k="l.3.d">포토그래메트리와 생성형 AI의 기술적 한계를 상호보완하는 제작 방법 연구. 제1저자. 한국방송미디어공학회 대학생·주니어 논문 경진대회 최우수.</p>
+    <p class="tools" data-k="l.3.k">논문 · 2024</p></div></div>
+  <div class="item"><span class="tag" data-k="l.4.tag">퍼블리싱</span><div>
+    <h2 data-k="l.4.t">포트폴리오 퍼블리싱 시스템</h2>
+    <p data-k="l.4.d">지금 보고 있는 이 사이트. 정적 페이지 위에 GitHub API 기반의 콘텐츠 편집·업로드 파이프라인을 얹어, 코드 수정 없이 글과 작업물을 갱신한다.</p>
+    <p class="tools" data-k="l.4.k">Web · GitHub API</p></div></div>
+ </div>
+</div>
+<footer><div class="wrap"><a href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a> · <span data-k="ui.foot1">© 2026 김한결</span></div></footer>
+<button id="editFab" title="편집" aria-label="편집 모드" style="display:none">✎</button>
+<script>
+let EDITS={},editing=false;
+const fab=document.getElementById("editFab");
+async function loadEdits(){try{const r=await fetch("content.json?"+Date.now());if(r.ok)EDITS=await r.json();}catch(e){}
+ for(const k in EDITS){const el=document.querySelector('[data-k="'+k+'"]');if(el&&EDITS[k]!=null)el.textContent=EDITS[k];}}
+loadEdits();
+const EDIT_KEY="hansy0715";
+function editorOn(){return localStorage.getItem("pf_editor")==="1";}
+function setEditorUI(){fab.style.display=editorOn()?"":"none";}
+if(location.hash.replace("#","").toLowerCase()===EDIT_KEY)localStorage.setItem("pf_editor","1");
+setEditorUI();
+let _kb="";
+addEventListener("keydown",e=>{if(e.key&&e.key.length===1){_kb=(_kb+e.key.toLowerCase()).slice(-EDIT_KEY.length);
+ if(_kb===EDIT_KEY){_kb="";if(editing)return;if(editorOn())localStorage.removeItem("pf_editor");else localStorage.setItem("pf_editor","1");setEditorUI();}}});
+function getPAT(){let pat=localStorage.getItem("pf_pat");
+ if(!pat){pat=prompt("GitHub에 저장하려면 토큰을 입력하세요.\n(hansy-daangn/pf 의 Contents: Read and write)");if(pat)localStorage.setItem("pf_pat",pat);}
+ return pat;}
+async function saveEdits(){
+ const E={};document.querySelectorAll("[data-k]").forEach(el=>{E[el.dataset.k]=el.textContent.replace(/\s+$/,"");});
+ const pat=getPAT();if(!pat){alert("토큰이 없어 저장하지 않았습니다.");return;}
+ try{const r0=await fetch("content.json?"+Date.now());if(r0.ok)EDITS=await r0.json();}catch(_){}
+ const NEXT=Object.assign({},EDITS,E);
+ try{
+  const api="https://api.github.com/repos/hansy-daangn/pf/contents/content.json";
+  let sha=null;const g=await fetch(api,{headers:{Authorization:"Bearer "+pat}});if(g.ok)sha=(await g.json()).sha;
+  const body={message:"edit: update lab text",content:btoa(unescape(encodeURIComponent(JSON.stringify(NEXT,null,1))))};if(sha)body.sha=sha;
+  const r=await fetch(api,{method:"PUT",headers:{Authorization:"Bearer "+pat,"Content-Type":"application/json"},body:JSON.stringify(body)});
+  if(r.ok){EDITS=NEXT;alert("저장 완료 — 약 30초 뒤 모든 기기에 적용됩니다.");}
+  else{const e=await r.json().catch(()=>({}));alert("저장 실패: "+(e.message||r.status));if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");}
+ }catch(e){alert("네트워크 오류 — 저장 실패. "+e.message);}
+}
+fab.onclick=()=>{editing=!editing;document.body.classList.toggle("editing",editing);fab.textContent=editing?"✔":"✎";
+ document.querySelectorAll("[data-k]").forEach(el=>el.contentEditable=editing);
+ if(!editing)saveEdits();
+};
+</script>
+</body>
+</html>
