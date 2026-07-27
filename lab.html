@@ -75,7 +75,7 @@ const fab=document.getElementById("editFab");
 async function loadEdits(){try{const r=await fetch("content.json?"+Date.now());if(r.ok)EDITS=await r.json();}catch(e){}
  for(const k in EDITS){const el=document.querySelector('[data-k="'+k+'"]');if(el&&EDITS[k]!=null)el.textContent=EDITS[k];}}
 loadEdits();
-const EDIT_KEY="hansy0715";
+const EDIT_KEY="hansy";
 function editorOn(){return localStorage.getItem("pf_editor")==="1";}
 function setEditorUI(){fab.style.display=editorOn()?"":"none";}
 if(location.hash.replace("#","").toLowerCase()===EDIT_KEY)localStorage.setItem("pf_editor","1");

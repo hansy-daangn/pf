@@ -188,6 +188,9 @@ section{position:relative}
 .acard .hov .ti{font-weight:700;font-size:13.5px;color:#fff;line-height:1.35;text-align:left}
 .acard .hov .rl{font-weight:300;font-size:11px;color:rgba(255,255,255,.75);margin-top:2px}
 .acard.offcard{opacity:.3}
+.ordbtns{position:absolute;top:8px;left:8px;z-index:3;display:flex;gap:4px}
+.ob{width:26px;height:26px;border-radius:50%;background:rgba(13,13,15,.82);border:1px solid var(--hl-d);color:#fff;font-size:14px;line-height:1;display:grid;place-items:center;padding:0}
+.ob:hover{background:var(--red2);border-color:transparent}
 .grouptag{position:absolute;top:8px;right:8px;background:rgba(13,13,15,.72);border:1px solid var(--hl-d);border-radius:100px;padding:3px 8px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:#fff;z-index:1;font-weight:600}
 
 /* ============ FOOTER (minimal) ============ */
@@ -398,18 +401,18 @@ const W=[
 /* ========== 스타일 스터디 타일 (피그마 '다양한 스타일 시도' 개별 이미지 → 갤러리에 혼합) ========== */
 const ST=[
  {id:"st_c1a",st:true,cat:"style",title:"물결 — 시네마틱 루프",role:"스타일 스터디",img:"assets/fig/st_c1a.png",v:"assets/fig/sea.mp4",ar:"321 / 437"},
- {id:"st_c2a",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c2a.png",ar:"401 / 219"},
- {id:"st_c3a",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c3a.png",ar:"386 / 217"},
- {id:"st_c1b",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c1b.png",ar:"320 / 109"},
- {id:"st_c2b",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c2b.png",ar:"401 / 218"},
- {id:"st_c3b",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c3b.png",ar:"386 / 217"},
- {id:"st_c1c",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c1c.png",ar:"320 / 110"},
- {id:"st_c2c",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c2c.png",ar:"401 / 219"},
- {id:"st_c3c",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c3c.png",ar:"386 / 217"},
- {id:"st_c1d",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c1d.png",ar:"320 / 109"},
- {id:"st_c2d",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c2d.png",ar:"401 / 218"},
- {id:"st_c3d",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c3d.png",ar:"386 / 223"},
- {id:"st_c1e",st:true,cat:"style",title:"스타일 스터디",role:"모션그래픽",img:"assets/fig/st_c1e.png",ar:"320 / 109"}
+ {id:"st_c2a",st:true,cat:"style",title:"Pikcing — 플랫 2D",role:"스타일 스터디",img:"assets/fig/st_c2a.png",ar:"401 / 219"},
+ {id:"st_c3a",st:true,cat:"style",title:"모노톤 그레인",role:"스타일 스터디",img:"assets/fig/st_c3a.png",ar:"386 / 217"},
+ {id:"st_c1b",st:true,cat:"style",title:"글리치 타이포그래피",role:"스타일 스터디",img:"assets/fig/st_c1b.png",ar:"320 / 109"},
+ {id:"st_c2b",st:true,cat:"style",title:"플랫 2D — 베이커리",role:"스타일 스터디",img:"assets/fig/st_c2b.png",ar:"401 / 218"},
+ {id:"st_c3b",st:true,cat:"style",title:"미니멀 라이팅",role:"스타일 스터디",img:"assets/fig/st_c3b.png",ar:"386 / 217"},
+ {id:"st_c1c",st:true,cat:"style",title:"네온 나이트 드라이브",role:"스타일 스터디",img:"assets/fig/st_c1c.png",ar:"320 / 110"},
+ {id:"st_c2c",st:true,cat:"style",title:"플랫 2D — 재봉",role:"스타일 스터디",img:"assets/fig/st_c2c.png",ar:"401 / 219"},
+ {id:"st_c3c",st:true,cat:"style",title:"UI 모션 — 요금제",role:"스타일 스터디",img:"assets/fig/st_c3c.png",ar:"386 / 217"},
+ {id:"st_c1d",st:true,cat:"style",title:"리릭 타이포 — 퍼플",role:"스타일 스터디",img:"assets/fig/st_c1d.png",ar:"320 / 109"},
+ {id:"st_c2d",st:true,cat:"style",title:"플랫 2D — 편직 공장",role:"스타일 스터디",img:"assets/fig/st_c2d.png",ar:"401 / 218"},
+ {id:"st_c3d",st:true,cat:"style",title:"UI 모션 — 비교 카드",role:"스타일 스터디",img:"assets/fig/st_c3d.png",ar:"386 / 223"},
+ {id:"st_c1e",st:true,cat:"style",title:"리릭 타이포 — 아웃트로",role:"스타일 스터디",img:"assets/fig/st_c1e.png",ar:"320 / 109"}
 ];
 
 /* ========== C1 TOP3 — 생각의 유도 (피그마 C101-103 원문, 인라인 재생) ========== */
@@ -505,7 +508,8 @@ function cardHTML(w){
   const rl=EDITS["w."+w.id+".role"]!=null?EDITS["w."+w.id+".role"]:(w.role||CAT[w.cat]||"");
   const ti=(w.u)?`<span class="ti">${esc(w.title)}</span>`:`<span class="ti" data-k="w.${w.id}.title">${esc(w.title)}</span>`;
   const hov=`<div class="hov">${ti}<span class="rl"${w.u?"":` data-k="w.${w.id}.role"`}>${esc(rl)}</span></div>`;
-  return `<div class="acard${hid?" offcard":""}" data-cat="${w.cat}" data-id="${w.id}" role="button" tabindex="0" aria-label="${esc(w.title)}">${media}${hov}</div>`;}
+  const ord=editing?`<span class="ordbtns"><button class="ob" data-mv="-1" aria-label="앞으로">‹</button><button class="ob" data-mv="1" aria-label="뒤로">›</button></span>`:"";
+  return `<div class="acard${hid?" offcard":""}" data-cat="${w.cat}" data-id="${w.id}" role="button" tabindex="0" aria-label="${esc(w.title)}">${media}${hov}${ord}</div>`;}
 function archiveHTML(){return `<section class="archive sec-dark" id="archive"><div class="wrap">
   <h2 class="arch-h rv" data-k="ui.archH">작업</h2>
   <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button></div>
@@ -551,6 +555,7 @@ function render(){
   document.querySelectorAll(".t3media").forEach(el=>{const go=()=>{if(editing||el.classList.contains("playing"))return;stopT3();const yt=el.dataset.yt;el.insertAdjacentHTML("beforeend",`<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&rel=0&playsinline=1" title="영상 재생" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`);el.classList.add("playing");};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
   document.querySelectorAll(".acard[data-id]").forEach(el=>{const act=()=>{editing?openManage(findWork(el.dataset.id)):openLB(el.dataset.id);};el.addEventListener("click",act);el.addEventListener("keydown",e=>{if(editing&&e.target.closest("[data-k]"))return;if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});});
   document.querySelectorAll(".acard [data-k]").forEach(el=>el.addEventListener("click",e=>{if(editing)e.stopPropagation();}));
+  document.querySelectorAll(".acard .ob").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();moveWork(b.closest(".acard").dataset.id,+b.dataset.mv);}));
   const g=document.querySelector(".agrid");
   const applyFilter=()=>{document.querySelectorAll("#afil button").forEach(x=>{x.classList.toggle("on",x.dataset.f===FILTER);x.setAttribute("aria-pressed",String(x.dataset.f===FILTER));});g.querySelectorAll(".acard").forEach(c=>c.style.display=(FILTER==="all"||c.dataset.cat===FILTER)?"":"none");};
   document.querySelectorAll("#afil button").forEach(b=>b.onclick=()=>{FILTER=b.dataset.f;applyFilter();});
@@ -572,13 +577,22 @@ function setJSON(k,val){EDITS[k]=JSON.stringify(val);}
 function userWorks(){return getJSON("works.add",[]).map(w=>Object.assign({u:true,role:w.role||"",year:w.year||"",desc:w.desc||"",campaign:w.campaign||"",variants:[]},w));}
 function archiveWorks(){return W.concat(userWorks()).concat(ST);}
 function hiddenSet(){return new Set(getJSON("works.hide",[]));}
-/* 갤러리 표시용: 스타일 타일을 작업 사이에 섞고, 숨긴 작업 제외(편집 모드에선 흐리게 표시) */
+/* 갤러리 표시용: 스타일 타일을 작업 사이에 섞고, 저장된 순서(works.order) 적용, 숨긴 작업 제외(편집 모드에선 흐리게 표시) */
 function gridWorks(){
   const base=W.concat(userWorks()),out=[];let si=0;
   base.forEach((w,i)=>{out.push(w);if(si<ST.length&&i%2===1)out.push(ST[si++]);});
   while(si<ST.length)out.push(ST[si++]);
+  const ord=getJSON("works.order",[]);
+  if(ord.length){const pos=new Map(ord.map((id,i)=>[id,i]));
+    out.forEach((w,i)=>{w._p=pos.has(w.id)?pos.get(w.id):(-1e6+i);});
+    out.sort((a,b)=>a._p-b._p);}
   const hid=hiddenSet();
   return editing?out:out.filter(w=>!hid.has(w.id));}
+function moveWork(id,dir){
+  const ids=gridWorks().map(w=>w.id),i=ids.indexOf(id),j=i+dir;
+  if(i<0||j<0||j>=ids.length)return;
+  ids.splice(i,1);ids.splice(j,0,id);
+  setJSON("works.order",ids);rerender();}
 function findWork(id){return archiveWorks().find(x=>x.id===id);}
 const isLocal=u=>!/^https?:/i.test(u||"");
 function cdnItem(md){return md.type==="video"?{kind:"video",src:md.url,poster:md.poster||"",thumb:md.poster||"",label:resFmt(md.res),key:md.url,type:"video",res:md.res,url:md.url}:{kind:"image",src:md.url,thumb:isLocal(md.url)?md.url:wsrv(md.url,120),label:resFmt(md.res),key:md.url,type:"image",res:md.res,url:md.url};}
@@ -815,7 +829,7 @@ document.getElementById("upGo").onclick=doUpload;
 document.querySelectorAll("#upCats button,#upAr button").forEach(b=>{b.setAttribute("aria-pressed",String(b.classList.contains("on")));b.onclick=()=>{[...b.parentElement.children].forEach(x=>{x.classList.remove("on");x.setAttribute("aria-pressed","false");});b.classList.add("on");b.setAttribute("aria-pressed","true");};});
 document.getElementById("upFile").addEventListener("change",()=>{const f=document.getElementById("upFile").files[0];document.getElementById("upPosterRow").style.display=f&&(/^video\//.test(f.type)||/\.(mp4|webm)$/i.test(f.name))?"":"none";});
 /* ---- 편집 도구: 비밀 키워드(아무 곳에서나 타이핑) 또는 #키워드 해시로만 표시 ---- */
-const EDIT_KEY="hansy0715";
+const EDIT_KEY="hansy";
 function editorOn(){return localStorage.getItem("pf_editor")==="1";}
 function setEditorUI(){const ef=document.getElementById("editFab");if(ef)ef.style.display=editorOn()?"":"none";}
 if(location.hash.replace("#","").toLowerCase()===EDIT_KEY)localStorage.setItem("pf_editor","1");
