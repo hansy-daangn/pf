@@ -47,60 +47,34 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .eye i{width:16px;height:1px;background:var(--mag1);display:inline-block}
 .sec-dark .eye{color:var(--mag2)}.sec-light .eye{color:var(--magink)}
 
-/* header — solid dark bar from load so cream brand/nav stays readable over the light hero */
-header.top{position:sticky;top:0;z-index:50;background:rgba(13,13,15,.86);backdrop-filter:blur(12px);transition:box-shadow .3s;border-bottom:1px solid var(--hl-d)}
-header.top.solid{box-shadow:0 8px 30px -18px rgba(0,0,0,.6)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.top .in{max-width:var(--maxw);margin:0 auto;padding:0 26px;height:62px;display:flex;align-items:center;justify-content:space-between}
-.brand{font-weight:850;font-size:15px;letter-spacing:-.02em;display:flex;align-items:center;gap:9px;color:var(--cream)}
-.brand i{width:8px;height:8px;border-radius:2px;background:var(--grad)}
-.brand small{font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.14em;color:var(--mut-d)}
-nav.menu{display:flex;gap:6px;align-items:center}
-nav.menu a{font-size:13px;color:var(--mut-d);font-weight:600;padding:8px 12px;border-radius:100px;font-family:var(--mono);letter-spacing:.04em}
-nav.menu a:hover{color:var(--cream)}
-nav.menu a.cta{color:var(--cream);border:1px solid var(--hl-d)}
-nav.menu a.cta:hover{background:var(--grad);border-color:transparent;color:#fff}
-@media(max-width:680px){.brand small,nav.menu a:not(.cta){display:none}}
 
 section{position:relative}
 .sec-light{background:var(--cream);color:var(--ink)}
 .sec-dark{background:var(--dark);color:var(--cream);position:relative}
 .sec-dark::before{content:"";position:absolute;inset:0;background:var(--grain);opacity:.04;pointer-events:none;mix-blend-mode:screen}
 .sec-dark .wrap,.sec-light .wrap{position:relative;z-index:1}
-/* light↔dark boundary event: hairline + ray */
-.edge{height:0;position:relative}
-.edge::after{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--mag1),transparent);opacity:.6}
 
-.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+.shead{margin-bottom:36px}
 .shead h2{font-weight:850;font-size:clamp(1.6rem,3.6vw,2.7rem);letter-spacing:-.03em;line-height:1.04}
-.shead h2 em{font-style:normal;font-family:var(--mono);font-weight:600;font-size:.34em;letter-spacing:.16em;text-transform:uppercase;color:var(--mag2);display:block;margin-top:10px}
-.sec-light .shead h2 em{color:var(--magink)}
-.shead .note{font-size:12.5px;color:var(--mut-d);font-family:var(--mono)}
-.sec-light .shead .note{color:var(--mut-c)}
 
-/* ============ HERO ============ */
-.hero{padding:clamp(84px,15vh,150px) 0 clamp(48px,7vh,88px)}
-.hero-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:clamp(28px,5vw,64px);align-items:start}
-.slogan{font-weight:900;font-size:clamp(2.9rem,8vw,6.2rem);line-height:.98;letter-spacing:-.035em}
-.slogan span{display:block}
-.hero-lead{margin-top:18px;font-size:clamp(1.02rem,1.8vw,1.28rem);font-weight:800;letter-spacing:-.02em;line-height:1.4;max-width:28ch;color:var(--ink)}
-.mani{margin-top:clamp(18px,3vh,30px);font-size:clamp(.98rem,1.5vw,1.18rem);line-height:1.6;font-weight:500;color:var(--ink2);max-width:32ch}
-.mani p{margin-bottom:4px}
-.mani b{font-weight:800}
-.hero-desc{margin-top:22px;font-size:14px;line-height:1.7;color:var(--ink2);max-width:44ch}
-.hero-tags{margin-top:24px;display:flex;flex-wrap:wrap;gap:8px}
-.hero-tags span{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--ink2);border:1px solid var(--line2);border-radius:100px;padding:6px 12px}
-.hero-side{position:sticky;top:90px}
-.statband{border-top:1px solid var(--line2)}
-.statrow{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--hl-l)}
-.statrow .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(1.5rem,3.4vw,2.15rem);letter-spacing:-.03em;line-height:1}
-.statrow .l{font-size:12px;color:var(--mut-c);text-align:right;font-weight:600}
-.statmau{margin-top:16px;font-weight:600;font-size:13px;line-height:1.5;color:var(--mut-c)}
-.statcap{margin-top:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--mut-c)}
-@media(max-width:880px){.hero-grid{grid-template-columns:1fr;gap:34px}.hero-side{position:static}}
+/* ============ INTRO — 이력서 한판 (light, compressed) ============ */
+.intro{padding:clamp(40px,7vh,74px) 0 clamp(34px,5vh,60px)}
+.intro-slogan{font-weight:900;font-size:clamp(2.2rem,6vw,4.4rem);line-height:.98;letter-spacing:-.035em;margin-bottom:clamp(22px,4vh,40px)}
+.intro-slogan span{display:block}
+.intro-lead{margin-top:16px;font-size:clamp(1rem,1.7vw,1.24rem);font-weight:800;letter-spacing:-.02em;line-height:1.45;max-width:38ch;color:var(--ink)}
+.intro-mani{margin-top:14px;font-size:clamp(.95rem,1.4vw,1.1rem);line-height:1.6;font-weight:500;color:var(--ink2);max-width:40ch}
+.intro-mani p{margin-bottom:2px}
+.statband{margin-top:clamp(22px,4vh,38px);display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line2);border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+.statrow{background:var(--cream);padding:14px 16px}
+.statrow .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(1.3rem,2.8vw,1.9rem);letter-spacing:-.03em;line-height:1;display:block}
+.statrow .l{font-size:11.5px;color:var(--mut-c);font-weight:600;margin-top:6px;display:block}
+.statmau{margin-top:14px;font-weight:600;font-size:13px;line-height:1.5;color:var(--mut-c)}
+.statcap{margin-top:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--mut-c)}
+@media(max-width:680px){.statband{grid-template-columns:repeat(2,1fr)}}
 
-/* ============ RESUME strip (light) ============ */
-.resume{padding:clamp(40px,7vh,78px) 0}
+/* ============ RESUME (light) ============ */
+.resume{padding:clamp(30px,5vh,58px) 0}
 .rh{display:grid;grid-template-columns:120px 1fr;gap:clamp(20px,3.5vw,40px);align-items:start;padding-bottom:22px;border-bottom:1px solid var(--line2)}
 .rh-photo{width:120px;height:150px;flex:none;background:#fff;border:1px solid var(--line2);border-radius:12px;padding:6px;position:relative;box-shadow:0 12px 30px -18px rgba(0,0,0,.4)}
 .rh-photo .frame{width:100%;height:100%;border-radius:7px;overflow:hidden;background-color:#eceae5;background-repeat:no-repeat;background-size:var(--bs,178%);background-position:var(--bx,50%) var(--by,18%);position:relative}
@@ -129,31 +103,23 @@ section{position:relative}
 .awtable{columns:3;column-gap:26px}
 .awrow{break-inside:avoid;display:flex;gap:10px;padding:5px 0;font-size:12px}
 .awrow .pz{font-weight:800;color:var(--ink);min-width:44px;white-space:nowrap;font-size:11.5px}
-.awrow.top .pz{color:var(--magink)}
 .awrow .d{color:var(--ink)}.awrow .d small{display:block;color:var(--faint-d);font-size:11px;margin-top:1px}
 @media(max-width:860px){.r3{grid-template-columns:1fr;gap:18px}.awtable{columns:2}}
 @media(max-width:560px){.awtable{columns:1}.rh{grid-template-columns:96px 1fr}.rh-photo{width:96px;height:120px}}
 
 /* ============ TOP3 rhetoric (dark) ============ */
-.rhetoric{padding:clamp(64px,10vh,120px) 0 clamp(48px,7vh,90px)}
-.t3sum{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 54px;border-top:1px solid var(--hl-d);border-bottom:1px solid var(--hl-d)}
-.t3sum a{padding:20px 4px;border-right:1px solid var(--hl-d);display:block}
-.t3sum a:last-child{border-right:0}
-.t3sum .n{font-family:var(--mono);font-size:11px;color:var(--mag2);letter-spacing:.1em}
-.t3sum .ko{font-weight:850;font-size:clamp(1.05rem,2vw,1.4rem);margin-top:8px;letter-spacing:-.02em}
-.t3sum .en{font-family:var(--mono);font-size:11px;color:var(--mut-d);letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
-.t3sum a:hover .ko{color:var(--mag2)}
-@media(max-width:680px){.t3sum{grid-template-columns:1fr}.t3sum a{border-right:0;border-bottom:1px solid var(--hl-d);padding:16px 4px}.t3sum a:last-child{border-bottom:0}}
+.rhetoric{padding:clamp(56px,9vh,104px) 0 clamp(48px,7vh,90px)}
 .t3card{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,4vw,52px);align-items:center;padding:clamp(30px,5vh,58px) 0;border-top:1px solid var(--hl-d)}
 .t3card:nth-child(even){grid-template-columns:.85fr 1.15fr}
 .t3card:nth-child(even) .t3media{order:2}
 .t3media{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--hl-d);background:#000;aspect-ratio:16/10;cursor:pointer}
 .t3media img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease),opacity .3s}
 .t3media:hover img{transform:scale(1.03)}
+.t3media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.t3media.playing img,.t3media.playing .play{display:none}
 .t3media .play{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
-.t3media .play span{width:58px;height:58px;border-radius:50%;background:rgba(13,13,15,.55);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.35);display:grid;place-items:center;color:#fff;font-size:17px;padding-left:3px;transition:.25s}
+.t3media .play span{width:60px;height:60px;border-radius:50%;background:rgba(13,13,15,.5);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.4);display:grid;place-items:center;color:#fff;font-size:18px;padding-left:3px;transition:.25s}
 .t3media:hover .play span{background:var(--grad);border-color:transparent;transform:scale(1.08)}
-.t3media .yt{position:absolute;left:12px;bottom:12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);padding:4px 9px;border-radius:100px}
 .t3tools{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
 .t3tools span{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--mut-d);border:1px solid var(--hl-d);border-radius:100px;padding:4px 10px}
 .t3idx{font-family:var(--mono);font-size:12px;color:var(--mag2);letter-spacing:.1em}
@@ -169,18 +135,15 @@ section{position:relative}
 .t3meta dd{font-size:12.5px;color:#d9d6d0;line-height:1.5}
 @media(max-width:760px){.t3card,.t3card:nth-child(even){grid-template-columns:1fr;gap:22px}.t3card:nth-child(even) .t3media{order:0}}
 
-/* ============ PROCESS (dark) ============ */
-.process{padding:clamp(56px,8vh,104px) 0}
-.psteps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,30px)}
-.pstep{border-top:1px solid var(--mag1);padding-top:18px}
-.pstep .n{font-family:var(--mono);font-size:12px;color:var(--mag2);letter-spacing:.12em}
-.pstep h4{font-weight:800;font-size:clamp(1.05rem,1.9vw,1.35rem);letter-spacing:-.02em;margin-top:12px}
-.pstep p{margin-top:10px;font-size:13.5px;line-height:1.65;color:var(--mut-d)}
-.pnote{margin-top:36px;border:1px solid var(--hl-d);border-radius:14px;padding:22px 24px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:linear-gradient(90deg,rgba(255,47,156,.06),transparent)}
-.pnote .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mag2);white-space:nowrap}
-.pnote .t{font-size:14.5px;font-weight:600;line-height:1.55;color:#eceae5}
-.pnote .t b{color:#fff;font-weight:800}
-@media(max-width:760px){.psteps{grid-template-columns:1fr;gap:22px}}
+/* ============ TECH — 기술의 개선 (dark, real screenshots) ============ */
+.tech{padding:clamp(56px,8vh,104px) 0}
+.techblk{padding:clamp(30px,5vh,54px) 0;border-top:1px solid var(--hl-d)}
+.techblk:first-of-type{border-top:0}
+.techblk .n{font-family:var(--mono);font-size:12px;color:var(--mag2);letter-spacing:.12em}
+.techblk h4{font-weight:850;font-size:clamp(1.3rem,2.6vw,1.9rem);letter-spacing:-.03em;margin-top:10px}
+.techblk p{margin-top:12px;font-size:14px;line-height:1.65;color:var(--mut-d);max-width:60ch}
+.techfig{margin-top:22px;border-radius:14px;overflow:hidden;border:1px solid var(--hl-d);background:#0a0a0c}
+.techfig img{width:100%;height:auto;display:block}
 
 /* ============ ARCHIVE (dark) ============ */
 .archive{padding:clamp(56px,8vh,104px) 0 clamp(70px,10vh,120px)}
@@ -304,10 +267,6 @@ footer{border-top:1px solid var(--line2);padding:22px 0 50px;color:var(--faint-d
 </style>
 </head>
 <body>
-<header class="top"><div class="in">
-  <a href="#top" class="brand"><i></i><span data-k="ui.brand">김한결</span> <small>HANSY</small></a>
-  <nav class="menu"><a href="#rhetoric" data-k="ui.navWork">Work</a><a href="#resume" data-k="ui.navAbout">About</a><a href="mailto:hansy@daangn.com" class="cta" data-k="ui.navCta">Contact</a></nav>
-</div></header>
 <main id="main" aria-label="포트폴리오"></main>
 <noscript><div style="padding:64px 26px;max-width:640px;margin:0 auto;color:#f6f4ef;font-family:sans-serif;line-height:1.6"><h1 style="font-weight:800">김한결 · 영상 디자이너</h1><p>새로운 조합, 새로운 의미. 퍼포먼스·캠페인 영상 디자이너 김한결의 포트폴리오입니다. 전체 내용을 보려면 자바스크립트를 켜고 새로고침해 주세요.</p><p>문의 · <a style="color:#ff6ab0" href="mailto:hansy@daangn.com">hansy@daangn.com</a></p></div></noscript>
 
@@ -349,8 +308,11 @@ const A={
  edu:[["2024 — 2025","동아방송예술대학교","콘텐츠제작과 전공심화 졸업"],["2019 — 2024","동아방송예술대학교","영상제작과 졸업"],["2016 — 2019","인천마전고등학교","졸업"]],
  skills:"After Effects, Expressions/JS, Premiere Pro, Photoshop, Illustrator, DaVinci Resolve, Cinema 4D, Xpresso·Python, Redshift, Blender, Marvelous, ComfyUI, Figma",
  awards:[["최우수상","한국방송미디어공학회 — 대학생·주니어 논문 경진대회","3D 스캐닝 학술 논문 · 제1저자 · 2024"],["대상","동아방송예술대학교 — 제24회 졸업작품전","AI 단편영화 · 감독·편집 · 2023"],["2등상","제이비피코리아 영상 공모전","3D 영상 · 개인 작품 · 2025"],["특별상","큰사람커넥트 — 제2회 이야기 모바일 영상 공모전","모션그래픽 · 개인 작품 · 2024"],["특별상","자생의료재단 — 독립운동 콘텐츠 공모전","3D 영상 · 개인 작품 · 2023"],["우수상","한국연구재단 — 랩스튜디오 영상 경진대회","홍보영상 · 연출 · 2020"],["최우수상","I&CO 성형외과 — UCC 공모전","3D 영상 · 개인 작품 · 2019"],["우수상","상시 수기 UCC 공모전","3D 영상 · 개인 작품 · 2018"],["은상","국세청 — 2018 청렴 콘텐츠 공모전","영상 촬영 · 개인 작품 · 2018"],["대상","남양주시청 — 정약용 홍보영상 공모전","3D 영상 · 개인 작품 · 2018"],["동상","한국복지대학교 — 제3회 전국 고등학생 UCC 공모전","모션그래픽 · 개인 작품 · 2017"],["대상","경기도청 — 제2회 남한산성 청소년 영상제","모션그래픽 · 개인 작품 · 2017"]],
- process:[["01","코딩으로 작업 시간 단축","익스프레션과 스크립트로 반복 작업을 자동화해, 손이 아니라 규칙으로 만든다."],["02","노드로 작업 체계화","노드 기반 구조로 수정과 재사용이 쉬운 파이프라인을 설계한다."],["03","다양한 스타일 연구","잡지·타 매체의 레이아웃과 스타일프레임을 분석해 레퍼런스의 폭을 넓힌다."]],
- procNote:"익스프레션 템플릿 하나로 봄·신년·가을 세 시즌을 자동 양산 — 당근가 키워드 캠페인.",
+ tech:[
+  ["01","다양한 스타일 시도","잡지·타 매체의 레이아웃과 스타일프레임을 분석해 레퍼런스의 폭을 넓히고, 프로젝트마다 새로운 룩을 실험한다.","assets/fig/style_grid.png","다양한 스타일 시도 — 시네마틱·아이소메트릭·키네틱 타이포·3D 등"],
+  ["02","코딩을 활용한 작업 시간 단축","익스프레션과 스크립트로 반복 작업을 자동화한 템플릿. 메시지 개수·길이·타이밍을 값으로 조절해 시즌 소재를 대량 양산한다.","assets/fig/coding.png","AE 익스프레션 + SEED 템플릿 UI — 값만 바꾸면 소재가 자동 생성"],
+  ["03","노드로 작업 체계화","C4D Xpresso·Python 노드로 3D 씬을 구조화해, 수정과 재사용이 쉬운 파이프라인을 설계한다.","assets/fig/nodes.png","Xpresso·Python 노드 그래프로 구조화한 3D 씬 (와이어프레임 → 렌더)"]
+ ],
  about:["분석하고 정리하길 즐기고, 새로운 것을 배움에 두려움이 없습니다.","기존의 것에 금세 싫증나고, 남들과 다르길 좋아합니다.","배운 건 정리해 발표하고, 다른 매체의 레이아웃까지 뜯어봅니다."],
  aboutQ:"한번 본 건 다시 안 보잖아?"
 };
@@ -381,15 +343,15 @@ const W=[
 ];
 /* TOP3 — 수사학 설득의 3요소 (개인/수상 대표작, 클릭 시 유튜브) */
 const TOP3=[
- {idx:"01",ko:"시선 유도",en:"Eye Trace",tools:["After Effects"],work:"Spotify RE:SING",kind:"가상 프로모션 · 2023.6",yt:"m1VSvI_tZbI",
+ {idx:"01",ko:"시선 유도",en:"Eye Trace",tools:["After Effects"],work:"Spotify RE:SING",kind:"가상 프로모션 · 2023.6",yt:"m1VSvI_tZbI",poster:"assets/fig/top3_eyetrace.png",
   intent:"소수의 동적 요소가 화면을 장악해 시선을 유도한다. 점은 스크린의 터치 포인트를, 종이비행기는 공유를 뜻한다. 신기능 자체가 아니라 그로 인한 사용자 경험을 기대하게 만들었다.",
   q:"시선은 왜 대각선에서 멈추지 않을까?",
   meta:[["연출의도","상징적 요소로 신기능 사용 과정을 직관적으로 소개"],["색상","상징색 녹색 + 보색 적색 강조"],["제작기간","기획 6일 + 본작업 8일"]]},
- {idx:"02",ko:"상징적 연결",en:"Metaphor",tools:["After Effects","Illustrator"],work:"잠이 오질 않네요",kind:"2D 키네틱 타이포 · 2020.12",yt:"Z6hTS4C-4Ls",
+ {idx:"02",ko:"상징적 연결",en:"Metaphor",tools:["After Effects","Illustrator"],work:"잠이 오질 않네요",kind:"2D 키네틱 타이포 · 2020.12",yt:"Z6hTS4C-4Ls",poster:"assets/fig/top3_metaphor.png",
   intent:"짝사랑을 ‘체스, 전기회로’라는 이질적 이미지로 연결한다. 은유가 만든 해석의 간극을 시청자가 자기 경험으로 채우며 감정에 공감하게 된다.",
   q:"낯선 두 이미지는 어떻게 하나의 마음이 되는가?",
   meta:[["연출의도","이질적 이미지의 은유로 감정의 여백을 설계"],["색상","무채색 → 난색 → 다시 한색으로 역행"],["제작기간","기획 8일 + 본작업 7일"]]},
- {idx:"03",ko:"무의식 자극",en:"Subliminal",tools:["Cinema4D","RedShift","After Effects"],work:"Next to Zero",kind:"3D 모션그래픽 · 2025.5",yt:"J4zBpmVj49c",
+ {idx:"03",ko:"무의식 자극",en:"Subliminal",tools:["Cinema4D","RedShift","After Effects"],work:"Next to Zero",kind:"3D 모션그래픽 · 2025.5",yt:"J4zBpmVj49c",poster:"assets/fig/top3_subliminal.png",
   intent:"주사바늘의 부정적 정서(고통·공포)를 과장해 변화의 필요성을 느끼게 한다. New·Next를 강조하고, 바늘로 글자를 가려 ‘편안함을 향한 우리의 바늘’이라는 새 문장을 무의식에 완성시킨다.",
   q:"보이지 않는 것이 어떻게 마음을 바꾸는가?",
   meta:[["연출의도","서론의 부정 감정을 흐리게, 상징색으로 혁신을 각인"],["색상","상징색 오렌지 + 보색, 서론은 흐리게"],["제작기간","기획 4일 + 본작업 6일 + 포스트 1일"]]}
@@ -403,34 +365,16 @@ const arOf=id=>SQ.has(id)?"1 / 1":LS.has(id)?"16 / 9":"9 / 16";
 function brow(key,e){return `<div class="brow"><span class="yr" data-k="${key}.yr">${esc(e[0])}</span><span class="bd"><b data-k="${key}.org">${esc(e[1])}</b><small data-k="${key}.det">${esc(e[2])}</small></span></div>`;}
 function skillChipsHTML(csv){return csv.split(/,\s*/).filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join("");}
 
-/* ---------- HERO ---------- */
-function heroHTML(){return `<section id="top" class="hero sec-light"><div class="wrap">
-  <h2 class="sr-only">소개</h2>
-  <span class="eye rv"><i></i>영상 디자이너 · 당근 마케팅팀</span>
-  <div class="hero-grid" style="margin-top:22px">
-    <div>
-      <h1 class="slogan rv"><span data-k="r.slogan0">${esc(A.slogan[0])}</span><span class="grad-l" data-k="r.slogan1">${esc(A.slogan[1])}</span></h1>
-      <p class="hero-lead rv" data-k="r.tag">${esc(A.tag)}</p>
-      <div class="mani rv">${A.mani.map((m,i)=>`<p data-k="r.mani${i}">${esc(m)}</p>`).join("")}</div>
-      <p class="hero-desc rv" data-k="r.desc">${esc(A.desc)}</p>
-      <div class="hero-tags rv">${A.tags3.map((t,i)=>`<span data-k="r.tag3_${i}">${esc(t)}</span>`).join("")}</div>
-    </div>
-    <div class="hero-side rv">
-      <div class="statband">${A.stats.map((s,i)=>`<div class="statrow"><span class="v" data-k="r.stat${i}v">${esc(s[0])}</span><span class="l" data-k="r.stat${i}l">${esc(s[1])}</span></div>`).join("")}</div>
-      <div class="statmau" data-k="r.mau">${esc(A.mau)}</div>
-      <div class="statcap" data-k="r.statcap">${esc(A.statcap)}</div>
-    </div>
-  </div>
-</div></section>`;}
-
-/* ---------- RESUME (light) ---------- */
-function resumeHTML(){return `<section class="resume sec-light" id="resume"><div class="wrap">
-  <span class="eye rv" style="margin-bottom:20px"><i></i>RÉSUMÉ · 이력</span>
-  <div class="rh rv" style="margin-top:18px">
+/* ---------- INTRO — 이력서 한판 (서론 압축) ---------- */
+function introHTML(){return `<section id="top" class="intro sec-light"><div class="wrap">
+  <h2 class="sr-only">소개 · 이력</h2>
+  <div class="rh rv">
     <div class="rh-photo"><div class="frame" id="photoFrame" style="background-image:url(assets/img/profile.jpg?v=2)"></div><span class="photohint">드래그로 위치 · 스크롤로 확대</span></div>
     <div>
       <div class="rh-name" data-k="r.name">${esc(A.name)}</div>
       <div class="rh-role"><span data-k="r.info.0">${esc(A.info[0][1])}</span></div>
+      <p class="intro-lead" data-k="r.tag">${esc(A.tag)}</p>
+      <p class="intro-mani" data-k="r.desc">${esc(A.desc)}</p>
       <div class="rh-meta"><span class="ab-meta"><b>생년</b><span data-k="r.info.1">${esc(A.info[1][1])}</span></span><span class="ab-meta"><b>이메일</b><span data-k="ui.email">${esc(A.info[2][1])}</span></span></div>
       <div class="rh-comp">${A.comp.map((c,i)=>`<div class="c"><b>${esc(c[0])}</b><span data-k="r.comp.${i}">${esc(c[1])}</span></div>`).join("")}</div>
     </div>
@@ -440,11 +384,14 @@ function resumeHTML(){return `<section class="resume sec-light" id="resume"><div
     <div class="blk"><h5>학력 Education</h5>${A.edu.map((e,i)=>brow("r.edu."+i,e)).join("")}</div>
     <div class="blk"><h5>기술 Toolset</h5><div class="skills" data-sk>${skillChipsHTML(A.skills)}</div></div>
   </div>
-  <div class="awblk rv"><h5 style="font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint-d);font-weight:600;margin-bottom:12px">수상 Awards · ${A.awards.length}</h5><div class="awtable">${A.awards.map((a,i)=>`<div class="awrow${i<3?" top":""}"><span class="pz" data-k="r.aw.${i}.pz">${esc(a[0])}</span><span class="d"><span data-k="r.aw.${i}.org">${esc(a[1])}</span><small data-k="r.aw.${i}.det">${esc(a[2])}</small></span></div>`).join("")}</div></div>
+  <div class="awblk rv"><h5 style="font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint-d);font-weight:600;margin-bottom:12px">수상 Awards · ${A.awards.length}</h5><div class="awtable">${A.awards.map((a,i)=>`<div class="awrow"><span class="pz" data-k="r.aw.${i}.pz">${esc(a[0])}</span><span class="d"><span data-k="r.aw.${i}.org">${esc(a[1])}</span><small data-k="r.aw.${i}.det">${esc(a[2])}</small></span></div>`).join("")}</div></div>
+  <div class="statband rv">${A.stats.map((s,i)=>`<div class="statrow"><span class="v" data-k="r.stat${i}v">${esc(s[0])}</span><span class="l" data-k="r.stat${i}l">${esc(s[1])}</span></div>`).join("")}</div>
+  <div class="statmau" data-k="r.mau">${esc(A.mau)}</div>
+  <div class="statcap" data-k="r.statcap">${esc(A.statcap)}</div>
 </div></section>`;}
 
-/* ---------- TOP3 rhetoric (dark) ---------- */
-function t3media(t){const poster=t.local?pos(t.local):ytThumb(t.yt);return `<div class="t3media" data-yt="${t.yt}" role="button" tabindex="0" aria-label="${esc(t.work)} 영상 보기"><img src="${poster}" alt="${esc(t.work)} 스틸" loading="lazy"/><span class="play"><span>▶</span></span><span class="yt">YouTube ↗</span></div>`;}
+/* ---------- TOP3 rhetoric (dark) — 인라인 재생 ---------- */
+function t3media(t){return `<div class="t3media" data-yt="${t.yt}" role="button" tabindex="0" aria-label="${esc(t.work)} 영상 재생"><img src="${t.poster}" alt="${esc(t.work)} 스틸" loading="lazy"/><span class="play"><span>▶</span></span></div>`;}
 function t3text(t){return `<div class="t3body">
   <div class="t3tools">${t.tools.map(x=>`<span>${esc(x)}</span>`).join("")}</div>
   <div class="t3idx">${t.idx} / 03</div>
@@ -454,17 +401,16 @@ function t3text(t){return `<div class="t3body">
   <div class="t3q">${esc(t.q)}</div>
   <dl class="t3meta">${t.meta.map(m=>`<dt>${esc(m[0])}</dt><dd>${esc(m[1])}</dd>`).join("")}</dl>
 </div>`;}
-function rhetoricHTML(){return `<div class="edge"></div><section class="rhetoric sec-dark" id="rhetoric"><div class="wrap">
-  <div class="shead rv"><h2>생각의 흐름<em>Three Devices · 설득을 만드는 3가지 장치</em></h2><span class="note">시선을 설계하는 방법의 데모 · 이미지를 누르면 영상으로</span></div>
-  <div class="t3sum rv">${TOP3.map(t=>`<a href="https://youtu.be/${t.yt}" target="_blank" rel="noopener"><span class="n">${t.idx}</span><span class="ko">${esc(t.ko)}</span><span class="en">${esc(t.en)}</span></a>`).join("")}</div>
+function rhetoricHTML(){return `<section class="rhetoric sec-dark" id="rhetoric"><div class="wrap">
+  <h2 class="intro-slogan rv"><span data-k="r.slogan0">${esc(A.slogan[0])}</span><span class="grad" data-k="r.slogan1">${esc(A.slogan[1])}</span></h2>
+  <div class="intro-mani rv" style="color:#cfccc6;max-width:46ch">${A.mani.map((m,i)=>`<p data-k="r.mani${i}">${esc(m)}</p>`).join("")}</div>
   ${TOP3.map(t=>`<div class="t3card rv">${t3media(t)}${t3text(t)}</div>`).join("")}
 </div></section>`;}
 
-/* ---------- PROCESS (dark) ---------- */
-function processHTML(){return `<section class="process sec-dark" id="process"><div class="wrap">
-  <div class="shead rv"><h2>작업 방식<em>How I Work · 코드로 만드는 모션</em></h2></div>
-  <div class="psteps">${A.process.map((p,i)=>`<div class="pstep rv"><div class="n">${esc(p[0])}</div><h4 data-k="r.proc${i}t">${esc(p[1])}</h4><p data-k="r.proc${i}d">${esc(p[2])}</p></div>`).join("")}</div>
-  <div class="pnote rv"><span class="k">Automation ↗</span><span class="t" data-k="r.procNote">${esc(A.procNote)}</span></div>
+/* ---------- TECH — 기술의 개선 (dark, 실제 화면/움짤) ---------- */
+function techHTML(){return `<section class="tech sec-dark" id="tech"><div class="wrap">
+  <div class="shead rv"><h2>기술의 개선</h2></div>
+  ${A.tech.map(p=>`<div class="techblk rv"><div class="n">${esc(p[0])}</div><h4>${esc(p[1])}</h4><p>${esc(p[2])}</p><div class="techfig"><img src="${p[3]}" alt="${esc(p[4])}" loading="lazy"/></div></div>`).join("")}
 </div></section>`;}
 
 /* ---------- ARCHIVE (dark) ---------- */
@@ -476,17 +422,16 @@ function cardHTML(w){
     media=`<div class="media" style="aspect-ratio:${ar}">${gtag}${poster}${video}</div>`;}
   else media=`<div class="media" style="aspect-ratio:${arOf(w.id)}">${gtag}<img src="${pos(w.id)}" alt="${esc(w.title)}" loading="lazy" decoding="async"/><video muted loop playsinline preload="none" data-src="${vid(w.id)}" aria-hidden="true"></video></div>`;
   const ti=w.u?`<div class="ti">${esc(w.title)}</div>`:`<div class="ti" data-k="w.${w.id}.title">${esc(w.title)}</div>`;
-  const cmb=w.combo?`<div class="cmb">${esc(w.combo)}</div>`:"";
-  return `<div class="acard" data-cat="${w.cat}" data-id="${w.id}" role="button" tabindex="0" aria-label="${esc(w.title)}">${media}<div class="acap"><span class="catpill">${CAT[w.cat]||w.cat}</span>${ti}${cmb}</div></div>`;}
+  return `<div class="acard" data-cat="${w.cat}" data-id="${w.id}" role="button" tabindex="0" aria-label="${esc(w.title)}">${media}<div class="acap"><span class="catpill">${CAT[w.cat]||w.cat}</span>${ti}</div></div>`;}
 function archiveHTML(){return `<section class="archive sec-dark" id="archive"><div class="wrap">
-  <div class="shead rv"><h2>작업<em>Selected Work · A + B → 새로운 의미</em></h2><span class="note">스크롤 시 자동 재생 · 클릭 시 성과·전 사이즈</span></div>
+  <div class="shead rv"><h2>작업</h2></div>
   <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button></div>
   <div class="agrid">${archiveWorks().map(cardHTML).join("")}</div>
 </div></section>`;}
 
 /* ---------- ABOUT / 성향 (light) ---------- */
-function aboutHTML(){return `<div class="edge"></div><section class="about sec-light" id="about"><div class="wrap">
-  <span class="eye rv" style="margin-bottom:26px"><i></i>성향 · How I Think</span>
+function aboutHTML(){return `<section class="about sec-light" id="about"><div class="wrap">
+  <span class="eye rv" style="margin-bottom:26px"><i></i>성향</span>
   <div class="about-grid" style="margin-top:20px">
     <div class="about-lines rv">${A.about.map((l,i)=>`<p data-k="r.about${i}">${esc(l)}</p>`).join("")}</div>
     <div class="about-q rv"><small>한 문장으로</small><span class="grad" data-k="r.aboutQ">${esc(A.aboutQ)}</span></div>
@@ -517,8 +462,6 @@ function applyEdits(){
     const empty=(!org||!org.textContent.trim())&&(!det||!det.textContent.trim());
     row.style.display=empty?"none":"";
   });
-  /* 수상 강조는 순서(index)가 아니라 등급으로 — 대상·최우수상만 */
-  document.querySelectorAll(".awrow").forEach(row=>{const pz=(row.querySelector(".pz")||{}).textContent||"";row.classList.toggle("top",/대상|최우수상/.test(pz.trim()));});
 }
 
 function setupPhotoAdjust(){
@@ -537,18 +480,19 @@ const PREVIEW_RANGE=[0,8];
 function attachRangeLoop(v){if(v._rangeBound)return;v._rangeBound=true;const[ra,rb]=PREVIEW_RANGE;v.addEventListener("timeupdate",()=>{if(v.currentTime>=rb){try{v.currentTime=ra;}catch(_){}}});}
 const MAXPREV=()=>innerWidth<700?2:5;
 function playingCount(){return document.querySelectorAll(".media.playing").length;}
-function pauseAllPreviews(){document.querySelectorAll(".acard video").forEach(v=>v.pause());document.querySelectorAll(".media.playing").forEach(m=>m.classList.remove("playing"));}
+function stopT3(){document.querySelectorAll(".t3media.playing").forEach(el=>{const f=el.querySelector("iframe");if(f)f.remove();el.classList.remove("playing");});}
+function pauseAllPreviews(){document.querySelectorAll(".acard video").forEach(v=>v.pause());document.querySelectorAll(".media.playing").forEach(m=>m.classList.remove("playing"));stopT3();}
 function resumeVisiblePreviews(){if(RMOTION)return;document.querySelectorAll(".acard").forEach(c=>{if(c.style.display==="none")return;if(playingCount()>=MAXPREV())return;const r=c.getBoundingClientRect();if(r.top<innerHeight+90&&r.bottom>-90){const v=c.querySelector("video"),m=c.querySelector(".media");if(!v||m.classList.contains("playing"))return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}});}
 
 const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting&&!lbOpen&&!editing&&!RMOTION){if(m.classList.contains("playing")||playingCount()>=MAXPREV())return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();if(m)m.classList.remove("playing");}}),{rootMargin:"90px 0px",threshold:.25});
 const revO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");revO.unobserve(e.target);}}),{rootMargin:"0px 0px -8% 0px",threshold:.06});
 function render(){
-  document.getElementById("main").innerHTML=heroHTML()+resumeHTML()+rhetoricHTML()+processHTML()+archiveHTML()+aboutHTML()+contactHTML();
+  document.getElementById("main").innerHTML=introHTML()+rhetoricHTML()+techHTML()+archiveHTML()+aboutHTML()+contactHTML();
   applyEdits();
   setupPhotoAdjust();
   document.querySelectorAll(".acard").forEach(c=>io.observe(c));
   document.querySelectorAll(".rv").forEach(el=>revO.observe(el));
-  document.querySelectorAll(".t3media").forEach(el=>{const go=()=>window.open("https://youtu.be/"+el.dataset.yt,"_blank","noopener");el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
+  document.querySelectorAll(".t3media").forEach(el=>{const go=()=>{if(el.classList.contains("playing"))return;const yt=el.dataset.yt;el.insertAdjacentHTML("beforeend",`<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&rel=0&playsinline=1" title="영상 재생" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`);el.classList.add("playing");};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
   document.querySelectorAll(".acard[data-id]").forEach(el=>{const act=()=>{editing?openManage(findWork(el.dataset.id)):openLB(el.dataset.id);};el.addEventListener("click",act);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});});
   const g=document.querySelector(".agrid");
   document.querySelectorAll("#afil button").forEach(b=>b.onclick=()=>{if(editing)return;document.querySelectorAll("#afil button").forEach(x=>x.classList.remove("on"));b.classList.add("on");const f=b.dataset.f;g.querySelectorAll(".acard").forEach(c=>c.style.display=(f==="all"||c.dataset.cat===f)?"":"none");});
@@ -739,7 +683,6 @@ async function saveEdits(){
     else{const e=await r.json().catch(()=>({}));alert("GitHub 저장 실패: "+(e.message||r.status));if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");}
   }catch(e){alert("네트워크 오류 — 저장 실패. "+e.message);}
 }
-addEventListener("scroll",()=>{const h=document.querySelector("header.top");if(h)h.classList.toggle("solid",scrollY>10);},{passive:true});
 /* 편집 도구는 소유자만: 주소 끝에 #edit 를 붙이거나(이후 이 브라우저에 기억됨) 그 외 방문자에겐 숨김 */
 const EDITOR=(location.hash.replace("#","")==="edit")||localStorage.getItem("pf_editor")==="1";
 if(EDITOR)localStorage.setItem("pf_editor","1");else{const ef=document.getElementById("editFab");if(ef)ef.style.display="none";}
