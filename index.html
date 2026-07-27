@@ -27,6 +27,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:#fff;color:var(--ink);font-family:var(--san);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+/* 콘텐츠 보호: 선택·드래그·롱프레스 저장 차단 (편집 모드에선 해제) */
+body:not(.editing){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+img,video{-webkit-user-drag:none}
+@media print{body{display:none}}
 ::selection{background:var(--red2);color:#fff}
 a{color:inherit;text-decoration:none}img,video{display:block;max-width:100%}
 button{font-family:inherit;cursor:pointer;color:inherit}
@@ -126,19 +130,17 @@ section{position:relative}
 .slog .acc2{background-image:url(assets/fig/slog2.png)}
 @media(forced-colors:active){.slog .acc{-webkit-text-fill-color:CanvasText;color:CanvasText;background:none}}
 .hmani{margin-top:clamp(12px,2vh,20px);font-weight:200;font-size:clamp(14px,3.4cqw,28px);line-height:1.83;color:#000}
-.hcards{display:flex;flex-direction:column;gap:clamp(10px,1.4vh,17px)}
-.hcard{position:relative;aspect-ratio:775/242;overflow:hidden;background:#000}
-.hcard>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.hcard .ov{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:clamp(12px,2.3vw,35px) clamp(12px,2.3vw,35px) clamp(10px,1.6vw,18px);background:linear-gradient(180deg,rgba(0,0,0,0) 60%,#000 86%);color:#fff}
-.hcard .t{font-weight:700;font-size:clamp(13px,4.1cqw,32px);line-height:1.2}
-.hcard .q{font-weight:200;font-size:clamp(13px,4.1cqw,32px);line-height:1.2}
-.hcard .mt{flex:none;display:flex;gap:clamp(7px,1.8cqw,13px);font-weight:400;font-size:clamp(9.5px,1.7cqw,13px);line-height:1.45}
-.hcard .mt .lb{color:rgba(255,255,255,.85)}
-@media(max-width:520px){
- .hcard{aspect-ratio:auto}
- .hcard .ov{position:relative;inset:auto;flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:4px;min-height:28vw;background:linear-gradient(180deg,rgba(0,0,0,0) 0,rgba(0,0,0,.6) 34%,#000 80%)}
- .hcard .mt{gap:8px}
-}
+/* 조합 카드: 이미지 + 텍스트 플랫 행 (목차·챕터와 같은 구조 언어) */
+.hcards{display:flex;flex-direction:column}
+.hcard{display:grid;grid-template-columns:38cqw 1fr;gap:clamp(12px,3.4cqw,26px);padding:clamp(14px,2.8cqw,22px) 2px;border-top:1px solid var(--line2);align-items:center}
+.hcard:last-child{border-bottom:1px solid var(--line2)}
+.hcard .im{aspect-ratio:16/10;overflow:hidden;border-radius:12px;background:#000}
+.hcard .im img{width:100%;height:100%;object-fit:cover}
+.hcard .t{font-weight:700;font-size:clamp(14px,3.1cqw,22px);line-height:1.4}
+.hcard .q{font-weight:300;font-size:clamp(12.5px,2.6cqw,17px);line-height:1.5;color:var(--tlab);margin-top:3px}
+.hcard .mt{margin-top:9px;font-weight:400;font-size:clamp(10.5px,2cqw,13px);line-height:1.55;color:var(--tlab)}
+.hcard .mt b{font-weight:700;color:var(--ink);margin-right:7px}
+@media(max-width:420px){.hcard{grid-template-columns:1fr;gap:10px;align-items:start}.hcard .im{aspect-ratio:16/9}}
 
 /* ============ 챕터 헤더 (플랫 — 첫 페이지 목차와 같은 구조) ============ */
 .chaphd{padding:clamp(48px,9vh,104px) 0 0;display:grid;grid-template-columns:clamp(88px,8vw,110px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline}
@@ -220,6 +222,8 @@ section{position:relative}
 .acard .hov .ti{font-weight:700;font-size:13.5px;color:#fff;line-height:1.35;text-align:left}
 .acard .hov .rl{font-weight:300;font-size:11px;color:rgba(255,255,255,.75);margin-top:2px}
 .acard.offcard{opacity:.3}
+.acard.noact{cursor:default}
+.acard.noact:hover{transform:none;border-color:var(--hl-d)}
 .ordbtns{position:absolute;top:8px;left:8px;z-index:3;display:flex;gap:4px}
 .ob{width:26px;height:26px;border-radius:50%;background:rgba(13,13,15,.82);border:1px solid var(--hl-d);color:#fff;font-size:14px;line-height:1;display:grid;place-items:center;padding:0}
 .ob:hover{background:var(--red2);border-color:transparent}
@@ -329,7 +333,7 @@ footer a:hover{color:var(--mag2)}
 <noscript><div style="padding:64px 26px;max-width:640px;margin:0 auto;color:#111114;font-family:sans-serif;line-height:1.6"><h1 style="font-weight:800">김한결 · 영상 디자이너</h1><p>새로운 조합, 새로운 의미. 퍼포먼스·캠페인 영상 디자이너 김한결의 포트폴리오입니다. 전체 내용을 보려면 자바스크립트를 켜고 새로고침해 주세요.</p><p>문의 · <a style="color:#cc1433" href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a></p></div></noscript>
 
 <div id="lb" role="dialog" aria-modal="true" aria-label="작업 상세 보기"><button class="x" id="lbx" aria-label="닫기">✕</button><div class="bx">
-  <div class="lb-media"><div class="lb-stage"><video id="lbv" controls playsinline></video><img id="lbi" alt="" style="display:none"/></div><div class="lb-thumbs" id="lbThumbs"></div></div>
+  <div class="lb-media"><div class="lb-stage"><video id="lbv" controls playsinline controlslist="nodownload" disablepictureinpicture></video><img id="lbi" alt="" style="display:none"/></div><div class="lb-thumbs" id="lbThumbs"></div></div>
   <div class="lb-info"><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div><div class="kv" id="lbKv"></div><div class="perf" id="lbPerf" style="display:none"></div></div>
 </div></div>
 
@@ -496,7 +500,11 @@ function resumeHTML(){
 function heroHTML(){return `<section class="hero sec-light" id="hero"><div class="wrap"><div class="hgrid">
   <div class="hleft rv"><h2 class="slog"><span data-k="r.sg0a">새로운</span> <span class="acc" data-k="r.sg0b">조합,</span><br/><span data-k="r.sg1a">새로운</span> <span class="acc acc2" data-k="r.sg1b">의미.</span></h2>
    <div class="hmani">${HERO.mani.map((m,i)=>`<p data-k="r.mani${i}">${esc(m)}</p>`).join("")}</div></div>
-  <div class="hcards rv">${HERO.cards.map((c,i)=>`<div class="hcard"><img src="${c.img}" alt="${esc(c.w)}" style="object-position:${c.pos}" loading="lazy"/><div class="ov"><div><div class="t" data-k="r.cc${i}t">${esc(c.t)}</div><div class="q" data-k="r.cc${i}q">${esc(c.q)}</div></div><div class="mt"><span class="lb">작품<br/>참여</span><span><span data-k="r.cc${i}w">${esc(c.w)}</span><br/><span data-k="r.cc${i}p">${esc(c.p)}</span></span></div></div></div>`).join("")}</div>
+  <div class="hcards rv">${HERO.cards.map((c,i)=>`<div class="hcard"><div class="im"><img src="${c.img}" alt="${esc(c.w)}" style="object-position:${c.pos}" loading="lazy"/></div><div>
+    <div class="t" data-k="r.cc${i}t">${esc(c.t)}</div>
+    <div class="q" data-k="r.cc${i}q">${esc(c.q)}</div>
+    <div class="mt"><span><b>작품</b><span data-k="r.cc${i}w">${esc(c.w)}</span></span><br/><span><b>참여</b><span data-k="r.cc${i}p">${esc(c.p)}</span></span></div>
+  </div></div>`).join("")}</div>
 </div></div></section>`;}
 
 /* ---------- 챕터 헤더 ---------- */
@@ -534,8 +542,10 @@ function c2HTML(){const vis=[figCode(),figNode()];
 
 /* ---------- ARCHIVE (dark, 순수 갤러리뷰) ---------- */
 function cardExtra(w){return Math.max(0,buildGallery(w).length-1);}
+/* 이미지 단독 작업물: 상세 없음·호버 정보 없음·클릭 무동작 (편집 모드에선 관리 가능) */
+function imgOnly(w){return w.st?!w.v:(w.u?!(w.assets||[]).some(a=>a.type==="video"):false);}
 function cardHTML(w){
-  const hid=hiddenSet().has(w.id);
+  const hid=hiddenSet().has(w.id),noact=imgOnly(w);
   const ex=cardExtra(w),gtag=ex>0?`<span class="grouptag">+${ex}</span>`:"";
   let media;
   if(w.st)media=`<div class="media" style="aspect-ratio:${w.ar}">${gtag}<img src="${w.img}" alt="${esc(w.title)}" loading="lazy" decoding="async"/>${w.v?`<video muted loop playsinline preload="none" data-src="${w.v}" aria-hidden="true"></video>`:""}</div>`;
@@ -546,7 +556,8 @@ function cardHTML(w){
   const ti=(w.u)?`<span class="ti">${esc(w.title)}</span>`:`<span class="ti" data-k="w.${w.id}.title">${esc(w.title)}</span>`;
   const hov=`<div class="hov">${ti}<span class="rl"${w.u?"":` data-k="w.${w.id}.role"`}>${esc(rl)}</span></div>`;
   const ord=editing?`<span class="ordbtns"><button class="ob" data-mv="-1" aria-label="앞으로">‹</button><button class="ob" data-mv="1" aria-label="뒤로">›</button></span>`:"";
-  return `<div class="acard${hid?" offcard":""}" data-cat="${w.cat}" data-id="${w.id}" role="button" tabindex="0" aria-label="${esc(w.title)}">${media}${hov}${ord}</div>`;}
+  const inert=noact&&!editing;
+  return `<div class="acard${hid?" offcard":""}${noact?" noact":""}" data-cat="${w.cat}" data-id="${w.id}"${inert?"":` role="button" tabindex="0" aria-label="${esc(w.title)}"`}>${media}${inert?"":hov}${ord}</div>`;}
 function archiveHTML(){return `<section class="archive sec-dark" id="archive">${chapHd(2)}<div class="wrap" style="margin-top:24px">
   <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button>${editing?`<span class="gapctl">간격 <input type="range" id="gapRange" min="4" max="24" step="1" aria-label="갤러리 카드 간격"/></span>`:""}</div>
   <div class="agrid">${gridWorks().map(cardHTML).join("")}</div>
@@ -668,7 +679,9 @@ function render(){
   document.querySelectorAll(".acard").forEach(c=>io.observe(c));
   document.querySelectorAll(".rv").forEach(el=>revO.observe(el));
   document.querySelectorAll(".t3media").forEach(el=>{const go=()=>{if(editing||el.classList.contains("playing"))return;stopT3();const yt=el.dataset.yt;el.insertAdjacentHTML("beforeend",`<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&rel=0&playsinline=1" title="영상 재생" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`);el.classList.add("playing");};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
-  document.querySelectorAll(".acard[data-id]").forEach(el=>{const act=()=>{editing?openManage(findWork(el.dataset.id)):openLB(el.dataset.id);};el.addEventListener("click",act);el.addEventListener("keydown",e=>{if(editing&&e.target.closest("[data-k]"))return;if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});});
+  document.querySelectorAll(".acard[data-id]").forEach(el=>{
+    if(!editing&&el.classList.contains("noact"))return;
+    const act=()=>{editing?openManage(findWork(el.dataset.id)):openLB(el.dataset.id);};el.addEventListener("click",act);el.addEventListener("keydown",e=>{if(editing&&e.target.closest("[data-k]"))return;if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});});
   document.querySelectorAll(".acard [data-k]").forEach(el=>el.addEventListener("click",e=>{if(editing)e.stopPropagation();}));
   document.querySelectorAll(".acard .ob").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();moveWork(b.closest(".acard").dataset.id,+b.dataset.mv);}));
   const g=document.querySelector(".agrid");
@@ -953,6 +966,19 @@ setEditorUI();
 let _kb="";
 addEventListener("keydown",e=>{if(e.key&&e.key.length===1){_kb=(_kb+e.key.toLowerCase()).slice(-EDIT_KEY.length);
   if(_kb===EDIT_KEY){_kb="";if(editing)return;if(editorOn())localStorage.removeItem("pf_editor");else localStorage.setItem("pf_editor","1");setEditorUI();}}});
+/* ---- 콘텐츠 보호: 우클릭·드래그·저장/인쇄 단축키·프린트스크린 (편집 모드 제외) ----
+   ※ OS 차원의 화면 캡처는 웹에서 원천 차단이 불가능함 — 가능한 수단만 최대 적용 */
+addEventListener("contextmenu",e=>{if(!editing)e.preventDefault();});
+addEventListener("dragstart",e=>{if(!editing)e.preventDefault();});
+addEventListener("copy",e=>{if(!editing)e.preventDefault();});
+addEventListener("keydown",e=>{
+  if(editing)return;
+  const k=(e.key||"").toLowerCase();
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&["s","u","p","c"].indexOf(k)>=0)e.preventDefault();
+  if((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c","s"].indexOf(k)>=0)e.preventDefault();
+});
+addEventListener("keyup",e=>{if(e.key==="PrintScreen"){try{navigator.clipboard.writeText("");}catch(_){}}});
+
 /* ---- 스크롤 챕터 바: 현재 섹션 표시 ---- */
 const CB_SECTIONS=()=>[
  {id:"top",p:"개요",t:"인적 사항 · 학력 · 경력 · 수상"},
