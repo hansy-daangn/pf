@@ -32,6 +32,8 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.grad-l{background:linear-gradient(105deg,#c31d73,#ff2f9c);-webkit-background-clip:text;background-clip:text;color:transparent}
+@media(forced-colors:active){.grad,.grad-l{-webkit-text-fill-color:CanvasText;color:CanvasText;background:none}}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
 .sec-dark :focus-visible,.sec-dark button:focus-visible,#lb :focus-visible{outline-color:var(--cream)}
 
@@ -45,9 +47,10 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .eye i{width:16px;height:1px;background:var(--mag1);display:inline-block}
 .sec-dark .eye{color:var(--mag2)}.sec-light .eye{color:var(--magink)}
 
-/* header */
-header.top{position:sticky;top:0;z-index:50;background:rgba(13,13,15,0);transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
-header.top.solid{background:rgba(13,13,15,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--hl-d)}
+/* header — solid dark bar from load so cream brand/nav stays readable over the light hero */
+header.top{position:sticky;top:0;z-index:50;background:rgba(13,13,15,.86);backdrop-filter:blur(12px);transition:box-shadow .3s;border-bottom:1px solid var(--hl-d)}
+header.top.solid{box-shadow:0 8px 30px -18px rgba(0,0,0,.6)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .top .in{max-width:var(--maxw);margin:0 auto;padding:0 26px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .brand{font-weight:850;font-size:15px;letter-spacing:-.02em;display:flex;align-items:center;gap:9px;color:var(--cream)}
 .brand i{width:8px;height:8px;border-radius:2px;background:var(--grad)}
@@ -80,7 +83,8 @@ section{position:relative}
 .hero-grid{display:grid;grid-template-columns:1.35fr .85fr;gap:clamp(28px,5vw,64px);align-items:start}
 .slogan{font-weight:900;font-size:clamp(2.9rem,8vw,6.2rem);line-height:.98;letter-spacing:-.035em}
 .slogan span{display:block}
-.mani{margin-top:clamp(24px,4vh,40px);font-size:clamp(1.02rem,1.7vw,1.32rem);line-height:1.62;font-weight:600;max-width:30ch}
+.hero-lead{margin-top:18px;font-size:clamp(1.02rem,1.8vw,1.28rem);font-weight:800;letter-spacing:-.02em;line-height:1.4;max-width:28ch;color:var(--ink)}
+.mani{margin-top:clamp(18px,3vh,30px);font-size:clamp(.98rem,1.5vw,1.18rem);line-height:1.6;font-weight:500;color:var(--ink2);max-width:32ch}
 .mani p{margin-bottom:4px}
 .mani b{font-weight:800}
 .hero-desc{margin-top:22px;font-size:14px;line-height:1.7;color:var(--ink2);max-width:44ch}
@@ -91,9 +95,8 @@ section{position:relative}
 .statrow{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid var(--hl-l)}
 .statrow .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(1.5rem,3.4vw,2.15rem);letter-spacing:-.03em;line-height:1}
 .statrow .l{font-size:12px;color:var(--mut-c);text-align:right;font-weight:600}
-.statmau{margin-top:16px;font-weight:800;font-size:clamp(1.05rem,2vw,1.35rem);letter-spacing:-.02em}
-.statmau b{font-size:1.35em}
-.statcap{margin-top:9px;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--faint-d)}
+.statmau{margin-top:16px;font-weight:600;font-size:13px;line-height:1.5;color:var(--mut-c)}
+.statcap{margin-top:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.03em;color:var(--mut-c)}
 @media(max-width:880px){.hero-grid{grid-template-columns:1fr;gap:34px}.hero-side{position:static}}
 
 /* ============ RESUME strip (light) ============ */
@@ -196,7 +199,7 @@ section{position:relative}
 .acap{padding:11px 13px;display:flex;flex-direction:column;gap:7px}
 .catpill{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut-d);border:1px solid var(--hl-d);border-radius:100px;padding:3px 8px;background:transparent;display:inline-block;width:fit-content}
 .acap .ti{font-weight:700;font-size:13px;letter-spacing:-.02em;line-height:1.35;color:var(--cream)}
-.acap .cmb{font-family:var(--mono);font-size:10.5px;color:var(--faint-d);letter-spacing:.02em}
+.acap .cmb{font-family:var(--mono);font-size:11px;color:var(--mut-d);letter-spacing:.01em;line-height:1.4}
 .grouptag{position:absolute;top:8px;right:8px;background:rgba(13,13,15,.72);border:1px solid var(--hl-d);border-radius:100px;padding:3px 8px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;color:var(--cream);z-index:1;font-weight:600}
 
 /* ============ ABOUT / 성향 (light) ============ */
@@ -246,7 +249,7 @@ footer{border-top:1px solid var(--line2);padding:22px 0 50px;color:var(--faint-d
 #lb .perf .tile{background:var(--dark2);padding:11px 12px}
 #lb .perf .tile .v{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:820;font-size:17px;letter-spacing:-.02em;color:var(--cream)}
 #lb .perf .tile .l{font-size:10.5px;color:var(--mut-d);margin-top:2px}
-#lb .perf .src{font-size:10px;color:var(--faint-d);margin-top:9px;font-family:var(--mono)}
+#lb .perf .src{font-size:10.5px;color:var(--mut-d);margin-top:9px;font-family:var(--mono)}
 #lb .x{position:fixed;top:18px;right:22px;width:42px;height:42px;border-radius:50%;border:1px solid var(--hl-d);background:var(--dark2);color:var(--cream);font-size:18px;display:grid;place-items:center;z-index:1}
 @media(max-width:780px){#lb .bx{grid-template-columns:1fr}#lb .lb-stage video,#lb .lb-stage img{max-height:56vh}}
 
@@ -305,9 +308,10 @@ footer{border-top:1px solid var(--line2);padding:22px 0 50px;color:var(--faint-d
   <a href="#top" class="brand"><i></i><span data-k="ui.brand">김한결</span> <small>HANSY</small></a>
   <nav class="menu"><a href="#rhetoric" data-k="ui.navWork">Work</a><a href="#resume" data-k="ui.navAbout">About</a><a href="mailto:hansy@daangn.com" class="cta" data-k="ui.navCta">Contact</a></nav>
 </div></header>
-<main id="main"></main>
+<main id="main" aria-label="포트폴리오"></main>
+<noscript><div style="padding:64px 26px;max-width:640px;margin:0 auto;color:#f6f4ef;font-family:sans-serif;line-height:1.6"><h1 style="font-weight:800">김한결 · 영상 디자이너</h1><p>새로운 조합, 새로운 의미. 퍼포먼스·캠페인 영상 디자이너 김한결의 포트폴리오입니다. 전체 내용을 보려면 자바스크립트를 켜고 새로고침해 주세요.</p><p>문의 · <a style="color:#ff6ab0" href="mailto:hansy@daangn.com">hansy@daangn.com</a></p></div></noscript>
 
-<div id="lb"><button class="x" id="lbx" aria-label="닫기">✕</button><div class="bx">
+<div id="lb" role="dialog" aria-modal="true" aria-label="작업 상세 보기"><button class="x" id="lbx" aria-label="닫기">✕</button><div class="bx">
   <div class="lb-media"><div class="lb-stage"><video id="lbv" controls playsinline></video><img id="lbi" alt="" style="display:none"/></div><div class="lb-thumbs" id="lbThumbs"></div></div>
   <div class="lb-info"><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div><div class="kv" id="lbKv"></div><div class="perf" id="lbPerf" style="display:none"></div></div>
 </div></div>
@@ -316,7 +320,7 @@ footer{border-top:1px solid var(--line2);padding:22px 0 50px;color:var(--faint-d
 <button id="editFab" title="편집" aria-label="편집 모드">✎</button>
 <div id="editHint"><span>편집 모드 · 카드를 누르면 소재를 관리할 수 있어요 · ✎ 다시 누르면 저장</span></div>
 
-<div id="mg"><div class="mg-bx">
+<div id="mg" role="dialog" aria-modal="true" aria-label="소재 관리"><div class="mg-bx">
   <div class="mg-head"><b id="mgTitle">소재 관리</b><button class="mg-x" id="mgX" aria-label="닫기">✕</button></div>
   <input class="mg-name" id="mgName" placeholder="그룹 이름" style="display:none"/>
   <div class="mg-body">
@@ -337,8 +341,8 @@ const A={
  mani:["이미 안다고 생각하는 것에는 마음을 닫습니다.","그러나 ‘모른다’고 느낄 때, 인식은 열리고 움직입니다.","그 틈에 새로운 연결을 설계해, 설득의 순간을 만듭니다."],
  tags3:["수사학적 시선 설계","코드 기반 자동화","모션 · 3D · AI"],
  stats:[["₩2.6억","집행 광고비"],["8,575만","누적 노출"],["33만","유입 활성 유저"],["8.76%","최고 CTR"]],
- mau:"MAU 2,200만 성장 기여",
- statcap:"사이트 수록 대표 소재 · CreativeReporter 실집행 누적",
+ mau:"MAU 2,200만 규모 서비스의 퍼포먼스 광고 소재를 담당",
+ statcap:"내가 제작한 대표 소재의 실집행 누적 · CreativeReporter",
  info:[["직무","영상 디자이너 · 당근 마케팅팀"],["생년","2000.11.14"],["이메일","hansy@daangn.com"]],
  comp:[["역량","기획·연출·편집을 한 사람이 끝까지 끌고 가는 풀사이클"],["기술","3D·AI·모션 · 코드 기반 자동화 템플릿 · 업무 툴 개발"]],
  career:[["2025.7 — 현재","(주) 당근마켓","영상 디자이너 · 퍼포먼스 마케팅 영상"]],
@@ -377,7 +381,7 @@ const W=[
 ];
 /* TOP3 — 수사학 설득의 3요소 (개인/수상 대표작, 클릭 시 유튜브) */
 const TOP3=[
- {idx:"01",ko:"시선 유도",en:"Eye Trace",tools:["After Effects"],work:"Spotify RE:SING",kind:"가상 프로모션 · 2023.6",local:"mg_charge",yt:"m1VSvI_tZbI",
+ {idx:"01",ko:"시선 유도",en:"Eye Trace",tools:["After Effects"],work:"Spotify RE:SING",kind:"가상 프로모션 · 2023.6",yt:"m1VSvI_tZbI",
   intent:"소수의 동적 요소가 화면을 장악해 시선을 유도한다. 점은 스크린의 터치 포인트를, 종이비행기는 공유를 뜻한다. 신기능 자체가 아니라 그로 인한 사용자 경험을 기대하게 만들었다.",
   q:"시선은 왜 대각선에서 멈추지 않을까?",
   meta:[["연출의도","상징적 요소로 신기능 사용 과정을 직관적으로 소개"],["색상","상징색 녹색 + 보색 적색 강조"],["제작기간","기획 6일 + 본작업 8일"]]},
@@ -401,22 +405,23 @@ function skillChipsHTML(csv){return csv.split(/,\s*/).filter(Boolean).map(t=>`<s
 
 /* ---------- HERO ---------- */
 function heroHTML(){return `<section id="top" class="hero sec-light"><div class="wrap">
-  <span class="eye rv" data-k="ui.heroEy"><i></i>PORTFOLIO · 영상 디자이너</span>
+  <h2 class="sr-only">소개</h2>
+  <span class="eye rv"><i></i>영상 디자이너 · 당근 마케팅팀</span>
   <div class="hero-grid" style="margin-top:22px">
     <div>
-      <h1 class="slogan rv"><span data-k="r.slogan0">${esc(A.slogan[0])}</span><span class="grad" data-k="r.slogan1">${esc(A.slogan[1])}</span></h1>
+      <h1 class="slogan rv"><span data-k="r.slogan0">${esc(A.slogan[0])}</span><span class="grad-l" data-k="r.slogan1">${esc(A.slogan[1])}</span></h1>
+      <p class="hero-lead rv" data-k="r.tag">${esc(A.tag)}</p>
       <div class="mani rv">${A.mani.map((m,i)=>`<p data-k="r.mani${i}">${esc(m)}</p>`).join("")}</div>
       <p class="hero-desc rv" data-k="r.desc">${esc(A.desc)}</p>
       <div class="hero-tags rv">${A.tags3.map((t,i)=>`<span data-k="r.tag3_${i}">${esc(t)}</span>`).join("")}</div>
     </div>
     <div class="hero-side rv">
       <div class="statband">${A.stats.map((s,i)=>`<div class="statrow"><span class="v" data-k="r.stat${i}v">${esc(s[0])}</span><span class="l" data-k="r.stat${i}l">${esc(s[1])}</span></div>`).join("")}</div>
-      <div class="statmau"><b class="grad" data-k="r.mau">${esc(A.mau)}</b></div>
+      <div class="statmau" data-k="r.mau">${esc(A.mau)}</div>
       <div class="statcap" data-k="r.statcap">${esc(A.statcap)}</div>
     </div>
   </div>
 </div></section>`;}
-/* slogan: make 2nd line's last char '.' gradient — keep simple: gradient the whole 2nd word block */
 
 /* ---------- RESUME (light) ---------- */
 function resumeHTML(){return `<section class="resume sec-light" id="resume"><div class="wrap">
@@ -426,7 +431,7 @@ function resumeHTML(){return `<section class="resume sec-light" id="resume"><div
     <div>
       <div class="rh-name" data-k="r.name">${esc(A.name)}</div>
       <div class="rh-role"><span data-k="r.info.0">${esc(A.info[0][1])}</span></div>
-      <div class="rh-meta"><span class="ab-meta"><b>생년</b><span data-k="r.birth">${esc(A.info[1][1])}</span></span><span class="ab-meta"><b>이메일</b><span data-k="r.email">${esc(A.info[2][1])}</span></span></div>
+      <div class="rh-meta"><span class="ab-meta"><b>생년</b><span data-k="r.info.1">${esc(A.info[1][1])}</span></span><span class="ab-meta"><b>이메일</b><span data-k="ui.email">${esc(A.info[2][1])}</span></span></div>
       <div class="rh-comp">${A.comp.map((c,i)=>`<div class="c"><b>${esc(c[0])}</b><span data-k="r.comp.${i}">${esc(c[1])}</span></div>`).join("")}</div>
     </div>
   </div>
@@ -450,7 +455,7 @@ function t3text(t){return `<div class="t3body">
   <dl class="t3meta">${t.meta.map(m=>`<dt>${esc(m[0])}</dt><dd>${esc(m[1])}</dd>`).join("")}</dl>
 </div>`;}
 function rhetoricHTML(){return `<div class="edge"></div><section class="rhetoric sec-dark" id="rhetoric"><div class="wrap">
-  <div class="shead rv"><h2>생각의 흐름<em>Rhetoric · 수사학 설득의 3요소</em></h2><span class="note">이미지를 누르면 영상으로 연결됩니다</span></div>
+  <div class="shead rv"><h2>생각의 흐름<em>Three Devices · 설득을 만드는 3가지 장치</em></h2><span class="note">시선을 설계하는 방법의 데모 · 이미지를 누르면 영상으로</span></div>
   <div class="t3sum rv">${TOP3.map(t=>`<a href="https://youtu.be/${t.yt}" target="_blank" rel="noopener"><span class="n">${t.idx}</span><span class="ko">${esc(t.ko)}</span><span class="en">${esc(t.en)}</span></a>`).join("")}</div>
   ${TOP3.map(t=>`<div class="t3card rv">${t3media(t)}${t3text(t)}</div>`).join("")}
 </div></section>`;}
@@ -467,9 +472,9 @@ function cardExtra(w){return (w.variants&&w.variants.length)||(w.assets?Math.max
 function cardHTML(w){
   const ex=cardExtra(w),gtag=ex>0?`<span class="grouptag">+${ex}</span>`:"";
   let media;
-  if(w.u){const ar=(w.pv&&w.pv.ar)||"9 / 16",poster=(w.pv&&w.pv.poster)?`<img src="${w.pv.poster}" alt=""/>`:"",video=(w.pv&&w.pv.video)?`<video muted loop playsinline preload="none" data-src="${w.pv.video}"></video>`:"";
+  if(w.u){const ar=(w.pv&&w.pv.ar)||"9 / 16",poster=(w.pv&&w.pv.poster)?`<img src="${w.pv.poster}" alt="" loading="lazy" decoding="async"/>`:"",video=(w.pv&&w.pv.video)?`<video muted loop playsinline preload="none" data-src="${w.pv.video}" aria-hidden="true"></video>`:"";
     media=`<div class="media" style="aspect-ratio:${ar}">${gtag}${poster}${video}</div>`;}
-  else media=`<div class="media" style="aspect-ratio:${arOf(w.id)}">${gtag}<img src="${pos(w.id)}" alt="${esc(w.title)}"/><video muted loop playsinline preload="none" data-src="${vid(w.id)}" aria-hidden="true"></video></div>`;
+  else media=`<div class="media" style="aspect-ratio:${arOf(w.id)}">${gtag}<img src="${pos(w.id)}" alt="${esc(w.title)}" loading="lazy" decoding="async"/><video muted loop playsinline preload="none" data-src="${vid(w.id)}" aria-hidden="true"></video></div>`;
   const ti=w.u?`<div class="ti">${esc(w.title)}</div>`:`<div class="ti" data-k="w.${w.id}.title">${esc(w.title)}</div>`;
   const cmb=w.combo?`<div class="cmb">${esc(w.combo)}</div>`:"";
   return `<div class="acard" data-cat="${w.cat}" data-id="${w.id}" role="button" tabindex="0" aria-label="${esc(w.title)}">${media}<div class="acap"><span class="catpill">${CAT[w.cat]||w.cat}</span>${ti}${cmb}</div></div>`;}
@@ -512,6 +517,8 @@ function applyEdits(){
     const empty=(!org||!org.textContent.trim())&&(!det||!det.textContent.trim());
     row.style.display=empty?"none":"";
   });
+  /* 수상 강조는 순서(index)가 아니라 등급으로 — 대상·최우수상만 */
+  document.querySelectorAll(".awrow").forEach(row=>{const pz=(row.querySelector(".pz")||{}).textContent||"";row.classList.toggle("top",/대상|최우수상/.test(pz.trim()));});
 }
 
 function setupPhotoAdjust(){
@@ -528,10 +535,12 @@ function setupPhotoAdjust(){
 const RMOTION=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const PREVIEW_RANGE=[0,8];
 function attachRangeLoop(v){if(v._rangeBound)return;v._rangeBound=true;const[ra,rb]=PREVIEW_RANGE;v.addEventListener("timeupdate",()=>{if(v.currentTime>=rb){try{v.currentTime=ra;}catch(_){}}});}
+const MAXPREV=()=>innerWidth<700?2:5;
+function playingCount(){return document.querySelectorAll(".media.playing").length;}
 function pauseAllPreviews(){document.querySelectorAll(".acard video").forEach(v=>v.pause());document.querySelectorAll(".media.playing").forEach(m=>m.classList.remove("playing"));}
-function resumeVisiblePreviews(){if(RMOTION)return;document.querySelectorAll(".acard").forEach(c=>{if(c.style.display==="none")return;const r=c.getBoundingClientRect();if(r.top<innerHeight+90&&r.bottom>-90){const v=c.querySelector("video"),m=c.querySelector(".media");if(!v)return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}});}
+function resumeVisiblePreviews(){if(RMOTION)return;document.querySelectorAll(".acard").forEach(c=>{if(c.style.display==="none")return;if(playingCount()>=MAXPREV())return;const r=c.getBoundingClientRect();if(r.top<innerHeight+90&&r.bottom>-90){const v=c.querySelector("video"),m=c.querySelector(".media");if(!v||m.classList.contains("playing"))return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}});}
 
-const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting&&!lbOpen&&!editing&&!RMOTION){if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();}}),{rootMargin:"90px 0px",threshold:.25});
+const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting&&!lbOpen&&!editing&&!RMOTION){if(m.classList.contains("playing")||playingCount()>=MAXPREV())return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();if(m)m.classList.remove("playing");}}),{rootMargin:"90px 0px",threshold:.25});
 const revO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");revO.unobserve(e.target);}}),{rootMargin:"0px 0px -8% 0px",threshold:.06});
 function render(){
   document.getElementById("main").innerHTML=heroHTML()+resumeHTML()+rhetoricHTML()+processHTML()+archiveHTML()+aboutHTML()+contactHTML();
@@ -548,7 +557,7 @@ function render(){
 /* ---- lightbox (gallery + performance from CreativeReporter) ---- */
 const PKG={"mg_keyword_spring":{"perf":{"cost":28330971,"imp":22282054,"ctr":1.68,"act":20855,"ecpa":1358,"vcr":64.6,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mg0d0g9h_vjskwzm_lpbrdjwxo9rgxnwn_transcoded.mp4"},{"res":"720x1280","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b5zi_smldxil_k0fvcdghpoqga5el_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b617_jkozc9q_rs7txreksw4sumsh_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b644_otusycf_betet8mczqqrktrk_transcoded.mp4"},{"res":"1280x720","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mfv7b637_gtxzbdu_vwvsj8dr7vyyi0cr_transcoded.mp4"}]},"mg_rent1":{"perf":{"cost":142778253,"imp":29584352,"ctr":8.76,"act":250926,"ecpa":569,"vcr":46.6,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgikxq_kkd9sqt_yuvfxuqgn1jfyl8n_transcoded.mp4"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgjee9_znfmksm_mrh4iv0t3aerr3fj.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgerzb_mei5glg_elklaqkifro9wzuf.png"},{"res":"720x860","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgj3qa_grhhrlz_dc3pmiyugfhpd1uc.png"},{"res":"360x640","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgje7c_gchwhp8_u0vak57egpotcyxi.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mewgerur_zksgvgu_ofdcvxw8myha1l8n.png"}]},"td_nintendo":{"perf":{"cost":9209403,"imp":5343483,"ctr":2.38,"act":4208,"ecpa":2189,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbjw8_cdhph0x_efb7h6yjuc986noh.jpg"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vcaiq_yrkbnzn_wofktz5nzdaxjykp.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbjwp_kknvy8f_noevke2bgpbxudoi.png"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbjuk_uvuev73_nf6irrffv9tcqv1b.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbju2_n38qn8e_eymzgkgfl9bi92hv.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/ml7vbzer_eqtzjso_ux9fzmoefxcsecva.png"}]},"mg_jobs_spring":{"perf":{"cost":1273314,"imp":47869,"ctr":null,"act":548,"ecpa":2324,"vcr":47.8,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mm4bvdvl_nags4md_izcnrdaacmixwogd_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mm4bvdv5_pz6a5q2_xrnl4cg23myutdnu_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mm4bvdvl_gy6iovu_vzlctt1pfbzdq2z0_transcoded.mp4"}]},"sf_10000walk":{"perf":{"cost":9690972,"imp":4665078,"ctr":1.47,"act":2877,"ecpa":3368,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mhxieldf_j0lpaxf_lc3mfyaray5vwwgk.png"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihsy9u_fqzrskz_uao9fzliveznfjxi.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihprzq_zakpz3d_pnwsym2l2bi1qze8.png"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihprqb_n072w88_rzab6i2yf7mjwtib.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihprpe_tkok4hf_ypgqrriwqtden0bw.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mjihsy9d_iolodoh_casamebska4y8tsp.png"}]},"td_godaangn":{"perf":{"cost":12604763,"imp":6546569,"ctr":1.46,"act":5162,"ecpa":2442,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvvdm_ztoqscr_dpzlphe14jjbbtpu.png"},{"res":"768x1024","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv9n_nt4fzx8_twogruhot9taxcav.png"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv83_n0cuunk_rpb1nuwjbdqxujap.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv61_fpbgddx_fa9zkyycynsnqdn4.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv7h_r9ydona_no8bjrdysrgthkck.png"},{"res":"1200x628","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mi4kvv9z_yyszlbn_oujsqc7bdy62w2yz.png"}]},"td_raffle_v":{"perf":{"cost":22217895,"imp":7851367,"ctr":3.43,"act":16732,"ecpa":1328,"vcr":48.2,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja29b92_ir3uv0y_lmn9yfknfckbmom7_transcoded.mp4"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja27t13_sw8dsuq_e9ymspjnlibgmbcn.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja246cz_xkl6ldc_h1ylcnce8rrjcbbr.png"},{"res":"1920x1920","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja29bcy_dd8zu7j_qmzr2ixjjtfi9zym_transcoded.mp4"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja27szw_j4zwnmp_wvguww2ybicxzqcf.png"},{"res":"1920x1080","type":"video","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mja29b8d_b07fjpq_sebotwzo6elonwcg_transcoded.mp4"}]},"td_pickup":{"perf":{"cost":3766134,"imp":2407824,"ctr":2.56,"act":2120,"ecpa":1776,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae0388_vykwvbl_svc67h3fwj83gylk.jpg"},{"res":"720x1280","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae6zvd_madijaw_u1b8lvr5pflvkjor.jpg"},{"res":"720x960","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae03c5_dsbutow_gnkyuo8wz4gtneos.png"},{"res":"320x480","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae03aq_pac84v6_pan2altitvhq8eae.png"},{"res":"720x720","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae6zwj_oz7t6ee_eli7tkiysvdapy9z.png"},{"res":"1200x628","type":"image","url":"https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmae6zwa_nnzjgvm_r2py6oychlvjclow.png"}]},"td_declutter":{"perf":{"cost":9473819,"imp":1953474,"ctr":0.45,"act":2249,"ecpa":4212,"vcr":null,"roas":null},"media":[]},"mg_simbatdan":{"perf":{"cost":9590512,"imp":2489988,"ctr":0.87,"act":15311,"ecpa":626,"vcr":null,"roas":null},"media":[]},"ai_closet1":{"perf":{"cost":12095549,"imp":2573542,"ctr":0.34,"act":10869,"ecpa":1113,"vcr":null,"roas":null},"media":[]}};
 const lb=document.getElementById("lb");
-let lbOpen=false,lbScrollY=0;
+let lbOpen=false,lbScrollY=0,lbTrigger=null;
 const wsrv=(u,w)=>"https://wsrv.nl/?url="+encodeURIComponent(u)+(w?"&w="+w:"")+"&output=jpg";
 const resFmt=r=>String(r||"").replace("x","×");
 function stageVideo(src,poster){const v=document.getElementById("lbv"),i=document.getElementById("lbi");i.style.display="none";i.removeAttribute("src");v.style.display="";v.muted=false;v.volume=1;if(poster)v.poster=poster;else v.removeAttribute("poster");v.src=src;try{v.currentTime=0;}catch(_){}v.play().catch(()=>{});}
@@ -613,10 +622,11 @@ function openLB(id){const w=findWork(id);if(!w)return;const t=k=>(EDITS["w."+id+
   document.getElementById("lbr").textContent=(t("role")||"")+(w.year?" · "+w.year:"");
   document.getElementById("lbd").textContent=t("desc")||"";
   renderKV(w);const g=renderGallery(w);renderPerf(w);
-  lbOpen=true;lbScrollY=window.scrollY;pauseAllPreviews();
+  lbOpen=true;lbScrollY=window.scrollY;lbTrigger=document.activeElement;pauseAllPreviews();
   document.getElementById("main").style.display="none";
   document.body.style.overflow="hidden";
-  if(g.length)showMedia(g[0]);lb.classList.add("on");lb.scrollTop=0;}
+  if(g.length)showMedia(g[0]);lb.classList.add("on");lb.scrollTop=0;
+  try{document.getElementById("lbx").focus();}catch(_){}}
 function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");
   const v=document.getElementById("lbv");v.pause();v.removeAttribute("src");v.load();
   const i=document.getElementById("lbi");i.removeAttribute("src");i.style.display="none";
@@ -625,7 +635,8 @@ function closeLB(){if(!lbOpen)return;lbOpen=false;lb.classList.remove("on");
   document.body.style.overflow="";
   window.scrollTo(0,lbScrollY);
   html.style.scrollBehavior=prev;
-  resumeVisiblePreviews();}
+  resumeVisiblePreviews();
+  try{if(lbTrigger&&lbTrigger.focus)lbTrigger.focus();}catch(_){}}
 document.getElementById("lbx").onclick=closeLB;
 lb.onclick=e=>{if(e.target===lb)closeLB();};
 addEventListener("keydown",e=>{if(e.key==="Escape"){if(mg.classList.contains("on"))closeManage();else closeLB();}});
@@ -728,8 +739,12 @@ async function saveEdits(){
     else{const e=await r.json().catch(()=>({}));alert("GitHub 저장 실패: "+(e.message||r.status));if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");}
   }catch(e){alert("네트워크 오류 — 저장 실패. "+e.message);}
 }
-addEventListener("scroll",()=>{const h=document.querySelector("header.top");if(h)h.classList.toggle("solid",scrollY>40);},{passive:true});
-loadEdits().then(render);
+addEventListener("scroll",()=>{const h=document.querySelector("header.top");if(h)h.classList.toggle("solid",scrollY>10);},{passive:true});
+/* 편집 도구는 소유자만: 주소 끝에 #edit 를 붙이거나(이후 이 브라우저에 기억됨) 그 외 방문자에겐 숨김 */
+const EDITOR=(location.hash.replace("#","")==="edit")||localStorage.getItem("pf_editor")==="1";
+if(EDITOR)localStorage.setItem("pf_editor","1");else{const ef=document.getElementById("editFab");if(ef)ef.style.display="none";}
+render();               /* 기본 콘텐츠 즉시 페인트 (content.json 없이도) */
+loadEdits().then(render); /* 편집 오버레이 적용 후 재렌더 */
 </script>
 </body>
 </html>
