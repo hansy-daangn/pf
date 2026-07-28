@@ -22,7 +22,7 @@
  --hl-d:rgba(255,255,255,.14);--hl-l:rgba(17,17,20,.11);--line2:rgba(17,17,20,.14);
  --mono:"SFMono-Regular",ui-monospace,Menlo,"Roboto Mono",Consolas,monospace;
  --san:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
- --w-h1:800;--w-h2:200;--w-h3:700;--ls-h1:-.015em;--ls-h2:-.005em;--t-display:28px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
+ --w-display:700;--w-h1:800;--w-h2:200;--w-h3:700;--ls-display:-.025em;--ls-h1:-.015em;--ls-h2:-.005em;--t-display:30px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -96,11 +96,9 @@ section{position:relative}
 .idrows .vl{color:var(--tbody);padding:6px 0;border-top:1px solid var(--line2);word-break:keep-all}
 .idrows .pr:last-child .lb,.idrows .pr:last-child .vl{border-bottom:1px solid var(--line2)}
 .idrows .pr:first-child .lb,.idrows .pr:first-child .vl{border-top:0}
-.tagline{margin:0 0 calc(var(--secpad) * .5);max-width:none}
-.tagline .tg{white-space:nowrap}
-.tagline .ds{max-width:74ch}
-.tagline .tg{font-weight:var(--w-h1);font-size:var(--t-display);letter-spacing:var(--ls-h1);line-height:1.4;color:var(--ink)}
-.tagline .ds{font-weight:400;font-size:var(--t-body);line-height:1.75;color:#000;margin-top:8px}
+.tagline{margin:var(--vgap) 0 0}
+.tagline .tg{font-weight:var(--w-display);font-size:var(--t-display);letter-spacing:var(--ls-display);line-height:1.45;color:var(--ink);text-wrap:balance}
+.tagline .ds{font-weight:400;font-size:var(--t-small);line-height:1.85;letter-spacing:-.005em;color:rgba(0,0,0,.66);margin-top:15px;text-wrap:pretty}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
 .chprev{margin-top:var(--vgap);border-top:1px solid var(--rl)}
 .chprev a{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:var(--cg);align-items:baseline;padding:17px 0;border-bottom:1px solid var(--rh)}
@@ -127,9 +125,9 @@ section{position:relative}
 .tgrid.car .tr>span:nth-child(4){grid-column:4/-1}
 .tgrid .tr>span,.awgrid .tr>span{min-width:0}
 .tgrid .tr>span:first-child,.awgrid .tr>span:first-child{color:var(--tlab);white-space:nowrap}
-.tgrid .tr>span:nth-child(2),.tgrid.car .tr>span:nth-child(3),.awgrid .tr>span:nth-child(3),.awgrid .tr>span:nth-child(4){color:var(--tblk);font-weight:400}
+.tgrid .tr>span:nth-child(2),.tgrid.car .tr>span:nth-child(3),.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(3){color:var(--tblk);font-weight:400}
 .tgrid.edu .tr>span:nth-child(3),.tgrid.car .tr>span:nth-child(4){color:var(--tlab);font-weight:300}
-.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(5),.awgrid .tr>span:nth-child(6){color:var(--tlab)}
+.awgrid .tr>span:nth-child(4),.awgrid .tr>span:nth-child(5),.awgrid .tr>span:nth-child(6){color:var(--tlab);font-weight:300}
 .skg{padding:calc(var(--rowpad) + 2px) 0;border-bottom:1px solid var(--rl)}
 .skg p{font-weight:300;font-size:var(--t-small);line-height:1.85;color:var(--tbody);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -535,12 +533,12 @@ function resumeHTML(){
  const rows=(data,pre)=>data.map((r,ri)=>`<div class="tr">${r.map((t,ci)=>`<span data-k="${pre}.${ri}.${ci}">${esc(t)}</span>`).join("")}</div>`).join("");
  return `<section id="top" class="resume sec-light">
   <img class="blob" src="assets/fig/blob.png" alt="" aria-hidden="true"/>
-  <div class="wrap"><h2 class="sr-only">이력서</h2>
-   <div class="tagline rv"><p class="tg" data-k="r.tag2">${esc(R.tag2)}</p><p class="ds" data-k="r.desc">${esc(R.desc)}</p></div>
-   <div class="rgrid">
+  <div class="wrap"><h2 class="sr-only">이력서</h2><div class="rgrid">
    <div class="rleft rv">
     <div class="idcard"><div class="idphoto" role="img" aria-label="김한결 사진"></div>
      <div class="idrows">${R.rows.map(prRow).join("")}</div></div>
+    <div class="tagline"><p class="tg" data-k="r.tag2">${esc(R.tag2)}</p>
+     <p class="ds" data-k="r.desc">${esc(R.desc)}</p></div>
     <nav class="chprev" aria-label="목차">${R.chap.map((c,i)=>`<a href="${c[3]}"><span class="pill">${esc(c[0])}</span><span><span class="tt" data-k="r.chp.${i}.t">${esc(c[1])}</span><br/><span class="ss" data-k="r.chp.${i}.s">${esc(c[2])}</span></span></a>`).join("")}</nav>
    </div>
    <div class="rright rv">
@@ -703,7 +701,7 @@ function applySizes(){const rt=document.documentElement.style;
 let FS_KEY=null;
 /* 글자 크기: 역할(영역) 단위 + 개별 예외 */
 const TROLES=[
- {v:"--t-display",n:"태그라인",d:28},{v:"--t-h1",n:"작품 제목",d:26},
+ {v:"--t-display",n:"태그라인",d:30},{v:"--t-h1",n:"작품 제목",d:26},
  {v:"--t-h2",n:"섹션 제목",d:21},{v:"--t-h3",n:"항목 제목",d:17},
  {v:"--t-body",n:"본문",d:15},{v:"--t-small",n:"표 · 메타",d:13},
  {v:"--t-micro",n:"라벨 · 캡션",d:11}
