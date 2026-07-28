@@ -28,8 +28,10 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-size:var(--t-h3);background:#fff;color:var(--ink);font-family:var(--san);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
 /* 콘텐츠 보호: 선택·드래그·롱프레스 저장 차단 (편집 모드에선 해제) */
-body:not(.editing){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-body:not(.editing) img,body:not(.editing) video{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none;pointer-events:auto}
+body:not(.editing),body:not(.editing) *{-webkit-user-select:none!important;-moz-user-select:none!important;-ms-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
+body.editing,body.editing [data-k]{-webkit-user-select:text;user-select:text}
+body:not(.editing) input,body:not(.editing) textarea{-webkit-user-select:text!important;user-select:text!important}
+img,video{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none}
 img,video{-webkit-user-drag:none}
 @media print{body{display:none}}
 ::selection{background:var(--red2);color:#fff}
@@ -80,7 +82,7 @@ section{position:relative}
  --rail:176px;--railgap:24px;--vgap:64px;
  --rl:rgba(17,17,20,.2);--rh:rgba(17,17,20,.08);--cg:13px;--rowpad:6.5px;
  --c1:87px;--c2w:58px;--c4w:36px;--c5w:58px;--c6w:115px}
-.blob{position:absolute;top:var(--bloby,-140px);left:calc(50% - min(var(--maxw),100%)/2 + var(--sidepad) + var(--blobx,-80px));width:var(--blobw,670px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0;-webkit-mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%);mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%)}
+.blob{position:absolute;top:var(--bloby,-140px);left:calc(50% - min(var(--maxw),100%)/2 + var(--sidepad) + var(--blobx,-164px));width:var(--blobw,670px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0;-webkit-mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%);mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%)}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
 .idcard{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:var(--railgap);align-items:stretch}
@@ -695,7 +697,7 @@ const SIZERS=[
 const SPACES=[
  {k:"maxw",dflt:1320},{k:"sidepad",dflt:24},{k:"secpad",dflt:120},
  {k:"colgap",dflt:96},{k:"blockgap",dflt:112},{k:"agap",dflt:4},
- {k:"blobw",dflt:670},{k:"blobx",dflt:-80},{k:"bloby",dflt:-140}
+ {k:"blobw",dflt:670},{k:"blobx",dflt:-164},{k:"bloby",dflt:-140}
 ];
 function spaceVal(s){const v=parseFloat(EDITS["sz."+s.k]);return isNaN(v)?s.dflt:v;}
 function applySizes(){const rt=document.documentElement.style;
@@ -828,6 +830,7 @@ function render(){
   if(RMOTION)document.querySelectorAll(".figvid").forEach(v=>{v.removeAttribute("autoplay");try{v.pause();}catch(_){}});
   document.querySelectorAll(".acard").forEach(c=>io.observe(c));
   document.querySelectorAll("video.figvid").forEach(attachRangeLoop);
+  armImgGuards();
   if(window.__swapT)clearInterval(window.__swapT);
   const swaps=[...document.querySelectorAll(".swapimg")].filter(s=>s.querySelectorAll("img").length>1);
   if(swaps.length)window.__swapT=setInterval(()=>{if(RMOTION)return;swaps.forEach(s=>{
@@ -1175,6 +1178,10 @@ addEventListener("keydown",e=>{if(e.key&&e.key.length===1){_kb=(_kb+e.key.toLowe
   if(_kb===EDIT_KEY){_kb="";if(editing)return;if(editorOn()){localStorage.removeItem("pf_editor");setEditorUI();}else enableEditor();}}});
 /* ---- 콘텐츠 보호: 우클릭·드래그·저장/인쇄 단축키·프린트스크린 (편집 모드 제외) ----
    ※ OS 차원의 화면 캡처는 웹에서 원천 차단이 불가능함 — 가능한 수단만 최대 적용 */
+function guard(e){if(!editing){e.preventDefault();return false;}}
+document.oncontextmenu=guard;document.onselectstart=guard;document.ondragstart=guard;document.oncopy=guard;document.oncut=guard;
+function armImgGuards(){document.querySelectorAll("img,video").forEach(el=>{el.setAttribute("draggable","false");el.oncontextmenu=guard;el.ondragstart=guard;});}
+armImgGuards();
 addEventListener("contextmenu",e=>{if(!editing)e.preventDefault();});
 addEventListener("dragstart",e=>{if(!editing)e.preventDefault();});
 addEventListener("copy",e=>{if(!editing)e.preventDefault();});
