@@ -1,6 +1,6 @@
 {
  "r.name": "김한결",
- "r.desc": "퍼포먼스 및 캠페인 광고소재 제작으로 MAU 2200만 성장에 기여. (모션그래픽, 3D, AI, 숏폼 영상/이미지 제작)AI 기반 자동화 파이프라인 개발, 업무 보조 프로그램 개발로 자동화 및 예산 효율화",
+ "r.desc": "퍼포먼스 및 캠페인 광고소재 제작으로 MAU 2200만 성장에 기여. (모션그래픽, 3D, AI, 숏폼 영상/이미지 제작)\nAI 기반 자동화 파이프라인 개발, 업무 보조 프로그램 개발로 자동화 및 예산 효율화",
  "w.td_review2605.title": "당근비즈니스 단골·리뷰 — 5월",
  "w.td_review2605.role": "3D · 모션그래픽",
  "w.td_review2605.desc": "사장님을 위한 단골·리뷰 기능을 아이소메트릭 3D 마을로 따뜻하게 시각화한 핵심 캠페인.",
@@ -286,12 +286,13 @@
  "r.chap.3.t": "성과 리포팅 도구 · AI 파이프라인 · 논문",
  "r.chap.3.s": "제작을 둘러싼 도구를 직접 만들고 검증",
  "sz.sidepad": "24",
- "sz.maxw": "1380",
+ "sz.maxw": "1320",
  "sz.colgap": "96",
  "w.ai_closet1.off": "[\"self:ai_closet1\"]",
  "fs.ui.email": "13",
  "r.skg2": "Flim - ENG cam, DSLR, Mirrorless, Gimbal, Drone(~2kg), Slider, Lighting",
  "sz.bloby": "-140",
  "sz.blobx": "-80",
- "sz.blobw": "670"
+ "sz.blobw": "670",
+ "sz.blockgap": "112"
 }
