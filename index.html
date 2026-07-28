@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=1440"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
@@ -73,10 +73,7 @@ section{position:relative}
 .blob{position:absolute;top:max(-14vw,-160px);left:max(-11vw,-130px);width:clamp(320px,40vw,777px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:clamp(28px,4vw,72px);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
-@media(max-width:1020px){.rgrid{grid-template-columns:1fr!important}}
 .idcard{background:#f7f7f7;border:1.1px solid var(--bdr);border-radius:21px;display:flex;gap:clamp(12px,1.4vw,20px);align-items:center;max-width:672px}
-@media(max-width:640px){.idrows .vl{white-space:normal;overflow:visible;text-overflow:clip}.idrows{line-height:1.6;align-self:center;padding:12px 14px 12px 0}}
-@media(max-width:480px){.idcard{flex-direction:column;align-items:stretch;gap:0}.idphoto{width:100%;aspect-ratio:16/10;border-radius:21px 21px 0 0;background-size:120%;background-position:50% 20%}.idrows{padding:12px 16px}}
 .idphoto{flex:none;width:clamp(140px,15vw,226px);aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
 .editing .idphoto{outline:2px dashed var(--red2);outline-offset:3px;cursor:grab}
 .editing .idphoto:active{cursor:grabbing}
@@ -109,14 +106,6 @@ section{position:relative}
 .tgrid.car{grid-template-columns:max-content max-content max-content 1fr}
 .awgrid{display:grid;grid-template-columns:max-content max-content 1fr max-content max-content max-content;gap:3px clamp(8px,.85vw,15px);font-weight:300;font-size:clamp(10px,.75vw,13px);line-height:1.75;color:var(--tbody)}
 .awgrid .tr{display:contents}
-@media(max-width:640px){
- .tgrid.edu,.tgrid.car{display:block}
- .tgrid .tr{display:flex;flex-wrap:wrap;gap:2px 8px;padding:4px 0}
- .awgrid{display:block;font-size:12px}
- .awgrid .tr{display:grid;grid-template-columns:max-content 1fr;gap:0 10px;padding:6px 0}
- .awgrid .tr span:nth-child(3){font-weight:500;grid-column:1/-1}
- .awgrid .tr span:nth-child(n+4){grid-column:2;color:var(--tlab)}
-}
 .skg p{font-weight:300;font-size:clamp(12px,.95vw,15.5px);line-height:1.9;color:var(--tbody);margin:0}
 
 /* ============ 실험 · 연구 카드: 이미지 + 텍스트 플랫 행 ============ */
@@ -129,7 +118,6 @@ section{position:relative}
 .hcard .q{font-weight:300;font-size:clamp(12.5px,1vw,15px);line-height:1.5;color:var(--tlab);margin-top:3px}
 .hcard .mt{margin-top:9px;font-weight:400;font-size:clamp(10.5px,.85vw,12.5px);line-height:1.55;color:var(--tlab)}
 .hcard .mt b{font-weight:700;color:var(--ink);margin-right:7px}
-@media(max-width:420px){.hcard{grid-template-columns:1fr;gap:10px;align-items:start}.hcard .im{aspect-ratio:16/9}}
 
 /* ============ C1 — 주요 작품 (dark) ============ */
 .c1{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
@@ -150,12 +138,10 @@ section{position:relative}
 .t3meta{margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:2px clamp(8px,.8vw,14px);font-size:clamp(12px,.9vw,14.5px);line-height:1.9}
 .t3meta dt{font-weight:200;color:rgba(255,255,255,.62);white-space:nowrap}
 .t3meta dd{font-weight:200;color:#fff}
-@media(max-width:900px){.t3card{grid-template-columns:1fr!important;gap:18px}}
 
 /* ============ C2 — 작업 효율화 (dark, 원본 이미지·움짤) ============ */
 .c2{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
 .c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:clamp(20px,2.7vw,48px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
-@media(max-width:900px){.c2blk{grid-template-columns:1fr!important;gap:18px}}
 .c2txt{min-width:0}
 .figv{min-width:0}
 .figv img,.figv video{display:block;width:100%;height:auto}
@@ -175,7 +161,6 @@ section{position:relative}
 /* ============ 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ============ */
 .lab{padding:clamp(56px,10vh,120px) 0 clamp(70px,11vh,140px)}
 .labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:clamp(30px,4.5vw,90px);align-items:start;position:relative}
-@media(max-width:940px){.labgrid{grid-template-columns:1fr!important;gap:44px}}
 .labcol{min-width:0}
 .labh{font-weight:200;font-size:clamp(22px,1.8vw,32px);color:var(--tblk);line-height:1.2}
 .labsub{margin-top:4px;font-weight:300;font-size:clamp(12px,1vw,14.5px);color:var(--tlab)}
@@ -197,7 +182,6 @@ section{position:relative}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
 .afil button:hover:not(.on){color:#fff;border-color:var(--mut-d)}
 .agrid{columns:4;column-gap:var(--agap,12px)}
-@media(max-width:980px){.agrid{columns:3}}@media(max-width:640px){.agrid{columns:2}}
 .acard{break-inside:avoid;margin-bottom:var(--agap,12px);border-radius:12px;overflow:hidden;border:1px solid var(--hl-d);background:var(--dark2);cursor:pointer;position:relative;transition:transform .4s var(--ease),border-color .3s}
 .acard:hover{transform:translateY(-4px);border-color:var(--mag1)}
 .media{position:relative;overflow:hidden;background:#17171b}
