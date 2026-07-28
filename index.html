@@ -98,7 +98,7 @@ section{position:relative}
 .idrows .pr:first-child .lb,.idrows .pr:first-child .vl{border-top:0}
 .tagline{margin:var(--vgap) 0 0}
 .tagline .tg{font-weight:var(--w-display);font-size:var(--t-display);letter-spacing:var(--ls-display);line-height:1.45;color:var(--ink);text-wrap:balance}
-.tagline .ds{font-weight:400;font-size:var(--t-small);line-height:1.85;letter-spacing:-.005em;color:rgba(0,0,0,.66);margin-top:15px;text-wrap:pretty}
+.tagline .ds{font-weight:400;font-size:var(--t-small);line-height:1.85;letter-spacing:-.005em;color:rgba(0,0,0,.66);margin-top:15px;text-wrap:pretty;white-space:pre-wrap}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
 .chprev{margin-top:var(--vgap);border-top:1px solid var(--rl)}
 .chprev a{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:var(--cg);align-items:baseline;padding:17px 0;border-bottom:1px solid var(--rh)}
@@ -1066,7 +1066,7 @@ function rerender(){
   /* 재렌더 전 미저장 편집을 EDITS에 스테이징 (모달 열고닫기로 편집이 날아가지 않게) */
   if(editing){const E={};document.querySelectorAll("[data-k]").forEach(el=>{E[el.dataset.k]=el.textContent.replace(/\s+$/,"");});Object.assign(EDITS,E);}
   render();
-  if(editing){document.body.classList.add("editing");document.querySelectorAll("[data-k]").forEach(el=>el.contentEditable=true);}}
+  if(editing){document.body.classList.add("editing");document.querySelectorAll("[data-k]").forEach(el=>{try{el.contentEditable="plaintext-only";if(el.contentEditable!=="plaintext-only")el.contentEditable="true";}catch(e){el.contentEditable="true";}});}}
 fab.onclick=()=>{editing=!editing;document.body.classList.toggle("editing",editing);fab.classList.toggle("on",editing);fab.textContent=editing?"✔":"✎";document.getElementById("editHint").classList.toggle("on",editing);
   if(editing){pauseAllPreviews();rerender();}
   else{fsSelect(null);saveEdits().finally(()=>{render();resumeVisiblePreviews();});}
