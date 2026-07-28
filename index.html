@@ -29,6 +29,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-size:var(--t-h3);background:#fff;color:var(--ink);font-family:var(--san);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
 /* 콘텐츠 보호: 선택·드래그·롱프레스 저장 차단 (편집 모드에선 해제) */
 body:not(.editing){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+body:not(.editing) img,body:not(.editing) video{-webkit-user-drag:none;user-drag:none;-webkit-touch-callout:none;pointer-events:auto}
 img,video{-webkit-user-drag:none}
 @media print{body{display:none}}
 ::selection{background:var(--red2);color:#fff}
@@ -1177,10 +1178,12 @@ addEventListener("keydown",e=>{if(e.key&&e.key.length===1){_kb=(_kb+e.key.toLowe
 addEventListener("contextmenu",e=>{if(!editing)e.preventDefault();});
 addEventListener("dragstart",e=>{if(!editing)e.preventDefault();});
 addEventListener("copy",e=>{if(!editing)e.preventDefault();});
+addEventListener("cut",e=>{if(!editing)e.preventDefault();});
+addEventListener("selectstart",e=>{if(!editing)e.preventDefault();});
 addEventListener("keydown",e=>{
   if(editing)return;
   const k=(e.key||"").toLowerCase();
-  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&["s","u","p","c"].indexOf(k)>=0)e.preventDefault();
+  if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&["s","u","p","c","a","x"].indexOf(k)>=0)e.preventDefault();
   if((e.ctrlKey||e.metaKey)&&e.shiftKey&&["i","j","c","s"].indexOf(k)>=0)e.preventDefault();
 });
 addEventListener("keyup",e=>{if(e.key==="PrintScreen"){try{navigator.clipboard.writeText("");}catch(_){}}});
