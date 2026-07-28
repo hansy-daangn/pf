@@ -294,5 +294,6 @@
  "sz.bloby": "-140",
  "sz.blobx": "-80",
  "sz.blobw": "670",
- "sz.blockgap": "112"
+ "sz.blockgap": "112",
+ "sz.fadeh": "0"
 }
