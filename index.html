@@ -53,8 +53,6 @@ section{position:relative}
 .fadeTop::before,.fadeBot::after{content:"";position:absolute;left:0;right:0;height:var(--fadeh,90px);pointer-events:none;z-index:3}
 .fadeTop::before{top:0;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
 .fadeBot::after{bottom:0;background:linear-gradient(0deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
-footer{position:relative}
-footer.fadeTop::before{background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
 .sec-dark .wrap,.sec-light .wrap{position:relative;z-index:1}
 
 /* ============ 스크롤 챕터 바 (반투명 블러) ============ */
@@ -251,8 +249,8 @@ footer.fadeTop::before{background:linear-gradient(180deg,#fff 0%,rgba(255,255,25
 .grouptag{position:absolute;top:8px;right:8px;background:rgba(13,13,15,.72);border:1px solid var(--hl-d);border-radius:100px;padding:3px 8px;font-family:var(--mono);font-size:var(--t-micro);letter-spacing:.06em;color:#fff;z-index:1;font-weight:600}
 
 /* ============ FOOTER (minimal) ============ */
-footer{background:var(--dark);color:rgba(255,255,255,.6);padding:30px 0 56px;text-align:center;font-weight:200;font-size:var(--t-small)}
-footer a{color:#fff;font-weight:400}
+footer{background:transparent;padding:calc(var(--secpad) * .55) 0 calc(var(--secpad) * .8);text-align:center}
+footer a{color:var(--red2);font-weight:700;font-size:var(--t-h3);letter-spacing:-.005em}
 footer a:hover{color:var(--mag2)}
 
 /* ============ LIGHTBOX (dark, high-q + sound) ============ */
@@ -684,7 +682,7 @@ function labHTML(){return `<section class="lab sec-light" id="lab"><div class="w
 </div></div></section>`;}
 
 /* ---------- FOOTER ---------- */
-function footHTML(){return `<footer class="fadeTop"><div class="wrap"><a href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a> · <span data-k="ui.foot1">© 2026 김한결</span></div></footer>`;}
+function footHTML(){return `<footer><div class="wrap"><a href="mailto:hansy.dawn@gmail.com">Contact : hansy.dawn@gmail.com</a></div></footer>`;}
 
 /* ---- edits (content.json = single source of truth) ---- */
 let EDITS={};
