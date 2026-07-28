@@ -22,7 +22,7 @@
  --hl-d:rgba(255,255,255,.14);--hl-l:rgba(17,17,20,.11);--line2:rgba(17,17,20,.14);
  --mono:"SFMono-Regular",ui-monospace,Menlo,"Roboto Mono",Consolas,monospace;
  --san:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
- --w-display:700;--w-h1:800;--w-h2:800;--w-h3:700;--ls-display:-.025em;--ls-h1:-.015em;--ls-h2:-.005em;--t-display:30px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
+ --w-display:700;--w-h1:800;--w-h2:800;--w-h3:700;--ls-display:-.025em;--ls-h1:-.015em;--ls-h2:-.005em;--t-display:30px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1380px;--secpad:120px;--colgap:96px;--blockgap:112px;--sidepad:24px;--ease:cubic-bezier(.2,.7,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -76,15 +76,15 @@ section{position:relative}
 /* ============ 이력서 (#1, white) — 피그마 291:5 ============ */
 /* 좌열: 사진 폭을 레일로 삼아 기준선 통일(시안1) · 우열: 괘선 2단계 + 행 리듬(시안4) */
 .resume{position:relative;overflow:hidden;padding:calc(var(--secpad) * .5) 0 calc(var(--secpad) * .85);
- --rail:176px;--railgap:24px;--vgap:40px;
+ --rail:176px;--railgap:24px;--vgap:64px;
  --rl:rgba(17,17,20,.2);--rh:rgba(17,17,20,.08);--cg:13px;--rowpad:6.5px;
  --c1:87px;--c2w:58px;--c4w:36px;--c5w:58px;--c6w:115px}
-.blob{position:absolute;top:var(--bloby,-176px);left:var(--blobx,-172px);width:var(--blobw,560px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0;
+.blob{position:absolute;top:var(--bloby,-140px);left:var(--blobx,-80px);width:var(--blobw,670px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0;
  -webkit-mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%);mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%)}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
 .idcard{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:var(--railgap);align-items:stretch}
-.idphoto{width:100%;min-height:150px;aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
+.idphoto{width:100%;min-height:150px;aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:142%;background-position:43% 20%}
 .editing .idphoto{outline:2px dashed var(--red2);outline-offset:3px;cursor:grab}
 .editing .idphoto:active{cursor:grabbing}
 /* 칸 사이 간격을 라벨 칸 안쪽 패딩으로 만들어 행 구분선이 끊기지 않게 (시안1) */
@@ -101,7 +101,7 @@ section{position:relative}
 .tagline .ds{font-weight:400;font-size:var(--t-small);line-height:1.85;letter-spacing:-.005em;color:rgba(0,0,0,.66);margin-top:15px;text-wrap:pretty;white-space:pre-wrap}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
 .chprev{margin-top:var(--vgap);border-top:1px solid var(--rl)}
-.chprev a{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:var(--cg);align-items:baseline;padding:17px 0;border-bottom:1px solid var(--rh)}
+.chprev a{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:var(--cg);align-items:baseline;padding:21px 0;border-bottom:1px solid var(--rh)}
 .chprev a:last-child{border-bottom-color:var(--rl)}
 .chprev .pill{font-weight:700;font-size:var(--t-small);color:var(--red2);white-space:nowrap}
 .chprev .tt{font-weight:var(--w-h3);font-size:var(--t-h3);line-height:1.4}
@@ -109,7 +109,7 @@ section{position:relative}
 .chprev a:hover .tt{color:var(--red2)}
 
 /* 이력서 우측 표 (학력/경력/기술/수상) — 행 단위 그리드로 항상 정렬, 스크롤 없음 */
-.rright{display:flex;flex-direction:column;gap:clamp(24px,3.2vh,32px);min-width:0}
+.rright{display:flex;flex-direction:column;gap:clamp(24px,3.2vh,32px);min-width:0;margin-top:-5px}
 .rsec h3{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);color:var(--red2);line-height:1.22;margin:0;padding-bottom:9px;border-bottom:1px solid var(--rl);display:flex;align-items:center;gap:clamp(10px,1vw,18px)}
 .rsec .ics{display:flex;gap:8px;align-items:center;margin-left:auto}
 .rsec .ics img{width:clamp(15px,1.2vw,21px);height:auto;opacity:.92}
@@ -119,8 +119,8 @@ section{position:relative}
 /* 세 표가 완전히 같은 6열 트랙 — 열의 세로선이 표를 건너뛰어도 이어진다 */
 .awgrid{grid-template-columns:var(--c1) var(--c2w) minmax(0,1fr) var(--c4w) var(--c5w) var(--c6w)}
 /* 학력·경력: 칸 사이 간격을 --cg 로 균일하게 (첫 열은 수상 표와 같은 세로선 유지) */
-.tgrid.edu{grid-template-columns:var(--c1) max-content max-content}
-.tgrid.car{grid-template-columns:var(--c1) max-content max-content max-content}
+.tgrid.edu{grid-template-columns:var(--c1) max-content minmax(0,1fr)}
+.tgrid.car{grid-template-columns:var(--c1) max-content max-content minmax(0,1fr)}
 .tgrid .tr>span,.awgrid .tr>span{min-width:0}
 .tgrid .tr>span:first-child,.awgrid .tr>span:first-child{color:var(--tlab);white-space:nowrap}
 .tgrid .tr>span:nth-child(2),.tgrid.car .tr>span:nth-child(3),.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(3){color:var(--tblk);font-weight:400}
@@ -211,7 +211,7 @@ section{position:relative}
 .afil button{font-family:var(--mono);font-size:var(--t-micro);border:1px solid var(--hl-d);background:transparent;color:var(--mut-d);padding:8px 15px;border-radius:100px;font-weight:600;letter-spacing:.03em;transition:.2s}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
 .afil button:hover:not(.on){color:#fff;border-color:var(--mut-d)}
-.chin{padding:var(--secpad) 0 0;display:flex;align-items:baseline;gap:clamp(12px,1.2vw,20px);flex-wrap:wrap}
+.chin{padding:calc(var(--secpad) * 1.35) 0 0;display:flex;align-items:baseline;gap:clamp(12px,1.2vw,20px);flex-wrap:wrap}
 .chin .lb{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);line-height:1.25;color:var(--red2);white-space:nowrap}
 .sec-dark .chin .lb{color:var(--mag2)}
 .chin+*{margin-top:calc(var(--blockgap) * .34)}
@@ -683,15 +683,15 @@ async function loadEdits(){
 /* ---- 크기 조절 시스템: CSS 변수 ← EDITS(sz.*) ---- */
 /* 주요 작품(C1)·작업 효율화(C2)는 같은 키(sz.cc)를 공유 — 어느 쪽을 드래그해도 동시 반영 */
 const SIZERS=[
- {key:"sz.rc",sel:".rgrid",  cssVar:"--rc", min:.5,max:1.8,dflt:.88},
+ {key:"sz.rc",sel:".rgrid",  cssVar:"--rc", min:.5,max:1.8,dflt:0.91},
  {key:"sz.lc",sel:".labgrid",cssVar:"--lc", min:.5,max:2.2,dflt:1.15},
- {key:"sz.cc",sel:".t3card", cssVar:"--c1c",min:1, max:4,  dflt:2},
- {key:"sz.cc",sel:".c2blk",  cssVar:"--c2c",min:1, max:4,  dflt:2}
+ {key:"sz.cc",sel:".t3card", cssVar:"--c1c",min:1, max:4,  dflt:1.85},
+ {key:"sz.cc",sel:".c2blk",  cssVar:"--c2c",min:1, max:4,  dflt:1.85}
 ];
 const SPACES=[
- {k:"maxw",dflt:1280},{k:"sidepad",dflt:60},{k:"secpad",dflt:120},
- {k:"colgap",dflt:76},{k:"blockgap",dflt:112},{k:"agap",dflt:12},
- {k:"blobw",dflt:560},{k:"blobx",dflt:-172},{k:"bloby",dflt:-176}
+ {k:"maxw",dflt:1380},{k:"sidepad",dflt:24},{k:"secpad",dflt:120},
+ {k:"colgap",dflt:96},{k:"blockgap",dflt:112},{k:"agap",dflt:4},
+ {k:"blobw",dflt:670},{k:"blobx",dflt:-80},{k:"bloby",dflt:-140}
 ];
 function spaceVal(s){const v=parseFloat(EDITS["sz."+s.k]);return isNaN(v)?s.dflt:v;}
 function applySizes(){const rt=document.documentElement.style;
@@ -1190,8 +1190,12 @@ function updateChapbar(){
 }
 addEventListener("scroll",()=>{if(_cbTick)return;_cbTick=true;requestAnimationFrame(()=>{_cbTick=false;updateChapbar();});},{passive:true});
 
-render();               /* 기본 콘텐츠 즉시 페인트 (content.json 없이도) */
-loadEdits().then(render); /* 편집 오버레이 적용 후 재렌더 */
+/* content.json을 먼저 적용한 뒤 한 번만 페인트 — 로딩 전/후 화면이 달라지지 않게.
+   (네트워크가 느리면 400ms 후 기본값으로 먼저 그리고, 도착하면 갱신) */
+let __painted=false;
+const __paint=()=>{if(__painted)return;__painted=true;render();};
+loadEdits().then(()=>{__painted=false;__painted=true;render();}).catch(__paint);
+setTimeout(__paint,400);
 </script>
 </body>
 </html>
