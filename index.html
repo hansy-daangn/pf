@@ -22,7 +22,7 @@
  --hl-d:rgba(255,255,255,.14);--hl-l:rgba(17,17,20,.11);--line2:rgba(17,17,20,.14);
  --mono:"SFMono-Regular",ui-monospace,Menlo,"Roboto Mono",Consolas,monospace;
  --san:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
- --t-display:28px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
+ --w-h1:800;--w-h2:200;--w-h3:700;--ls-h1:-.015em;--ls-h2:-.005em;--t-display:28px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -55,7 +55,7 @@ section{position:relative}
 #chapbar{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;gap:14px;align-items:baseline;padding:12px clamp(18px,3.5vw,60px);transition:padding .35s var(--ease);background:rgba(255,255,255,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(17,17,20,.08);transform:translateY(-100%);transition:transform .3s var(--ease),background .3s,border-color .3s}
 #chapbar.on{transform:none}
 #chapbar .pill{font-weight:700;font-size:var(--t-h3);color:var(--red2);white-space:nowrap;transition:font-size .35s var(--ease)}
-#chapbar .tt{font-weight:700;font-size:var(--t-h3);color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:font-size .35s var(--ease)}
+#chapbar .tt{font-weight:var(--w-h3);font-size:var(--t-h3);color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:font-size .35s var(--ease)}
 #chapbar.big{padding-top:20px;padding-bottom:20px}
 #chapbar.big .pill{font-size:var(--t-h2)}
 #chapbar.big .tt{font-size:var(--t-h2);font-weight:800}
@@ -92,20 +92,20 @@ section{position:relative}
 .tagline{margin:0 0 calc(var(--secpad) * .5);max-width:none}
 .tagline .tg{white-space:nowrap}
 .tagline .ds{max-width:74ch}
-.tagline .tg{font-weight:800;font-size:var(--t-display);line-height:1.6;letter-spacing:-.01em;color:var(--ink)}
+.tagline .tg{font-weight:var(--w-h1);font-size:var(--t-display);letter-spacing:var(--ls-h1);line-height:1.4;color:var(--ink)}
 .tagline .ds{font-weight:400;font-size:var(--t-body);line-height:1.75;color:#000;margin-top:8px}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
 .chprev{margin-top:clamp(26px,5vh,48px);max-width:660px;margin-left:auto;margin-right:auto}
 .chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:14px 2px;border-top:1px solid var(--line2)}
 .chprev a:last-child{border-bottom:1px solid var(--line2)}
 .chprev .pill{font-weight:700;font-size:var(--t-small);color:var(--red2);white-space:nowrap}
-.chprev .tt{font-weight:700;font-size:var(--t-h3);line-height:1.3}
+.chprev .tt{font-weight:var(--w-h3);font-size:var(--t-h3);line-height:1.4}
 .chprev .ss{font-weight:300;font-size:var(--t-small);line-height:1.5;margin-top:3px;color:var(--tlab)}
 .chprev a:hover .tt{color:var(--red2)}
 
 /* 이력서 우측 표 (학력/경력/기술/수상) — 행 단위 그리드로 항상 정렬, 스크롤 없음 */
 .rright{display:flex;flex-direction:column;gap:clamp(18px,2.6vh,28px);min-width:0}
-.rsec h3{font-weight:200;font-size:var(--t-h2);color:var(--tblk);line-height:1.2;margin-bottom:8px;display:flex;align-items:center;gap:clamp(10px,1vw,18px)}
+.rsec h3{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);color:var(--tblk);line-height:1.25;margin-bottom:8px;display:flex;align-items:center;gap:clamp(10px,1vw,18px)}
 .rsec .ics{display:flex;gap:7px;align-items:center}
 .rsec .ics img{width:clamp(18px,1.4vw,25px);height:auto}
 .tgrid{display:grid;gap:2px clamp(16px,2.4vw,46px);font-weight:300;font-size:var(--fs-table);line-height:1.9;color:var(--tbody)}
@@ -127,7 +127,7 @@ section{position:relative}
 .hcard:last-child{border-bottom:1px solid var(--line2)}
 .hcard .im{aspect-ratio:4/3;overflow:hidden;border-radius:12px;background:#000}
 .hcard .im img{width:100%;height:100%;object-fit:cover}
-.hcard .t{font-weight:700;font-size:var(--t-h3);line-height:1.4}
+.hcard .t{font-weight:var(--w-h3);font-size:var(--t-h3);line-height:1.4}
 .hcard .q{font-weight:300;font-size:var(--t-small);line-height:1.5;color:var(--tlab);margin-top:3px}
 .hcard .mt{margin-top:9px;font-weight:400;font-size:var(--t-micro);line-height:1.55;color:var(--tlab)}
 .hcard .mt b{font-weight:700;color:var(--ink);margin-right:7px}
@@ -146,7 +146,7 @@ section{position:relative}
 .t3media:hover .play span{background:var(--red2);border-color:transparent;transform:scale(1.06)}
 .pills{display:flex;gap:9px;flex-wrap:wrap}
 .pills span{border:.75px solid #fff;border-radius:22.5px;padding:2.5px 9px;font-weight:700;font-size:var(--t-small);color:#fff;line-height:1.2}
-.t3title{font-weight:800;font-size:var(--t-h1);line-height:1.25;margin-top:12px}
+.t3title{font-weight:var(--w-h1);font-size:var(--t-h1);letter-spacing:var(--ls-h1);line-height:1.25;margin-top:12px}
 .t3desc{font-weight:200;font-size:var(--t-body);line-height:2;margin-top:12px;color:#fff}
 .t3meta{margin-top:16px;display:grid;grid-template-columns:5.5em 1fr;gap:2px clamp(8px,.8vw,14px);font-size:var(--t-small);line-height:1.9}
 .t3meta dt{font-weight:200;color:rgba(255,255,255,.62);white-space:nowrap}
@@ -162,7 +162,7 @@ section{position:relative}
 .fcol{display:flex;flex-direction:column;min-width:0}
 .fslot{position:relative;overflow:hidden}
 .fslot video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.c2txt .t{font-weight:800;font-size:var(--t-h1);line-height:1.25;margin-top:12px}
+.c2txt .t{font-weight:var(--w-h1);font-size:var(--t-h1);letter-spacing:var(--ls-h1);line-height:1.25;margin-top:12px}
 .c2txt .d{font-weight:200;font-size:var(--t-body);line-height:2;margin-top:12px;color:#fff}
 .bub{margin-top:24px;border-top:1px solid var(--lined,rgba(255,255,255,.08));padding-top:16px}
 .bub .row{display:grid;grid-template-columns:5.5em 1fr;gap:2px clamp(8px,.8vw,14px);margin:0 0 12px}
@@ -178,13 +178,19 @@ section{position:relative}
 .labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:var(--colgap);align-items:stretch;position:relative}
 .labcol{min-width:0}
 .labcolB{display:flex;flex-direction:column}
-.labh{font-weight:200;font-size:var(--t-h2);color:var(--tblk);line-height:1.2}
+.labh{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);color:var(--tblk);line-height:1.25}
 .labsub{margin-top:4px;font-weight:300;font-size:var(--t-small);color:var(--tlab)}
 .labitem{padding-top:clamp(18px,2.6vh,28px);margin-top:clamp(18px,2.6vh,28px);border-top:1px solid var(--line2)}
 .labitem .tag{font-weight:700;font-size:var(--t-small);color:var(--red2);line-height:1.5}
-.labitem h3{margin-top:4px;font-weight:700;font-size:var(--t-h3);line-height:1.4;color:var(--ink)}
+.labitem h3{margin-top:4px;font-weight:var(--w-h3);font-size:var(--t-h3);line-height:1.4;color:var(--ink)}
 .labitem p{margin-top:7px;font-weight:300;font-size:var(--t-small);line-height:1.85;color:var(--tbody);max-width:72ch}
 .labitem .tools{margin-top:7px;font-weight:300;font-size:var(--t-micro);color:var(--tlab)}
+.swapimg{position:relative;line-height:0}
+.swapimg img{width:100%;display:block;opacity:0;transition:opacity .7s var(--ease)}
+.swapimg img:first-child{position:relative}
+.swapimg img:not(:first-child){position:absolute;inset:0;height:100%;object-fit:cover}
+.swapimg img.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.swapimg img{transition:none}}
 .labfigs{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap}
 .labfigs figure{flex:1 1 260px;min-width:0;margin:0}
 .labfigs img{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:12px;background:#fff}
@@ -198,7 +204,7 @@ section{position:relative}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
 .afil button:hover:not(.on){color:#fff;border-color:var(--mut-d)}
 .chin{padding:var(--secpad) 0 0;display:flex;align-items:baseline;gap:clamp(12px,1.2vw,20px);flex-wrap:wrap}
-.chin .lb{font-weight:800;font-size:var(--t-h2);color:inherit;white-space:nowrap;letter-spacing:-.01em}
+.chin .lb{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);line-height:1.25;color:inherit;white-space:nowrap}
 .chin+*{margin-top:calc(var(--blockgap) * .34)}
 .c1 .chin+.t3card,.c2 .chin+.c2blk{padding-top:0}
 .featgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--agap,12px);margin-bottom:var(--agap,12px)}
@@ -369,7 +375,7 @@ footer a:hover{color:var(--mag2)}
  <label>섹션 상하 여백<b id="szv-secpad"></b><input type="range" id="szr-secpad" min="48" max="220" step="4"/></label>
  <label>좌우 컬럼 사이<b id="szv-colgap"></b><input type="range" id="szr-colgap" min="24" max="180" step="4"/></label>
  <label>카드 사이 여백<b id="szv-blockgap"></b><input type="range" id="szr-blockgap" min="40" max="240" step="4"/></label>
- <label>갤러리 간격<b id="szv-agap"></b><input type="range" id="szr-agap" min="4" max="32" step="1"/></label>
+ <label>갤러리 간격<b id="szv-agap"></b><input type="range" id="szr-agap" min="0" max="32" step="1"/></label>
  <button class="rst" id="szReset">기본값으로 되돌리기</button>
 </div></div>
 <button id="ngFab">＋ 작업 추가</button>
@@ -617,7 +623,7 @@ function isWideVideo(w){
 function archiveHTML(){
  const all=gridWorks(),feat=editing?[]:all.filter(isWideVideo);
  return `<section class="archive sec-dark" id="archive"><div class="wrap">${chIntro(2)}
-  <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button>${editing?`<span class="gapctl">간격 <input type="range" id="gapRange" min="4" max="24" step="1" aria-label="갤러리 카드 간격"/></span>`:""}</div>
+  <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button>${editing?`<span class="gapctl">간격 <input type="range" id="gapRange" min="0" max="24" step="1" aria-label="갤러리 카드 간격"/></span>`:""}</div>
   ${feat.length?`<div class="featgrid">${feat.map(cardHTML).join("")}</div>`:""}
   <div class="agrid">${(editing?all:all.filter(w=>!isWideVideo(w))).map(cardHTML).join("")}</div>
 </div></section>`;}
@@ -627,7 +633,7 @@ const LAB=[
  {tag:"성과 도구",t:"CreativeReporter — 광고 성과 리포팅 도구",
   d:"집행한 광고 소재의 성과를 소재 단위로 자동 집계·시각화하는 자체 개발 웹 도구. Moloco·Google·Meta 리포트를 클라우드 저장소에 누적하고, 효율 지도(지표 산점도)·주차별 추세·유형별 비교로 어떤 소재가 왜 좋았는지 바로 찾는다. 소재 미리보기와 실집행 성과를 한 화면에서 확인하며, 이 사이트 갤러리의 성과 데이터도 여기서 나온다.",
   k:"Web · Supabase · JavaScript",
-  figs:[["assets/lab/cr_shot.jpg","실제 화면 — 효율 지도(CTR × ROAS) · 주차별 추세 · 유형별 비교"]]},
+  figs:[[["assets/lab/cr_shot.jpg","assets/lab/cr_shot2.jpg"],"실제 화면 — 소재별 성과 목록 · 효율 지도(노출 × CPM) · 주차별 추세"]]},
  {tag:"AI 파이프라인",t:"이미지 소재 자동 제작 워크플로우",
   d:"자연어로 설명하면 문구 후보 → 11종 사이즈 레이아웃 초안 → 이미지 생성까지 이어지는 자체 개발 파이프라인. 피그마 플러그인과 로컬 브릿지 서버(Node.js)를 직접 만들어 피그마-클로드-생성 모델을 연결했고, OAuth로 생성 모델 MCP를 직접 호출해 중간 토큰 비용을 없앴다. 1장당 약 300원 — 시중 유료 툴(1,500원) 대비 1/5 비용. 설치 파일로 팀에 배포.",
   k:"Figma Plugin(자체 개발) · Node.js Bridge(자체 개발) · Claude · MCP",
@@ -641,7 +647,9 @@ function labHTML(){return `<section class="lab sec-light" id="lab"><div class="w
      <h3 data-k="l2.${i}.t">${esc(it.t)}</h3>
      <p data-k="l2.${i}.d">${esc(it.d)}</p>
      <p class="tools" data-k="l2.${i}.k">${esc(it.k)}</p>
-     ${it.figs?`<div class="labfigs">${it.figs.map((f,j)=>`<figure><img src="${f[0]}" alt="${esc(it.t)}" loading="lazy"/><figcaption data-k="l2.${i}.c${j}">${esc(f[1])}</figcaption></figure>`).join("")}</div>`:""}
+     ${it.figs?`<div class="labfigs">${it.figs.map((f,j)=>{const ss=Array.isArray(f[0])?f[0]:[f[0]];
+     const media=ss.length>1?`<div class="swapimg">${ss.map((s,k)=>`<img src="${s}" alt="${esc(it.t)}" loading="lazy" class="${k?"":"on"}"${k?' onerror="this.remove()"':""}/>`).join("")}</div>`:`<img src="${ss[0]}" alt="${esc(it.t)}" loading="lazy"/>`;
+     return `<figure>${media}<figcaption data-k="l2.${i}.c${j}">${esc(f[1])}</figcaption></figure>`;}).join("")}</div>`:""}
    </div>`).join("")}
  </div>
  <div class="labcol labcolB rv">
@@ -804,6 +812,12 @@ function render(){
   if(RMOTION)document.querySelectorAll(".figvid").forEach(v=>{v.removeAttribute("autoplay");try{v.pause();}catch(_){}});
   document.querySelectorAll(".acard").forEach(c=>io.observe(c));
   document.querySelectorAll("video.figvid").forEach(attachRangeLoop);
+  if(window.__swapT)clearInterval(window.__swapT);
+  const swaps=[...document.querySelectorAll(".swapimg")].filter(s=>s.querySelectorAll("img").length>1);
+  if(swaps.length)window.__swapT=setInterval(()=>{if(RMOTION)return;swaps.forEach(s=>{
+    const im=[...s.querySelectorAll("img")];if(im.length<2)return;
+    const i=im.findIndex(x=>x.classList.contains("on"));
+    im.forEach(x=>x.classList.remove("on"));im[(i+1)%im.length].classList.add("on");});},3000);
   document.querySelectorAll(".rv").forEach(el=>revO.observe(el));
   document.querySelectorAll(".t3media:not(.t3loc)").forEach(el=>{const go=()=>{if(editing||el.classList.contains("playing"))return;stopT3();const yt=el.dataset.yt;el.insertAdjacentHTML("beforeend",`<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&rel=0&playsinline=1" title="영상 재생" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`);el.classList.add("playing");};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
   document.querySelectorAll(".t3media.t3loc").forEach(el=>{const go=()=>{if(editing)return;openLB(el.dataset.id);};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
