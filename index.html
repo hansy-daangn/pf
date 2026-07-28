@@ -672,7 +672,7 @@ function labHTML(){return `<section class="lab sec-light" id="lab"><div class="w
      <p data-k="l2.${i}.d">${esc(it.d)}</p>
      <p class="tools" data-k="l2.${i}.k">${esc(it.k)}</p>
      ${it.figs?`<div class="labfigs">${it.figs.map((f,j)=>{const ss=Array.isArray(f[0])?f[0]:[f[0]];
-     const media=ss.length>1?`<div class="swapimg">${ss.map((s,k)=>`<img src="${s}" alt="${esc(it.t)}" loading="lazy" class="${k?"":"on"}"${k?' onerror="this.remove()"':""}/>`).join("")}</div>`:`<img src="${ss[0]}" alt="${esc(it.t)}" loading="lazy" onerror="this.onerror=null;this.src='assets/lab/cr_shot.jpg'"/>`;
+     const media=ss.length>1?`<div class="swapimg">${ss.map((s,k)=>`<img src="${s}" alt="${esc(it.t)}" loading="lazy" class="${k?"":"on"}"${k?' onerror="this.remove()"':""}/>`).join("")}</div>`:`<img src="${ss[0]}" alt="${esc(it.t)}" loading="lazy"/>`;
      return `<figure>${media}<figcaption data-k="l2.${i}.c${j}">${esc(f[1])}</figcaption></figure>`;}).join("")}</div>`:""}
    </div>`).join("")}
  </div>
