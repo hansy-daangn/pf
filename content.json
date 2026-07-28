@@ -280,5 +280,20 @@
  "l2.sB": "광고 밖에서 질문을 세우고 검증한 개인 작업 — 인터랙티브 전시 · 단편영화 · 학술 논문",
  "r.cc1a": "영상제작과 제24회 졸업작품전 대상",
  "r.cc2a": "대학생·주니어 논문 경진대회 최우수 (한국방송미디어공학회)",
- "works.order": "[\"td_review2605\",\"mg_bizreview\",\"st_c1a\",\"td_declutter\",\"sf_10000walk\",\"st_c2a\",\"mg_ars\",\"ai_article\",\"st_c3a\",\"td_raffle_v\",\"td_mapwalk\",\"st_c1b\",\"td_nintendo\",\"mg_simbatdan\",\"st_c2b\",\"mg_rent1\",\"st_c3b\",\"mg_rent2\",\"mg_ahnabada\",\"td_godaangn\",\"st_c1c\",\"ai_closet1\",\"mg_keyword_spring\",\"sf_bizjul\",\"mg_jobs_spring\",\"st_c2c\",\"st_c3c\",\"3d_sew\",\"ai_sea\",\"st_c1d\",\"td_pickup\",\"mg_charge\",\"cr_instantbuy_2607\",\"st_c2d\",\"mg_lyric\",\"cr_10y_fleamarket_a549\",\"st_c3d\",\"cr_10y_jobs_4304\",\"cr_10y_group_2968\",\"st_c1e\",\"cr_10y_banner_6aec\"]"
+ "works.order": "[\"td_review2605\",\"mg_bizreview\",\"st_c1a\",\"td_declutter\",\"sf_10000walk\",\"st_c2a\",\"mg_ars\",\"ai_article\",\"st_c3a\",\"td_raffle_v\",\"td_mapwalk\",\"st_c1b\",\"td_nintendo\",\"mg_simbatdan\",\"st_c2b\",\"mg_rent1\",\"st_c3b\",\"mg_rent2\",\"mg_ahnabada\",\"td_godaangn\",\"st_c1c\",\"ai_closet1\",\"mg_keyword_spring\",\"sf_bizjul\",\"mg_jobs_spring\",\"st_c2c\",\"st_c3c\",\"3d_sew\",\"ai_sea\",\"st_c1d\",\"td_pickup\",\"mg_charge\",\"cr_instantbuy_2607\",\"st_c2d\",\"mg_lyric\",\"cr_10y_fleamarket_a549\",\"st_c3d\",\"cr_10y_jobs_4304\",\"cr_10y_group_2968\",\"st_c1e\",\"cr_10y_banner_6aec\"]",
+ "r.chap.0.p": "주요 작품",
+ "r.chap.0.t": "시선 유도 · 상징적 연결 · 무의식 자극",
+ "r.chap.0.s": "시청자가 볼 것, 느낄 것, 생각할 것을 설계한 대표작 3편",
+ "r.chap.1.p": "작업 효율화",
+ "r.chap.1.t": "코딩 자동화 · 노드 기반 제어",
+ "r.chap.1.s": "반복 작업을 코드와 노드로 줄이는 제작 파이프라인",
+ "r.chap.2.p": "작업 아카이브",
+ "r.chap.2.t": "퍼포먼스 캠페인 · 스타일 스터디",
+ "r.chap.2.s": "집행 소재와 스타일 실험 전작 갤러리",
+ "r.chap.3.p": "도구 · 연구",
+ "r.chap.3.t": "성과 리포팅 도구 · AI 파이프라인 · 논문",
+ "r.chap.3.s": "제작을 둘러싼 도구를 직접 만들고 검증",
+ "sz.sidepad": "24",
+ "sz.maxw": "1380",
+ "sz.colgap": "96"
 }
