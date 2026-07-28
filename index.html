@@ -50,7 +50,7 @@ section{position:relative}
 .sec-light{background:#fff;color:var(--ink)}
 .sec-dark{background:var(--dark);color:#fff;position:relative}
 /* 밝은 면과 어두운 면의 경계를 부드럽게 — 콘텐츠는 .wrap(z-index:1) 위로 */
-.fadeTop::before,.fadeBot::after{content:"";position:absolute;left:0;right:0;height:var(--fadeh,150px);pointer-events:none;z-index:3}
+.fadeTop::before,.fadeBot::after{content:"";position:absolute;left:0;right:0;height:var(--fadeh,90px);pointer-events:none;z-index:3}
 .fadeTop::before{top:0;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
 .fadeBot::after{bottom:0;background:linear-gradient(0deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
 footer{position:relative}
@@ -395,6 +395,7 @@ footer a:hover{color:var(--mag2)}
  <label>좌우 컬럼 사이<b id="szv-colgap"></b><input type="range" id="szr-colgap" min="24" max="180" step="4"/></label>
  <label>카드 사이 여백<b id="szv-blockgap"></b><input type="range" id="szr-blockgap" min="40" max="240" step="4"/></label>
  <label>갤러리 간격<b id="szv-agap"></b><input type="range" id="szr-agap" min="0" max="32" step="1"/></label>
+ <label>경계 그라데이션<b id="szv-fadeh"></b><input type="range" id="szr-fadeh" min="0" max="320" step="5"/></label>
  <label>블롭 크기<b id="szv-blobw"></b><input type="range" id="szr-blobw" min="200" max="1000" step="10"/></label>
  <label>블롭 좌우<b id="szv-blobx"></b><input type="range" id="szr-blobx" min="-500" max="400" step="5"/></label>
  <label>블롭 상하<b id="szv-bloby"></b><input type="range" id="szr-bloby" min="-500" max="400" step="5"/></label>
@@ -701,7 +702,7 @@ const SIZERS=[
 ];
 const SPACES=[
  {k:"maxw",dflt:1380},{k:"sidepad",dflt:24},{k:"secpad",dflt:120},
- {k:"colgap",dflt:96},{k:"blockgap",dflt:112},{k:"agap",dflt:4},
+ {k:"colgap",dflt:96},{k:"blockgap",dflt:112},{k:"agap",dflt:4},{k:"fadeh",dflt:90},
  {k:"blobw",dflt:670},{k:"blobx",dflt:-80},{k:"bloby",dflt:-140}
 ];
 function spaceVal(s){const v=parseFloat(EDITS["sz."+s.k]);return isNaN(v)?s.dflt:v;}
