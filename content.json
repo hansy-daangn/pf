@@ -295,5 +295,9 @@
  "sz.blobx": "-80",
  "sz.blobw": "670",
  "sz.blockgap": "112",
- "sz.fadeh": "0"
+ "sz.fadeh": "0",
+ "ts.--t-h1": "30",
+ "ts.--t-body": "17",
+ "ts.--t-micro": "11",
+ "ts.--t-h2": "24"
 }
