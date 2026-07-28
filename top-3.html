@@ -125,7 +125,7 @@ section{position:relative}
 /* 톤 위계: 연도·기간 등 색인 열은 한 톤 내려 본문 열이 먼저 읽히게 한다 */
 .tgrid .tr>span:first-child{color:var(--tlab);font-variant-numeric:tabular-nums}
 .tgrid.edu .tr>span:last-child{color:var(--tlab)}
-.awgrid{display:grid;grid-template-columns:6em 5.4em minmax(0,1fr) 3.5em 5.4em var(--awcol);gap:10.6px clamp(8px,.85vw,15px);font-weight:300;font-size:var(--fs-aw);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
+.awgrid{display:grid;grid-template-columns:max-content max-content minmax(0,1fr) max-content max-content var(--awcol);gap:10.6px 18px;font-weight:300;font-size:var(--fs-aw);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
 .awgrid .tr{display:contents}
 .awgrid .tr>span:nth-child(1),.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(5),.awgrid .tr>span:nth-child(6){color:var(--tlab)}
 .skg p{font-weight:300;font-size:clamp(12.5px,1vw,15px);line-height:2.22;color:var(--tbody);margin:0}

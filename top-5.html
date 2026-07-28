@@ -78,8 +78,8 @@ section{position:relative}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
 /* 시그니처 오브제 — 핑크 블롭 한가운데 놓인 증명사진 (--pw 하나로 비례 고정) */
-.idcard{--pw:clamp(200px,20.8vw,300px);position:relative;width:var(--pw)}
-.blob{position:absolute;z-index:-1;left:calc(var(--pw) * -.133);top:calc(var(--pw) * -.243);width:calc(var(--pw) * 1.55);max-width:none;aspect-ratio:1;opacity:.9;mix-blend-mode:multiply;pointer-events:none;user-select:none}
+.idcard{--pw:clamp(200px,20vw,288px);position:relative;width:var(--pw)}
+.blob{position:absolute;z-index:-1;left:calc(var(--pw) * -.257);top:calc(var(--pw) * -.915);width:calc(var(--pw) * 2.133);max-width:none;aspect-ratio:1;opacity:.8;mix-blend-mode:multiply;pointer-events:none;user-select:none}
 .idphoto{position:relative;z-index:1;width:var(--pw);aspect-ratio:1;border-radius:28px;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
 .editing .idphoto{outline:2px dashed var(--red2);outline-offset:3px;cursor:grab}
 .editing .idphoto:active{cursor:grabbing}
@@ -90,12 +90,12 @@ section{position:relative}
 .editing .idrows .pr.off{display:contents}
 .idrows .lb{color:var(--tlab)}
 .idrows .vl{color:var(--tbody);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tagline{position:relative;z-index:1;margin:clamp(38px,7vh,66px) 0 0;max-width:640px}
+.tagline{position:relative;z-index:1;margin:clamp(34px,6.3vh,58px) 0 0;max-width:640px}
 .tagline .tg{font-weight:800;font-size:clamp(19px,1.8vw,30px);line-height:1.6;letter-spacing:-.01em;color:var(--ink)}
 .tagline .ds{font-weight:400;font-size:clamp(12.5px,1.05vw,15.5px);line-height:1.75;color:#000;margin-top:8px}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
 .chprev{position:relative;z-index:1;margin-top:clamp(24px,4.2vh,40px);max-width:660px;margin-left:auto;margin-right:auto}
-.chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:11px 2px;border-top:1px solid var(--line2)}
+.chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:9px 2px;border-top:1px solid var(--line2)}
 .chprev a:last-child{border-bottom:1px solid var(--line2)}
 .chprev .pill{font-weight:700;font-size:clamp(12.5px,1vw,15px);color:var(--red2);white-space:nowrap}
 .chprev .tt{font-weight:700;font-size:clamp(14px,1.2vw,18px);line-height:1.3}

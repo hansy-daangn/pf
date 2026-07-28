@@ -88,11 +88,12 @@ section{position:relative}
 .idphoto{width:100%;min-height:150px;border-radius:0;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
 .editing .idphoto{outline:2px dashed var(--red2);outline-offset:3px;cursor:grab}
 .editing .idphoto:active{cursor:grabbing}
-.idrows{display:grid;grid-template-columns:3.4em minmax(0,1fr);gap:0 16px;align-content:start;font-weight:300;font-size:var(--fs-table);line-height:1.9;padding:0;min-width:0}
+/* 칸 사이 간격을 라벨 칸 안쪽 패딩으로 만들어, 행 구분선이 끊기지 않고 한 줄로 이어지게 한다 */
+.idrows{display:grid;grid-template-columns:calc(3.4em + 16px) minmax(0,1fr);gap:0;align-content:start;font-weight:300;font-size:var(--fs-table);line-height:1.9;padding:0;min-width:0}
 .idrows .pr{display:contents}
 .idrows .pr.off{display:none}
 .editing .idrows .pr.off{display:contents}
-.idrows .lb{color:var(--tlab);padding:6px 0;border-top:1px solid var(--line2)}
+.idrows .lb{color:var(--tlab);padding:6px 16px 6px 0;border-top:1px solid var(--line2)}
 .idrows .vl{color:var(--tbody);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:6px 0;border-top:1px solid var(--line2)}
 .idrows .pr:last-child .lb,.idrows .pr:last-child .vl{border-bottom:1px solid var(--line2)}
 /* 태그라인 — 시선의 첫 착지점 */
