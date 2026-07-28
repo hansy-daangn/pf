@@ -22,7 +22,7 @@
  --hl-d:rgba(255,255,255,.14);--hl-l:rgba(17,17,20,.11);--line2:rgba(17,17,20,.14);
  --mono:"SFMono-Regular",ui-monospace,Menlo,"Roboto Mono",Consolas,monospace;
  --san:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
- --w-display:700;--w-h1:800;--w-h2:200;--w-h3:700;--ls-display:-.025em;--ls-h1:-.015em;--ls-h2:-.005em;--t-display:30px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
+ --w-display:700;--w-h1:800;--w-h2:800;--w-h3:700;--ls-display:-.025em;--ls-h1:-.015em;--ls-h2:-.005em;--t-display:30px;--t-h1:26px;--t-h2:21px;--t-h3:17px;--t-body:15px;--t-small:13px;--t-micro:11px;--fs-table:var(--t-small);--maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -110,7 +110,7 @@ section{position:relative}
 
 /* 이력서 우측 표 (학력/경력/기술/수상) — 행 단위 그리드로 항상 정렬, 스크롤 없음 */
 .rright{display:flex;flex-direction:column;gap:clamp(24px,3.2vh,32px);min-width:0}
-.rsec h3{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);color:var(--tblk);line-height:1.22;margin:0;padding-bottom:9px;border-bottom:1px solid var(--rl);display:flex;align-items:center;gap:clamp(10px,1vw,18px)}
+.rsec h3{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);color:var(--red2);line-height:1.22;margin:0;padding-bottom:9px;border-bottom:1px solid var(--rl);display:flex;align-items:center;gap:clamp(10px,1vw,18px)}
 .rsec .ics{display:flex;gap:8px;align-items:center;margin-left:auto}
 .rsec .ics img{width:clamp(15px,1.2vw,21px);height:auto;opacity:.92}
 .tgrid,.awgrid{display:grid;column-gap:var(--cg);row-gap:0;font-weight:300;font-size:var(--fs-table);line-height:1.55;color:var(--tbody);font-variant-numeric:tabular-nums}
@@ -129,7 +129,7 @@ section{position:relative}
 .tgrid.edu .tr>span:nth-child(3),.tgrid.car .tr>span:nth-child(4){color:var(--tlab);font-weight:300}
 .awgrid .tr>span:nth-child(4),.awgrid .tr>span:nth-child(5),.awgrid .tr>span:nth-child(6){color:var(--tlab);font-weight:300}
 .skg{padding:calc(var(--rowpad) + 2px) 0;border-bottom:1px solid var(--rl)}
-.skg p{font-weight:300;font-size:var(--t-small);line-height:1.85;color:var(--tbody);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.skg p{font-weight:300;font-size:var(--t-small);line-height:1.6;color:var(--tbody);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ============ 실험 · 연구 카드: 이미지 + 텍스트 플랫 행 ============ */
 .hcards{display:flex;flex-direction:column;flex:1;justify-content:space-between}
@@ -188,7 +188,7 @@ section{position:relative}
 .labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:var(--colgap);align-items:stretch;position:relative}
 .labcol{min-width:0}
 .labcolB{display:flex;flex-direction:column}
-.labh{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);color:var(--tblk);line-height:1.25}
+.labh{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);color:var(--red2);line-height:1.25}
 .labsub{margin-top:4px;font-weight:300;font-size:var(--t-small);color:var(--tlab)}
 .labitem{padding-top:clamp(18px,2.6vh,28px);margin-top:clamp(18px,2.6vh,28px);border-top:1px solid var(--line2)}
 .labitem .tag{font-weight:700;font-size:var(--t-small);color:var(--red2);line-height:1.5}
@@ -214,7 +214,8 @@ section{position:relative}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
 .afil button:hover:not(.on){color:#fff;border-color:var(--mut-d)}
 .chin{padding:var(--secpad) 0 0;display:flex;align-items:baseline;gap:clamp(12px,1.2vw,20px);flex-wrap:wrap}
-.chin .lb{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);line-height:1.25;color:inherit;white-space:nowrap}
+.chin .lb{font-weight:var(--w-h2);font-size:var(--t-h2);letter-spacing:var(--ls-h2);line-height:1.25;color:var(--red2);white-space:nowrap}
+.sec-dark .chin .lb{color:var(--mag2)}
 .chin+*{margin-top:calc(var(--blockgap) * .34)}
 .c1 .chin+.t3card,.c2 .chin+.c2blk{padding-top:0}
 .featgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--agap,12px);margin-bottom:var(--agap,12px)}
