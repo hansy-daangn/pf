@@ -140,7 +140,7 @@ section{position:relative}
 .pills span{border:.75px solid #fff;border-radius:22.5px;padding:2.5px 9px;font-weight:700;font-size:clamp(11px,.85vw,13px);color:#fff;line-height:1.2}
 .t3title{font-weight:800;font-size:clamp(21px,1.8vw,32px);line-height:1.25;margin-top:12px}
 .t3desc{font-weight:200;font-size:clamp(13.5px,1vw,16.5px);line-height:2;margin-top:12px;color:#fff}
-.t3meta{margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:2px clamp(8px,.8vw,14px);font-size:clamp(12px,.9vw,14.5px);line-height:1.9}
+.t3meta{margin-top:16px;display:grid;grid-template-columns:5.5em 1fr;gap:2px clamp(8px,.8vw,14px);font-size:clamp(12px,.9vw,14.5px);line-height:1.9}
 .t3meta dt{font-weight:200;color:rgba(255,255,255,.62);white-space:nowrap}
 .t3meta dd{font-weight:200;color:#fff}
 
@@ -187,6 +187,8 @@ section{position:relative}
 .afil button{font-family:var(--mono);font-size:12px;border:1px solid var(--hl-d);background:transparent;color:var(--mut-d);padding:8px 15px;border-radius:100px;font-weight:600;letter-spacing:.03em;transition:.2s}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
 .afil button:hover:not(.on){color:#fff;border-color:var(--mut-d)}
+.featgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--agap,12px);margin-bottom:var(--agap,12px)}
+.featgrid .acard .media{aspect-ratio:16/9!important}
 .agrid{columns:4;column-gap:var(--agap,12px)}
 .acard{break-inside:avoid;margin-bottom:var(--agap,12px);border-radius:12px;overflow:hidden;border:1px solid var(--hl-d);background:var(--dark2);cursor:pointer;position:relative;transition:transform .4s var(--ease),border-color .3s}
 .acard:hover{transform:translateY(-4px);border-color:var(--mag1)}
@@ -492,9 +494,7 @@ function t3card(t,i){return `<div class="t3card rv">
 /* 주요 작품 추가분: 당근 캠페인 대표작 (가로형 프레임, 클릭 시 상세) */
 const C1X=["td_declutter"];
 function c1xCard(id){const w=findWork(id);if(!w)return "";
-  const pk=PKG[id],p=pk&&pk.perf;
-  const perf=p?[["성과",won(p.cost)+" 집행 · 노출 "+big(p.imp)+(p.act?" · 활성 유저 "+big(p.act):"")]]:[];
-  const meta=[["구분",w.campaign||""],["연도",w.year||""]].concat(perf).filter(m=>m[1]);
+  const meta=[["구분",w.campaign||""],["연도",w.year||""]].filter(m=>m[1]);
   /* 다른 대표작과 동일하게 첫 프레임 정지 + 재생 버튼 (클릭 시 라이트박스 재생).
      1920x1080 원본을 업로드하면 포스터·상세가 그 작업으로 연결된다 */
   let mediaHTML=`<img src="${pos(id)}" alt="${esc(w.title)}" loading="lazy"/>`,lbId=id;
@@ -549,9 +549,13 @@ function cardHTML(w){
   const ord=editing?`<span class="ordbtns"><button class="ob" data-mv="-1" aria-label="앞으로">‹</button><button class="ob" data-mv="1" aria-label="뒤로">›</button></span>`:"";
   const inert=noact&&!editing;
   return `<div class="acard${hid?" offcard":""}${noact?" noact":""}" data-cat="${w.cat}" data-id="${w.id}"${inert?"":` role="button" tabindex="0" aria-label="${esc(w.title)}"`}>${media}${inert?"":hov}${ord}</div>`;}
-function archiveHTML(){return `<section class="archive sec-dark" id="archive"><div class="wrap">
+const FEAT=["td_review2605","mg_bizreview"]; /* 갤러리 상단 대형 가로 카드 */
+function archiveHTML(){const hid=hiddenSet();
+ const feat=editing?[]:FEAT.map(findWork).filter(w=>w&&!hid.has(w.id));
+ return `<section class="archive sec-dark" id="archive"><div class="wrap">
   <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button>${editing?`<span class="gapctl">간격 <input type="range" id="gapRange" min="4" max="24" step="1" aria-label="갤러리 카드 간격"/></span>`:""}</div>
-  <div class="agrid">${gridWorks().map(cardHTML).join("")}</div>
+  ${feat.length?`<div class="featgrid">${feat.map(cardHTML).join("")}</div>`:""}
+  <div class="agrid">${gridWorks().filter(w=>editing||FEAT.indexOf(w.id)<0).map(cardHTML).join("")}</div>
 </div></section>`;}
 
 /* ---------- 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ---------- */
@@ -684,7 +688,7 @@ function render(){
   document.querySelectorAll(".acard [data-k]").forEach(el=>el.addEventListener("click",e=>{if(editing)e.stopPropagation();}));
   document.querySelectorAll(".acard .ob").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();moveWork(b.closest(".acard").dataset.id,+b.dataset.mv);}));
   const g=document.querySelector(".agrid");
-  const applyFilter=()=>{document.querySelectorAll("#afil button").forEach(x=>{x.classList.toggle("on",x.dataset.f===FILTER);x.setAttribute("aria-pressed",String(x.dataset.f===FILTER));});g.querySelectorAll(".acard").forEach(c=>c.style.display=(FILTER==="all"||c.dataset.cat===FILTER)?"":"none");};
+  const applyFilter=()=>{document.querySelectorAll("#afil button").forEach(x=>{x.classList.toggle("on",x.dataset.f===FILTER);x.setAttribute("aria-pressed",String(x.dataset.f===FILTER));});document.querySelectorAll("#archive .acard").forEach(c=>c.style.display=(FILTER==="all"||c.dataset.cat===FILTER)?"":"none");};
   document.querySelectorAll("#afil button").forEach(b=>b.onclick=()=>{FILTER=b.dataset.f;applyFilter();});
   applyFilter();
 }
@@ -761,7 +765,7 @@ function renderKV(w){const kv=document.getElementById("lbKv"),rows=[];
   kv.innerHTML=rows.map(r=>`<div class="row"><b>${esc(r[0])}</b><span>${esc(r[1])}</span></div>`).join("");}
 function won(n){if(n>=1e8)return"₩"+(n/1e8).toFixed(n>=1e9?0:2)+"억";if(n>=1e4)return"₩"+Math.round(n/1e4).toLocaleString()+"만";return"₩"+Math.round(n).toLocaleString();}
 function big(n){if(n>=1e8)return(n/1e8).toFixed(1)+"억";if(n>=1e4)return Math.round(n/1e4).toLocaleString()+"만";return Math.round(n).toLocaleString();}
-function renderPerf(w){const el=document.getElementById("lbPerf"),pk=w.u?{perf:w.perf}:PKG[w.id];
+function renderPerf(w){const el=document.getElementById("lbPerf");el.style.display="none";el.innerHTML="";if(true)return;const pk=w.u?{perf:w.perf}:PKG[w.id];
   if(!pk||!pk.perf){el.style.display="none";el.innerHTML="";return;}
   const p=pk.perf,t=[["광고비",won(p.cost)],["노출 수",big(p.imp)]];
   if(p.ctr!=null)t.push(["클릭률",p.ctr+"%"]);
