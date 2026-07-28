@@ -106,7 +106,7 @@ section{position:relative}
 .tagline .ds{font-weight:300;font-size:clamp(12.5px,1.05vw,15.5px);line-height:1.8;color:var(--tlab);margin-top:18px}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
 .chprev{margin-top:var(--rgap)}
-.chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:calc(var(--rst) * .8) 0;border-top:1px solid var(--line2)}
+.chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:var(--rst) 0;border-top:1px solid var(--line2)}
 .chprev a:last-child{border-bottom:1px solid var(--line2)}
 .chprev .pill{font-weight:700;font-size:clamp(12px,.95vw,14px);color:var(--red2);white-space:nowrap;letter-spacing:.01em}
 .chprev .tt{font-weight:700;font-size:clamp(15px,1.3vw,19px);line-height:1.35;letter-spacing:-.012em}
@@ -126,7 +126,7 @@ section{position:relative}
 .tgrid.car{grid-template-columns:max-content max-content max-content 1fr}
 /* 톤 위계: 연도·기간 등 색인 열은 한 톤 내려 본문 열이 먼저 읽히게 한다 */
 .tgrid .tr>span:first-child{color:var(--tlab);font-variant-numeric:tabular-nums}
-.tgrid.edu .tr>span:last-child{color:var(--tlab)}
+.tgrid .tr>span:last-child{color:var(--tlab)}
 .awgrid{display:grid;grid-template-columns:max-content max-content minmax(0,1fr) max-content max-content var(--awcol);gap:10.6px 18px;font-weight:300;font-size:var(--fs-aw);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
 .awgrid .tr{display:contents}
 .awgrid .tr>span:nth-child(1),.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(5),.awgrid .tr>span:nth-child(6){color:var(--tlab)}

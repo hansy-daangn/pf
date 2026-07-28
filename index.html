@@ -110,11 +110,16 @@ section{position:relative}
 .rsec .ics img{width:clamp(18px,1.4vw,25px);height:auto}
 .tgrid{display:grid;gap:2px clamp(16px,2.4vw,46px);font-weight:300;font-size:var(--fs-table);line-height:1.9;color:var(--tbody)}
 .tgrid .tr{display:contents}
-.tgrid.edu{grid-template-columns:max-content 1fr max-content}
-.tgrid.car{grid-template-columns:max-content max-content max-content 1fr}
-.awgrid{display:grid;grid-template-columns:5.6em 5.1em minmax(0,1fr) 3.4em 5.5em 10em;gap:4px 9px;font-weight:300;font-size:var(--fs-table);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
+.tgrid.edu{grid-template-columns:max-content minmax(0,1fr) max-content}
+.tgrid .tr>span{white-space:nowrap}
+.tgrid.edu .tr>span:nth-child(2){white-space:normal;word-break:keep-all}
+.tgrid.car{grid-template-columns:max-content max-content max-content minmax(0,1fr)}
+.tgrid.car .tr>span:last-child{white-space:normal;word-break:keep-all}
+.awgrid{display:grid;grid-template-columns:max-content max-content minmax(72px,1fr) max-content max-content max-content;gap:4px 14px;font-weight:300;font-size:var(--fs-table);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
 .awgrid .tr{display:contents}
-.skg p{font-weight:300;font-size:var(--t-body);line-height:1.9;color:var(--tbody);margin:0}
+.awgrid .tr>span{white-space:nowrap}
+.awgrid .tr>span:nth-child(3){white-space:normal;word-break:keep-all}
+.skg p{font-weight:300;font-size:var(--t-small);line-height:1.9;color:var(--tbody);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ============ 실험 · 연구 카드: 이미지 + 텍스트 플랫 행 ============ */
 .hcards{display:flex;flex-direction:column;flex:1;justify-content:space-between}
