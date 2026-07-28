@@ -290,5 +290,8 @@
  "sz.colgap": "96",
  "w.ai_closet1.off": "[\"self:ai_closet1\"]",
  "fs.ui.email": "13",
- "r.skg2": "Flim - ENG cam, DSLR, Mirrorless, Gimbal, Drone(~2kg), Slider, Lighting"
+ "r.skg2": "Flim - ENG cam, DSLR, Mirrorless, Gimbal, Drone(~2kg), Slider, Lighting",
+ "sz.bloby": "30",
+ "sz.blobx": "20",
+ "sz.blobw": "510"
 }
