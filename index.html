@@ -109,7 +109,7 @@ section{position:relative}
 .tgrid .tr{display:contents}
 .tgrid.edu{grid-template-columns:max-content 1fr max-content}
 .tgrid.car{grid-template-columns:max-content max-content max-content 1fr}
-.awgrid{display:grid;grid-template-columns:max-content max-content 1fr max-content max-content max-content;gap:3px clamp(8px,.85vw,15px);font-weight:300;font-size:clamp(10px,.75vw,13px);line-height:1.75;color:var(--tbody)}
+.awgrid{display:grid;grid-template-columns:6em 5.4em minmax(0,1fr) 3.5em 5.4em 10.2em;gap:3px clamp(8px,.85vw,15px);font-weight:300;font-size:clamp(10px,.75vw,13px);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
 .awgrid .tr{display:contents}
 .skg p{font-weight:300;font-size:clamp(12px,.95vw,15.5px);line-height:1.9;color:var(--tbody);margin:0}
 
@@ -125,8 +125,8 @@ section{position:relative}
 .hcard .mt b{font-weight:700;color:var(--ink);margin-right:7px}
 
 /* ============ C1 — 주요 작품 (dark) ============ */
-.c1{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
-.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:clamp(20px,3vw,57px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
+.c1{padding:16px 0 96px}
+.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:48px;align-items:start;padding:96px 0 0}
 .t3txt{min-width:0}
 .t3media{position:relative;overflow:hidden;background:#000;cursor:pointer}
 .t3media img{width:100%;height:100%;object-fit:cover}
@@ -145,8 +145,8 @@ section{position:relative}
 .t3meta dd{font-weight:200;color:#fff}
 
 /* ============ C2 — 작업 효율화 (dark, 원본 이미지·움짤) ============ */
-.c2{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
-.c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:clamp(20px,2.7vw,48px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
+.c2{padding:16px 0 96px}
+.c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:48px;align-items:start;padding:96px 0 0}
 .c2txt{min-width:0}
 .figv{min-width:0}
 .figv img,.figv video{display:block;width:100%;height:auto}
@@ -164,7 +164,7 @@ section{position:relative}
 .bub .b{font-weight:200;font-size:clamp(10.5px,.75vw,12.5px);line-height:1.6;color:#fff}
 
 /* ============ 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ============ */
-.lab{padding:clamp(56px,10vh,120px) 0 clamp(70px,11vh,140px)}
+.lab{padding:96px 0 96px}
 .labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:clamp(30px,4.5vw,90px);align-items:stretch;position:relative}
 .labcol{min-width:0}
 .labcolB{display:flex;flex-direction:column}
@@ -182,7 +182,7 @@ section{position:relative}
 .labcol .hcards{margin-top:clamp(14px,2vh,22px)}
 
 /* ============ ARCHIVE (dark) ============ */
-.archive{padding:clamp(50px,9vh,110px) 0 clamp(70px,10vh,120px)}
+.archive{padding:96px 0 96px}
 .afil{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
 .afil button{font-family:var(--mono);font-size:12px;border:1px solid var(--hl-d);background:transparent;color:var(--mut-d);padding:8px 15px;border-radius:100px;font-weight:600;letter-spacing:.03em;transition:.2s}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
@@ -495,13 +495,13 @@ function c1xCard(id){const w=findWork(id);if(!w)return "";
   const pk=PKG[id],p=pk&&pk.perf;
   const perf=p?[["성과",won(p.cost)+" 집행 · 노출 "+big(p.imp)+(p.act?" · 활성 유저 "+big(p.act):"")]]:[];
   const meta=[["구분",w.campaign||""],["연도",w.year||""]].concat(perf).filter(m=>m[1]);
-  /* 가로(1920x1080) 원본을 업로드하면 자동으로 그 영상을 사용 (제목/캠페인에 짐·declutter 포함된 업로드 작업) */
+  /* 다른 대표작과 동일하게 첫 프레임 정지 + 재생 버튼 (클릭 시 라이트박스 재생).
+     1920x1080 원본을 업로드하면 포스터·상세가 그 작업으로 연결된다 */
   let mediaHTML=`<img src="${pos(id)}" alt="${esc(w.title)}" loading="lazy"/>`,lbId=id;
   if(id==="td_declutter"){
     const uw=userWorks().find(x=>(x.assets||[]).some(a=>a.type==="video"&&a.res==="1920x1080")&&/짐|declutter/i.test((x.title||"")+(x.campaign||"")));
     if(uw){const a=uw.assets.find(a=>a.type==="video"&&a.res==="1920x1080");
-      mediaHTML=`<video class="figvid" src="${a.url}" ${a.poster?`poster="${a.poster}"`:""} autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>`;lbId=uw.id;}
-    else mediaHTML=`<video class="figvid" src="${full(id)}" poster="${pos(id)}" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>`;}
+      if(a.poster)mediaHTML=`<img src="${a.poster}" alt="${esc(w.title)}" loading="lazy"/>`;lbId=uw.id;}}
   return `<div class="t3card rv">
   <div class="t3media t3loc" data-id="${lbId}" style="aspect-ratio:16/9" role="button" tabindex="0" aria-label="${esc(w.title)} 상세 보기">${mediaHTML}<span class="play"><span>▶</span></span></div>
   <div class="t3txt"><div class="pills">${(w.role||"").split("·").map(s=>s.trim()).filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
