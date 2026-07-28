@@ -87,8 +87,7 @@ section{position:relative}
 .idrows .lb{color:var(--tlab)}
 .idrows .vl{color:#000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tagline{margin:clamp(26px,5vh,50px) auto 0;text-align:center;max-width:660px}
-.tagline .tg{font-weight:800;font-size:clamp(19px,1.8vw,30px);line-height:1.6;letter-spacing:-.01em}
-.tagline .tg .acc{color:var(--red2)}
+.tagline .tg{font-weight:800;font-size:clamp(19px,1.8vw,30px);line-height:1.6;letter-spacing:-.01em;color:var(--ink)}
 .tagline .ds{font-weight:300;font-size:clamp(13px,1.2vw,18px);line-height:1.7;color:#000;margin-top:4px}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
 .chprev{margin-top:clamp(26px,5vh,48px);max-width:660px;margin-left:auto;margin-right:auto}
@@ -138,6 +137,7 @@ section{position:relative}
 .t3txt{min-width:0}
 .t3media{position:relative;overflow:hidden;background:#000;cursor:pointer}
 .t3media img{width:100%;height:100%;object-fit:cover}
+.t3media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .t3media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
 .t3media.playing img,.t3media.playing .play{display:none}
 .t3media .play{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
@@ -361,8 +361,7 @@ footer a:hover{color:var(--mag2)}
 /* ========== 이력서 데이터 (피그마 291:5 원문) ========== */
 const R={
  rows:[["이름","r.name","김한결"],["출생","r.pi.birth","2000.11.14"],["주소","r.pi.addr","인천 서구 완정로45번안길 5-1 102동 304호"],["전화","r.pi.tel","010-5756-7132"],["메일","ui.email","hansy.dawn@gmail.com"]],
- tagA:"자동화로 더 많은 시선 유도, 모션감에 시간을 투자하는 ",
- tagB:"김한결입니다.",
+ tag2:"자동화로 더 많은 시선 유도, 모션감에 시간을 투자하는 김한결입니다.",
  desc:"퍼포먼스 및 캠페인 광고소재(모션그래픽, 3D, AI, 숏폼 영상/이미지 소재) 제작으로 MAU 2200만 성장에 기여. AI 기반 자동화 파이프라인 개발, 업무 보조 프로그램 개발로 자동화 및 예산 효율화.",
  chap:[
   ["주요 작품","시선 유도 · 상징적 연결 · 무의식 자극","시청자가 볼 것, 느낄 것, 생각할 것을 설계한 대표작 3편","#c1"],
@@ -472,7 +471,7 @@ function resumeHTML(){
    <div class="rleft rv">
     <div class="idcard"><div class="idphoto" role="img" aria-label="김한결 사진"></div>
      <div class="idrows">${R.rows.map(prRow).join("")}</div></div>
-    <div class="tagline"><p class="tg"><span class="acc" data-k="r.tagA">${esc(R.tagA)}</span><span data-k="r.tagB">${esc(R.tagB)}</span></p>
+    <div class="tagline"><p class="tg" data-k="r.tag2">${esc(R.tag2)}</p>
      <p class="ds" data-k="r.desc">${esc(R.desc)}</p></div>
     <nav class="chprev" aria-label="목차">${R.chap.map((c,i)=>`<a href="${c[3]}"><span class="pill">${esc(c[0])}</span><span><span class="tt" data-k="r.chp.${i}.t">${esc(c[1])}</span><br/><span class="ss" data-k="r.chp.${i}.s">${esc(c[2])}</span></span></a>`).join("")}</nav>
    </div>
@@ -506,8 +505,14 @@ function c1xCard(id){const w=findWork(id);if(!w)return "";
   const pk=PKG[id],p=pk&&pk.perf;
   const perf=p?[["성과",won(p.cost)+" 집행 · 노출 "+big(p.imp)+(p.act?" · 활성 유저 "+big(p.act):"")]]:[];
   const meta=[["구분",w.campaign||""],["연도",w.year||""]].concat(perf).filter(m=>m[1]);
+  /* 가로(1920x1080) 원본을 업로드하면 자동으로 그 영상을 사용 (제목/캠페인에 짐·declutter 포함된 업로드 작업) */
+  let mediaHTML=`<img src="${pos(id)}" alt="${esc(w.title)}" loading="lazy"/>`,lbId=id;
+  if(id==="td_declutter"){
+    const uw=userWorks().find(x=>(x.assets||[]).some(a=>a.type==="video"&&a.res==="1920x1080")&&/짐|declutter/i.test((x.title||"")+(x.campaign||"")));
+    if(uw){const a=uw.assets.find(a=>a.type==="video"&&a.res==="1920x1080");
+      mediaHTML=`<video class="figvid" src="${a.url}" ${a.poster?`poster="${a.poster}"`:""} autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>`;lbId=uw.id;}}
   return `<div class="t3card rv">
-  <div class="t3media t3loc" data-id="${id}" style="aspect-ratio:16/9" role="button" tabindex="0" aria-label="${esc(w.title)} 상세 보기"><img src="${pos(id)}" alt="${esc(w.title)}" loading="lazy"/><span class="play"><span>▶</span></span></div>
+  <div class="t3media t3loc" data-id="${lbId}" style="aspect-ratio:16/9" role="button" tabindex="0" aria-label="${esc(w.title)} 상세 보기">${mediaHTML}<span class="play"><span>▶</span></span></div>
   <div class="t3txt"><div class="pills">${(w.role||"").split("·").map(s=>s.trim()).filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
    <h3 class="t3title" data-k="w.${id}.title">${esc(w.title)}</h3>
    <p class="t3desc" data-k="w.${id}.desc">${esc(w.desc)}</p>
