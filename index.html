@@ -686,6 +686,10 @@ let EDITS={};
 async function loadEdits(){
   try{localStorage.removeItem("pf_edits");}catch(e){}
   try{const r=await fetch("content.json?"+Date.now());if(r.ok)EDITS=await r.json();}catch(e){}
+  /* 방금 저장한 기기: GitHub Pages 재배포(30초~2분) 전에도 저장본이 보이도록 */
+  try{const c=JSON.parse(localStorage.getItem("pf_cache")||"null");
+    if(c&&(c._ts||0)>(EDITS._ts||0))EDITS=c;
+    else if(c)localStorage.removeItem("pf_cache");}catch(_){}
 }
 /* ---- 크기 조절 시스템: CSS 변수 ← EDITS(sz.*) ---- */
 /* 주요 작품(C1)·작업 효율화(C2)는 같은 키(sz.cc)를 공유 — 어느 쪽을 드래그해도 동시 반영 */
@@ -1113,7 +1117,9 @@ async function ghPut(path,b64,msg,pat){
   if(!r.ok){const e=await r.json().catch(()=>({}));if(r.status===401||r.status===403)localStorage.removeItem("pf_pat");throw new Error(e.message||("HTTP "+r.status));}
   return r.json();}
 async function saveContent(NEXT,msg){const pat=getPAT();if(!pat)throw new Error("토큰 없음");
-  await ghPut("content.json",btoa(unescape(encodeURIComponent(JSON.stringify(NEXT,null,1)))),msg||"edit: update content",pat);EDITS=NEXT;}
+  NEXT._ts=Date.now();
+  await ghPut("content.json",btoa(unescape(encodeURIComponent(JSON.stringify(NEXT,null,1)))),msg||"edit: update content",pat);
+  EDITS=NEXT;try{localStorage.setItem("pf_cache",JSON.stringify(NEXT));}catch(_){}}
 /* 저장 직전 서버 최신본과 재동기화 (다른 탭/페이지 저장을 덮어쓰지 않게) */
 async function freshMerge(local){let base={};try{const r=await fetch("content.json?"+Date.now());if(r.ok)base=await r.json();}catch(_){base=EDITS;}
   return Object.assign({},base,local);}
