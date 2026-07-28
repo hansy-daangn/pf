@@ -9,7 +9,7 @@
 <meta name="description" content="퍼포먼스·캠페인 영상 디자이너 김한결. 수사학적으로 시선을 설계하고 코드·노드로 자동화합니다. 3D · 모션그래픽 · AI."/>
 <meta property="og:title" content="김한결 · 영상 디자이너 — 새로운 조합, 새로운 의미"/>
 <meta property="og:image" content="https://hansy-daangn.github.io/pf/assets/fig/top3_eyetrace.png"/>
-<meta name="theme-color" content="#ffffff"/>
+<meta name="theme-color" content="#101013"/>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"/>
 <style>
 :root{
@@ -25,8 +25,8 @@
  --maxw:1600px;--ease:cubic-bezier(.2,.7,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{background:#fff;color:var(--ink);font-family:var(--san);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--dark)}
+body{background:var(--dark);color:#fff;font-family:var(--san);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
 /* 콘텐츠 보호: 선택·드래그·롱프레스 저장 차단 (편집 모드에선 해제) */
 body:not(.editing){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 img,video{-webkit-user-drag:none}
@@ -48,7 +48,9 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 
 section{position:relative}
 .sec-light{background:#fff;color:var(--ink)}
-.sec-dark{background:var(--dark);color:#fff;position:relative}
+/* 시안 C 「상영관」 — 전 구간 다크. 색 반전은 변수 레벨로 일괄 처리 */
+.sec-dark{background:var(--dark);color:#fff;position:relative;
+ --ink:#fff;--red2:var(--mag2);--tlab:rgba(255,255,255,.64);--tblk:rgba(255,255,255,.94);--tbody:rgba(255,255,255,.92);--line2:rgba(255,255,255,.16)}
 .sec-dark .wrap,.sec-light .wrap{position:relative;z-index:1}
 
 /* ============ 스크롤 챕터 바 (반투명 블러) ============ */
@@ -63,6 +65,7 @@ section{position:relative}
 @keyframes cbin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 #chapbar.dk{background:rgba(16,16,19,.6);border-bottom-color:rgba(255,255,255,.08)}
 #chapbar.dk .tt{color:#fff}
+#chapbar.dk .pill{color:var(--mag2)}
 @media(prefers-reduced-motion:reduce){#chapbar,#chapbar .pill,#chapbar .tt{transition:none;animation:none}#chapbar.big{padding-top:12px;padding-bottom:12px}#chapbar.big .pill,#chapbar.big .tt{font-size:clamp(15px,1.2vw,18px)}}
 
 /* ============ 크기 조절 핸들 (편집 모드) ============ */
@@ -75,10 +78,12 @@ section{position:relative}
 
 /* ============ 이력서 (#1, white) — 피그마 291:5 ============ */
 .resume{position:relative;overflow:hidden;padding:clamp(36px,5vh,70px) 0 clamp(50px,8vh,100px)}
-.blob{position:absolute;top:max(-14vw,-160px);left:max(-11vw,-130px);width:clamp(320px,40vw,777px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0}
+/* 핑크 블롭 — 다크 위 시그니처. 명함 카드 뒤에만 머물도록 축소(태그라인 가독 확보) */
+.blob{position:absolute;top:max(-14vw,-160px);left:max(-11vw,-130px);width:clamp(280px,30vw,560px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:clamp(28px,4vw,72px);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
-.idcard{background:#f7f7f7;border:1.1px solid var(--bdr);border-radius:21px;display:flex;gap:clamp(12px,1.4vw,20px);align-items:center;max-width:672px}
+/* 명함 카드 — 다크 위에 뜬 밝은 시그니처 (그림자 없이 명도 대비 + 1px 라인) */
+.idcard{--tlab:rgba(0,0,0,.56);--ink:#111114;background:#f7f7f7;border:1px solid var(--bdr);border-radius:21px;display:flex;gap:clamp(12px,1.4vw,20px);align-items:center;max-width:672px;color:var(--ink)}
 .idphoto{flex:none;width:clamp(140px,15vw,226px);aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
 .editing .idphoto{outline:2px dashed var(--red2);outline-offset:3px;cursor:grab}
 .editing .idphoto:active{cursor:grabbing}
@@ -88,11 +93,11 @@ section{position:relative}
 .editing .idrows .pr.off{display:contents}
 .idrows .lb{color:var(--tlab)}
 .idrows .vl{color:#000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tagline{margin:clamp(26px,5vh,50px) auto 0;text-align:center;max-width:660px}
-.tagline .tg{font-weight:800;font-size:clamp(19px,1.8vw,30px);line-height:1.6;letter-spacing:-.01em;color:var(--ink)}
-.tagline .ds{font-weight:300;font-size:clamp(13px,1.2vw,18px);line-height:1.7;color:#000;margin-top:4px}
+.tagline{margin:clamp(26px,5vh,50px) 0 0;text-align:left;max-width:660px}
+.tagline .tg{font-weight:800;font-size:clamp(19px,1.8vw,30px);line-height:1.6;letter-spacing:-.01em;color:#fff}
+.tagline .ds{font-weight:300;font-size:clamp(13px,1.2vw,18px);line-height:1.7;color:rgba(255,255,255,.78);margin-top:4px}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
-.chprev{margin-top:clamp(26px,5vh,48px);max-width:660px;margin-left:auto;margin-right:auto}
+.chprev{margin-top:clamp(26px,5vh,48px);max-width:660px}
 .chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:14px 2px;border-top:1px solid var(--line2)}
 .chprev a:last-child{border-bottom:1px solid var(--line2)}
 .chprev .pill{font-weight:700;font-size:clamp(12.5px,1vw,15px);color:var(--red2);white-space:nowrap}
@@ -109,15 +114,18 @@ section{position:relative}
 .tgrid .tr{display:contents}
 .tgrid.edu{grid-template-columns:max-content 1fr max-content}
 .tgrid.car{grid-template-columns:max-content max-content max-content 1fr}
-.awgrid{display:grid;grid-template-columns:max-content max-content 1fr max-content max-content max-content;gap:3px clamp(8px,.85vw,15px);font-weight:300;font-size:clamp(10px,.75vw,13px);line-height:1.75;color:var(--tbody)}
+.awgrid{display:grid;grid-template-columns:max-content max-content 1fr max-content max-content max-content;gap:3px clamp(8px,.85vw,15px);font-weight:300;font-size:clamp(10px,.75vw,13px);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
 .awgrid .tr{display:contents}
+.awgrid .tr span{white-space:nowrap}
+.awgrid .tr span:nth-child(3){white-space:normal}
+.awgrid .tr span:first-child{color:var(--tlab)}
 .skg p{font-weight:300;font-size:clamp(12px,.95vw,15.5px);line-height:1.9;color:var(--tbody);margin:0}
 
 /* ============ 실험 · 연구 카드: 이미지 + 텍스트 플랫 행 ============ */
 .hcards{display:flex;flex-direction:column;flex:1;justify-content:space-between}
 .hcard{display:grid;grid-template-columns:clamp(180px,19vw,320px) 1fr;gap:clamp(16px,2vw,34px);padding:clamp(18px,2.8vh,34px) 2px;border-top:1px solid var(--line2);align-items:center;flex:1}
 .hcard:last-child{border-bottom:1px solid var(--line2)}
-.hcard .im{aspect-ratio:4/3;overflow:hidden;border-radius:12px;background:#000}
+.hcard .im{aspect-ratio:4/3;overflow:hidden;border-radius:12px;background:#000;border:1px solid rgba(255,255,255,.12)}
 .hcard .im img{width:100%;height:100%;object-fit:cover}
 .hcard .t{font-weight:700;font-size:clamp(14px,1.2vw,18px);line-height:1.4}
 .hcard .q{font-weight:300;font-size:clamp(12.5px,1vw,15px);line-height:1.5;color:var(--tlab);margin-top:3px}
@@ -126,9 +134,9 @@ section{position:relative}
 
 /* ============ C1 — 주요 작품 (dark) ============ */
 .c1{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
-.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:clamp(20px,3vw,57px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
+.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:clamp(18px,2.5vw,46px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
 .t3txt{min-width:0}
-.t3media{position:relative;overflow:hidden;background:#000;cursor:pointer}
+.t3media{position:relative;overflow:hidden;background:#000;cursor:pointer;border:1px solid rgba(255,255,255,.12)}
 .t3media img{width:100%;height:100%;object-fit:cover}
 .t3media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .t3media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
@@ -138,7 +146,7 @@ section{position:relative}
 .t3media:hover .play span{background:var(--red2);border-color:transparent;transform:scale(1.06)}
 .pills{display:flex;gap:9px;flex-wrap:wrap}
 .pills span{border:.75px solid #fff;border-radius:22.5px;padding:2.5px 9px;font-weight:700;font-size:clamp(11px,.85vw,13px);color:#fff;line-height:1.2}
-.t3title{font-weight:800;font-size:clamp(21px,1.8vw,32px);line-height:1.25;margin-top:12px}
+.t3title{font-weight:800;font-size:clamp(21px,1.8vw,32px);line-height:1.25;margin-top:12px;color:#fff}
 .t3desc{font-weight:200;font-size:clamp(13.5px,1vw,16.5px);line-height:2;margin-top:12px;color:#fff}
 .t3meta{margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:2px clamp(8px,.8vw,14px);font-size:clamp(12px,.9vw,14.5px);line-height:1.9}
 .t3meta dt{font-weight:200;color:rgba(255,255,255,.62);white-space:nowrap}
@@ -148,20 +156,20 @@ section{position:relative}
 .c2{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
 .c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:clamp(20px,2.7vw,48px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
 .c2txt{min-width:0}
-.figv{min-width:0}
+.figv{min-width:0;border:1px solid rgba(255,255,255,.12)}
 .figv img,.figv video{display:block;width:100%;height:auto}
 .frow{display:flex}
 .fcol{display:flex;flex-direction:column;min-width:0}
 .fslot{position:relative;overflow:hidden}
 .fslot video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.c2txt .t{font-weight:800;font-size:clamp(21px,1.8vw,32px);line-height:1.25;margin-top:12px}
+.c2txt .t{font-weight:800;font-size:clamp(21px,1.8vw,32px);line-height:1.25;margin-top:12px;color:#fff}
 .c2txt .d{font-weight:200;font-size:clamp(13.5px,1vw,16.5px);line-height:2;margin-top:12px;color:#fff}
-.bub{margin-top:clamp(20px,4vh,56px);border:1px solid #fff;border-radius:16px;padding:12px 18px;position:relative}
-.bub::before{content:"";position:absolute;left:-8px;top:26px;width:14px;height:14px;background:var(--dark);border-left:1px solid #fff;border-bottom:1px solid #fff;transform:rotate(45deg)}
-.bub .row{display:flex;gap:16px;margin:8px 0}
-.bub .fl{flex:none}
-.bub .a{font-weight:200;font-size:clamp(13.5px,1vw,16.5px);line-height:1.6;color:#fff}
-.bub .b{font-weight:200;font-size:clamp(10.5px,.75vw,12.5px);line-height:1.6;color:#fff}
+/* C2 메타 — C1의 dl(.t3meta) 표 문법과 동일한 위계로 통일 */
+.c2meta{margin-top:clamp(18px,3.2vh,44px);border-top:1px solid rgba(255,255,255,.16);padding-top:14px}
+.c2meta dt.sub,.c2meta dd.sub{font-size:clamp(10.5px,.78vw,12.5px);line-height:1.7}
+.c2meta dt.sub{color:rgba(255,255,255,.5)}
+.c2meta dd.sub{color:rgba(255,255,255,.72);padding-bottom:8px}
+.c2meta dt.sp,.c2meta dd.sp{margin-top:8px}
 
 /* ============ 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ============ */
 .lab{padding:clamp(56px,10vh,120px) 0 clamp(70px,11vh,140px)}
@@ -309,7 +317,7 @@ footer a:hover{color:var(--mag2)}
 <body>
 <div id="chapbar" aria-hidden="true"><span class="pill" id="cbPill"></span><span class="tt" id="cbTt"></span></div>
 <main id="main" aria-label="포트폴리오"></main>
-<noscript><div style="padding:64px 26px;max-width:640px;margin:0 auto;color:#111114;font-family:sans-serif;line-height:1.6"><h1 style="font-weight:800">김한결 · 영상 디자이너</h1><p>새로운 조합, 새로운 의미. 퍼포먼스·캠페인 영상 디자이너 김한결의 포트폴리오입니다. 전체 내용을 보려면 자바스크립트를 켜고 새로고침해 주세요.</p><p>문의 · <a style="color:#cc1433" href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a></p></div></noscript>
+<noscript><div style="padding:64px 26px;max-width:640px;margin:0 auto;color:#f4f4f5;font-family:sans-serif;line-height:1.6"><h1 style="font-weight:800">김한결 · 영상 디자이너</h1><p>새로운 조합, 새로운 의미. 퍼포먼스·캠페인 영상 디자이너 김한결의 포트폴리오입니다. 전체 내용을 보려면 자바스크립트를 켜고 새로고침해 주세요.</p><p>문의 · <a style="color:#e0526d" href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a></p></div></noscript>
 
 <div id="lb" role="dialog" aria-modal="true" aria-label="작업 상세 보기"><button class="x" id="lbx" aria-label="닫기">✕</button><div class="bx">
   <div class="lb-media"><div class="lb-stage"><video id="lbv" controls playsinline controlslist="nodownload" disablepictureinpicture></video><img id="lbi" alt="" style="display:none"/></div><div class="lb-thumbs" id="lbThumbs"></div></div>
@@ -455,7 +463,7 @@ const arOf=id=>SQ.has(id)?"1 / 1":LS.has(id)?"16 / 9":"9 / 16";
 function prRow(r){const lab=r[0],key=r[1],dflt=r[2];return `<div class="pr${dflt?"":" off"}"><span class="lb">${esc(lab)}</span><span class="vl" data-k="${key}">${esc(dflt)}</span></div>`;}
 function resumeHTML(){
  const rows=(data,pre)=>data.map((r,ri)=>`<div class="tr">${r.map((t,ci)=>`<span data-k="${pre}.${ri}.${ci}">${esc(t)}</span>`).join("")}</div>`).join("");
- return `<section id="top" class="resume sec-light">
+ return `<section id="top" class="resume sec-dark">
   <img class="blob" src="assets/fig/blob.png" alt="" aria-hidden="true"/>
   <div class="wrap"><h2 class="sr-only">이력서</h2><div class="rgrid">
    <div class="rleft rv">
@@ -525,8 +533,8 @@ function figNode(){return `<div class="figv rv">
 function c2txt(b,i){return `<div class="c2txt"><div class="pills">${b.tools.map(x=>`<span>${esc(x)}</span>`).join("")}</div>
  <h3 class="t" data-k="r.c2.${i}.t">${esc(b.t)}</h3>
  <div class="d">${b.d.map((l,j)=>`<span data-k="r.c2.${i}.d${j}">${esc(l)}</span><br/>`).join("")}</div>
- ${b.bub?`<div class="bub">${b.bub.map((f,j)=>`<div class="row"><span class="fl"><span class="a">기능</span><br/><span class="b">상세설명</span></span><span><span class="a" data-k="r.c2.${i}.f${j}a">${esc(f[0])}</span><br/><span class="b" data-k="r.c2.${i}.f${j}b">${esc(f[1])}</span></span></div>`).join("")}</div>`:""}
- ${b.cap?`<div class="bub">${b.cap.map((c,j)=>`<div class="row"><span class="b" data-k="r.c2.${i}.c${j}">${esc(c)}</span></div>`).join("")}</div>`:""}
+ ${b.bub?`<dl class="t3meta c2meta">${b.bub.map((f,j)=>`<dt${j?' class="sp"':""}>기능</dt><dd${j?' class="sp"':""} data-k="r.c2.${i}.f${j}a">${esc(f[0])}</dd><dt class="sub">상세설명</dt><dd class="sub" data-k="r.c2.${i}.f${j}b">${esc(f[1])}</dd>`).join("")}</dl>`:""}
+ ${b.cap?`<dl class="t3meta c2meta">${b.cap.map((c,j)=>`<dt${j?' class="sp"':""}>${j+1}</dt><dd${j?' class="sp"':""} data-k="r.c2.${i}.c${j}">${esc(c)}</dd>`).join("")}</dl>`:""}
 </div>`;}
 function c2HTML(){const vis=[figCode(),figNode()];
  return `<section class="c2 sec-dark" id="c2"><div class="wrap">${C2D.map((b,i)=>`<div class="c2blk">${vis[i]}${c2txt(b,i)}</div>`).join("")}</div></section>`;}
@@ -568,7 +576,7 @@ const LAB=[
   d:"After Effects 익스프레션 기반 파라메트릭 템플릿. 메시지 개수·길이·타이밍을 값으로 제어해, 카피만 바꾸면 시즌 캠페인 소재가 자동 완성된다. 동일 템플릿으로 여러 시즌 캠페인을 양산했다.",
   k:"AE Expressions · JavaScript"}
 ];
-function labHTML(){return `<section class="lab sec-light" id="lab"><div class="wrap"><div class="labgrid">
+function labHTML(){return `<section class="lab sec-dark" id="lab"><div class="wrap"><div class="labgrid">
  <div class="labcol rv">
    <h3 class="labh" data-k="l2.hA">도구 개발</h3>
    <p class="labsub" data-k="l2.sA">제작의 반복을 코드로 줄인다 — 성과 리포팅 · AI 파이프라인 · 템플릿 자동화</p>
@@ -983,11 +991,11 @@ addEventListener("keyup",e=>{if(e.key==="PrintScreen"){try{navigator.clipboard.w
 
 /* ---- 스크롤 챕터 바: 현재 섹션 표시 ---- */
 const CB_SECTIONS=()=>[
- {id:"top",p:"개요",t:"인적 사항 · 학력 · 경력 · 수상"},
+ {id:"top",p:"개요",t:"인적 사항 · 학력 · 경력 · 수상",dk:true},
  {id:"c1",p:R.chap[0][0],t:R.chap[0][1],dk:true},
  {id:"c2",p:R.chap[1][0],t:R.chap[1][1],dk:true},
  {id:"archive",p:R.chap[2][0],t:R.chap[2][1],dk:true},
- {id:"lab",p:R.chap[3][0],t:R.chap[3][1]}
+ {id:"lab",p:R.chap[3][0],t:R.chap[3][1],dk:true}
 ];
 let _cbTick=false,_cbCur=null,_cbTimer=null;
 function updateChapbar(){
