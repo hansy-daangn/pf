@@ -49,6 +49,12 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 section{position:relative}
 .sec-light{background:#fff;color:var(--ink)}
 .sec-dark{background:var(--dark);color:#fff;position:relative}
+/* 밝은 면과 어두운 면의 경계를 부드럽게 — 콘텐츠는 .wrap(z-index:1) 위로 */
+.fadeTop::before,.fadeBot::after{content:"";position:absolute;left:0;right:0;height:var(--fadeh,150px);pointer-events:none;z-index:3}
+.fadeTop::before{top:0;background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
+.fadeBot::after{bottom:0;background:linear-gradient(0deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
+footer{position:relative}
+footer.fadeTop::before{background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.72) 30%,rgba(255,255,255,0) 100%)}
 .sec-dark .wrap,.sec-light .wrap{position:relative;z-index:1}
 
 /* ============ 스크롤 챕터 바 (반투명 블러) ============ */
@@ -182,7 +188,7 @@ section{position:relative}
 .bub .fl .a,.bub .fl .b{color:rgba(255,255,255,.62)}
 
 /* ============ 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ============ */
-.lab{padding:0 0 var(--secpad)}
+.lab{padding:calc(var(--secpad) * 1.35) 0 var(--secpad)}
 .labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:var(--colgap);align-items:stretch;position:relative}
 .labcol{min-width:0}
 .labcolB{display:flex;flex-direction:column}
@@ -233,6 +239,10 @@ section{position:relative}
 .acard .hov .ti{font-weight:700;font-size:var(--t-small);color:#fff;line-height:1.35;text-align:left}
 .acard .hov .rl{font-weight:300;font-size:var(--t-micro);color:rgba(255,255,255,.75);margin-top:2px}
 .acard.offcard{opacity:.3}
+.editing .acard{cursor:grab}
+.editing .acard.dragging{opacity:.4;cursor:grabbing}
+.editing .acard.dropbefore{box-shadow:-4px 0 0 0 var(--mag2),0 -4px 0 0 var(--mag2)}
+.editing .acard.dropafter{box-shadow:4px 0 0 0 var(--mag2),0 4px 0 0 var(--mag2)}
 .acard.noact{cursor:default}
 .acard.noact:hover{transform:none;border-color:var(--hl-d)}
 .ordbtns{position:absolute;top:8px;left:8px;z-index:3;display:flex;gap:4px}
@@ -582,7 +592,7 @@ function c1xCard(id){const w=findWork(id);if(!w)return "";
    <p class="t3desc" data-k="w.${id}.desc">${esc(w.desc)}</p>
    <dl class="t3meta">${meta.map(m=>`<dt>${esc(m[0])}</dt><dd>${esc(m[1])}</dd>`).join("")}</dl></div>
  </div>`;}
-function c1HTML(){return `<section class="c1 sec-dark" id="c1"><div class="wrap">${chIntro(0)}${TOP3.map(t3card).join("")}${C1X.map(c1xCard).join("")}</div></section>`;}
+function c1HTML(){return `<section class="c1 sec-dark fadeTop" id="c1"><div class="wrap">${chIntro(0)}${TOP3.map(t3card).join("")}${C1X.map(c1xCard).join("")}</div></section>`;}
 
 /* ---------- C2 기술의 개선 (dark, 원본 이미지·움짤 그대로) ---------- */
 function figCode(){return `<div class="figv rv">
@@ -621,8 +631,9 @@ function cardHTML(w){
   const ti=(w.u)?`<span class="ti">${esc(w.title)}</span>`:`<span class="ti" data-k="w.${w.id}.title">${esc(w.title)}</span>`;
   const hov=`<div class="hov">${ti}<span class="rl"${w.u?"":` data-k="w.${w.id}.role"`}>${esc(rl)}</span></div>`;
   const ord=editing?`<span class="ordbtns"><button class="ob" data-mv="-1" aria-label="앞으로">‹</button><button class="ob" data-mv="1" aria-label="뒤로">›</button></span>`:"";
+  const drag=editing?' draggable="true"':"";
   const inert=noact&&!editing;
-  return `<div class="acard${hid?" offcard":""}${noact?" noact":""}" data-cat="${w.cat}" data-id="${w.id}"${inert?"":` role="button" tabindex="0" aria-label="${esc(w.title)}"`}>${media}${inert?"":hov}${ord}</div>`;}
+  return `<div class="acard${hid?" offcard":""}${noact?" noact":""}" data-cat="${w.cat}" data-id="${w.id}"${drag}${inert?"":` role="button" tabindex="0" aria-label="${esc(w.title)}"`}>${media}${inert?"":hov}${ord}</div>`;}
 /* 가로 영상 작업은 갤러리에서 2열 대형 카드로 (이미지는 기존 그리드 유지) */
 /* 피처드 카드 전용 가로(16:9) 영상 오버라이드 */
 const FEATV={td_review2605:{v:"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",p:"assets/poster/td_review2605_h.jpg"},mg_bizreview:{v:"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4",p:"assets/poster/mg_bizreview_h.jpg"}};
@@ -633,11 +644,11 @@ function isWideVideo(w){
   if(w.u){if(!(w.pv&&w.pv.video))return false;const p=String(w.pv.ar||"9 / 16").split("/").map(parseFloat);return p[0]>p[1];}
   return !!FEATV[w.id]||LS.has(w.id);}
 function archiveHTML(){
- const all=gridWorks(),feat=editing?[]:all.filter(isWideVideo);
- return `<section class="archive sec-dark" id="archive"><div class="wrap">${chIntro(2)}
+ const all=gridWorks(),feat=all.filter(isWideVideo);
+ return `<section class="archive sec-dark fadeBot" id="archive"><div class="wrap">${chIntro(2)}
   <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button>${editing?`<span class="gapctl">간격 <input type="range" id="gapRange" min="0" max="24" step="1" aria-label="갤러리 카드 간격"/></span>`:""}</div>
   ${feat.length?`<div class="featgrid">${feat.map(cardHTML).join("")}</div>`:""}
-  <div class="agrid">${(editing?all:all.filter(w=>!isWideVideo(w))).map(cardHTML).join("")}</div>
+  <div class="agrid">${all.filter(w=>!isWideVideo(w)).map(cardHTML).join("")}</div>
 </div></section>`;}
 
 /* ---------- 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ---------- */
@@ -651,7 +662,7 @@ const LAB=[
   k:"Figma Plugin(자체 개발) · Node.js Bridge(자체 개발) · Claude · MCP",
   figs:[["assets/lab/ai_arch.png","전체 구조 — 피그마 플러그인 → 브릿지 서버 → 클로드 CLI → 생성 모델(MCP)"]]}
 ];
-function labHTML(){return `<section class="lab sec-light" id="lab"><div class="wrap">${chIntro(3)}<div class="labgrid">
+function labHTML(){return `<section class="lab sec-light" id="lab"><div class="wrap"><div class="labgrid">
  <div class="labcol rv">
    <h3 class="labh" data-k="l2.hA">도구 개발</h3>
    <p class="labsub" data-k="l2.sA">제작의 반복을 코드로 줄인다 — 성과 리포팅 · AI 파이프라인</p>
@@ -672,7 +683,7 @@ function labHTML(){return `<section class="lab sec-light" id="lab"><div class="w
 </div></div></section>`;}
 
 /* ---------- FOOTER ---------- */
-function footHTML(){return `<footer><div class="wrap"><a href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a> · <span data-k="ui.foot1">© 2026 김한결</span></div></footer>`;}
+function footHTML(){return `<footer class="fadeTop"><div class="wrap"><a href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a> · <span data-k="ui.foot1">© 2026 김한결</span></div></footer>`;}
 
 /* ---- edits (content.json = single source of truth) ---- */
 let EDITS={};
@@ -840,6 +851,29 @@ function render(){
   document.querySelectorAll(".acard [data-k]").forEach(el=>el.addEventListener("click",e=>{if(editing)e.stopPropagation();}));
   document.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("click",()=>{if(editing)fsSelect(el);}));
   document.querySelectorAll(".acard .ob").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();moveWork(b.closest(".acard").dataset.id,+b.dataset.mv);}));
+  if(editing){
+    let dragId=null;
+    const clear=()=>document.querySelectorAll(".acard").forEach(c=>c.classList.remove("dropbefore","dropafter","dragging"));
+    document.querySelectorAll("#archive .acard").forEach(c=>{
+      c.addEventListener("dragstart",e=>{dragId=c.dataset.id;c.classList.add("dragging");e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain",dragId);}catch(_){}} );
+      c.addEventListener("dragend",clear);
+      c.addEventListener("dragover",e=>{
+        if(!dragId||c.dataset.id===dragId)return;
+        e.preventDefault();e.dataTransfer.dropEffect="move";
+        const r=c.getBoundingClientRect(),after=(e.clientY-r.top)/r.height>.5;
+        document.querySelectorAll(".acard").forEach(x=>x.classList.remove("dropbefore","dropafter"));
+        c.classList.add(after?"dropafter":"dropbefore");});
+      c.addEventListener("drop",e=>{
+        e.preventDefault();if(!dragId||c.dataset.id===dragId){clear();return;}
+        const r=c.getBoundingClientRect(),after=(e.clientY-r.top)/r.height>.5;
+        const ids=gridWorks().map(w=>w.id),from=ids.indexOf(dragId);
+        if(from<0){clear();return;}
+        ids.splice(from,1);
+        let to=ids.indexOf(c.dataset.id);if(to<0){clear();return;}
+        ids.splice(after?to+1:to,0,dragId);
+        dragId=null;clear();setJSON("works.order",ids);rerender();});
+    });
+  }
   const g=document.querySelector(".agrid");
   const applyFilter=()=>{document.querySelectorAll("#afil button").forEach(x=>{x.classList.toggle("on",x.dataset.f===FILTER);x.setAttribute("aria-pressed",String(x.dataset.f===FILTER));});document.querySelectorAll("#archive .acard").forEach(c=>c.style.display=(FILTER==="all"||c.dataset.cat===FILTER)?"":"none");};
   document.querySelectorAll("#afil button").forEach(b=>b.onclick=()=>{FILTER=b.dataset.f;applyFilter();});
