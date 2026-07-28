@@ -74,45 +74,73 @@ section{position:relative}
 .gapctl input{accent-color:var(--red2);width:120px}
 
 /* ============ 이력서 (#1, white) — 피그마 291:5 ============ */
-.resume{position:relative;overflow:hidden;padding:calc(var(--secpad) * .55) 0 var(--secpad)}
+/* 조판 규칙(문서 전체 공유): 괘선 2단계 · 행 리듬 · 첫 열 폭 · 열 사이 */
+.resume{position:relative;overflow:hidden;padding:calc(var(--secpad) * .55) 0 var(--secpad);
+ --rl:rgba(17,17,20,.2);   /* 머리·발 괘선 */
+ --rh:rgba(17,17,20,.08);  /* 행 헤어라인 */
+ --cg:13px;                /* 열 사이 */
+ --c1:7.5em;               /* 기간·날짜 열 */
+ --rowpad:6.5px}
 .blob{position:absolute;top:max(-14vw,-160px);left:max(-11vw,-130px);width:clamp(320px,40vw,777px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
-.idcard{display:flex;gap:clamp(20px,2.2vw,34px);align-items:center;max-width:672px}
-.idphoto{flex:none;width:clamp(140px,15vw,226px);aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
+/* 신상 표 — 바깥 괘선이 사진의 위·아래 모서리와 정확히 맞물린다 */
+.idcard{display:flex;gap:clamp(22px,2.4vw,36px);align-items:stretch;max-width:672px}
+.idphoto{flex:none;align-self:flex-start;width:clamp(140px,15vw,226px);aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
 .editing .idphoto{outline:2px dashed var(--red2);outline-offset:3px;cursor:grab}
 .editing .idphoto:active{cursor:grabbing}
-.idrows{display:grid;grid-template-columns:3.4em 1fr;gap:0 clamp(12px,1.4vw,20px);font-weight:300;font-size:var(--fs-table);line-height:1.9;padding:0;min-width:0;flex:1}
+.idrows{display:grid;grid-template-columns:4.2em minmax(0,1fr);column-gap:var(--cg);grid-auto-rows:minmax(0,1fr);
+ font-weight:300;font-size:var(--fs-table);line-height:1.55;font-variant-numeric:tabular-nums;
+ border-top:1px solid var(--rl);border-bottom:1px solid var(--rl);min-width:0;flex:1}
 .idrows .pr{display:contents}
 .idrows .pr.off{display:none}
 .editing .idrows .pr.off{display:contents}
-.idrows .lb{color:var(--tlab);padding:7px 0;border-top:1px solid var(--line2)}
-.idrows .vl{color:#000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:7px 0;border-top:1px solid var(--line2)}
+.idrows .lb,.idrows .vl{align-content:center;border-top:1px solid var(--rh);min-width:0}
+.idrows .lb{color:var(--tlab)}
+.idrows .vl{color:var(--tblk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .idrows .pr:first-child .lb,.idrows .pr:first-child .vl{border-top:0}
-.tagline{margin:clamp(26px,5vh,50px) 0 0}
-.tagline .tg{font-weight:800;font-size:clamp(19px,1.8vw,30px);line-height:1.6;letter-spacing:-.01em;color:var(--ink)}
-.tagline .ds{font-weight:400;font-size:clamp(12.5px,1.05vw,15.5px);line-height:1.75;color:#000;margin-top:8px}
-/* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
-.chprev{margin-top:clamp(26px,5vh,48px);max-width:660px;margin-left:auto;margin-right:auto}
-.chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:14px 2px;border-top:1px solid var(--line2)}
-.chprev a:last-child{border-bottom:1px solid var(--line2)}
-.chprev .pill{font-weight:700;font-size:clamp(12.5px,1vw,15px);color:var(--red2);white-space:nowrap}
-.chprev .tt{font-weight:700;font-size:clamp(14px,1.2vw,18px);line-height:1.3}
-.chprev .ss{font-weight:300;font-size:clamp(12px,1vw,14.5px);line-height:1.5;margin-top:3px;color:var(--tlab)}
+.tagline{margin:clamp(28px,5vh,50px) 0 0}
+.tagline .tg{font-weight:800;font-size:clamp(19px,1.72vw,29px);line-height:1.45;letter-spacing:-.022em;color:var(--ink)}
+.tagline .ds{font-weight:400;font-size:clamp(12.5px,1.02vw,15px);line-height:1.75;color:var(--tbody);margin-top:12px}
+/* 챕터 목차 — 표와 같은 괘선 문법 */
+.chprev{margin-top:clamp(30px,5vh,52px);border-top:1px solid var(--rl)}
+.chprev a{display:grid;grid-template-columns:104px minmax(0,1fr);column-gap:var(--cg);align-items:baseline;padding:17px 0;border-bottom:1px solid var(--rh)}
+.chprev a:last-child{border-bottom-color:var(--rl)}
+.chprev .pill{font-weight:700;font-size:clamp(12px,.95vw,14px);color:var(--red2);white-space:nowrap;letter-spacing:-.01em}
+.chprev .tt{font-weight:700;font-size:clamp(14px,1.15vw,17px);line-height:1.35;letter-spacing:-.015em}
+.chprev .ss{font-weight:300;font-size:var(--fs-table);line-height:1.55;margin-top:2px;color:var(--tlab)}
 .chprev a:hover .tt{color:var(--red2)}
 
-/* 이력서 우측 표 (학력/경력/기술/수상) — 행 단위 그리드로 항상 정렬, 스크롤 없음 */
-.rright{display:flex;flex-direction:column;gap:clamp(18px,2.6vh,28px);min-width:0}
-.rsec h3{font-weight:200;font-size:clamp(22px,1.8vw,32px);color:var(--tblk);line-height:1.2;margin-bottom:8px;display:flex;align-items:center;gap:clamp(10px,1vw,18px)}
-.rsec .ics{display:flex;gap:7px;align-items:center}
-.rsec .ics img{width:clamp(18px,1.4vw,25px);height:auto}
-.tgrid{display:grid;gap:2px clamp(16px,2.4vw,46px);font-weight:300;font-size:var(--fs-table);line-height:1.9;color:var(--tbody)}
-.tgrid .tr{display:contents}
-.tgrid.edu{grid-template-columns:max-content 1fr max-content}
-.tgrid.car{grid-template-columns:max-content max-content max-content 1fr}
-.awgrid{display:grid;grid-template-columns:6em 5.4em minmax(0,1fr) 3.5em 5.4em 10.2em;gap:3px clamp(8px,.85vw,15px);font-weight:300;font-size:var(--fs-table);line-height:1.75;color:var(--tbody);font-variant-numeric:tabular-nums}
-.awgrid .tr{display:contents}
-.skg p{font-weight:300;font-size:clamp(12px,.95vw,15.5px);line-height:1.9;color:var(--tbody);margin:0}
+/* 이력서 우측 표 (학력/경력/기술/수상)
+   — 네 표가 같은 조판: 머리 괘선 · 행 헤어라인 · 발 괘선 · 같은 행 높이 · 같은 첫 열 */
+.rright{display:flex;flex-direction:column;gap:clamp(24px,3.2vh,32px);min-width:0}
+.rsec h3{font-weight:200;font-size:clamp(18px,1.45vw,23px);color:var(--tblk);line-height:1.22;letter-spacing:-.02em;
+ margin:0;padding-bottom:9px;border-bottom:1px solid var(--rl);display:flex;align-items:center;gap:clamp(10px,1vw,18px)}
+.rsec .ics{display:flex;gap:8px;align-items:center;margin-left:auto}
+.rsec .ics img{width:clamp(15px,1.2vw,21px);height:auto;opacity:.92}
+.tgrid,.awgrid{display:grid;column-gap:var(--cg);row-gap:0;
+ font-weight:300;font-size:var(--fs-table);line-height:1.55;color:var(--tbody);
+ font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.tgrid .tr,.awgrid .tr{display:grid;grid-template-columns:subgrid;grid-column:1/-1;
+ column-gap:var(--cg);align-items:baseline;padding:var(--rowpad) 0;border-bottom:1px solid var(--rh)}
+.tgrid .tr:last-child,.awgrid .tr:last-child{border-bottom-color:var(--rl)}
+/* 세 표가 완전히 같은 6열 트랙을 공유한다 — 열의 세로선이 표를 건너뛰어도 이어진다 */
+.tgrid.edu,.tgrid.car,.awgrid{grid-template-columns:var(--c1) 5.45em minmax(0,1fr) 3.35em 5.3em 10.4em}
+.tgrid.edu .tr>span:nth-child(2){grid-column:2/4}
+.tgrid.edu .tr>span:nth-child(3){grid-column:4/-1}
+.tgrid.car .tr>span:nth-child(2){grid-column:2}
+.tgrid.car .tr>span:nth-child(3){grid-column:3}
+.tgrid.car .tr>span:nth-child(4){grid-column:4/-1}
+/* 라벨(부차)과 값(핵심)의 대비 — 농도 + 한 단계 굵기 */
+.tgrid .tr>span,.awgrid .tr>span{min-width:0}
+.tgrid .tr>span:first-child,.awgrid .tr>span:first-child{color:var(--tlab);white-space:nowrap}
+.tgrid .tr>span:nth-child(2),.tgrid.car .tr>span:nth-child(3),
+.awgrid .tr>span:nth-child(3),.awgrid .tr>span:nth-child(4){color:var(--tblk);font-weight:400}
+.tgrid.edu .tr>span:nth-child(3),.tgrid.car .tr>span:nth-child(4){color:var(--tlab);font-weight:300}
+.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(5),.awgrid .tr>span:nth-child(6){color:var(--tlab)}
+.skg p{font-weight:300;font-size:var(--fs-table);line-height:1.55;color:var(--tbody);margin:0;
+ padding:var(--rowpad) 0;border-bottom:1px solid var(--rh)}
+.skg p:last-child{border-bottom-color:var(--rl)}
 
 /* ============ 실험 · 연구 카드: 이미지 + 텍스트 플랫 행 ============ */
 .hcards{display:flex;flex-direction:column;flex:1;justify-content:space-between}

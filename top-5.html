@@ -74,27 +74,28 @@ section{position:relative}
 .gapctl input{accent-color:var(--red2);width:120px}
 
 /* ============ 이력서 (#1, white) — 피그마 291:5 ============ */
-.resume{position:relative;overflow:hidden;padding:calc(var(--secpad) * .55) 0 var(--secpad)}
-.blob{position:absolute;top:max(-14vw,-160px);left:max(-11vw,-130px);width:clamp(320px,40vw,777px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0}
+.resume{position:relative;overflow:hidden;padding:calc(var(--secpad) * .55) 0 calc(var(--secpad) * .85)}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
-.idcard{display:flex;gap:clamp(20px,2.2vw,34px);align-items:center;max-width:672px}
-.idphoto{flex:none;width:clamp(140px,15vw,226px);aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
+/* 시그니처 오브제 — 핑크 블롭 한가운데 놓인 증명사진 (--pw 하나로 비례 고정) */
+.idcard{--pw:clamp(200px,20.8vw,300px);position:relative;width:var(--pw)}
+.blob{position:absolute;z-index:-1;left:calc(var(--pw) * -.133);top:calc(var(--pw) * -.243);width:calc(var(--pw) * 1.55);max-width:none;aspect-ratio:1;opacity:.9;mix-blend-mode:multiply;pointer-events:none;user-select:none}
+.idphoto{position:relative;z-index:1;width:var(--pw);aspect-ratio:1;border-radius:28px;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
 .editing .idphoto{outline:2px dashed var(--red2);outline-offset:3px;cursor:grab}
 .editing .idphoto:active{cursor:grabbing}
-.idrows{display:grid;grid-template-columns:3.4em 1fr;gap:0 clamp(12px,1.4vw,20px);font-weight:300;font-size:var(--fs-table);line-height:1.9;padding:0;min-width:0;flex:1}
+/* 인적 사항 — 우측 표들과 동일한 조판 */
+.idrows{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:2px clamp(16px,2.4vw,46px);font-weight:300;font-size:var(--fs-table);line-height:1.9;min-width:0}
 .idrows .pr{display:contents}
 .idrows .pr.off{display:none}
 .editing .idrows .pr.off{display:contents}
-.idrows .lb{color:var(--tlab);padding:7px 0;border-top:1px solid var(--line2)}
-.idrows .vl{color:#000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:7px 0;border-top:1px solid var(--line2)}
-.idrows .pr:first-child .lb,.idrows .pr:first-child .vl{border-top:0}
-.tagline{margin:clamp(26px,5vh,50px) 0 0}
+.idrows .lb{color:var(--tlab)}
+.idrows .vl{color:var(--tbody);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tagline{position:relative;z-index:1;margin:clamp(38px,7vh,66px) 0 0;max-width:640px}
 .tagline .tg{font-weight:800;font-size:clamp(19px,1.8vw,30px);line-height:1.6;letter-spacing:-.01em;color:var(--ink)}
 .tagline .ds{font-weight:400;font-size:clamp(12.5px,1.05vw,15.5px);line-height:1.75;color:#000;margin-top:8px}
 /* 챕터 목차 — 플랫, 기능(앵커) 그 자체 */
-.chprev{margin-top:clamp(26px,5vh,48px);max-width:660px;margin-left:auto;margin-right:auto}
-.chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:14px 2px;border-top:1px solid var(--line2)}
+.chprev{position:relative;z-index:1;margin-top:clamp(24px,4.2vh,40px);max-width:660px;margin-left:auto;margin-right:auto}
+.chprev a{display:grid;grid-template-columns:clamp(88px,8vw,112px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline;padding:11px 2px;border-top:1px solid var(--line2)}
 .chprev a:last-child{border-bottom:1px solid var(--line2)}
 .chprev .pill{font-weight:700;font-size:clamp(12.5px,1vw,15px);color:var(--red2);white-space:nowrap}
 .chprev .tt{font-weight:700;font-size:clamp(14px,1.2vw,18px);line-height:1.3}
@@ -495,16 +496,16 @@ function prRow(r){const lab=r[0],key=r[1],dflt=r[2];return `<div class="pr${dflt
 function resumeHTML(){
  const rows=(data,pre)=>data.map((r,ri)=>`<div class="tr">${r.map((t,ci)=>`<span data-k="${pre}.${ri}.${ci}">${esc(t)}</span>`).join("")}</div>`).join("");
  return `<section id="top" class="resume sec-light">
-  <img class="blob" src="assets/fig/blob.png" alt="" aria-hidden="true"/>
   <div class="wrap"><h2 class="sr-only">이력서</h2><div class="rgrid">
    <div class="rleft rv">
-    <div class="idcard"><div class="idphoto" role="img" aria-label="김한결 사진"></div>
-     <div class="idrows">${R.rows.map(prRow).join("")}</div></div>
+    <div class="idcard"><img class="blob" src="assets/fig/blob.png" alt="" aria-hidden="true"/>
+     <div class="idphoto" role="img" aria-label="김한결 사진"></div></div>
     <div class="tagline"><p class="tg" data-k="r.tag2">${esc(R.tag2)}</p>
      <p class="ds" data-k="r.desc">${esc(R.desc)}</p></div>
     <nav class="chprev" aria-label="목차">${R.chap.map((c,i)=>`<a href="${c[3]}"><span class="pill">${esc(c[0])}</span><span><span class="tt" data-k="r.chp.${i}.t">${esc(c[1])}</span><br/><span class="ss" data-k="r.chp.${i}.s">${esc(c[2])}</span></span></a>`).join("")}</nav>
    </div>
    <div class="rright rv">
+    <div class="rsec"><h3>인적 사항</h3><div class="idrows">${R.rows.map(prRow).join("")}</div></div>
     <div class="rsec"><h3>학력 사항</h3><div class="tgrid edu">${rows(R.eduR,"r.edur")}</div></div>
     <div class="rsec"><h3>경력 사항</h3><div class="tgrid car">${rows(R.carR,"r.carr")}</div></div>
     <div class="rsec"><h3>기술 사항 <span class="ics" aria-hidden="true"><img src="assets/fig/ic_ae.png" alt=""/><img src="assets/fig/ic_c4d.png" alt=""/><img src="assets/fig/ic_3.png" alt=""/><img src="assets/fig/ic_figma.png" alt=""/></span></h3>
