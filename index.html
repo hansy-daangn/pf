@@ -656,7 +656,7 @@ const LAB=[
  {tag:"성과 도구",t:"CreativeReporter — 광고 성과 리포팅 도구",
   d:"집행한 광고 소재의 성과를 소재 단위로 자동 집계·시각화하는 자체 개발 웹 도구. Moloco·Google·Meta 리포트를 클라우드 저장소에 누적하고, 효율 지도(지표 산점도)·주차별 추세·유형별 비교로 어떤 소재가 왜 좋았는지 바로 찾는다. 소재 미리보기와 실집행 성과를 한 화면에서 확인하며, 이 사이트 갤러리의 성과 데이터도 여기서 나온다.",
   k:"Web · Supabase · JavaScript",
-  figs:[["assets/lab/cr_shot.jpg","실제 화면 — 소재별 성과 목록과 상세(제작자 태그 · 유저 질 · 같은 그룹 비교)"]]},
+  figs:[["assets/lab/cr_shot2.jpg","실제 화면 — 소재별 성과 목록과 상세(제작자 태그 · 유저 질 · 같은 그룹 비교)"]]},
  {tag:"AI 파이프라인",t:"이미지 소재 자동 제작 워크플로우",
   d:"자연어로 설명하면 문구 후보 → 11종 사이즈 레이아웃 초안 → 이미지 생성까지 이어지는 자체 개발 파이프라인. 피그마 플러그인과 로컬 브릿지 서버(Node.js)를 직접 만들어 피그마-클로드-생성 모델을 연결했고, OAuth로 생성 모델 MCP를 직접 호출해 중간 토큰 비용을 없앴다. 1장당 약 300원 — 시중 유료 툴(1,500원) 대비 1/5 비용. 설치 파일로 팀에 배포.",
   k:"Figma Plugin(자체 개발) · Node.js Bridge(자체 개발) · Claude · MCP",
@@ -671,7 +671,7 @@ function labHTML(){return `<section class="lab sec-light" id="lab"><div class="w
      <p data-k="l2.${i}.d">${esc(it.d)}</p>
      <p class="tools" data-k="l2.${i}.k">${esc(it.k)}</p>
      ${it.figs?`<div class="labfigs">${it.figs.map((f,j)=>{const ss=Array.isArray(f[0])?f[0]:[f[0]];
-     const media=ss.length>1?`<div class="swapimg">${ss.map((s,k)=>`<img src="${s}" alt="${esc(it.t)}" loading="lazy" class="${k?"":"on"}"${k?' onerror="this.remove()"':""}/>`).join("")}</div>`:`<img src="${ss[0]}" alt="${esc(it.t)}" loading="lazy"/>`;
+     const media=ss.length>1?`<div class="swapimg">${ss.map((s,k)=>`<img src="${s}" alt="${esc(it.t)}" loading="lazy" class="${k?"":"on"}"${k?' onerror="this.remove()"':""}/>`).join("")}</div>`:`<img src="${ss[0]}" alt="${esc(it.t)}" loading="lazy" onerror="this.onerror=null;this.src='assets/lab/cr_shot.jpg'"/>`;
      return `<figure>${media}<figcaption data-k="l2.${i}.c${j}">${esc(f[1])}</figcaption></figure>`;}).join("")}</div>`:""}
    </div>`).join("")}
  </div>
