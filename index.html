@@ -83,7 +83,7 @@ section{position:relative}
  --rail:176px;--railgap:24px;--vgap:64px;
  --rl:rgba(17,17,20,.2);--rh:rgba(17,17,20,.08);--cg:13px;--rowpad:6.5px;
  --c1:87px;--c2w:58px;--c4w:36px;--c5w:58px;--c6w:115px}
-.blob{position:absolute;top:var(--bloby,-140px);left:var(--blobx,-80px);width:var(--blobw,670px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0;-webkit-mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%);mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%)}
+.blob{display:none;position:absolute;top:var(--bloby,-140px);left:var(--blobx,-80px);width:var(--blobw,670px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0;-webkit-mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%);mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%)}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
 .idcard{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);gap:var(--railgap);align-items:stretch}
@@ -388,9 +388,10 @@ footer a:hover{color:var(--mag2)}
  <label>섹션 상하 여백<b id="szv-secpad"></b><input type="range" id="szr-secpad" min="48" max="220" step="4"/></label>
  <label>카드 사이 여백<b id="szv-blockgap"></b><input type="range" id="szr-blockgap" min="40" max="240" step="4"/></label>
  <label>갤러리 간격<b id="szv-agap"></b><input type="range" id="szr-agap" min="0" max="32" step="1"/></label>
- <label>블롭 크기<b id="szv-blobw"></b><input type="range" id="szr-blobw" min="200" max="1000" step="10"/></label>
- <label>블롭 좌우<b id="szv-blobx"></b><input type="range" id="szr-blobx" min="-500" max="400" step="5"/></label>
- <label>블롭 상하<b id="szv-bloby"></b><input type="range" id="szr-bloby" min="-500" max="400" step="5"/></label>
+ <!-- 블롭 숨김 중(.blob display:none) — 다시 보이게 할 때 아래 슬라이더도 display:none 제거 -->
+ <label style="display:none">블롭 크기<b id="szv-blobw"></b><input type="range" id="szr-blobw" min="200" max="1000" step="10"/></label>
+ <label style="display:none">블롭 좌우<b id="szv-blobx"></b><input type="range" id="szr-blobx" min="-500" max="400" step="5"/></label>
+ <label style="display:none">블롭 상하<b id="szv-bloby"></b><input type="range" id="szr-bloby" min="-500" max="400" step="5"/></label>
  <button class="rst" id="szReset">기본값으로 되돌리기</button>
 </div></div>
 <button id="ngFab">＋ 작업 추가</button>
