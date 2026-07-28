@@ -52,14 +52,16 @@ section{position:relative}
 .sec-dark .wrap,.sec-light .wrap{position:relative;z-index:1}
 
 /* ============ 스크롤 챕터 바 (반투명 블러) ============ */
-#chapbar{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;gap:12px;align-items:baseline;padding:10px clamp(18px,3.5vw,60px);background:rgba(255,255,255,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(17,17,20,.08);transform:translateY(-100%);transition:transform .3s var(--ease)}
+#chapbar{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;gap:14px;align-items:baseline;padding:12px clamp(18px,3.5vw,60px);background:rgba(255,255,255,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(17,17,20,.08);transform:translateY(-100%);transition:transform .3s var(--ease),background .3s,border-color .3s}
 #chapbar.on{transform:none}
-#chapbar .pill{font-weight:700;font-size:13px;color:var(--red2);white-space:nowrap}
-#chapbar .tt{font-weight:700;font-size:13px;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#chapbar .pill{font-weight:700;font-size:clamp(14px,1.1vw,16px);color:var(--red2);white-space:nowrap}
+#chapbar .tt{font-weight:700;font-size:clamp(14px,1.1vw,16px);color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#chapbar.dk{background:rgba(16,16,19,.6);border-bottom-color:rgba(255,255,255,.08)}
+#chapbar.dk .tt{color:#fff}
 @media(prefers-reduced-motion:reduce){#chapbar{transition:none}}
 
 /* ============ 크기 조절 핸들 (편집 모드) ============ */
-.editing .hgrid,.editing .t3card,.editing .c2blk{position:relative}
+.editing .t3card,.editing .c2blk{position:relative}
 .szh{position:absolute;top:0;bottom:0;width:16px;transform:translateX(-50%);cursor:col-resize;z-index:6;display:flex;align-items:center;justify-content:center;touch-action:none}
 .szh::before{content:"";width:4px;border-radius:2px;height:min(72px,55%);background:var(--red2);opacity:.55}
 .szh:hover::before,.szh.drag::before{opacity:1}
@@ -119,18 +121,7 @@ section{position:relative}
 }
 .skg p{font-weight:300;font-size:clamp(11.5px,2.15cqw,18px);line-height:1.9;color:var(--tbody);margin:0}
 
-/* ============ 새로운 조합, 새로운 의미 (#8, white) — 피그마 291:327 ============ */
-.hero{padding:clamp(60px,10vh,140px) 0 clamp(70px,12vh,150px)}
-.hgrid{display:grid;grid-template-columns:var(--hc,1fr 1fr);gap:clamp(28px,4vw,90px);align-items:start}
-@media(max-width:940px){.hgrid{grid-template-columns:1fr!important}}
-.hleft{container-type:inline-size;min-width:0}
-.hcards{container-type:inline-size;min-width:0}
-.slog{font-weight:800;font-size:clamp(2.5rem,13.5cqw,7rem);line-height:1.2;letter-spacing:-.01em;color:#000}
-.slog .acc{background-color:var(--wine);background-image:url(assets/fig/slog1.png);background-size:cover;background-position:center;background-blend-mode:screen;-webkit-background-clip:text;background-clip:text;color:transparent}
-.slog .acc2{background-image:url(assets/fig/slog2.png)}
-@media(forced-colors:active){.slog .acc{-webkit-text-fill-color:CanvasText;color:CanvasText;background:none}}
-.hmani{margin-top:clamp(12px,2vh,20px);font-weight:200;font-size:clamp(14px,3.4cqw,28px);line-height:1.83;color:#000}
-/* 조합 카드: 이미지 + 텍스트 플랫 행 (목차·챕터와 같은 구조 언어) */
+/* ============ 실험 · 연구 카드: 이미지 + 텍스트 플랫 행 ============ */
 .hcards{display:flex;flex-direction:column}
 .hcard{display:grid;grid-template-columns:38cqw 1fr;gap:clamp(12px,3.4cqw,26px);padding:clamp(14px,2.8cqw,22px) 2px;border-top:1px solid var(--line2);align-items:center}
 .hcard:last-child{border-bottom:1px solid var(--line2)}
@@ -142,14 +133,8 @@ section{position:relative}
 .hcard .mt b{font-weight:700;color:var(--ink);margin-right:7px}
 @media(max-width:420px){.hcard{grid-template-columns:1fr;gap:10px;align-items:start}.hcard .im{aspect-ratio:16/9}}
 
-/* ============ 챕터 헤더 (플랫 — 첫 페이지 목차와 같은 구조) ============ */
-.chaphd{padding:clamp(48px,9vh,104px) 0 0;display:grid;grid-template-columns:clamp(88px,8vw,110px) 1fr;gap:clamp(12px,1.6vw,24px);align-items:baseline}
-.chaphd .pill{font-weight:700;font-size:clamp(13px,1vw,15px);color:var(--mag2);white-space:nowrap}
-.chaphd .tt{font-weight:700;font-size:clamp(18px,1.6vw,26px);line-height:1.3;color:#fff}
-.chaphd .ss{font-weight:300;font-size:clamp(12.5px,1.05vw,15px);color:rgba(255,255,255,.6);margin-top:4px}
-
 /* ============ C1 — 주요 작품 (dark) ============ */
-.c1{padding:0 0 clamp(60px,10vh,130px)}
+.c1{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
 .t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:clamp(20px,3vw,57px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
 .t3txt{container-type:inline-size;min-width:0}
 .t3media{position:relative;overflow:hidden;background:#000;cursor:pointer}
@@ -169,7 +154,7 @@ section{position:relative}
 @media(max-width:900px){.t3card{grid-template-columns:1fr!important;gap:18px}}
 
 /* ============ C2 — 작업 효율화 (dark, 원본 이미지·움짤) ============ */
-.c2{padding:0 0 clamp(60px,10vh,130px)}
+.c2{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
 .c2blk{display:grid;grid-template-columns:var(--c2c,2.2fr 1fr);gap:clamp(20px,2.7vw,48px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
 @media(max-width:900px){.c2blk{grid-template-columns:1fr!important;gap:18px}}
 .c2txt{container-type:inline-size;min-width:0}
@@ -188,21 +173,26 @@ section{position:relative}
 .bub .a{font-weight:200;font-size:clamp(13px,3.8cqw,19px);line-height:1.6;color:#fff}
 .bub .b{font-weight:200;font-size:clamp(10px,2.6cqw,13px);line-height:1.6;color:#fff}
 
-/* ============ 도구 · 연구 (dark) ============ */
-.lab{padding:0 0 clamp(60px,10vh,130px)}
-.labitem{display:grid;grid-template-columns:clamp(96px,10vw,150px) 1fr;gap:clamp(14px,2.4vw,40px);padding:clamp(40px,7vh,80px) 0 0}
-@media(max-width:640px){.labitem{grid-template-columns:1fr;gap:8px}}
-.labitem .tag{font-weight:700;font-size:clamp(12.5px,1vw,15px);color:var(--mag2);line-height:1.5}
-.labitem h3{font-weight:700;font-size:clamp(16px,1.5vw,22px);line-height:1.4;color:#fff}
-.labitem p{margin-top:8px;font-weight:200;font-size:clamp(13px,1.05vw,16.5px);line-height:1.9;color:#fff;max-width:72ch}
-.labitem .tools{margin-top:8px;font-weight:300;font-size:clamp(11px,.85vw,13px);color:rgba(255,255,255,.6)}
-.labfigs{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
-.labfigs figure{flex:1 1 300px;min-width:0;max-width:640px;margin:0}
-.labfigs img{width:100%;height:auto;display:block;border:1px solid var(--hl-d);border-radius:8px;background:#fff}
-.labfigs figcaption{margin-top:6px;font-weight:300;font-size:clamp(10.5px,.8vw,12.5px);color:rgba(255,255,255,.6)}
+/* ============ 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ============ */
+.lab{padding:clamp(56px,10vh,120px) 0 clamp(70px,11vh,140px)}
+.labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:clamp(30px,4.5vw,90px);align-items:start;position:relative}
+@media(max-width:940px){.labgrid{grid-template-columns:1fr!important;gap:44px}}
+.labcol{container-type:inline-size;min-width:0}
+.labh{font-weight:200;font-size:clamp(21px,4.8cqw,40px);color:var(--tblk);line-height:1.2}
+.labsub{margin-top:4px;font-weight:300;font-size:clamp(12.5px,2.4cqw,16px);color:var(--tlab)}
+.labitem{padding-top:clamp(18px,4cqw,30px);margin-top:clamp(18px,4cqw,30px);border-top:1px solid var(--line2)}
+.labitem .tag{font-weight:700;font-size:clamp(12px,2.2cqw,15px);color:var(--red2);line-height:1.5}
+.labitem h3{margin-top:4px;font-weight:700;font-size:clamp(15px,3cqw,21px);line-height:1.4;color:var(--ink)}
+.labitem p{margin-top:7px;font-weight:300;font-size:clamp(12.5px,2.5cqw,16px);line-height:1.85;color:var(--tbody);max-width:72ch}
+.labitem .tools{margin-top:7px;font-weight:300;font-size:clamp(10.5px,2cqw,13px);color:var(--tlab)}
+.labfigs{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap}
+.labfigs figure{flex:1 1 260px;min-width:0;margin:0}
+.labfigs img{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:12px;background:#fff}
+.labfigs figcaption{margin-top:6px;font-weight:300;font-size:clamp(10.5px,1.9cqw,12.5px);color:var(--tlab)}
+.labcol .hcards{margin-top:clamp(14px,3cqw,22px)}
 
 /* ============ ARCHIVE (dark) ============ */
-.archive{padding:0 0 clamp(70px,10vh,120px)}
+.archive{padding:clamp(50px,9vh,110px) 0 clamp(70px,10vh,120px)}
 .afil{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
 .afil button{font-family:var(--mono);font-size:12px;border:1px solid var(--hl-d);background:transparent;color:var(--mut-d);padding:8px 15px;border-radius:100px;font-weight:600;letter-spacing:.03em;transition:.2s}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
@@ -496,21 +486,14 @@ function resumeHTML(){
    </div>
   </div></div></section>`;}
 
-/* ---------- 새로운 조합, 새로운 의미 (#8) — 피그마 291:327 ---------- */
-function heroHTML(){return `<section class="hero sec-light" id="hero"><div class="wrap"><div class="hgrid">
-  <div class="hleft rv"><h2 class="slog"><span data-k="r.sg0a">새로운</span> <span class="acc" data-k="r.sg0b">조합,</span><br/><span data-k="r.sg1a">새로운</span> <span class="acc acc2" data-k="r.sg1b">의미.</span></h2>
-   <div class="hmani">${HERO.mani.map((m,i)=>`<p data-k="r.mani${i}">${esc(m)}</p>`).join("")}</div></div>
-  <div class="hcards rv">${HERO.cards.map((c,i)=>`<div class="hcard"><div class="im"><img src="${c.img}" alt="${esc(c.w)}" style="object-position:${c.pos}" loading="lazy"/></div><div>
+/* ---------- 실험·연구 카드 (구 콤보 카드 — 도구·연구 우측 컬럼) ---------- */
+function expCardsHTML(){return `<div class="hcards">${HERO.cards.map((c,i)=>`<div class="hcard"><div class="im"><img src="${c.img}" alt="${esc(c.w)}" style="object-position:${c.pos}" loading="lazy"/></div><div>
     <div class="t" data-k="r.cc${i}t">${esc(c.t)}</div>
     <div class="q" data-k="r.cc${i}q">${esc(c.q)}</div>
     <div class="mt"><span><b>작품</b><span data-k="r.cc${i}w">${esc(c.w)}</span></span><br/><span><b>참여</b><span data-k="r.cc${i}p">${esc(c.p)}</span></span></div>
-  </div></div>`).join("")}</div>
-</div></div></section>`;}
+  </div></div>`).join("")}</div>`;}
 
-/* ---------- 챕터 헤더 ---------- */
-function chapHd(i){const c=R.chap[i];return `<div class="wrap"><div class="chaphd rv"><span class="pill" data-k="r.chb.${i}.p">${esc(c[0])}</span><span><span class="tt" data-k="r.chb.${i}.t">${esc(c[1])}</span><br/><span class="ss" data-k="r.chb.${i}.s">${esc(c[2])}</span></span></div></div>`;}
-
-/* ---------- C1 생각의 유도 (dark, 인라인 재생) ---------- */
+/* ---------- C1 주요 작품 (dark, 인라인 재생) ---------- */
 function t3card(t,i){return `<div class="t3card rv">
   <div class="t3media" data-yt="${t.yt}" style="aspect-ratio:${t.ar}" role="button" tabindex="0" aria-label="${esc(t.t)} 영상 재생"><img src="${t.poster}" alt="${esc(t.t)} 스틸" loading="lazy"/><span class="play"><span>▶</span></span></div>
   <div class="t3txt"><div class="pills">${t.tools.map(x=>`<span>${esc(x)}</span>`).join("")}</div>
@@ -518,7 +501,20 @@ function t3card(t,i){return `<div class="t3card rv">
    <p class="t3desc" data-k="r.t3.${i}.d">${esc(t.desc)}</p>
    <dl class="t3meta">${t.meta.map((m,j)=>`<dt>${esc(m[0])}</dt><dd data-k="r.t3.${i}.m${j}">${esc(m[1])}</dd>`).join("")}</dl></div>
  </div>`;}
-function c1HTML(){return `<section class="c1 sec-dark" id="c1">${chapHd(0)}<div class="wrap">${TOP3.map(t3card).join("")}</div></section>`;}
+/* 주요 작품 추가분: 당근 캠페인 대표작 (가로형 프레임, 클릭 시 상세) */
+const C1X=["td_declutter"];
+function c1xCard(id){const w=findWork(id);if(!w)return "";
+  const pk=PKG[id],p=pk&&pk.perf;
+  const perf=p?[["성과",won(p.cost)+" 집행 · 노출 "+big(p.imp)+(p.act?" · 활성 유저 "+big(p.act):"")]]:[];
+  const meta=[["구분",w.campaign||""],["연도",w.year||""]].concat(perf).filter(m=>m[1]);
+  return `<div class="t3card rv">
+  <div class="t3media t3loc" data-id="${id}" style="aspect-ratio:16/9" role="button" tabindex="0" aria-label="${esc(w.title)} 상세 보기"><img src="${pos(id)}" alt="${esc(w.title)}" loading="lazy"/><span class="play"><span>▶</span></span></div>
+  <div class="t3txt"><div class="pills">${(w.role||"").split("·").map(s=>s.trim()).filter(Boolean).map(x=>`<span>${esc(x)}</span>`).join("")}</div>
+   <h3 class="t3title" data-k="w.${id}.title">${esc(w.title)}</h3>
+   <p class="t3desc" data-k="w.${id}.desc">${esc(w.desc)}</p>
+   <dl class="t3meta">${meta.map(m=>`<dt>${esc(m[0])}</dt><dd>${esc(m[1])}</dd>`).join("")}</dl></div>
+ </div>`;}
+function c1HTML(){return `<section class="c1 sec-dark" id="c1"><div class="wrap">${TOP3.map(t3card).join("")}${C1X.map(c1xCard).join("")}</div></section>`;}
 
 /* ---------- C2 기술의 개선 (dark, 원본 이미지·움짤 그대로) ---------- */
 function figCode(){return `<div class="figv rv">
@@ -538,7 +534,7 @@ function c2txt(b,i){return `<div class="c2txt"><div class="pills">${b.tools.map(
  ${b.cap?`<div class="bub">${b.cap.map((c,j)=>`<div class="row"><span class="b" data-k="r.c2.${i}.c${j}">${esc(c)}</span></div>`).join("")}</div>`:""}
 </div>`;}
 function c2HTML(){const vis=[figCode(),figNode()];
- return `<section class="c2 sec-dark" id="c2">${chapHd(1)}<div class="wrap">${C2D.map((b,i)=>`<div class="c2blk">${vis[i]}${c2txt(b,i)}</div>`).join("")}</div></section>`;}
+ return `<section class="c2 sec-dark" id="c2"><div class="wrap">${C2D.map((b,i)=>`<div class="c2blk">${vis[i]}${c2txt(b,i)}</div>`).join("")}</div></section>`;}
 
 /* ---------- ARCHIVE (dark, 순수 갤러리뷰) ---------- */
 function cardExtra(w){return Math.max(0,buildGallery(w).length-1);}
@@ -558,12 +554,12 @@ function cardHTML(w){
   const ord=editing?`<span class="ordbtns"><button class="ob" data-mv="-1" aria-label="앞으로">‹</button><button class="ob" data-mv="1" aria-label="뒤로">›</button></span>`:"";
   const inert=noact&&!editing;
   return `<div class="acard${hid?" offcard":""}${noact?" noact":""}" data-cat="${w.cat}" data-id="${w.id}"${inert?"":` role="button" tabindex="0" aria-label="${esc(w.title)}"`}>${media}${inert?"":hov}${ord}</div>`;}
-function archiveHTML(){return `<section class="archive sec-dark" id="archive">${chapHd(2)}<div class="wrap" style="margin-top:24px">
+function archiveHTML(){return `<section class="archive sec-dark" id="archive"><div class="wrap">
   <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button>${editing?`<span class="gapctl">간격 <input type="range" id="gapRange" min="4" max="24" step="1" aria-label="갤러리 카드 간격"/></span>`:""}</div>
   <div class="agrid">${gridWorks().map(cardHTML).join("")}</div>
 </div></section>`;}
 
-/* ---------- 도구 · 연구 (dark) ---------- */
+/* ---------- 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ---------- */
 const LAB=[
  {tag:"성과 도구",t:"CreativeReporter — 광고 성과 리포팅 도구",
   d:"집행한 광고 소재의 성과를 소재 단위로 자동 집계·시각화하는 자체 개발 웹 도구. Moloco·Google·Meta 리포트를 클라우드 저장소에 누적하고, 효율 지도(지표 산점도)·주차별 추세·유형별 비교로 어떤 소재가 왜 좋았는지 바로 찾는다. 소재 미리보기와 실집행 성과를 한 화면에서 확인하며, 이 사이트 갤러리의 성과 데이터도 여기서 나온다.",
@@ -572,22 +568,28 @@ const LAB=[
  {tag:"AI 파이프라인",t:"이미지 소재 자동 제작 워크플로우",
   d:"자연어로 설명하면 문구 후보 → 11종 사이즈 레이아웃 초안 → 이미지 생성까지 이어지는 자체 개발 파이프라인. 피그마 플러그인과 로컬 브릿지 서버(Node.js)를 직접 만들어 피그마-클로드-생성 모델을 연결했고, OAuth로 생성 모델 MCP를 직접 호출해 중간 토큰 비용을 없앴다. 1장당 약 300원 — 시중 유료 툴(1,500원) 대비 1/5 비용. 설치 파일로 팀에 배포.",
   k:"Figma Plugin(자체 개발) · Node.js Bridge(자체 개발) · Claude · MCP",
-  figs:[["assets/lab/ai_arch.png","전체 구조 — 피그마 플러그인 → 브릿지 서버 → 클로드 CLI → 생성 모델(MCP)"],["assets/lab/ai_tool.png","실제 화면 — 피그마 플러그인 (초안 생성 · 이미지 생성)"]]},
+  figs:[["assets/lab/ai_arch.png","전체 구조 — 피그마 플러그인 → 브릿지 서버 → 클로드 CLI → 생성 모델(MCP)"]]},
  {tag:"제작 자동화",t:"모션 템플릿 자동화 시스템",
   d:"After Effects 익스프레션 기반 파라메트릭 템플릿. 메시지 개수·길이·타이밍을 값으로 제어해, 카피만 바꾸면 시즌 캠페인 소재가 자동 완성된다. 동일 템플릿으로 여러 시즌 캠페인을 양산했다.",
-  k:"AE Expressions · JavaScript"},
- {tag:"학술 연구",t:"생성형 AI를 활용한 3D 스캐닝 기반의 가상 현실 제작 연구",
-  d:"포토그래메트리와 생성형 AI의 기술적 한계를 상호보완하는 제작 방법 연구. 제1저자. 한국방송미디어공학회 대학생·주니어 논문 경진대회 최우수.",
-  k:"논문 · 2024"}
+  k:"AE Expressions · JavaScript"}
 ];
-function labHTML(){return `<section class="lab sec-dark" id="lab">${chapHd(3)}<div class="wrap">
- ${LAB.map((it,i)=>`<div class="labitem rv"><span class="tag" data-k="l2.${i}.tag">${esc(it.tag)}</span><div>
-   <h3 data-k="l2.${i}.t">${esc(it.t)}</h3>
-   <p data-k="l2.${i}.d">${esc(it.d)}</p>
-   <p class="tools" data-k="l2.${i}.k">${esc(it.k)}</p>
-   ${it.figs?`<div class="labfigs">${it.figs.map((f,j)=>`<figure><img src="${f[0]}" alt="${esc(it.t)}" loading="lazy"/><figcaption data-k="l2.${i}.c${j}">${esc(f[1])}</figcaption></figure>`).join("")}</div>`:""}
- </div></div>`).join("")}
-</div></section>`;}
+function labHTML(){return `<section class="lab sec-light" id="lab"><div class="wrap"><div class="labgrid">
+ <div class="labcol rv">
+   <h3 class="labh" data-k="l2.hA">도구 개발</h3>
+   <p class="labsub" data-k="l2.sA">제작의 반복을 코드로 줄인다 — 성과 리포팅 · AI 파이프라인 · 템플릿 자동화</p>
+   ${LAB.map((it,i)=>`<div class="labitem"><span class="tag" data-k="l2.${i}.tag">${esc(it.tag)}</span>
+     <h3 data-k="l2.${i}.t">${esc(it.t)}</h3>
+     <p data-k="l2.${i}.d">${esc(it.d)}</p>
+     <p class="tools" data-k="l2.${i}.k">${esc(it.k)}</p>
+     ${it.figs?`<div class="labfigs">${it.figs.map((f,j)=>`<figure><img src="${f[0]}" alt="${esc(it.t)}" loading="lazy"/><figcaption data-k="l2.${i}.c${j}">${esc(f[1])}</figcaption></figure>`).join("")}</div>`:""}
+   </div>`).join("")}
+ </div>
+ <div class="labcol rv">
+   <h3 class="labh" data-k="l2.hB">실험 · 연구</h3>
+   <p class="labsub" data-k="l2.sB">이질적인 것을 조합해 새로운 의미를 검증한 개인 프로젝트 — 전시 · 영화 · 논문</p>
+   ${expCardsHTML()}
+ </div>
+</div></div></section>`;}
 
 /* ---------- FOOTER ---------- */
 function footHTML(){return `<footer><div class="wrap"><a href="mailto:hansy.dawn@gmail.com">hansy.dawn@gmail.com</a> · <span data-k="ui.foot1">© 2026 김한결</span></div></footer>`;}
@@ -600,10 +602,10 @@ async function loadEdits(){
 }
 /* ---- 크기 조절 시스템: CSS 변수 ← EDITS(sz.*) ---- */
 const SIZERS=[
- {key:"sz.rc", sel:".rgrid", cssVar:"--rc",  min:.5,max:1.8,dflt:.88},
- {key:"sz.hc", sel:".hgrid", cssVar:"--hc",  min:.5,max:1.8,dflt:1},
- {key:"sz.c1c",sel:".t3card",cssVar:"--c1c", min:1, max:4,  dflt:2},
- {key:"sz.c2c",sel:".c2blk", cssVar:"--c2c", min:1, max:4,  dflt:2.2}
+ {key:"sz.rc", sel:".rgrid",  cssVar:"--rc",  min:.5,max:1.8,dflt:.88},
+ {key:"sz.lc", sel:".labgrid",cssVar:"--lc",  min:.5,max:2.2,dflt:1.15},
+ {key:"sz.c1c",sel:".t3card", cssVar:"--c1c", min:1, max:4,  dflt:2},
+ {key:"sz.c2c",sel:".c2blk",  cssVar:"--c2c", min:1, max:4,  dflt:2.2}
 ];
 function applySizes(){const rt=document.documentElement.style;
   SIZERS.forEach(c=>{const v=parseFloat(EDITS[c.key]);rt.setProperty(c.cssVar,(isNaN(v)?c.dflt:v)+"fr 1fr");});
@@ -613,7 +615,7 @@ function applyEdits(){
     if(k.indexOf("sz.")===0)continue;
     if(k.indexOf("photo.")===0){const f=document.querySelector(".idphoto");if(f&&EDITS[k]!=null){const p=k.slice(6);
       if(p==="bs")f.style.backgroundSize=EDITS[k];else if(p==="bx")f.style.backgroundPositionX=EDITS[k];else if(p==="by")f.style.backgroundPositionY=EDITS[k];}continue;}
-    const el=document.querySelector('[data-k="'+k+'"]');if(el&&EDITS[k]!=null)el.textContent=EDITS[k];
+    if(EDITS[k]!=null)document.querySelectorAll('[data-k="'+CSS.escape(k)+'"]').forEach(el=>{el.textContent=EDITS[k];});
   }
   applySizes();
   /* 신상 행: 값이 비면 숨김 (편집 모드에선 모두 표시) */
@@ -672,13 +674,14 @@ function resumeVisiblePreviews(){if(RMOTION)return;document.querySelectorAll(".a
 const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting&&!lbOpen&&!editing&&!RMOTION){if(m.classList.contains("playing")||playingCount()>=MAXPREV())return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();if(m)m.classList.remove("playing");}}),{rootMargin:"90px 0px",threshold:.25});
 const revO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");revO.unobserve(e.target);}}),{rootMargin:"0px 0px -8% 0px",threshold:.06});
 function render(){
-  document.getElementById("main").innerHTML=resumeHTML()+heroHTML()+c1HTML()+c2HTML()+archiveHTML()+labHTML()+footHTML();
+  document.getElementById("main").innerHTML=resumeHTML()+c1HTML()+c2HTML()+archiveHTML()+labHTML()+footHTML();
   applyEdits();
   mountSizers();mountPhotoAdjust();
   if(RMOTION)document.querySelectorAll(".figvid").forEach(v=>{v.removeAttribute("autoplay");try{v.pause();}catch(_){}});
   document.querySelectorAll(".acard").forEach(c=>io.observe(c));
   document.querySelectorAll(".rv").forEach(el=>revO.observe(el));
-  document.querySelectorAll(".t3media").forEach(el=>{const go=()=>{if(editing||el.classList.contains("playing"))return;stopT3();const yt=el.dataset.yt;el.insertAdjacentHTML("beforeend",`<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&rel=0&playsinline=1" title="영상 재생" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`);el.classList.add("playing");};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
+  document.querySelectorAll(".t3media:not(.t3loc)").forEach(el=>{const go=()=>{if(editing||el.classList.contains("playing"))return;stopT3();const yt=el.dataset.yt;el.insertAdjacentHTML("beforeend",`<iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&rel=0&playsinline=1" title="영상 재생" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>`);el.classList.add("playing");};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
+  document.querySelectorAll(".t3media.t3loc").forEach(el=>{const go=()=>{if(editing)return;openLB(el.dataset.id);};el.addEventListener("click",go);el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});});
   document.querySelectorAll(".acard[data-id]").forEach(el=>{
     if(!editing&&el.classList.contains("noact"))return;
     const act=()=>{editing?openManage(findWork(el.dataset.id)):openLB(el.dataset.id);};el.addEventListener("click",act);el.addEventListener("keydown",e=>{if(editing&&e.target.closest("[data-k]"))return;if(e.key==="Enter"||e.key===" "){e.preventDefault();act();}});});
@@ -982,10 +985,9 @@ addEventListener("keyup",e=>{if(e.key==="PrintScreen"){try{navigator.clipboard.w
 /* ---- 스크롤 챕터 바: 현재 섹션 표시 ---- */
 const CB_SECTIONS=()=>[
  {id:"top",p:"개요",t:"인적 사항 · 학력 · 경력 · 수상"},
- {id:"hero",p:"개요",t:"새로운 조합, 새로운 의미"},
- {id:"c1",p:R.chap[0][0],t:R.chap[0][1]},
- {id:"c2",p:R.chap[1][0],t:R.chap[1][1]},
- {id:"archive",p:R.chap[2][0],t:R.chap[2][1]},
+ {id:"c1",p:R.chap[0][0],t:R.chap[0][1],dk:true},
+ {id:"c2",p:R.chap[1][0],t:R.chap[1][1],dk:true},
+ {id:"archive",p:R.chap[2][0],t:R.chap[2][1],dk:true},
  {id:"lab",p:R.chap[3][0],t:R.chap[3][1]}
 ];
 let _cbTick=false;
@@ -996,6 +998,7 @@ function updateChapbar(){
   CB_SECTIONS().forEach(s=>{const el=document.getElementById(s.id);if(el&&el.getBoundingClientRect().top<=90)cur=s;});
   document.getElementById("cbPill").textContent=cur.p;
   document.getElementById("cbTt").textContent=cur.t;
+  bar.classList.toggle("dk",!!cur.dk);
   bar.classList.add("on");
 }
 addEventListener("scroll",()=>{if(_cbTick)return;_cbTick=true;requestAnimationFrame(()=>{_cbTick=false;updateChapbar();});},{passive:true});
