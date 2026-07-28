@@ -117,12 +117,10 @@ section{position:relative}
 .tgrid .tr,.awgrid .tr{display:grid;grid-template-columns:subgrid;grid-column:1/-1;column-gap:var(--cg);align-items:baseline;padding:var(--rowpad) 0;border-bottom:1px solid var(--rh)}
 .tgrid .tr:last-child,.awgrid .tr:last-child{border-bottom-color:var(--rl)}
 /* 세 표가 완전히 같은 6열 트랙 — 열의 세로선이 표를 건너뛰어도 이어진다 */
-.tgrid.edu,.tgrid.car,.awgrid{grid-template-columns:var(--c1) var(--c2w) minmax(0,1fr) var(--c4w) var(--c5w) var(--c6w)}
-.tgrid.edu .tr>span:nth-child(2){grid-column:2/4}
-.tgrid.edu .tr>span:nth-child(3){grid-column:4/-1}
-.tgrid.car .tr>span:nth-child(2){grid-column:2}
-.tgrid.car .tr>span:nth-child(3){grid-column:3}
-.tgrid.car .tr>span:nth-child(4){grid-column:4/-1}
+.awgrid{grid-template-columns:var(--c1) var(--c2w) minmax(0,1fr) var(--c4w) var(--c5w) var(--c6w)}
+/* 학력·경력: 칸 사이 간격을 --cg 로 균일하게 (첫 열은 수상 표와 같은 세로선 유지) */
+.tgrid.edu{grid-template-columns:var(--c1) max-content max-content}
+.tgrid.car{grid-template-columns:var(--c1) max-content max-content max-content}
 .tgrid .tr>span,.awgrid .tr>span{min-width:0}
 .tgrid .tr>span:first-child,.awgrid .tr>span:first-child{color:var(--tlab);white-space:nowrap}
 .tgrid .tr>span:nth-child(2),.tgrid.car .tr>span:nth-child(3),.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(3){color:var(--tblk);font-weight:400}
