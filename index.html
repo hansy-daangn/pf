@@ -22,7 +22,7 @@
  --hl-d:rgba(255,255,255,.14);--hl-l:rgba(17,17,20,.11);--line2:rgba(17,17,20,.14);
  --mono:"SFMono-Regular",ui-monospace,Menlo,"Roboto Mono",Consolas,monospace;
  --san:"Pretendard Variable",Pretendard,-apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
- --maxw:1600px;--ease:cubic-bezier(.2,.7,.2,1);
+ --maxw:1280px;--secpad:120px;--colgap:76px;--blockgap:112px;--sidepad:60px;--ease:cubic-bezier(.2,.7,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
@@ -34,7 +34,7 @@ img,video{-webkit-user-drag:none}
 ::selection{background:var(--red2);color:#fff}
 a{color:inherit;text-decoration:none}img,video{display:block;max-width:100%}
 button{font-family:inherit;cursor:pointer;color:inherit}
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,3.5vw,60px)}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--sidepad)}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:2px}
 .sec-dark :focus-visible,.sec-dark button:focus-visible,#lb :focus-visible{outline-color:#fff}
@@ -74,9 +74,9 @@ section{position:relative}
 .gapctl input{accent-color:var(--red2);width:120px}
 
 /* ============ 이력서 (#1, white) — 피그마 291:5 ============ */
-.resume{position:relative;overflow:hidden;padding:clamp(36px,5vh,70px) 0 clamp(50px,8vh,100px)}
+.resume{position:relative;overflow:hidden;padding:calc(var(--secpad) * .55) 0 var(--secpad)}
 .blob{position:absolute;top:max(-14vw,-160px);left:max(-11vw,-130px);width:clamp(320px,40vw,777px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0}
-.rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:clamp(28px,4vw,72px);position:relative;z-index:1;align-items:start}
+.rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
 .idcard{background:#f7f7f7;border:1.1px solid var(--bdr);border-radius:21px;display:flex;gap:clamp(12px,1.4vw,20px);align-items:center;max-width:672px}
 .idphoto{flex:none;width:clamp(140px,15vw,226px);aspect-ratio:226/222;border-radius:21px;position:relative;overflow:hidden;background-color:var(--red);background-image:url(assets/img/profile.jpg?v=2);background-repeat:no-repeat;background-size:160%;background-position:43% 20%}
@@ -125,8 +125,8 @@ section{position:relative}
 .hcard .mt b{font-weight:700;color:var(--ink);margin-right:7px}
 
 /* ============ C1 — 주요 작품 (dark) ============ */
-.c1{padding:16px 0 96px}
-.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:48px;align-items:start;padding:96px 0 0}
+.c1{padding:0 0 var(--secpad)}
+.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:var(--colgap);align-items:start;padding:var(--blockgap) 0 0}
 .t3txt{min-width:0}
 .t3media{position:relative;overflow:hidden;background:#000;cursor:pointer}
 .t3media img{width:100%;height:100%;object-fit:cover}
@@ -145,8 +145,8 @@ section{position:relative}
 .t3meta dd{font-weight:200;color:#fff}
 
 /* ============ C2 — 작업 효율화 (dark, 원본 이미지·움짤) ============ */
-.c2{padding:16px 0 96px}
-.c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:48px;align-items:start;padding:96px 0 0}
+.c2{padding:0 0 var(--secpad)}
+.c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:var(--colgap);align-items:start;padding:var(--blockgap) 0 0}
 .c2txt{min-width:0}
 .figv{min-width:0}
 .figv img,.figv video{display:block;width:100%;height:auto}
@@ -164,8 +164,8 @@ section{position:relative}
 .bub .b{font-weight:200;font-size:clamp(10.5px,.75vw,12.5px);line-height:1.6;color:#fff}
 
 /* ============ 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ============ */
-.lab{padding:96px 0 96px}
-.labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:clamp(30px,4.5vw,90px);align-items:stretch;position:relative}
+.lab{padding:0 0 var(--secpad)}
+.labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:var(--colgap);align-items:stretch;position:relative}
 .labcol{min-width:0}
 .labcolB{display:flex;flex-direction:column}
 .labh{font-weight:200;font-size:clamp(22px,1.8vw,32px);color:var(--tblk);line-height:1.2}
@@ -182,12 +182,21 @@ section{position:relative}
 .labcol .hcards{margin-top:clamp(14px,2vh,22px)}
 
 /* ============ ARCHIVE (dark) ============ */
-.archive{padding:96px 0 96px}
+.archive{padding:0 0 var(--secpad)}
 .afil{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
 .afil button{font-family:var(--mono);font-size:12px;border:1px solid var(--hl-d);background:transparent;color:var(--mut-d);padding:8px 15px;border-radius:100px;font-weight:600;letter-spacing:.03em;transition:.2s}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
 .afil button:hover:not(.on){color:#fff;border-color:var(--mut-d)}
+.chin{padding:var(--secpad) 0 0;display:flex;align-items:baseline;gap:clamp(12px,1.2vw,20px);flex-wrap:wrap}
+.chin .lb{font-weight:700;font-size:clamp(13px,1vw,15px);color:var(--red2);white-space:nowrap}
+.sec-dark .chin .lb{color:var(--mag2)}
+.chin .tt{font-weight:800;font-size:clamp(20px,1.7vw,28px);line-height:1.3}
+.chin .ss{font-weight:200;font-size:clamp(12.5px,1vw,15px);color:var(--tlab)}
+.sec-dark .chin .ss{color:rgba(255,255,255,.6)}
+.chin+*{margin-top:calc(var(--blockgap) * .34)}
+.c1 .chin+.t3card,.c2 .chin+.c2blk{padding-top:0}
 .featgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--agap,12px);margin-bottom:var(--agap,12px)}
+.featgrid .acard{break-inside:auto}
 .featgrid .acard .media{aspect-ratio:16/9!important}
 .agrid{columns:4;column-gap:var(--agap,12px)}
 .acard{break-inside:avoid;margin-bottom:var(--agap,12px);border-radius:12px;overflow:hidden;border:1px solid var(--hl-d);background:var(--dark2);cursor:pointer;position:relative;transition:transform .4s var(--ease),border-color .3s}
@@ -251,6 +260,13 @@ footer a:hover{color:var(--mag2)}
 @media(max-width:780px){#lb .bx{grid-template-columns:1fr}#lb .lb-stage video,#lb .lb-stage img{max-height:56vh}}
 
 /* ============ manage modal (edit) ============ */
+#szPanel{position:fixed;left:22px;bottom:22px;z-index:70;display:none;flex-direction:column;gap:9px;background:rgba(16,16,19,.93);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px 16px;width:262px;box-shadow:0 12px 30px -10px rgba(0,0,0,.6)}
+.editing #szPanel{display:flex}
+#szPanel h4{font-size:12px;font-weight:700;color:#fff;letter-spacing:.02em;margin-bottom:2px}
+#szPanel label{display:grid;grid-template-columns:1fr auto;gap:2px 8px;font-size:11.5px;color:rgba(255,255,255,.72);font-weight:400}
+#szPanel label b{font-family:var(--mono);font-size:11px;color:#fff;font-weight:600}
+#szPanel input[type=range]{grid-column:1/-1;width:100%;accent-color:var(--mag2);height:16px}
+#szPanel .rst{margin-top:2px;font-size:11.5px;font-weight:700;color:var(--mag2);background:none;border:0;padding:0;text-align:left}
 #ngFab{position:fixed;right:22px;bottom:84px;z-index:70;height:44px;padding:0 16px;border-radius:100px;background:var(--cream);color:var(--dark);border:0;font-size:13px;font-weight:700;display:none;align-items:center;gap:6px;box-shadow:0 8px 22px -8px rgba(0,0,0,.5)}
 .editing #ngFab{display:inline-flex}
 #mg{position:fixed;inset:0;z-index:90;background:rgba(8,8,10,.62);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:4vh 16px}
@@ -318,6 +334,16 @@ footer a:hover{color:var(--mag2)}
   <div class="lb-info"><h3 id="lbt"></h3><div class="ro" id="lbr"></div><div class="de" id="lbd"></div><div class="kv" id="lbKv"></div><div class="perf" id="lbPerf" style="display:none"></div></div>
 </div></div>
 
+<div id="szPanel" aria-label="여백·크기 조절">
+ <h4>여백 · 크기</h4>
+ <label>본문 최대 너비<b id="szv-maxw"></b><input type="range" id="szr-maxw" min="1040" max="1440" step="20"/></label>
+ <label>좌우 여백<b id="szv-sidepad"></b><input type="range" id="szr-sidepad" min="24" max="140" step="4"/></label>
+ <label>섹션 상하 여백<b id="szv-secpad"></b><input type="range" id="szr-secpad" min="48" max="220" step="4"/></label>
+ <label>좌우 컬럼 사이<b id="szv-colgap"></b><input type="range" id="szr-colgap" min="24" max="180" step="4"/></label>
+ <label>카드 사이 여백<b id="szv-blockgap"></b><input type="range" id="szr-blockgap" min="40" max="240" step="4"/></label>
+ <label>갤러리 간격<b id="szv-agap"></b><input type="range" id="szr-agap" min="4" max="32" step="1"/></label>
+ <button class="rst" id="szReset">기본값으로 되돌리기</button>
+</div>
 <button id="ngFab">＋ 작업 추가</button>
 <button id="editFab" title="편집" aria-label="편집 모드">✎</button>
 <div id="editHint"><span>편집 모드 · 카드를 누르면 소재를 관리할 수 있어요 · ✎ 다시 누르면 저장</span></div>
@@ -510,7 +536,7 @@ function c1xCard(id){const w=findWork(id);if(!w)return "";
    <p class="t3desc" data-k="w.${id}.desc">${esc(w.desc)}</p>
    <dl class="t3meta">${meta.map(m=>`<dt>${esc(m[0])}</dt><dd>${esc(m[1])}</dd>`).join("")}</dl></div>
  </div>`;}
-function c1HTML(){return `<section class="c1 sec-dark" id="c1"><div class="wrap">${TOP3.map(t3card).join("")}${C1X.map(c1xCard).join("")}</div></section>`;}
+function c1HTML(){return `<section class="c1 sec-dark" id="c1"><div class="wrap">${chIntro(0)}${TOP3.map(t3card).join("")}${C1X.map(c1xCard).join("")}</div></section>`;}
 
 /* ---------- C2 기술의 개선 (dark, 원본 이미지·움짤 그대로) ---------- */
 function figCode(){return `<div class="figv rv">
@@ -530,7 +556,7 @@ function c2txt(b,i){return `<div class="c2txt"><div class="pills">${b.tools.map(
  ${b.cap?`<div class="bub">${b.cap.map((c,j)=>`<div class="row"><span class="b" data-k="r.c2.${i}.c${j}">${esc(c)}</span></div>`).join("")}</div>`:""}
 </div>`;}
 function c2HTML(){const vis=[figCode(),figNode()];
- return `<section class="c2 sec-dark" id="c2"><div class="wrap">${C2D.map((b,i)=>`<div class="c2blk">${vis[i]}${c2txt(b,i)}</div>`).join("")}</div></section>`;}
+ return `<section class="c2 sec-dark" id="c2"><div class="wrap">${chIntro(1)}${C2D.map((b,i)=>`<div class="c2blk">${vis[i]}${c2txt(b,i)}</div>`).join("")}</div></section>`;}
 
 /* ---------- ARCHIVE (dark, 순수 갤러리뷰) ---------- */
 function cardExtra(w){return Math.max(0,buildGallery(w).length-1);}
@@ -551,15 +577,21 @@ function cardHTML(w){
   const ord=editing?`<span class="ordbtns"><button class="ob" data-mv="-1" aria-label="앞으로">‹</button><button class="ob" data-mv="1" aria-label="뒤로">›</button></span>`:"";
   const inert=noact&&!editing;
   return `<div class="acard${hid?" offcard":""}${noact?" noact":""}" data-cat="${w.cat}" data-id="${w.id}"${inert?"":` role="button" tabindex="0" aria-label="${esc(w.title)}"`}>${media}${inert?"":hov}${ord}</div>`;}
-const FEAT=["td_review2605","mg_bizreview","3d_sew","td_declutter"]; /* 갤러리 상단 대형 가로 카드 */
+/* 가로 영상 작업은 갤러리에서 2열 대형 카드로 (이미지는 기존 그리드 유지) */
 /* 피처드 카드 전용 가로(16:9) 영상 오버라이드 */
 const FEATV={td_review2605:{v:"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",p:"assets/poster/td_review2605_h.jpg"},mg_bizreview:{v:"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4",p:"assets/poster/mg_bizreview_h.jpg"}};
-function archiveHTML(){const hid=hiddenSet();
- const feat=editing?[]:FEAT.map(findWork).filter(w=>w&&!hid.has(w.id));
- return `<section class="archive sec-dark" id="archive"><div class="wrap">
+function chIntro(i){const c=R.chap[i];if(!c)return "";
+  return `<div class="chin rv"><span class="lb" data-k="r.chap.${i}.p">${esc(c[0])}</span><span class="tt" data-k="r.chap.${i}.t">${esc(c[1])}</span><span class="ss" data-k="r.chap.${i}.s">${esc(c[2]||"")}</span></div>`;}
+function isWideVideo(w){
+  if(w.st)return false;
+  if(w.u){if(!(w.pv&&w.pv.video))return false;const p=String(w.pv.ar||"9 / 16").split("/").map(parseFloat);return p[0]>p[1];}
+  return !!FEATV[w.id]||LS.has(w.id);}
+function archiveHTML(){
+ const all=gridWorks(),feat=editing?[]:all.filter(isWideVideo);
+ return `<section class="archive sec-dark" id="archive"><div class="wrap">${chIntro(2)}
   <div class="afil rv" id="afil"><button class="on" data-f="all">전체</button><button data-f="motion">모션그래픽</button><button data-f="3d">3D</button><button data-f="ai">AI</button><button data-f="style">스타일</button>${editing?`<span class="gapctl">간격 <input type="range" id="gapRange" min="4" max="24" step="1" aria-label="갤러리 카드 간격"/></span>`:""}</div>
   ${feat.length?`<div class="featgrid">${feat.map(cardHTML).join("")}</div>`:""}
-  <div class="agrid">${gridWorks().filter(w=>editing||FEAT.indexOf(w.id)<0).map(cardHTML).join("")}</div>
+  <div class="agrid">${(editing?all:all.filter(w=>!isWideVideo(w))).map(cardHTML).join("")}</div>
 </div></section>`;}
 
 /* ---------- 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ---------- */
@@ -576,7 +608,7 @@ const LAB=[
   d:"After Effects 익스프레션 기반 파라메트릭 템플릿. 메시지 개수·길이·타이밍을 값으로 제어해, 카피만 바꾸면 시즌 캠페인 소재가 자동 완성된다. 동일 템플릿으로 여러 시즌 캠페인을 양산했다.",
   k:"AE Expressions · JavaScript"}
 ];
-function labHTML(){return `<section class="lab sec-light" id="lab"><div class="wrap"><div class="labgrid">
+function labHTML(){return `<section class="lab sec-light" id="lab"><div class="wrap">${chIntro(3)}<div class="labgrid">
  <div class="labcol rv">
    <h3 class="labh" data-k="l2.hA">도구 개발</h3>
    <p class="labsub" data-k="l2.sA">제작의 반복을 코드로 줄인다 — 성과 리포팅 · AI 파이프라인 · 템플릿 자동화</p>
@@ -611,9 +643,24 @@ const SIZERS=[
  {key:"sz.cc",sel:".t3card", cssVar:"--c1c",min:1, max:4,  dflt:2},
  {key:"sz.cc",sel:".c2blk",  cssVar:"--c2c",min:1, max:4,  dflt:2}
 ];
+const SPACES=[
+ {k:"maxw",dflt:1280},{k:"sidepad",dflt:60},{k:"secpad",dflt:120},
+ {k:"colgap",dflt:76},{k:"blockgap",dflt:112},{k:"agap",dflt:12}
+];
+function spaceVal(s){const v=parseFloat(EDITS["sz."+s.k]);return isNaN(v)?s.dflt:v;}
 function applySizes(){const rt=document.documentElement.style;
   SIZERS.forEach(c=>{const v=parseFloat(EDITS[c.key]);rt.setProperty(c.cssVar,(isNaN(v)?c.dflt:v)+"fr 1fr");});
-  const g=parseFloat(EDITS["sz.agap"]);rt.setProperty("--agap",(isNaN(g)?12:g)+"px");}
+  SPACES.forEach(s=>rt.setProperty("--"+s.k,spaceVal(s)+"px"));}
+function bindSzPanel(){
+  SPACES.forEach(s=>{
+    const r=document.getElementById("szr-"+s.k),o=document.getElementById("szv-"+s.k);
+    if(!r||!o)return;
+    const show=v=>{o.textContent=v+"px";};
+    r.value=spaceVal(s);show(r.value);
+    r.oninput=()=>{EDITS["sz."+s.k]=r.value;show(r.value);document.documentElement.style.setProperty("--"+s.k,r.value+"px");};
+  });
+  const rs=document.getElementById("szReset");
+  if(rs)rs.onclick=()=>{SPACES.forEach(s=>{delete EDITS["sz."+s.k];});applySizes();bindSzPanel();};}
 function applyEdits(){
   for(const k in EDITS){
     if(k.indexOf("sz.")===0)continue;
@@ -621,7 +668,7 @@ function applyEdits(){
       if(p==="bs")f.style.backgroundSize=EDITS[k];else if(p==="bx")f.style.backgroundPositionX=EDITS[k];else if(p==="by")f.style.backgroundPositionY=EDITS[k];}continue;}
     if(EDITS[k]!=null)document.querySelectorAll('[data-k="'+CSS.escape(k)+'"]').forEach(el=>{el.textContent=EDITS[k];});
   }
-  applySizes();
+  applySizes();bindSzPanel();
   /* 신상 행: 값이 비면 숨김 (편집 모드에선 모두 표시) */
   document.querySelectorAll(".idrows .pr").forEach(p=>{const v=p.querySelector(".vl");p.classList.toggle("off",!(v&&v.textContent.trim()));});
 }
@@ -698,7 +745,7 @@ function render(){
 }
 
 /* ---- lightbox (gallery + performance from CreativeReporter) ---- */
-const PKG={"mg_keyword_spring":{"perf":{"cost":28330971,"imp":22282054,"ctr":1.68,"act":20855,"ecpa":1358,"vcr":64.6,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mmf1du86_rkf8dpq_ejgjk78fwttpmub8_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"assets/cdn/mkzgceol_cvsebvl_wzxxvd85hsey7p8o_transcoded.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/mg0d0g9h_vjskwzm_lpbrdjwxo9rgxnwn_transcoded.mp4"},{"res":"720x1280","type":"video","url":"assets/cdn/mfv7b5zi_smldxil_k0fvcdghpoqga5el_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/mfv7b617_jkozc9q_rs7txreksw4sumsh_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"assets/cdn/mfv7b644_otusycf_betet8mczqqrktrk_transcoded.mp4"},{"res":"1280x720","type":"video","url":"assets/cdn/mfv7b637_gtxzbdu_vwvsj8dr7vyyi0cr_transcoded.mp4"}]},"mg_rent1":{"perf":{"cost":142778253,"imp":29584352,"ctr":8.76,"act":250926,"ecpa":569,"vcr":46.6,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mkced292_tlh85o7_ajzvayvfu2gqebdo_transcoded.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/mewgikxq_kkd9sqt_yuvfxuqgn1jfyl8n_transcoded.mp4"},{"res":"720x1280","type":"image","url":"assets/cdn/mewgjee9_znfmksm_mrh4iv0t3aerr3fj.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mewgerzb_mei5glg_elklaqkifro9wzuf.png"},{"res":"720x860","type":"image","url":"assets/cdn/mewgj3qa_grhhrlz_dc3pmiyugfhpd1uc.png"},{"res":"360x640","type":"image","url":"assets/cdn/mewgje7c_gchwhp8_u0vak57egpotcyxi.png"},{"res":"320x480","type":"image","url":"assets/cdn/mewgerur_zksgvgu_ofdcvxw8myha1l8n.png"}]},"td_nintendo":{"perf":{"cost":9209403,"imp":5343483,"ctr":2.38,"act":4208,"ecpa":2189,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"assets/cdn/ml7vbjw8_cdhph0x_efb7h6yjuc986noh.jpg"},{"res":"720x1280","type":"image","url":"assets/cdn/ml7vcaiq_yrkbnzn_wofktz5nzdaxjykp.png"},{"res":"768x1024","type":"image","url":"assets/cdn/ml7vbjwp_kknvy8f_noevke2bgpbxudoi.png"},{"res":"720x960","type":"image","url":"assets/cdn/ml7vbjuk_uvuev73_nf6irrffv9tcqv1b.png"},{"res":"320x480","type":"image","url":"assets/cdn/ml7vbju2_n38qn8e_eymzgkgfl9bi92hv.png"},{"res":"720x720","type":"image","url":"assets/cdn/ml7vbzer_eqtzjso_ux9fzmoefxcsecva.png"}]},"mg_jobs_spring":{"perf":{"cost":1273314,"imp":47869,"ctr":null,"act":548,"ecpa":2324,"vcr":47.8,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"assets/cdn/mm4bvdvl_nags4md_izcnrdaacmixwogd_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/mm4bvdv5_pz6a5q2_xrnl4cg23myutdnu_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"assets/cdn/mm4bvdvl_gy6iovu_vzlctt1pfbzdq2z0_transcoded.mp4"}]},"sf_10000walk":{"perf":{"cost":9690972,"imp":4665078,"ctr":1.47,"act":2877,"ecpa":3368,"vcr":null,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mhxig779_gljzeok_tub9dk2wvcpn85q7_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/mhxig76e_zs04d3j_yhthphtre2lrwgpw_transcoded.mp4"},{"res":"1200x1600","type":"image","url":"assets/cdn/mhxieldf_j0lpaxf_lc3mfyaray5vwwgk.png"},{"res":"720x1280","type":"image","url":"assets/cdn/mjihsy9u_fqzrskz_uao9fzliveznfjxi.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mjihprzq_zakpz3d_pnwsym2l2bi1qze8.png"},{"res":"720x960","type":"image","url":"assets/cdn/mjihprqb_n072w88_rzab6i2yf7mjwtib.png"},{"res":"320x480","type":"image","url":"assets/cdn/mjihprpe_tkok4hf_ypgqrriwqtden0bw.png"},{"res":"720x720","type":"image","url":"assets/cdn/mjihsy9d_iolodoh_casamebska4y8tsp.png"}]},"td_godaangn":{"perf":{"cost":12604763,"imp":6546569,"ctr":1.46,"act":5162,"ecpa":2442,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"assets/cdn/mi4kvvdm_ztoqscr_dpzlphe14jjbbtpu.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mi4kvv9n_nt4fzx8_twogruhot9taxcav.png"},{"res":"720x960","type":"image","url":"assets/cdn/mi4kvv83_n0cuunk_rpb1nuwjbdqxujap.png"},{"res":"320x480","type":"image","url":"assets/cdn/mi4kvv61_fpbgddx_fa9zkyycynsnqdn4.png"},{"res":"720x720","type":"image","url":"assets/cdn/mi4kvv7h_r9ydona_no8bjrdysrgthkck.png"},{"res":"1200x628","type":"image","url":"assets/cdn/mi4kvv9z_yyszlbn_oujsqc7bdy62w2yz.png"}]},"td_raffle_v":{"perf":{"cost":22217895,"imp":7851367,"ctr":3.43,"act":16732,"ecpa":1328,"vcr":48.2,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mja29b8d_ffdynrz_wus195gglssnqwyn_transcoded.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/mja29b92_ir3uv0y_lmn9yfknfckbmom7_transcoded.mp4"},{"res":"720x1280","type":"image","url":"assets/cdn/mja27t13_sw8dsuq_e9ymspjnlibgmbcn.png"},{"res":"320x480","type":"image","url":"assets/cdn/mja246cz_xkl6ldc_h1ylcnce8rrjcbbr.png"},{"res":"1920x1920","type":"video","url":"assets/cdn/mja29bcy_dd8zu7j_qmzr2ixjjtfi9zym_transcoded.mp4"},{"res":"720x720","type":"image","url":"assets/cdn/mja27szw_j4zwnmp_wvguww2ybicxzqcf.png"},{"res":"1920x1080","type":"video","url":"assets/cdn/mja29b8d_b07fjpq_sebotwzo6elonwcg_transcoded.mp4"}]},"td_pickup":{"perf":{"cost":3766134,"imp":2407824,"ctr":2.56,"act":2120,"ecpa":1776,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"assets/cdn/mmae0388_vykwvbl_svc67h3fwj83gylk.jpg"},{"res":"720x1280","type":"image","url":"assets/cdn/mmae6zvd_madijaw_u1b8lvr5pflvkjor.jpg"},{"res":"720x960","type":"image","url":"assets/cdn/mmae03c5_dsbutow_gnkyuo8wz4gtneos.png"},{"res":"320x480","type":"image","url":"assets/cdn/mmae03aq_pac84v6_pan2altitvhq8eae.png"},{"res":"720x720","type":"image","url":"assets/cdn/mmae6zwj_oz7t6ee_eli7tkiysvdapy9z.png"},{"res":"1200x628","type":"image","url":"assets/cdn/mmae6zwa_nnzjgvm_r2py6oychlvjclow.png"}]},"td_declutter":{"perf":{"cost":9473819,"imp":1953474,"ctr":0.45,"act":2249,"ecpa":4212,"vcr":null,"roas":null},"media":[{"res":"640x640","type":"video","url":"assets/cdn/mgkf90z0_o1cxppz_ch2b2d68gxylcmk0_transcoded.mp4"},{"res":"360x640","type":"video","url":"assets/cdn/mgkf90yc_w7o00p2_toi0vhlyzyunuedh_transcoded.mp4"},{"res":"1200x628","type":"image","url":"assets/cdn/mgkfixty_dkgspiw_pnkfojv0geptbrle.png"},{"res":"720x720","type":"image","url":"assets/cdn/mgkfixpt_d9k4knk_ye2ef3oxzygzalmo.png"},{"res":"360x540","type":"image","url":"assets/cdn/mgkfecqi_ecko2ws_fojbjbbaqypbtfjz.png"},{"res":"720x960","type":"image","url":"assets/cdn/mgkfixsa_p7x3pp0_jnicx570ukl21mwo.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mgkf9bvm_n8vtgxy_v1bz0zdkyejdmjaz.png"},{"res":"320x250","type":"image","url":"assets/cdn/mgkfecqs_regli7o_bzsdzczsomzichwg.png"},{"res":"480x320","type":"image","url":"assets/cdn/mgkf9bww_rzch1zh_ldfq21yc8zztkdrt.png"},{"res":"320x100","type":"image","url":"assets/cdn/mgkf9bq3_tqeuqmj_d0blz2lope3tcq1y.png"}]},"mg_simbatdan":{"perf":{"cost":9590512,"imp":2489988,"ctr":0.87,"act":15311,"ecpa":626,"vcr":null,"roas":null},"media":[]},"td_review2605":{"perf":null,"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1920_2605.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1080_2605.mp4"}]},"mg_bizreview":{"perf":null,"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1920_2606.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1080_2606.mp4"}]},"mg_rent2":{"perf":null,"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mkwn9x31_awg9vye_yoe4v9byup781hbs_transcoded.mp4"}]},"ai_closet1":{"perf":{"cost":12095549,"imp":2573542,"ctr":0.34,"act":10869,"ecpa":1113,"vcr":null,"roas":null},"media":[]}};
+const PKG={"mg_keyword_spring":{"perf":{"cost":28330971,"imp":22282054,"ctr":1.68,"act":20855,"ecpa":1358,"vcr":64.6,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mmf1du86_rkf8dpq_ejgjk78fwttpmub8_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"assets/cdn/mkzgceol_cvsebvl_wzxxvd85hsey7p8o_transcoded.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/mg0d0g9h_vjskwzm_lpbrdjwxo9rgxnwn_transcoded.mp4"},{"res":"720x1280","type":"video","url":"assets/cdn/mfv7b5zi_smldxil_k0fvcdghpoqga5el_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/mfv7b617_jkozc9q_rs7txreksw4sumsh_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"assets/cdn/mfv7b644_otusycf_betet8mczqqrktrk_transcoded.mp4"},{"res":"1280x720","type":"video","url":"assets/cdn/mfv7b637_gtxzbdu_vwvsj8dr7vyyi0cr_transcoded.mp4"}]},"mg_rent1":{"perf":{"cost":142778253,"imp":29584352,"ctr":8.76,"act":250926,"ecpa":569,"vcr":46.6,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mkced292_tlh85o7_ajzvayvfu2gqebdo_transcoded.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/mewgikxq_kkd9sqt_yuvfxuqgn1jfyl8n_transcoded.mp4"},{"res":"720x1280","type":"image","url":"assets/cdn/mewgjee9_znfmksm_mrh4iv0t3aerr3fj.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mewgerzb_mei5glg_elklaqkifro9wzuf.png"},{"res":"720x860","type":"image","url":"assets/cdn/mewgj3qa_grhhrlz_dc3pmiyugfhpd1uc.png"},{"res":"360x640","type":"image","url":"assets/cdn/mewgje7c_gchwhp8_u0vak57egpotcyxi.png"},{"res":"320x480","type":"image","url":"assets/cdn/mewgerur_zksgvgu_ofdcvxw8myha1l8n.png"}]},"td_nintendo":{"perf":{"cost":9209403,"imp":5343483,"ctr":2.38,"act":4208,"ecpa":2189,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"assets/cdn/ml7vbjw8_cdhph0x_efb7h6yjuc986noh.jpg"},{"res":"720x1280","type":"image","url":"assets/cdn/ml7vcaiq_yrkbnzn_wofktz5nzdaxjykp.png"},{"res":"768x1024","type":"image","url":"assets/cdn/ml7vbjwp_kknvy8f_noevke2bgpbxudoi.png"},{"res":"720x960","type":"image","url":"assets/cdn/ml7vbjuk_uvuev73_nf6irrffv9tcqv1b.png"},{"res":"320x480","type":"image","url":"assets/cdn/ml7vbju2_n38qn8e_eymzgkgfl9bi92hv.png"},{"res":"720x720","type":"image","url":"assets/cdn/ml7vbzer_eqtzjso_ux9fzmoefxcsecva.png"}]},"mg_jobs_spring":{"perf":{"cost":1273314,"imp":47869,"ctr":null,"act":548,"ecpa":2324,"vcr":47.8,"roas":null},"media":[{"res":"1080x1920","type":"video","url":"assets/cdn/mm4bvdvl_nags4md_izcnrdaacmixwogd_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/mm4bvdv5_pz6a5q2_xrnl4cg23myutdnu_transcoded.mp4"},{"res":"1920x1080","type":"video","url":"assets/cdn/mm4bvdvl_gy6iovu_vzlctt1pfbzdq2z0_transcoded.mp4"}]},"sf_10000walk":{"perf":{"cost":9690972,"imp":4665078,"ctr":1.47,"act":2877,"ecpa":3368,"vcr":null,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mhxig779_gljzeok_tub9dk2wvcpn85q7_transcoded.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/mhxig76e_zs04d3j_yhthphtre2lrwgpw_transcoded.mp4"},{"res":"1200x1600","type":"image","url":"assets/cdn/mhxieldf_j0lpaxf_lc3mfyaray5vwwgk.png"},{"res":"720x1280","type":"image","url":"assets/cdn/mjihsy9u_fqzrskz_uao9fzliveznfjxi.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mjihprzq_zakpz3d_pnwsym2l2bi1qze8.png"},{"res":"720x960","type":"image","url":"assets/cdn/mjihprqb_n072w88_rzab6i2yf7mjwtib.png"},{"res":"320x480","type":"image","url":"assets/cdn/mjihprpe_tkok4hf_ypgqrriwqtden0bw.png"},{"res":"720x720","type":"image","url":"assets/cdn/mjihsy9d_iolodoh_casamebska4y8tsp.png"}]},"td_godaangn":{"perf":{"cost":12604763,"imp":6546569,"ctr":1.46,"act":5162,"ecpa":2442,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"assets/cdn/mi4kvvdm_ztoqscr_dpzlphe14jjbbtpu.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mi4kvv9n_nt4fzx8_twogruhot9taxcav.png"},{"res":"720x960","type":"image","url":"assets/cdn/mi4kvv83_n0cuunk_rpb1nuwjbdqxujap.png"},{"res":"320x480","type":"image","url":"assets/cdn/mi4kvv61_fpbgddx_fa9zkyycynsnqdn4.png"},{"res":"720x720","type":"image","url":"assets/cdn/mi4kvv7h_r9ydona_no8bjrdysrgthkck.png"},{"res":"1200x628","type":"image","url":"assets/cdn/mi4kvv9z_yyszlbn_oujsqc7bdy62w2yz.png"}]},"td_raffle_v":{"perf":{"cost":22217895,"imp":7851367,"ctr":3.43,"act":16732,"ecpa":1328,"vcr":48.2,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mja29b8d_ffdynrz_wus195gglssnqwyn_transcoded.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/mja29b92_ir3uv0y_lmn9yfknfckbmom7_transcoded.mp4"},{"res":"720x1280","type":"image","url":"assets/cdn/mja27t13_sw8dsuq_e9ymspjnlibgmbcn.png"},{"res":"320x480","type":"image","url":"assets/cdn/mja246cz_xkl6ldc_h1ylcnce8rrjcbbr.png"},{"res":"1920x1920","type":"video","url":"assets/cdn/mja29bcy_dd8zu7j_qmzr2ixjjtfi9zym_transcoded.mp4"},{"res":"720x720","type":"image","url":"assets/cdn/mja27szw_j4zwnmp_wvguww2ybicxzqcf.png"},{"res":"1920x1080","type":"video","url":"assets/cdn/mja29b8d_b07fjpq_sebotwzo6elonwcg_transcoded.mp4"}]},"td_pickup":{"perf":{"cost":3766134,"imp":2407824,"ctr":2.56,"act":2120,"ecpa":1776,"vcr":null,"roas":null},"media":[{"res":"1200x1600","type":"image","url":"assets/cdn/mmae0388_vykwvbl_svc67h3fwj83gylk.jpg"},{"res":"720x1280","type":"image","url":"assets/cdn/mmae6zvd_madijaw_u1b8lvr5pflvkjor.jpg"},{"res":"720x960","type":"image","url":"assets/cdn/mmae03c5_dsbutow_gnkyuo8wz4gtneos.png"},{"res":"320x480","type":"image","url":"assets/cdn/mmae03aq_pac84v6_pan2altitvhq8eae.png"},{"res":"720x720","type":"image","url":"assets/cdn/mmae6zwj_oz7t6ee_eli7tkiysvdapy9z.png"},{"res":"1200x628","type":"image","url":"assets/cdn/mmae6zwa_nnzjgvm_r2py6oychlvjclow.png"}]},"td_declutter":{"perf":{"cost":9473819,"imp":1953474,"ctr":0.45,"act":2249,"ecpa":4212,"vcr":null,"roas":null},"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/declutter_Fin_H_1920x1080.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/declutter_Fin_V_1080x1920.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/declutter_Fin_F_1080x1080.mp4"},{"res":"1200x628","type":"image","url":"assets/cdn/mgkfixty_dkgspiw_pnkfojv0geptbrle.png"},{"res":"720x720","type":"image","url":"assets/cdn/mgkfixpt_d9k4knk_ye2ef3oxzygzalmo.png"},{"res":"360x540","type":"image","url":"assets/cdn/mgkfecqi_ecko2ws_fojbjbbaqypbtfjz.png"},{"res":"720x960","type":"image","url":"assets/cdn/mgkfixsa_p7x3pp0_jnicx570ukl21mwo.png"},{"res":"768x1024","type":"image","url":"assets/cdn/mgkf9bvm_n8vtgxy_v1bz0zdkyejdmjaz.png"},{"res":"320x250","type":"image","url":"assets/cdn/mgkfecqs_regli7o_bzsdzczsomzichwg.png"},{"res":"480x320","type":"image","url":"assets/cdn/mgkf9bww_rzch1zh_ldfq21yc8zztkdrt.png"},{"res":"320x100","type":"image","url":"assets/cdn/mgkf9bq3_tqeuqmj_d0blz2lope3tcq1y.png"}]},"mg_simbatdan":{"perf":{"cost":9590512,"imp":2489988,"ctr":0.87,"act":15311,"ecpa":626,"vcr":null,"roas":null},"media":[]},"td_review2605":{"perf":null,"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1920_2605.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1080_2605.mp4"}]},"mg_bizreview":{"perf":null,"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4"},{"res":"1080x1920","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1920_2606.mp4"},{"res":"1080x1080","type":"video","url":"assets/cdn/maugrowth_biz_promo_reviewReward_1080x1080_2606.mp4"}]},"mg_rent2":{"perf":null,"media":[{"res":"1920x1080","type":"video","url":"assets/cdn/mkwn9x31_awg9vye_yoe4v9byup781hbs_transcoded.mp4"}]},"ai_closet1":{"perf":{"cost":12095549,"imp":2573542,"ctr":0.34,"act":10869,"ecpa":1113,"vcr":null,"roas":null},"media":[]}};
 const lb=document.getElementById("lb");
 let lbOpen=false,lbScrollY=0,lbTrigger=null,FILTER="all";
 const wsrv=(u,w)=>"https://wsrv.nl/?url="+encodeURIComponent(u)+(w?"&w="+w:"")+"&output=jpg";
@@ -1023,6 +1070,8 @@ function updateChapbar(){
   if(scrollY<140||lbOpen){bar.classList.remove("on");return;}
   let cur=CB_SECTIONS()[0];
   CB_SECTIONS().forEach(s=>{const el=document.getElementById(s.id);if(el&&el.getBoundingClientRect().top<=90)cur=s;});
+  const sec=document.getElementById(cur.id),chin=sec&&sec.querySelector(".chin");
+  if(chin&&chin.getBoundingClientRect().bottom>52){bar.classList.remove("on");return;}
   if(cur.id!==_cbCur){
     _cbCur=cur.id;
     document.getElementById("cbPill").textContent=cur.p;
