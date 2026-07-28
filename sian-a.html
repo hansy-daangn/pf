@@ -52,7 +52,7 @@ section{position:relative}
 .sec-dark .wrap,.sec-light .wrap{position:relative;z-index:1}
 
 /* ============ 스크롤 챕터 바 (반투명 블러) ============ */
-#chapbar{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;gap:14px;align-items:baseline;padding:12px clamp(18px,3.5vw,60px);transition:padding .35s var(--ease);background:rgba(255,255,255,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(17,17,20,.08);transform:translateY(-100%);transition:transform .3s var(--ease),background .3s,border-color .3s}
+#chapbar{position:fixed;top:0;left:0;right:0;z-index:40;display:flex;gap:14px;align-items:baseline;padding:12px clamp(18px,3.5vw,60px);transition:padding .35s var(--ease);background:rgba(255,255,255,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line2);transform:translateY(-100%);transition:transform .3s var(--ease),background .3s,border-color .3s}
 #chapbar.on{transform:none}
 #chapbar .pill{font-weight:700;font-size:clamp(15px,1.2vw,18px);color:var(--red2);white-space:nowrap;transition:font-size .35s var(--ease)}
 #chapbar .tt{font-weight:700;font-size:clamp(15px,1.2vw,18px);color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:font-size .35s var(--ease)}
@@ -61,7 +61,7 @@ section{position:relative}
 #chapbar.big .tt{font-size:clamp(22px,1.9vw,30px);font-weight:800}
 #chapbar.swap .pill,#chapbar.swap .tt{animation:cbin .5s var(--ease)}
 @keyframes cbin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-#chapbar.dk{background:rgba(16,16,19,.6);border-bottom-color:rgba(255,255,255,.08)}
+#chapbar.dk{background:rgba(16,16,19,.6);border-bottom-color:var(--lined)}
 #chapbar.dk .tt{color:#fff}
 @media(prefers-reduced-motion:reduce){#chapbar,#chapbar .pill,#chapbar .tt{transition:none;animation:none}#chapbar.big{padding-top:12px;padding-bottom:12px}#chapbar.big .pill,#chapbar.big .tt{font-size:clamp(15px,1.2vw,18px)}}
 
@@ -115,18 +115,18 @@ section{position:relative}
 
 /* ============ 실험 · 연구 카드: 이미지 + 텍스트 플랫 행 ============ */
 .hcards{display:flex;flex-direction:column;flex:1;justify-content:space-between}
-.hcard{display:grid;grid-template-columns:clamp(180px,19vw,320px) 1fr;gap:clamp(16px,2vw,34px);padding:clamp(18px,2.8vh,34px) 2px;border-top:1px solid var(--line2);align-items:center;flex:1}
+.hcard{display:grid;grid-template-columns:clamp(180px,19vw,320px) 1fr;gap:24px;padding:24px 2px;border-top:1px solid var(--line2);align-items:center;flex:1}
 .hcard:last-child{border-bottom:1px solid var(--line2)}
 .hcard .im{aspect-ratio:4/3;overflow:hidden;border-radius:12px;background:#000}
 .hcard .im img{width:100%;height:100%;object-fit:cover}
 .hcard .t{font-weight:700;font-size:clamp(14px,1.2vw,18px);line-height:1.4}
-.hcard .q{font-weight:300;font-size:clamp(12.5px,1vw,15px);line-height:1.5;color:var(--tlab);margin-top:3px}
-.hcard .mt{margin-top:9px;font-weight:400;font-size:clamp(10.5px,.85vw,12.5px);line-height:1.55;color:var(--tlab)}
+.hcard .q{font-weight:300;font-size:clamp(12.5px,1vw,15px);line-height:1.5;color:var(--tlab);margin-top:4px}
+.hcard .mt{margin-top:8px;font-weight:400;font-size:clamp(10.5px,.85vw,12.5px);line-height:1.55;color:var(--tlab)}
 .hcard .mt b{font-weight:700;color:var(--ink);margin-right:7px}
 
 /* ============ C1 — 주요 작품 (dark) ============ */
-.c1{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
-.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:clamp(20px,3vw,57px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
+.c1{padding:0 0 96px}
+.t3card{display:grid;grid-template-columns:var(--c1c,2fr 1fr);gap:48px;align-items:start;padding:96px 0 0}
 .t3txt{min-width:0}
 .t3media{position:relative;overflow:hidden;background:#000;cursor:pointer}
 .t3media img{width:100%;height:100%;object-fit:cover}
@@ -136,7 +136,7 @@ section{position:relative}
 .t3media .play{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
 .t3media .play span{width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.5);display:grid;place-items:center;color:#fff;font-size:18px;padding-left:3px;transition:.25s}
 .t3media:hover .play span{background:var(--red2);border-color:transparent;transform:scale(1.06)}
-.pills{display:flex;gap:9px;flex-wrap:wrap}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
 .pills span{border:.75px solid #fff;border-radius:22.5px;padding:2.5px 9px;font-weight:700;font-size:clamp(11px,.85vw,13px);color:#fff;line-height:1.2}
 .t3title{font-weight:800;font-size:clamp(21px,1.8vw,32px);line-height:1.25;margin-top:12px}
 .t3desc{font-weight:200;font-size:clamp(13.5px,1vw,16.5px);line-height:2;margin-top:12px;color:#fff}
@@ -147,8 +147,8 @@ section{position:relative}
 .t3meta dd.sub{color:rgba(255,255,255,.62)}
 
 /* ============ C2 — 작업 효율화 (dark, 원본 이미지·움짤) ============ */
-.c2{padding:clamp(6px,2vh,24px) 0 clamp(60px,10vh,130px)}
-.c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:clamp(20px,2.7vw,48px);align-items:start;padding:clamp(56px,11vh,140px) 0 0}
+.c2{padding:0 0 96px}
+.c2blk{display:grid;grid-template-columns:var(--c2c,2fr 1fr);gap:48px;align-items:start;padding:96px 0 0}
 .c2txt{min-width:0}
 .figv{min-width:0}
 .figv img,.figv video{display:block;width:100%;height:auto}
@@ -160,26 +160,26 @@ section{position:relative}
 .c2txt .d{font-weight:200;font-size:clamp(13.5px,1vw,16.5px);line-height:2;margin-top:12px;color:#fff}
 
 /* ============ 도구 · 연구 (light — 좌: 도구 개발 / 우: 실험·연구) ============ */
-.lab{padding:clamp(56px,10vh,120px) 0 clamp(70px,11vh,140px)}
-.labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:clamp(30px,4.5vw,90px);align-items:stretch;position:relative}
+.lab{padding:96px 0}
+.labgrid{display:grid;grid-template-columns:var(--lc,1.15fr 1fr);gap:64px;align-items:stretch;position:relative}
 .labcol{min-width:0}
 .labcolB{display:flex;flex-direction:column}
 .labh{font-weight:200;font-size:clamp(22px,1.8vw,32px);color:var(--tblk);line-height:1.2}
 .labsub{margin-top:4px;font-weight:300;font-size:clamp(12px,1vw,14.5px);color:var(--tlab)}
-.labitem{padding-top:clamp(18px,2.6vh,28px);margin-top:clamp(18px,2.6vh,28px);border-top:1px solid var(--line2)}
+.labitem{padding-top:24px;margin-top:24px;border-top:1px solid var(--line2)}
 .labitem .tag{font-weight:700;font-size:clamp(12.5px,1vw,15px);color:var(--red2);line-height:1.5}
 .labitem h3{margin-top:4px;font-weight:700;font-size:clamp(14px,1.2vw,18px);line-height:1.4;color:var(--ink)}
-.labitem p{margin-top:7px;font-weight:300;font-size:clamp(12.5px,1vw,15px);line-height:1.85;color:var(--tbody);max-width:72ch}
-.labitem .tools{margin-top:7px;font-weight:300;font-size:clamp(10.5px,.85vw,12.5px);color:var(--tlab)}
-.labfigs{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap}
+.labitem p{margin-top:8px;font-weight:300;font-size:clamp(12.5px,1vw,15px);line-height:1.85;color:var(--tbody);max-width:72ch}
+.labitem .tools{margin-top:8px;font-weight:300;font-size:clamp(10.5px,.85vw,12.5px);color:var(--tlab)}
+.labfigs{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap}
 .labfigs figure{flex:1 1 260px;min-width:0;margin:0}
 .labfigs img{width:100%;height:auto;display:block;border:1px solid var(--line2);border-radius:12px;background:#fff}
-.labfigs figcaption{margin-top:6px;font-weight:300;font-size:clamp(10.5px,.85vw,12.5px);color:var(--tlab)}
-.labcol .hcards{margin-top:clamp(14px,2vh,22px)}
+.labfigs figcaption{margin-top:8px;font-weight:300;font-size:clamp(10.5px,.85vw,12.5px);color:var(--tlab)}
+.labcol .hcards{margin-top:16px}
 
 /* ============ ARCHIVE (dark) ============ */
-.archive{padding:clamp(50px,9vh,110px) 0 clamp(70px,10vh,120px)}
-.afil{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+.archive{padding:96px 0}
+.afil{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 24px}
 .afil button{font-family:var(--mono);font-size:12px;border:1px solid var(--hl-d);background:transparent;color:var(--mut-d);padding:8px 15px;border-radius:100px;font-weight:600;letter-spacing:.03em;transition:.2s}
 .afil button.on{background:#fff;color:var(--dark);border-color:#fff}
 .afil button:hover:not(.on){color:#fff;border-color:var(--mut-d)}
@@ -205,7 +205,7 @@ section{position:relative}
 .grouptag{position:absolute;top:8px;right:8px;background:rgba(13,13,15,.72);border:1px solid var(--hl-d);border-radius:100px;padding:3px 8px;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:#fff;z-index:1;font-weight:600}
 
 /* ============ FOOTER (minimal) ============ */
-footer{background:var(--dark);color:rgba(255,255,255,.6);padding:30px 0 56px;text-align:center;font-weight:200;font-size:13.5px}
+footer{background:var(--dark);color:rgba(255,255,255,.6);padding:32px 0 64px;text-align:center;font-weight:200;font-size:13.5px}
 footer a{color:#fff;font-weight:400}
 footer a:hover{color:var(--mag2)}
 
