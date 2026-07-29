@@ -82,7 +82,7 @@ section{position:relative}
 .resume{position:relative;overflow:hidden;padding:calc(var(--secpad) * .5) 0 calc(var(--secpad) * .85);
  --rail:176px;--railgap:24px;--vgap:64px;
  --rl:rgba(17,17,20,.2);--rh:rgba(17,17,20,.08);--cg:13px;--rowpad:6.5px;
- --c1:87px;--c2w:58px;--c4w:36px;--c5w:58px;--c6w:115px}
+ --c1:95px;--c2w:58px;--c4w:36px;--c5w:58px;--c6w:115px}
 .blob{display:none;position:absolute;top:var(--bloby,-140px);left:var(--blobx,-80px);width:var(--blobw,670px);aspect-ratio:1;pointer-events:none;user-select:none;z-index:0;-webkit-mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%);mask-image:linear-gradient(116deg,#000 0%,#000 34%,rgba(0,0,0,0) 70%)}
 .rgrid{display:grid;grid-template-columns:var(--rc,.88fr 1fr);gap:var(--colgap);position:relative;z-index:1;align-items:start}
 .rleft{min-width:0}
@@ -124,6 +124,8 @@ section{position:relative}
 /* 학력·경력: 칸 사이 간격을 --cg 로 균일하게 (첫 열은 수상 표와 같은 세로선 유지) */
 .tgrid.edu{grid-template-columns:var(--c1) max-content minmax(0,1fr)}
 .tgrid.car{grid-template-columns:var(--c1) max-content max-content minmax(0,1fr)}
+/* 병역 행: 칸 내용이 길어 열 고정 대신 균일 간격(--cg)으로 흘림 — 당근 행 열 폭에 영향 없음 */
+.tgrid.car .tr:nth-child(2){display:flex;gap:var(--cg)}
 .tgrid .tr>span,.awgrid .tr>span{min-width:0;white-space:pre-wrap}
 .tgrid .tr>span:first-child,.awgrid .tr>span:first-child{color:var(--tlab);white-space:nowrap}
 .tgrid .tr>span:nth-child(2),.tgrid.car .tr>span:nth-child(3),.awgrid .tr>span:nth-child(2),.awgrid .tr>span:nth-child(3){color:var(--tblk);font-weight:400}
@@ -437,8 +439,7 @@ const R={
   ["작업 효율화","코딩 자동화 · 노드 기반 제어","반복 작업을 코드와 노드로 줄이는 제작 파이프라인","#c2"],
   ["도구 · 연구","성과 리포팅 도구 · AI 파이프라인 · 논문","제작을 둘러싼 도구를 직접 만들고 검증","#lab"]],
  eduR:[["2016 - 2019","인천마전고등학교 졸업","인문계열"],["2019 - 2024","동아방송예술대학교 졸업","영상제작과 전공"],["2024 - 2025","동아방송예술대학교 전공심화 졸업","콘텐츠제작학과 전공"]],
- /* 병역 행: 날짜가 1열 폭보다 길어 1~2열에 걸치고, 기관·역할은 3열부터 끝까지 — 다른 행 열 폭에 영향 없음 */
- carR:[["2025.07 - 현재","당근","마케팅 디자이너","모션그래픽, 이미지 광고제작"],[{t:"2021.03 - 2022.09",c:"1/3"},{t:"육군사관학교 · 영상콘텐츠디자이너병 (전문특기병)",c:"3/-1"},"",""]],
+ carR:[["2025.07 - 재직중","당근","마케팅 디자이너","모션그래픽, 이미지 광고제작"],["2021.03 - 2022.09","육군사관학교","영상콘텐츠디자이너병 (전문특기병)","병장 만기전역"]],
  skg:["2D - After Effects(JavaScript), Premiere Pro, Davinci Resolve, Capcut, Photoshop, Illustrator", "3D - Cinema4D(Xpresso+Python), RedShift, Blender, Marvelous, RealityScan", "Flim - ENG cam, DSLR, Mirrorless, Gimbal, Drone(~2kg), Slider, Lighting"],
  aw:[
   ["2025-06-30","3D 영상","제이코 영상 공모전","2등상","개인 작품","제이비피코리아"],
