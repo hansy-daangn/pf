@@ -200,6 +200,11 @@ section{position:relative}
 .bub .a{font-weight:500;font-size:var(--t-small);line-height:1.9;color:var(--tbody)}
 .bub .b{font-weight:300;font-size:var(--t-small);line-height:1.75;color:var(--tlab)}
 .bub .fl .a,.bub .fl .b{color:var(--tlab);font-weight:300}
+/* 뷰포트 ↔ 최종 렌더 와이프 비교 (분할선: 스크롤 진입 시 1회 스윕 → 호버 추종) */
+.ndcomp{position:relative;overflow:hidden;--ndx:50%;cursor:col-resize}
+.ndcomp video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ndwipe{position:absolute;inset:0;clip-path:inset(0 calc(100% - var(--ndx)) 0 0)}
+.ndline{position:absolute;top:0;bottom:0;left:var(--ndx);width:1px;background:rgba(255,255,255,.9);box-shadow:0 0 9px rgba(0,0,0,.55);transform:translateX(-.5px);pointer-events:none}
 
 /* ============ ARCHIVE (dark) ============ */
 .archive{padding:0 0 var(--secpad)}
@@ -602,7 +607,11 @@ function figCode(){return `<div class="figv">
 </div>`;}
 function figNode(){return `<div class="figv">
  <div class="frow"><img src="assets/fig/nd_t1.png" style="width:59.65%" alt="C4D 작업 과정" loading="lazy"/><img src="assets/fig/nd_t2.png" style="width:26.61%" alt="" loading="lazy"/><img src="assets/fig/nd_t3.png" style="width:13.74%" alt="" loading="lazy"/></div>
- <div class="frow"><div class="fslot" style="width:50%;aspect-ratio:553.3/440"><video class="figvid" src="assets/fig/nd_m1.mp4" poster="assets/fig/nd_m1.png" autoplay muted loop playsinline preload="metadata" aria-label="C4D 군중 애니메이션 작업 뷰포트"></video></div><div class="fslot" style="width:50%;aspect-ratio:553.3/440"><video class="figvid" src="assets/fig/nd_m2.mp4" poster="assets/fig/nd_m2.png" autoplay muted loop playsinline preload="metadata" aria-label="XPresso 군중 제어 최종 렌더"></video></div></div>
+ <div class="ndcomp" style="aspect-ratio:16/9" role="img" aria-label="C4D 군중 애니메이션 — 작업 뷰포트와 최종 렌더 와이프 비교">
+  <video class="figvid" src="assets/fig/nd_m2.mp4" poster="assets/fig/nd_m2p.jpg" autoplay muted loop playsinline preload="metadata"></video>
+  <div class="ndwipe"><video class="figvid" src="assets/fig/nd_m1.mp4" poster="assets/fig/nd_m1p.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+  <span class="ndline" aria-hidden="true"></span>
+ </div>
  <div class="frow"><img src="assets/fig/nd_g1.png" style="width:33.33%" alt="XPresso 노드 그래프" loading="lazy"/><img src="assets/fig/nd_g2.png" style="width:33.33%" alt="" loading="lazy"/><img src="assets/fig/nd_g3.png" style="width:33.34%" alt="" loading="lazy"/></div>
 </div>`;}
 function effItem(b,i,fig){return `<div class="labitem"><span class="tag" data-k="r.c2.${i}.tag">${esc(b.tag)}</span>
@@ -840,6 +849,29 @@ function resumeVisiblePreviews(){if(RMOTION)return;document.querySelectorAll(".a
 
 const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.querySelector("video"),m=e.target.querySelector(".media");if(!v)return;if(e.isIntersecting&&!lbOpen&&!editing&&!RMOTION){if(m.classList.contains("playing")||playingCount()>=MAXPREV())return;if(!v.src&&v.dataset.src)v.src=v.dataset.src;attachRangeLoop(v);v.play().then(()=>m&&m.classList.add("playing")).catch(()=>{});}else{v.pause();if(m)m.classList.remove("playing");}}),{rootMargin:"90px 0px",threshold:.25});
 const revO=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");revO.unobserve(e.target);}}),{rootMargin:"0px 0px -8% 0px",threshold:.06});
+/* 와이프 비교: 스크롤 진입 700ms 후 분할선이 좌우로 1회 스윕, 이후 호버 위치 추종(이탈 시 중앙 복귀) */
+function mountNdComp(){
+ document.querySelectorAll(".ndcomp").forEach(c=>{
+  const set=v=>c.style.setProperty("--ndx",Math.min(95,Math.max(5,v))+"%");
+  const cur=()=>parseFloat(getComputedStyle(c).getPropertyValue("--ndx"))||50;
+  let raf=0;
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const tween=(to,dur)=>new Promise(res=>{cancelAnimationFrame(raf);const from=cur(),t0=performance.now();
+    const step=n=>{const p=Math.min(1,(n-t0)/dur);set(from+(to-from)*ease(p));
+      if(p<1)raf=requestAnimationFrame(step);else res();};raf=requestAnimationFrame(step);});
+  c.addEventListener("pointermove",e=>{if(c._sweeping)return;cancelAnimationFrame(raf);
+    const r=c.getBoundingClientRect();set((e.clientX-r.left)/r.width*100);});
+  c.addEventListener("pointerleave",()=>{if(!c._sweeping)tween(50,500);});
+  new IntersectionObserver((es,o)=>es.forEach(async e=>{
+    if(!e.isIntersecting||c._swept)return;c._swept=true;o.unobserve(c);
+    if(RMOTION)return;c._sweeping=true;
+    await new Promise(r=>setTimeout(r,700));
+    await tween(88,650);await tween(12,950);await tween(50,650);
+    c._sweeping=false;}),{threshold:.45}).observe(c);
+  const vs=c.querySelectorAll("video");
+  if(vs.length===2)vs[0].addEventListener("timeupdate",()=>{
+    if(vs[1].readyState>1&&Math.abs(vs[0].currentTime-vs[1].currentTime)>.1)try{vs[1].currentTime=vs[0].currentTime;}catch(_){}});
+ });}
 function render(){
   document.getElementById("main").innerHTML=resumeHTML()+c1HTML()+archiveHTML()+labHTML()+footHTML();
   applyEdits();
@@ -847,6 +879,7 @@ function render(){
   if(RMOTION)document.querySelectorAll(".figvid").forEach(v=>{v.removeAttribute("autoplay");try{v.pause();}catch(_){}});
   document.querySelectorAll(".acard").forEach(c=>io.observe(c));
   document.querySelectorAll("video.figvid").forEach(attachRangeLoop);
+  mountNdComp();
   armImgGuards();
   const fm=document.getElementById("ftMail");
   if(fm)fm.onclick=e=>{e.preventDefault();
