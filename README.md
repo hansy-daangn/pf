@@ -8,6 +8,7 @@
 ```
 .
 ├─ index.html              # 사이트 전체 (HTML/CSS/JS 인라인)
+├─ naver.html              # 네이버 제출용 (연락처·이메일 제외 버전)
 ├─ assets/
 │  ├─ video/               # 웹 최적화 미리보기 루프 + 히어로 릴 + 본편(featured)
 │  └─ poster/              # 각 작업의 포스터 이미지(JPG)
@@ -41,6 +42,25 @@ git push -u origin main
 배포 주소: **https://hansy-daangn.github.io/pf/**
 
 > 대안: Source를 `Deploy from a branch → main / (root)`로 선택해도 됩니다(`.nojekyll` 포함되어 그대로 서빙됩니다).
+
+---
+
+## 네이버 제출용 링크 (naver.html)
+
+개인 연락처를 뺀 별도 버전입니다. 본문·작업물·이력 내용은 `index.html`과 동일합니다.
+
+배포 주소: **https://hansy-daangn.github.io/pf/naver.html**
+
+`index.html` 대비 제외된 항목:
+
+- 이력서 신상 표의 **전화**(`r.pi.tel`) · **메일**(`ui.email`) 행
+- 푸터의 `Contact : …` 메일 링크와 "메일 주소가 복사되었습니다" 복사 동작
+- JS 미사용 시 표시되는 `<noscript>` 안내의 문의 메일 줄
+
+메일 주소·전화번호 문자열이 페이지 소스에서도 완전히 빠져 있어, 소스 보기로도 노출되지 않습니다.
+
+> `index.html`을 수정하면 `naver.html`에도 같은 수정을 반영해야 합니다(두 파일은 각각 독립된 정적 HTML입니다).
+> 텍스트 편집 결과(`content.json`)는 두 파일이 공유하므로, 문구 수정은 한 번만 하면 양쪽에 함께 적용됩니다.
 
 ---
 
