@@ -270,7 +270,7 @@
  "l2.sB": "서로 다른 기술을 엮어 질문을 검증한 개인 작업 — 인터랙티브 전시 · 단편영화 · 학술 논문",
  "r.cc1a": "영상제작과 제24회 졸업작품전 대상",
  "r.cc2a": "대학생·주니어 논문 경진대회 최우수 (한국방송미디어공학회)",
- "works.order": "[\"td_review2605\",\"mg_bizreview\",\"st_c1a\",\"td_declutter\",\"cr_maugrowth_fleamarket_keyword_picnic_p7nk\",\"sf_10000walk\",\"st_c2a\",\"mg_ars\",\"ai_article\",\"cr_maugrowth_fleamarket_keyword_basket_l5hn\",\"st_c3a\",\"td_raffle_v\",\"td_mapwalk\",\"st_c1b\",\"mg_simbatdan\",\"td_nintendo\",\"mg_rent1\",\"st_c2b\",\"st_c3b\",\"mg_rent2\",\"mg_ahnabada\",\"st_c1c\",\"st_c1e\",\"ai_closet1\",\"mg_keyword_spring\",\"st_c3c\",\"td_godaangn\",\"sf_bizjul\",\"st_c2c\",\"mg_jobs_spring\",\"st_c1d\",\"ai_sea\",\"cr_instantbuy_2607\",\"mg_charge\",\"3d_sew\",\"td_pickup\",\"st_c2d\",\"st_c3d\",\"mg_lyric\",\"cr_10y_fleamarket_a549\",\"cr_10y_jobs_4304\",\"cr_10y_group_2968\",\"cr_10y_banner_6aec\"]",
+ "works.order": "[\"td_review2605\",\"mg_bizreview\",\"st_c1a\",\"td_declutter\",\"cr_maugrowth_fleamarket_keyword_picnic_p7nk\",\"sf_10000walk\",\"st_c2a\",\"mg_ars\",\"ai_article\",\"cr_maugrowth_fleamarket_keyword_basket_l5hn\",\"st_c3a\",\"td_raffle_v\",\"td_mapwalk\",\"st_c1b\",\"mg_simbatdan\",\"td_nintendo\",\"mg_rent1\",\"st_c2b\",\"st_c3b\",\"mg_rent2\",\"st_c3c\",\"mg_ahnabada\",\"st_c1c\",\"st_c1e\",\"ai_closet1\",\"mg_keyword_spring\",\"td_godaangn\",\"sf_bizjul\",\"st_c2c\",\"mg_jobs_spring\",\"st_c1d\",\"ai_sea\",\"cr_instantbuy_2607\",\"mg_charge\",\"3d_sew\",\"td_pickup\",\"st_c2d\",\"st_c3d\",\"mg_lyric\",\"cr_10y_fleamarket_a549\",\"cr_10y_jobs_4304\",\"cr_10y_group_2968\",\"cr_10y_banner_6aec\"]",
  "r.chap.0.p": "주요 작품",
  "r.chap.0.t": "시선 유도 · 상징적 연결 · 무의식 자극",
  "r.chap.0.s": "시청자가 볼 것, 느낄 것, 생각할 것을 설계한 대표작 3편",
@@ -297,5 +297,5 @@
  "r.c2.0.k": "After effects · Expression · JavaScript",
  "r.c2.1.tag": "노드 기반 제어",
  "r.c2.1.k": "Cinema4D · XPresso · Python · Scene Node",
- "_ts": 1786016053321
+ "_ts": 1786016080317
 }
