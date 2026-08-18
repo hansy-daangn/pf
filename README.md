@@ -1,6 +1,4 @@
-# 김한결 (HANSY) — 영상 디자이너 포트폴리오
-
-빌드 없는 정적 사이트. `index.html`만 열면 그대로 동작합니다.
+# 빌드 없는 정적 사이트. `index.html`만 열면 그대로 동작합니다.
 
 - 기본 — https://hansy-daangn.github.io/pf/
 - 네이버 제출용 (연락처·이메일 제외) — https://hansy-daangn.github.io/pf/naver.html
