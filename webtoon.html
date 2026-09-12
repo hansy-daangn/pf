@@ -1338,7 +1338,7 @@ const WT_ROLE={
  cr_instantbuy_2607:["모션 · 리컷 전부 담당","한 소스 → 세로·정방·가로 세 비율 세트"],
  mg_rent1:["모션 · UI 담당, 가설은 마케터와 함께","A안 · 강조 지점을 달리해 동시 집행"],
  mg_rent2:["모션 · UI 담당, 가설은 마케터와 함께","B안 · 강조 지점을 달리해 동시 집행"],
- cr_10y_fleamarket_a549:["모션 전부 담당","본편 4종 + 티저 3종 운영 · 대표 소재 전체 상위 1%"],
+ cr_10y_fleamarket_a549:["모션 전부 담당","본편 4종 + 티저 3종 운영"],
  cr_10y_banner_6aec:["이미지 디자인 전부 담당","디스플레이 배너 6규격 · 누적 노출 3,100만 회"],
  cr_maugrowth_fleamarket_keyword_picnic_p7nk:["이미지 디자인 전부 담당","키워드 소재 16규격 세트"],
  cr_maugrowth_fleamarket_keyword_basket_l5hn:["이미지 디자인 전부 담당","키워드 소재 8규격 세트"]
@@ -1352,8 +1352,6 @@ R.chap=[
  ["운영 · 도구","이미지 규격 세트 · 성과 리포팅 도구","담당 업무 ③ 이미지 운영 디자인","#g3"],
  ["자동화 · 연구","익스프레션 · 노드 · AI 파이프라인 · 논문","제작의 반복을 코드로 줄인 기록","#c2"]];
 C1X.length=0;
-/* 개인 작업 표기 정정: Next to Zero는 클라이언트 브리프 기반 */
-try{const m=TOP3[2].meta.find(x=>x[0]==="구분");if(m)m[1]="3D 모션그래픽 · 클라이언트 브리프(N.Needle) · 제이코 영상공모전 2등";}catch(_){}
 /* 이 페이지에서는 편집 모드를 열지 않는다 */
 window.enableEditor=function(){};
 const _hiddenSet=hiddenSet;
@@ -1377,7 +1375,7 @@ function wtArchiveHTML(){
   html+=wtSection({id:"g4",lb:"그 외 캠페인 소재",t:"위 세 묶음에 넣지 않은 집행 소재",s:""},rest,true);
   return html;}
 function wtPersonalHTML(){
-  return `<section class="c1 sec-dark" id="c1"><div class="wrap"><div class="chin rv"><span class="lb">개인 작업 · 클라이언트 브리프 작업</span></div>${TOP3.map(t3card).join("")}</div></section>`;}
+  return `<section class="c1 sec-dark" id="c1"><div class="wrap"><div class="chin rv"><span class="lb">개인 작업 · 공모전</span></div>${TOP3.map(t3card).join("")}</div></section>`;}
 const _render=render;
 render=function(){
   const main=document.getElementById("main");
