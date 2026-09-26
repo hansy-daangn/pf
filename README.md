@@ -2,12 +2,14 @@
 
 - 기본 — https://hansy-daangn.github.io/pf/
 - 네이버 제출용 (연락처·이메일 제외) — https://hansy-daangn.github.io/pf/naver.html
+- 실물 크기 돈다발 — https://hansy-daangn.github.io/pf/money.html
 
 ```
 index.html / naver.html   사이트 전체 (HTML·CSS·JS 인라인)
 content.json              모든 텍스트 (편집 모드가 여기에 커밋, 두 페이지 공유)
 creatives.json            갤러리 소재 데이터
 assets/                   영상 · 포스터 · 도식
+money.html                실물 크기 돈다발 (금액 → 원화 지폐 1:1 크기, 단독 페이지)
 docs/                     문서 — 시작은 docs/00-인덱스.md
 ```
 
