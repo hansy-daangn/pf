@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="내가 입력한 금액을 실제 원화 지폐 크기 그대로 화면에 펼쳐 보는 도구. 5만원권 154×68mm 규격, 장수·무게·쌓은 높이까지 계산합니다.">
+<style>
+  :root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  html,body{margin:0}
+  body{background:#E6E8E0;font:14px system-ui,-apple-system,sans-serif}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>실물 크기 돈다발</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --ground:#E6E8E0; --surface:#FBFBF7; --surface-2:#F0F1EA;
+    --ink:#1B1E16; --ink-2:#4B5044; --ink-3:#7C8175;
+    --line:#CFD3C6; --line-2:#DEE1D6;
+    --accent:#5E6B34; --accent-soft:#8A9955; --hot:#A83A22;
+    --shadow:0 1px 2px rgba(27,30,22,.08),0 8px 24px -12px rgba(27,30,22,.22);
+    --radius:10px;
+    --font-d:"Gowun Batang",'Nanum Myeongjo',serif;
+    --font-b:"IBM Plex Sans KR",system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    --font-m:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --ground:#15170F; --surface:#1E2118; --surface-2:#262A1F;
+      --ink:#EDEFE4; --ink-2:#BCC2AE; --ink-3:#878D79;
+      --line:#353A2B; --line-2:#2B3022;
+      --accent:#A8B86A; --accent-soft:#7E8C4C; --hot:#E0785C;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --ground:#15170F; --surface:#1E2118; --surface-2:#262A1F;
+    --ink:#EDEFE4; --ink-2:#BCC2AE; --ink-3:#878D79;
+    --line:#353A2B; --line-2:#2B3022;
+    --accent:#A8B86A; --accent-soft:#7E8C4C; --hot:#E0785C;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--font-b);font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+  h1,h2,h3{margin:0;text-wrap:balance;font-weight:400}
+  button{font:inherit;color:inherit;cursor:pointer}
+  .wrap{padding-inline:16px;padding-block:0;max-width:100%}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* ── 헤더 ───────────────────────────────── */
+  header.top{
+    position:sticky;top:env(safe-area-inset-top,0px);z-index:40;
+    background:color-mix(in srgb,var(--ground) 88%,transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .top-in{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding-block:10px}
+  .brand{display:flex;align-items:baseline;gap:9px;margin-right:auto}
+  .brand b{font-family:var(--font-d);font-weight:700;font-size:19px;letter-spacing:-.01em}
+  .brand span{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3)}
+  .scale-flag{
+    font-family:var(--font-m);font-size:11px;letter-spacing:.06em;padding:3px 8px;border-radius:999px;
+    border:1px solid var(--accent);color:var(--accent);white-space:nowrap
+  }
+  .scale-flag[data-off="1"]{border-color:var(--hot);color:var(--hot)}
+  .ghost{
+    background:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--ink-2)
+  }
+  .ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  /* ── 입력 패널 ───────────────────────────── */
+  .panel{display:grid;gap:14px;grid-template-columns:minmax(260px,1fr) minmax(260px,1.1fr);padding-block:18px 14px}
+  @media (max-width:720px){.panel{grid-template-columns:1fr}}
+  .panel > *{min-width:0}
+  .field{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 15px;box-shadow:var(--shadow)}
+  .field > label,.lbl{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px}
+  .amount-row{display:flex;align-items:baseline;gap:8px;border-bottom:2px solid var(--accent);padding-bottom:4px}
+  #amount{
+    flex:1;min-width:0;background:none;border:0;outline:none;color:var(--ink);
+    font-family:var(--font-m);font-weight:600;font-size:clamp(26px,7vw,38px);letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;padding:0
+  }
+  #amount:focus-visible{outline:none}
+  .amount-row em{font-style:normal;font-family:var(--font-d);font-size:20px;color:var(--ink-2)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+  .chip{background:var(--surface-2);border:1px solid var(--line-2);border-radius:999px;padding:4px 11px;font-size:12.5px;color:var(--ink-2)}
+  .chip:hover{border-color:var(--accent-soft);color:var(--ink)}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{
+    flex:1 1 auto;background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;
+    padding:8px 10px;font-size:13px;color:var(--ink-2);white-space:nowrap
+  }
+  .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:500}
+  .seg-stack{display:grid;gap:12px}
+
+  /* ── 통계 ────────────────────────────────── */
+  .stats{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:1px;
+    background:var(--line);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:6px
+  }
+  .stat{background:var(--surface);padding:12px 14px}
+  .stat dt{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin:0 0 3px}
+  .stat dd{margin:0;font-family:var(--font-m);font-weight:600;font-size:19px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .stat dd small{font-family:var(--font-b);font-weight:400;font-size:12px;color:var(--ink-3);margin-left:3px;letter-spacing:0}
+  .stat.hero dd{color:var(--accent);font-size:23px}
+  .note-line{font-size:12.5px;color:var(--ink-3);margin:8px 0 0}
+
+  /* ── 무대 ────────────────────────────────── */
+  .stage-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:22px 0 10px}
+  .stage-head h2{font-family:var(--font-d);font-size:17px}
+  .stage-head p{margin:0;font-size:12.5px;color:var(--ink-3)}
+  .stage{
+    border:1px solid var(--line);border-radius:var(--radius);background:
+      linear-gradient(0deg,color-mix(in srgb,var(--surface) 70%,transparent),color-mix(in srgb,var(--surface) 70%,transparent)),
+      repeating-linear-gradient(0deg,var(--line-2) 0 1px,transparent 1px 12px),
+      repeating-linear-gradient(90deg,var(--line-2) 0 1px,transparent 1px 12px);
+    padding:18px;overflow-x:auto;min-height:220px
+  }
+  .sheet{display:flex;flex-wrap:wrap;gap:var(--gap,10px);align-items:flex-start}
+  .single{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+
+  /* ── 지폐(견본) ──────────────────────────── */
+  .bill{
+    position:relative;flex:0 0 auto;border-radius:3px;overflow:hidden;
+    box-shadow:0 1px 1px rgba(0,0,0,.18),0 4px 10px -6px rgba(0,0,0,.3);
+    background-color:var(--b-base);
+    background-image:
+      repeating-linear-gradient(112deg,rgba(255,255,255,.22) 0 1px,transparent 1px 5px),
+      repeating-linear-gradient(68deg,rgba(0,0,0,.05) 0 1px,transparent 1px 6px),
+      radial-gradient(120% 140% at 88% 18%,color-mix(in srgb,var(--b-deep) 45%,transparent),transparent 62%),
+      linear-gradient(160deg,color-mix(in srgb,#fff 26%,var(--b-base)),var(--b-base) 58%,color-mix(in srgb,var(--b-deep) 30%,var(--b-base)));
+    color:var(--b-ink);font-family:var(--font-d);
+    outline:1px solid color-mix(in srgb,var(--b-deep) 55%,transparent);outline-offset:-1px
+  }
+  .bill .frame{position:absolute;inset:3.5%;border:1px solid color-mix(in srgb,var(--b-deep) 42%,transparent);border-radius:2px}
+  .bill .rosette{
+    position:absolute;left:5%;top:50%;transform:translateY(-50%);
+    width:31%;aspect-ratio:1/1;border-radius:50%;opacity:.5;
+    background:repeating-radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--b-deep) 70%,transparent) 0 1px,transparent 1px 4px);
+    mask-image:radial-gradient(circle at 50% 50%,#000 58%,transparent 72%)
+  }
+  .bill .rosette::after{
+    content:"";position:absolute;inset:26%;border-radius:50%;
+    background:conic-gradient(from 0deg,color-mix(in srgb,var(--b-deep) 55%,transparent) 0 8deg,transparent 8deg 24deg);
+    opacity:.75
+  }
+  .bill .num{
+    position:absolute;right:5.5%;top:8%;font-weight:700;line-height:.86;letter-spacing:-.03em;
+    font-size:var(--fs-num);color:color-mix(in srgb,var(--b-ink) 88%,transparent)
+  }
+  .bill .won{position:absolute;right:5.8%;top:calc(8% + var(--fs-num) * .95);font-size:var(--fs-won);letter-spacing:.06em;color:var(--b-ink);opacity:.82}
+  .bill .mark{
+    position:absolute;left:5%;bottom:7%;font-family:var(--font-m);font-size:var(--fs-mark);
+    letter-spacing:.14em;color:var(--b-ink);opacity:.62
+  }
+  .bill .band{
+    position:absolute;left:-12%;right:-12%;top:50%;transform:translateY(-50%) rotate(-12deg);
+    text-align:center;font-family:var(--font-m);font-size:var(--fs-band);letter-spacing:.42em;
+    color:color-mix(in srgb,var(--b-deep) 78%,transparent);opacity:.5;pointer-events:none;
+    border-top:1px solid color-mix(in srgb,var(--b-deep) 30%,transparent);
+    border-bottom:1px solid color-mix(in srgb,var(--b-deep) 30%,transparent);padding:1px 0
+  }
+  .bill .size{position:absolute;right:5.5%;bottom:7%;font-family:var(--font-m);font-size:var(--fs-mark);opacity:.45;letter-spacing:.04em}
+  .bill.tiny .rosette,.bill.tiny .band,.bill.tiny .mark,.bill.tiny .size,.bill.tiny .frame{display:none}
+  .d50000{--b-base:#C8C079;--b-deep:#7E7C38;--b-ink:#3E4118}
+  .d10000{--b-base:#A4C3AB;--b-deep:#487A5A;--b-ink:#1E3B2C}
+  .d5000{--b-base:#DFB29B;--b-deep:#AF6140;--b-ink:#562916}
+  .d1000{--b-base:#AFB8CE;--b-deep:#59688F;--b-ink:#28304C}
+
+  /* ── 다발 ────────────────────────────────── */
+  .bundles{display:flex;flex-wrap:wrap;gap:var(--bgap,22px);align-items:flex-end}
+  .bundle{position:relative;flex:0 0 auto}
+  .bundle .edge{
+    position:absolute;left:0;right:0;top:100%;
+    background-color:color-mix(in srgb,#fff 78%,var(--b-base));
+    border:1px solid color-mix(in srgb,var(--b-deep) 45%,transparent);border-top:0;border-radius:0 0 3px 3px;
+    box-shadow:inset 0 -2px 4px -2px rgba(0,0,0,.35)
+  }
+  .bundle .strap{
+    position:absolute;top:0;
+    background:linear-gradient(90deg,#EFE9D8,#FCF9F0 22%,#F6F1E2 78%,#E4DCC8);
+    border-inline:1px solid rgba(0,0,0,.14);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-m);font-size:10.5px;letter-spacing:.04em;line-height:1.3;
+    color:#6A6034;z-index:3;box-shadow:0 0 6px -2px rgba(0,0,0,.35);text-align:center;gap:1px
+  }
+  .bundle .strap b{font-weight:600}
+  .bundle .strap span{opacity:.7;font-size:9.5px
+  }
+  .bundle-cap{margin-top:8px;font-size:11.5px;color:var(--ink-3);font-family:var(--font-m)}
+
+  /* ── 높이 자 ─────────────────────────────── */
+  .elev{display:flex;gap:16px;align-items:flex-end;margin-top:26px;padding-top:18px;border-top:1px dashed var(--line)}
+  .elev-bar{position:relative;width:64px;background:
+      repeating-linear-gradient(0deg,color-mix(in srgb,var(--accent) 50%,transparent) 0 1px,var(--surface-2) 1px 2.4px);
+    border:1px solid var(--line);border-radius:2px}
+  .elev-ruler{position:relative;width:54px;border-left:1px solid var(--ink-3)}
+  .elev-ruler i{position:absolute;left:0;height:1px;background:var(--ink-3);width:8px}
+  .elev-ruler i b{position:absolute;left:11px;top:-8px;font-family:var(--font-m);font-size:10.5px;font-weight:500;color:var(--ink-3);white-space:nowrap}
+  .elev-txt{flex:1;min-width:150px;font-size:13px;color:var(--ink-2)}
+  .elev-txt strong{display:block;font-family:var(--font-m);font-size:22px;color:var(--ink);letter-spacing:-.02em}
+
+  /* ── 보정 모달 ───────────────────────────── */
+  .scrim{position:fixed;inset:0;z-index:100;background:rgba(10,12,8,.62);display:grid;place-items:center;padding:16px;overflow:auto}
+  .modal{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);max-width:560px;width:100%;padding:20px}
+  .modal h2{font-family:var(--font-d);font-size:20px;margin-bottom:6px}
+  .modal p{margin:0 0 14px;font-size:13.5px;color:var(--ink-2)}
+  .ruler-card{
+    border-radius:12px;border:2px dashed var(--accent);
+    background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 12%,var(--surface-2)),var(--surface-2));
+    display:grid;place-items:center;text-align:center;font-size:12.5px;color:var(--accent);margin-bottom:12px;padding:8px
+  }
+  .ruler-card span{font-family:var(--font-m);letter-spacing:.06em}
+  input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0 6px}
+  .cal-read{display:flex;justify-content:space-between;gap:10px;font-family:var(--font-m);font-size:12px;color:var(--ink-3);margin-bottom:14px}
+  .modal-act{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+  .solid{background:var(--accent);border:1px solid var(--accent);color:var(--surface);border-radius:999px;padding:8px 18px;font-size:14px;font-weight:500}
+  .solid:hover{filter:brightness(1.06)}
+  footer{padding-block:26px 34px;font-size:12px;color:var(--ink-3);border-top:1px solid var(--line);margin-top:28px}
+  footer p{margin:0 0 5px;max-width:62ch}
+  a{color:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<header class="top"><div class="wrap top-in">
+  <div class="brand"><b>실물 크기 돈다발</b><span>1:1 scale</span></div>
+  <span class="scale-flag" id="flag">실물 100%</span>
+  <button class="ghost" id="calBtn">화면 보정</button>
+</div></header>
+
+<main class="wrap">
+  <section class="panel">
+    <div class="field">
+      <label for="amount">금액</label>
+      <div class="amount-row">
+        <input id="amount" inputmode="numeric" autocomplete="off" spellcheck="false" value="20,000,000" aria-label="금액(원)">
+        <em>원</em>
+      </div>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="field seg-stack">
+      <div><span class="lbl">권종</span><div class="seg" id="denomSeg"></div></div>
+      <div><span class="lbl">보기</span><div class="seg" id="viewSeg"></div></div>
+      <div><span class="lbl">배율</span><div class="seg" id="scaleSeg"></div></div>
+    </div>
+  </section>
+
+  <dl class="stats" id="stats"></dl>
+  <p class="note-line" id="remainder"></p>
+
+  <div class="stage-head">
+    <h2 id="stageTitle">낱장으로 펼치기</h2>
+    <p id="stageHint"></p>
+  </div>
+  <div class="stage" id="stage"></div>
+
+  <footer>
+    <p><strong>지폐 크기는 한국은행 규격입니다.</strong> 5만원권 154×68mm, 1만원권 148×68mm, 5천원권 142×68mm, 1천원권 136×68mm.</p>
+    <p>무게·높이는 근사치입니다. 지폐 한 장 두께 0.11mm, 용지 90g/m² 기준으로 계산합니다(5만원권 1장 ≈ 0.94g, 1억원 ≈ 1.9kg).</p>
+    <p>화면에 그려지는 지폐는 <strong>크기 비교용 견본</strong>입니다. 실제 화폐의 도안·인물·보안요소를 재현하지 않습니다.</p>
+  </footer>
+</main>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="calTitle">
+    <h2 id="calTitle">화면 보정</h2>
+    <p>모니터마다 1mm의 실제 크기가 다릅니다. 실물 카드나 지폐를 화면에 대고 아래 사각형과 크기를 맞추세요. 한 번만 하면 이 브라우저에 저장됩니다.</p>
+    <div class="seg" id="refSeg" style="margin-bottom:12px"></div>
+    <div class="ruler-card" id="refCard"><span id="refLabel"></span></div>
+    <input type="range" id="calRange" min="1.8" max="13" step="0.01" aria-label="화면 배율 보정">
+    <div class="cal-read"><span id="calRead"></span><span id="calPpi"></span></div>
+    <div class="modal-act">
+      <button class="ghost" id="calReset">기본값</button>
+      <button class="solid" id="calDone">맞췄어요</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var SPEC={
+    50000:{w:154,label:'오만원',name:'5만원권'},
+    10000:{w:148,label:'만원',name:'1만원권'},
+    5000:{w:142,label:'오천원',name:'5천원권'},
+    1000:{w:136,label:'천원',name:'1천원권'}
+  };
+  var H=68, T=0.11, GSM=90, PY=3.3058, DEF=96/25.4, KEY='real-size-cash-v1';
+  var MAX_SHEET=1500, MAX_BUNDLE=400, GROUP=100;
+  var S={amount:20000000,denom:50000,view:'sheet',scale:1,ppmm:DEF,ref:'card',calibrated:false};
+
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(raw){var o=JSON.parse(raw); if(o&&o.ppmm>1){S.ppmm=o.ppmm;S.calibrated=!!o.calibrated;} if(o&&o.denom&&SPEC[o.denom])S.denom=+o.denom;}
+  }catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({ppmm:S.ppmm,calibrated:S.calibrated,denom:S.denom}));}catch(e){}}
+
+  var $=function(id){return document.getElementById(id);};
+  function el(tag,cls,txt){var d=document.createElement(tag); if(cls)d.className=cls; if(txt!=null)d.textContent=txt; return d;}
+  function comma(n){return Math.round(n).toLocaleString('ko-KR');}
+  function dec(n,d){return n.toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d});}
+  function korMoney(n){
+    if(n<=0) return '0원';
+    var eok=Math.floor(n/1e8), man=Math.floor((n%1e8)/1e4), rest=n%1e4, out=[];
+    if(eok) out.push(comma(eok)+'억');
+    if(man) out.push(comma(man)+'만');
+    if(rest) out.push(comma(rest));
+    return out.join(' ')+'원';
+  }
+
+  /* ── 지폐 견본 ─────────────────────────── */
+  function bill(denom,ppmm){
+    var sp=SPEC[denom], w=sp.w*ppmm, h=H*ppmm;
+    var b=el('div','bill d'+denom+(w<190?' tiny':''));
+    b.style.width=w+'px'; b.style.height=h+'px';
+    b.style.setProperty('--fs-num',(h*.21).toFixed(2)+'px');
+    b.style.setProperty('--fs-won',(h*.1).toFixed(2)+'px');
+    b.style.setProperty('--fs-mark',Math.max(5,h*.052).toFixed(2)+'px');
+    b.style.setProperty('--fs-band',Math.max(5,h*.062).toFixed(2)+'px');
+    var frame=el('i','frame'), ros=el('i','rosette');
+    var num=el('span','num',String(denom)), won=el('span','won',sp.label);
+    var band=el('span','band','견본 · 크기 비교용');
+    var mark=el('span','mark','SPECIMEN'), size=el('span','size',sp.w+'×'+H+'mm');
+    b.appendChild(frame); b.appendChild(ros); b.appendChild(band);
+    b.appendChild(num); b.appendChild(won); b.appendChild(mark); b.appendChild(size);
+    return b;
+  }
+
+  /* ── 자(실물 확인용) ───────────────────── */
+  function ruler(mm,ppmm){
+    var box=el('div'); box.style.cssText='position:relative;height:30px;margin-top:4px;';
+    box.style.width=(mm*ppmm)+'px';
+    box.style.borderTop='1px solid var(--ink-3)';
+    for(var i=0;i<=mm;i+=10){
+      var t=el('i');
+      var tall=(i%50===0);
+      t.style.cssText='position:absolute;top:0;width:1px;background:var(--ink-3);height:'+(tall?14:8)+'px;left:'+(i*ppmm)+'px;';
+      box.appendChild(t);
+      if(tall){
+        var lb=el('b',null,i+'mm');
+        lb.style.cssText='position:absolute;top:16px;left:'+(i*ppmm)+'px;font:500 10.5px var(--font-m);color:var(--ink-3);transform:translateX(-50%);';
+        box.appendChild(lb);
+      }
+    }
+    return box;
+  }
+
+  /* ── 통계 ─────────────────────────────── */
+  function stat(k,v,unit,hero){
+    var d=el('div','stat'+(hero?' hero':''));
+    d.appendChild(el('dt',null,k));
+    var dd=el('dd',null,v);
+    if(unit){var s=el('small',null,unit); dd.appendChild(s);}
+    d.appendChild(dd); return d;
+  }
+  function renderStats(m){
+    var box=$('stats'); box.innerHTML='';
+    box.appendChild(stat('지폐 장수',comma(m.notes),'장',true));
+    box.appendChild(stat('100장 다발',comma(m.bundles)+(m.loose?' + '+m.loose:''),m.loose?'다발+낱장':'다발'));
+    box.appendChild(stat('무게',m.g<1000?dec(m.g,0):dec(m.g/1000,2),m.g<1000?'g':'kg'));
+    box.appendChild(stat('쌓은 높이',m.mm<1000?dec(m.mm/10,1):dec(m.mm/1000,2),m.mm<1000?'cm':'m'));
+    box.appendChild(stat('바닥에 깔면',dec(m.m2,2),'m² ≒ '+dec(m.m2/PY,1)+'평'));
+    box.appendChild(stat('한 줄로 이으면',m.len<1000?dec(m.len,1):dec(m.len/1000,2),m.len<1000?'m':'km'));
+    var r=$('remainder');
+    var txt=SPEC[S.denom].name+' 기준 '+korMoney(m.notes*S.denom)+'어치';
+    if(m.rest>0) txt+=' · 나머지 '+comma(m.rest)+'원은 지폐로 떨어지지 않습니다';
+    if(m.notes===0) txt='금액이 '+SPEC[S.denom].name+' 한 장보다 적습니다.';
+    r.textContent=txt;
+  }
+
+  /* ── 무대 ─────────────────────────────── */
+  var lazy=null;
+  function clearStage(){
+    if(lazy){lazy.disconnect();lazy=null;}
+    $('stage').innerHTML='';
+  }
+  function ppx(){return S.ppmm*S.scale;}
+
+  function renderSingle(m){
+    var stage=$('stage'), p=ppx(), wrapEl=el('div','single');
+    wrapEl.appendChild(bill(S.denom,p));
+    var cap=el('p',null,SPEC[S.denom].name + ' 한 장 · ' + SPEC[S.denom].w + '×' + H + 'mm');
+    cap.style.cssText='margin:0;font-size:13px;color:var(--ink-2)';
+    wrapEl.appendChild(cap);
+    var hint=el('p',null,'실제 지폐를 화면에 겹쳐 보세요. 어긋나면 위쪽 ‘화면 보정’을 다시 맞추면 됩니다.');
+    hint.style.cssText='margin:0;font-size:12.5px;color:var(--ink-3)';
+    wrapEl.appendChild(hint);
+    wrapEl.appendChild(ruler(100,p));
+    stage.appendChild(wrapEl);
+  }
+
+  function renderSheet(m){
+    var stage=$('stage'), p=ppx();
+    var total=Math.min(m.notes,MAX_SHEET), made=0, group=0;
+    var host=el('div'); host.style.cssText='display:grid;gap:20px';
+    stage.appendChild(host);
+    var sentinel=el('div'); sentinel.style.cssText='height:1px';
+    function addGroup(){
+      var start=made+1, end=Math.min(made+GROUP,total);
+      var g=el('div');
+      var cap=el('div',null,comma(start)+'–'+comma(end)+'장 · 누적 '+korMoney(end*S.denom));
+      cap.style.cssText='font:500 11.5px var(--font-m);letter-spacing:.06em;color:var(--ink-3);margin-bottom:7px';
+      g.appendChild(cap);
+      var sheet=el('div','sheet');
+      sheet.style.setProperty('--gap',Math.max(4,6*S.scale)+'px');
+      var frag=document.createDocumentFragment();
+      for(var i=start;i<=end;i++) frag.appendChild(bill(S.denom,p));
+      sheet.appendChild(frag); g.appendChild(sheet);
+      host.appendChild(g);
+      made=end; group++;
+      if(made>=total){
+        if(lazy){lazy.disconnect();lazy=null;}
+        if(m.notes>total){
+          var more=el('p',null,'화면에는 '+comma(total)+'장까지 그립니다. 나머지 '+comma(m.notes-total)+'장은 생략했습니다.');
+          more.style.cssText='margin:0;font-size:12.5px;color:var(--hot)';
+          host.appendChild(more);
+        }
+      }
+    }
+    addGroup();
+    if(made<total){
+      stage.appendChild(sentinel);
+      lazy=new IntersectionObserver(function(en){
+        if(en[0].isIntersecting && made<total){ addGroup(); if(made<total) stage.appendChild(sentinel); }
+      },{rootMargin:'600px'});
+      lazy.observe(sentinel);
+    }
+  }
+
+  function renderBundles(m){
+    var stage=$('stage'), p=ppx(), sp=SPEC[S.denom];
+    var w=sp.w*p, h=H*p, edgeH=GROUP*T*p;
+    var shown=Math.min(m.bundles,MAX_BUNDLE);
+    var host=el('div'); host.style.cssText='display:grid;gap:22px';
+    stage.appendChild(host);
+
+    if(m.bundles>0){
+      var row=el('div','bundles');
+      row.style.setProperty('--bgap',Math.max(10,20*S.scale)+'px');
+      for(var i=0;i<shown;i++){
+        var bn=el('div','bundle');
+        bn.style.width=w+'px'; bn.style.height=h+'px'; bn.style.marginBottom=(edgeH+16)+'px';
+        var top=bill(S.denom,p); top.style.position='absolute'; top.style.inset='0';
+        var edge=el('div','edge'); edge.style.height=edgeH+'px';
+        var lay=Math.max(1,T*p).toFixed(3), half=(Math.max(1,T*p)*.45).toFixed(3);
+        edge.style.backgroundImage='repeating-linear-gradient(0deg,rgba(0,0,0,.17) 0,rgba(0,0,0,.17) '+half+'px,rgba(255,255,255,.8) '+half+'px,rgba(255,255,255,.8) '+lay+'px)';
+        var strap=el('div','strap');
+        strap.style.flexDirection='column';
+        strap.appendChild(el('b',null,comma(GROUP)+'장'));
+        strap.appendChild(el('span',null,korMoney(GROUP*S.denom)));
+        strap.style.width=(30*p)+'px';
+        strap.style.left=((sp.w-30)/2*p)+'px';
+        strap.style.bottom=(-edgeH)+'px';
+        bn.appendChild(top); bn.appendChild(edge); bn.appendChild(strap);
+        bn.className='bundle d'+S.denom;
+        row.appendChild(bn);
+      }
+      host.appendChild(row);
+      var cap=el('div','bundle-cap','다발 '+comma(m.bundles)+'개 × '+korMoney(GROUP*S.denom)+' = '+korMoney(m.bundles*GROUP*S.denom)+
+        (m.bundles>shown?' (화면에는 '+comma(shown)+'개만 표시)':''));
+      host.appendChild(cap);
+    }
+    if(m.loose>0){
+      var lw=el('div');
+      var lc=el('div',null,'띠지 못 채운 낱장 '+comma(m.loose)+'장 · '+korMoney(m.loose*S.denom));
+      lc.style.cssText='font:500 11.5px var(--font-m);letter-spacing:.06em;color:var(--ink-3);margin-bottom:7px';
+      lw.appendChild(lc);
+      var sheet=el('div','sheet'); sheet.style.setProperty('--gap',Math.max(4,6*S.scale)+'px');
+      for(var j=0;j<Math.min(m.loose,GROUP);j++) sheet.appendChild(bill(S.denom,p));
+      lw.appendChild(sheet); host.appendChild(lw);
+    }
+    host.appendChild(elevation(m));
+  }
+
+  function elevation(m){
+    var box=el('div','elev');
+    var real=m.mm*S.ppmm, cap=420, factor=1;
+    if(real>cap){factor=cap/real; real=cap;}
+    var bar=el('div','elev-bar'); bar.style.height=Math.max(3,real)+'px';
+    var rule=el('div','elev-ruler'); rule.style.height=Math.max(3,real)+'px';
+    var step=niceStep(m.mm);
+    for(var v=0;v<=m.mm+0.001;v+=step){
+      var tick=el('i');
+      tick.style.bottom=(v*S.ppmm*factor)+'px';
+      var lb=el('b',null,v>=1000?dec(v/1000,v%1000?2:0)+'m':(v>=10?dec(v/10,v%10?1:0)+'cm':v+'mm'));
+      tick.appendChild(lb); rule.appendChild(tick);
+    }
+    var txt=el('div','elev-txt');
+    var strong=el('strong',null,m.mm<1000?dec(m.mm/10,1)+'cm':dec(m.mm/1000,2)+'m');
+    txt.appendChild(strong);
+    txt.appendChild(document.createTextNode('한 곳에 쌓았을 때 높이입니다. '+(factor<1?'세로 자는 화면에 맞춰 1/'+dec(1/factor,1)+'로 줄였습니다.':'세로 자도 실물 크기입니다.')));
+    box.appendChild(bar); box.appendChild(rule); box.appendChild(txt);
+    return box;
+  }
+  function niceStep(mm){
+    var cands=[1,5,10,20,50,100,200,500,1000,2000,5000,10000,50000];
+    for(var i=0;i<cands.length;i++){ if(mm/cands[i]<=8) return cands[i]; }
+    return 100000;
+  }
+
+  /* ── 전체 갱신 ─────────────────────────── */
+  function measure(){
+    var sp=SPEC[S.denom];
+    var notes=Math.floor(S.amount/S.denom);
+    var areaOne=sp.w*H/1e6;
+    return {
+      notes:notes, rest:S.amount-notes*S.denom,
+      bundles:Math.floor(notes/GROUP), loose:notes%GROUP,
+      g:notes*areaOne*GSM, mm:notes*T, m2:notes*areaOne, len:notes*sp.w/1000
+    };
+  }
+  var TITLES={single:['한 장 실물 크기','지폐 한 장의 진짜 크기부터 확인하세요.'],
+    sheet:['낱장으로 펼치기','한 장씩 전부 늘어놓았을 때입니다. 가로로 넘치면 판 안에서 좌우로 스크롤하세요.'],
+    bundle:['100장 다발로 묶기','은행 띠지 기준 100장이 한 다발입니다.']};
+  function render(){
+    var m=measure();
+    renderStats(m);
+    $('stageTitle').textContent=TITLES[S.view][0];
+    $('stageHint').textContent=TITLES[S.view][1];
+    $('flag').textContent=S.scale===1?'실물 100%':'축소 1/'+Math.round(1/S.scale);
+    $('flag').dataset.off=S.scale===1?'0':'1';
+    clearStage();
+    if(S.view==='single'||m.notes===0) renderSingle(m);
+    else if(S.view==='sheet') renderSheet(m);
+    else renderBundles(m);
+    syncSeg();
+  }
+
+  /* ── 컨트롤 ───────────────────────────── */
+  function segButtons(host,items,get,set){
+    host.innerHTML='';
+    items.forEach(function(it){
+      var b=el('button',null,it.label);
+      b.type='button'; b.dataset.val=String(it.val);
+      b.setAttribute('aria-pressed',String(get()===it.val));
+      b.addEventListener('click',function(){set(it.val);});
+      host.appendChild(b);
+    });
+  }
+  function syncSeg(){
+    [['denomSeg',function(){return S.denom;}],['viewSeg',function(){return S.view;}],['scaleSeg',function(){return String(S.scale);}]]
+    .forEach(function(pair){
+      var host=$(pair[0]), cur=String(pair[1]());
+      Array.prototype.forEach.call(host.children,function(b){b.setAttribute('aria-pressed',String(b.dataset.val===cur));});
+    });
+  }
+  var CHIPS=[['30만',300000],['50만',500000],['100만',1000000],['300만',3000000],['1,000만',10000000],['2,000만',20000000],['5,000만',50000000],['1억',100000000]];
+  function buildControls(){
+    var chips=$('chips');
+    CHIPS.forEach(function(c){
+      var b=el('button','chip',c[0]); b.type='button';
+      b.addEventListener('click',function(){S.amount=c[1];$('amount').value=comma(c[1]);render();});
+      chips.appendChild(b);
+    });
+    segButtons($('denomSeg'),[{label:'5만원권',val:50000},{label:'1만원권',val:10000},{label:'5천원권',val:5000},{label:'1천원권',val:1000}],
+      function(){return S.denom;},function(v){S.denom=v;save();render();});
+    segButtons($('viewSeg'),[{label:'한 장',val:'single'},{label:'낱장 전부',val:'sheet'},{label:'100장 다발',val:'bundle'}],
+      function(){return S.view;},function(v){S.view=v;render();});
+    segButtons($('scaleSeg'),[{label:'실물 100%',val:'1'},{label:'1/2',val:'0.5'},{label:'1/4',val:'0.25'}],
+      function(){return String(S.scale);},function(v){S.scale=parseFloat(v);render();});
+
+    var inp=$('amount');
+    inp.value=comma(S.amount);
+    inp.addEventListener('input',function(){
+      var digits=inp.value.replace(/[^0-9]/g,'').slice(0,15);
+      S.amount=digits?parseInt(digits,10):0;
+      inp.value=digits?comma(S.amount):'';
+      render();
+    });
+    inp.addEventListener('focus',function(){inp.select();});
+  }
+
+  /* ── 보정 ─────────────────────────────── */
+  var REFS={card:{w:85.6,h:53.98,label:'신용·체크카드 (85.6 × 54mm)'},bill:{w:148,h:68,label:'1만원권 실물 (148 × 68mm)'}};
+  function drawRef(){
+    var r=REFS[S.ref], c=$('refCard');
+    c.style.width=(r.w*S.ppmm)+'px'; c.style.height=(r.h*S.ppmm)+'px';
+    $('refLabel').textContent=r.label;
+    $('calRange').value=S.ppmm;
+    $('calRead').textContent='1mm = '+dec(S.ppmm,2)+'px';
+    $('calPpi').textContent='약 '+comma(S.ppmm*25.4)+' PPI';
+    Array.prototype.forEach.call($('refSeg').children,function(b){b.setAttribute('aria-pressed',String(b.dataset.val===S.ref));});
+  }
+  function openCal(){$('scrim').hidden=false;drawRef();}
+  function closeCal(){$('scrim').hidden=true;S.calibrated=true;save();render();}
+  function buildCal(){
+    segButtons($('refSeg'),[{label:'카드로 맞추기',val:'card'},{label:'1만원권으로 맞추기',val:'bill'}],
+      function(){return S.ref;},function(v){S.ref=v;drawRef();});
+    $('calRange').addEventListener('input',function(){S.ppmm=parseFloat(this.value);drawRef();});
+    $('calBtn').addEventListener('click',openCal);
+    $('calDone').addEventListener('click',closeCal);
+    $('calReset').addEventListener('click',function(){S.ppmm=DEF;drawRef();});
+    $('scrim').addEventListener('click',function(e){if(e.target===$('scrim'))closeCal();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('scrim').hidden)closeCal();});
+  }
+
+  buildControls(); buildCal(); render();
+  if(!S.calibrated) openCal();
+})();
+</script>
+
+</body>
+</html>
