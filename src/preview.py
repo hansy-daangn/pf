@@ -98,7 +98,7 @@ router = '''<script>(function(){var V=[].slice.call(document.querySelectorAll('m
 function show(){var h=(location.hash||'#home').slice(1);if(!V.some(function(m){return m.dataset.view===h}))h='home';
 V.forEach(function(m){var on=m.dataset.view===h;if(on&&m.hidden){m.hidden=false;m.style.animation='none';void m.offsetWidth;m.style.animation='';}else if(!on)m.hidden=true;});
 A.forEach(function(a){if(a.getAttribute('href')==='#'+h)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
-document.body.classList.toggle('home',h==='home');window.scrollTo(0,0);if(h==='home'&&window.__bbResume)window.__bbResume();else if(window.__bbPause)window.__bbPause();}
+document.body.classList.toggle('home',h==='home');window.scrollTo(0,0);setTimeout(function(){dispatchEvent(new Event('resize'))},80);if(h==='home'&&window.__bbResume)window.__bbResume();else if(window.__bbPause)window.__bbPause();}
 addEventListener('hashchange',show);show();})();</script>'''
 html = head + '<body class="home" data-base="./">' + navm + views + footm + '<span class="pv">미리보기</span>' + tail.replace('</body></html>', router + '</body></html>')
 (OUT / 'bundle/index.html').write_text(html, encoding='utf-8')

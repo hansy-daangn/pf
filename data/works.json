@@ -60,7 +60,9 @@
      0,
      5.5
     ]
-   }
+   },
+   "pw": 720,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -141,7 +143,9 @@
    "variants": [],
    "shot": "assets/shots/cr-detail-v3.jpg",
    "note": "실화면은 사내 데이터 — 캡처 시 수치 마스킹 필요. GitHub Pages 404(비공개), 뷰어는 사내 도토리",
-   "diagram": "assets/lab/cr_flow.png"
+   "diagram": "assets/lab/cr_flow.png",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -223,7 +227,9 @@
     "full": "assets/full/local-runners-teaser.mp4",
     "poster": "assets/poster/local-runners-teaser.jpg"
    },
-   "note": "완성 영상 파일 없음 — 사용자 제공 필요"
+   "note": "완성 영상 파일 없음 — 사용자 제공 필요",
+   "pw": 0,
+   "ph": 0
   },
   "links": {
    "live": null,
@@ -269,7 +275,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/sajang-creative-plan.jpg"
+   "shot": "assets/shots/sajang-creative-plan.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -346,7 +354,9 @@
     "kind": "youtube",
     "src": "J4zBpmVj49c",
     "poster": "assets/fig/top3_subliminal.jpg"
-   }
+   },
+   "pw": 1039,
+   "ph": 585
   },
   "links": {
    "live": "https://www.youtube.com/watch?v=J4zBpmVj49c",
@@ -497,7 +507,9 @@
      0.3,
      4.8
     ]
-   }
+   },
+   "pw": 1920,
+   "ph": 1080
   },
   "links": {
    "live": null,
@@ -569,7 +581,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/bakery-previz.jpg"
+   "shot": "assets/shots/bakery-previz.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": "https://hansy-daangn.github.io/bakery-gallery/previz16/",
@@ -649,7 +663,9 @@
    "planned": {
     "full": "assets/full/bakery-vlog.mp4"
    },
-   "note": "영상화 결과물 파일 없음 — 성공 컷 갤러리·보드 캡처로 대체 가능"
+   "note": "영상화 결과물 파일 없음 — 성공 컷 갤러리·보드 캡처로 대체 가능",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": "https://hansy-daangn.github.io/bakery-gallery/",
@@ -724,7 +740,9 @@
    "full": null,
    "youtube": "m1VSvI_tZbI",
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 1097,
+   "ph": 645
   },
   "links": {
    "live": "https://www.youtube.com/watch?v=m1VSvI_tZbI",
@@ -817,7 +835,9 @@
      "h": 628
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -894,7 +914,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/creativenamer.jpg"
+   "shot": "assets/shots/creativenamer.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": "https://hansy-daangn.github.io/CreativeNamer/",
@@ -1018,7 +1040,9 @@
      "h": 1080
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -1097,7 +1121,9 @@
    "youtube": null,
    "variants": [],
    "shot": "assets/shots/kf-overview.jpg",
-   "note": "사내 도토리 배포 — 공개 라이브 없음. 캡처 시 API 키·잔액 마스킹"
+   "note": "사내 도토리 배포 — 공개 라이브 없음. 캡처 시 API 키·잔액 마스킹",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -1241,7 +1267,9 @@
      0.3,
      6.3
     ]
-   }
+   },
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -1512,7 +1540,9 @@
      0,
      6
     ]
-   }
+   },
+   "pw": 640,
+   "ph": 640
   },
   "links": {
    "live": null,
@@ -1601,7 +1631,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/hf-workspace.jpg"
+   "shot": "assets/shots/hf-workspace.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -1701,7 +1733,9 @@
      "h": 628
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -1787,7 +1821,9 @@
      6
     ],
     "poster": "assets/poster/sf_bizjul.jpg"
-   }
+   },
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -1878,7 +1914,9 @@
      "h": 720
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -2017,7 +2055,9 @@
     "poster": "assets/poster/mg_rent2.jpg",
     "preview": "assets/video/mg_rent2.mp4",
     "full": "assets/full/mg_rent2.mp4"
-   }
+   },
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -2089,7 +2129,9 @@
     "poster": "assets/poster/ai_closet2.jpg",
     "preview": "assets/video/ai_closet2.mp4",
     "full": "assets/full/ai_closet2.mp4"
-   }
+   },
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -2215,7 +2257,9 @@
      "h": 720
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -2288,7 +2332,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/witness-relay.jpg"
+   "shot": "assets/shots/witness-relay.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -2340,7 +2386,9 @@
    "youtube": null,
    "variants": [],
    "shot": "assets/shots/keyword-report.jpg",
-   "note": "캡처 시 사내 수치 마스킹"
+   "note": "캡처 시 사내 수치 마스킹",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -2398,7 +2446,9 @@
    "full": null,
    "youtube": "Z6hTS4C-4Ls",
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 1038,
+   "ph": 441
   },
   "links": {
    "live": "https://www.youtube.com/watch?v=Z6hTS4C-4Ls",
@@ -2448,7 +2498,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 1400,
+   "ph": 1050
   },
   "links": {
    "live": null,
@@ -2534,7 +2586,9 @@
      "h": 0
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -2591,7 +2645,9 @@
      "h": 0
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 1600,
+   "ph": 1200
   },
   "links": {
    "live": null,
@@ -2649,7 +2705,9 @@
     "poster": "assets/poster/mg_lyric.jpg",
     "preview": "assets/video/mg_lyric.mp4",
     "full": "assets/full/mg_lyric.mp4"
-   }
+   },
+   "pw": 800,
+   "ph": 450
   },
   "links": {
    "live": null,
@@ -2695,7 +2753,9 @@
    "youtube": null,
    "variants": [],
    "shot": "assets/shots/itempalette.jpg",
-   "note": "임베드 전 내부 수치(검색 클릭수) 노출 점검 필요"
+   "note": "임베드 전 내부 수치(검색 클릭수) 노출 점검 필요",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": "https://hansy-daangn.github.io/itempalette/",
@@ -2746,7 +2806,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/promptlibrary-studio.jpg"
+   "shot": "assets/shots/promptlibrary-studio.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": "https://hansy-daangn.github.io/PromptLibrary/studio.html",
@@ -2800,7 +2862,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/api-nav.jpg"
+   "shot": "assets/shots/api-nav.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -2860,7 +2924,9 @@
    "youtube": null,
    "variants": [],
    "shot": "assets/shots/ad-collector-guide.jpg",
-   "note": "수집물(타사 광고)은 노출하지 않고 도구 화면만 캡처"
+   "note": "수집물(타사 광고)은 노출하지 않고 도구 화면만 캡처",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -2909,7 +2975,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/runner-prompt-studio.jpg"
+   "shot": "assets/shots/runner-prompt-studio.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -2953,7 +3021,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/bustime.jpg"
+   "shot": "assets/shots/bustime.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": "https://hansy-daangn.github.io/BusTime/",
@@ -3038,7 +3108,9 @@
     "w": 1920,
     "h": 1080,
     "poster": "assets/poster/mg_bizreview_h.jpg"
-   }
+   },
+   "pw": 720,
+   "ph": 720
   },
   "links": {
    "live": null,
@@ -3084,7 +3156,9 @@
    "full": "assets/full/mg_ahnabada.mp4",
    "youtube": null,
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -3133,7 +3207,9 @@
    "full": "assets/full/mg_simbatdan.mp4",
    "youtube": null,
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -3211,7 +3287,9 @@
    "full": "assets/full/td_mapwalk.mp4",
    "youtube": null,
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -3255,7 +3333,9 @@
    "full": "assets/full/ai_article.mp4",
    "youtube": null,
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -3299,7 +3379,9 @@
    "full": "assets/full/mg_ars.mp4",
    "youtube": null,
    "variants": [],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -3366,7 +3448,9 @@
      "h": 1080
     }
    ],
-   "shot": null
+   "shot": null,
+   "pw": 600,
+   "ph": 1066
   },
   "links": {
    "live": null,
@@ -3465,7 +3549,9 @@
     }
    ],
    "shot": null,
-   "note": "cdn 3파일 모두 25MB 초과 — 프리뷰 재인코딩 필요"
+   "note": "cdn 3파일 모두 25MB 초과 — 프리뷰 재인코딩 필요",
+   "pw": 1920,
+   "ph": 1080
   },
   "links": {
    "live": null,
@@ -3685,7 +3771,9 @@
     }
    ],
    "shot": null,
-   "note": "로컬 파일 없음 — 변형은 몰로코 CDN 원격 URL(만료 가능), 이전 사이트와 동일"
+   "note": "로컬 파일 없음 — 변형은 몰로코 CDN 원격 URL(만료 가능), 이전 사이트와 동일",
+   "pw": 0,
+   "ph": 0
   },
   "links": {
    "live": null,
@@ -3754,7 +3842,9 @@
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/aipp-board.jpg"
+   "shot": "assets/shots/aipp-board.jpg",
+   "pw": 1280,
+   "ph": 720
   },
   "links": {
    "live": null,

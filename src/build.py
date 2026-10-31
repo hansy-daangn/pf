@@ -20,6 +20,20 @@ def small(p):
         if (OUT/s).exists(): return s
     return p
 def has_media(w): return bool(poster(w))
+from PIL import Image
+_DIM = {}
+def pdim(path):
+    if not path or path.startswith('http'): return None
+    if path not in _DIM:
+        _DIM[path] = None
+        for base in (REPO, OUT):
+            try: _DIM[path] = Image.open(base/path).size; break
+            except Exception: pass
+    return _DIM[path]
+def orient(w):
+    d = pdim(poster(w)); return 'tall' if d and d[1] / d[0] > 1.2 else 'wide'
+for _w in W:
+    _d = pdim(poster(_w)); _m = _w.setdefault('media', {}); _m['pw'], _m['ph'] = (_d or (0, 0))
 def is_video(p): return bool(p) and str(p).lower().endswith(('.mp4', '.webm', '.mov'))
 
 ICONS = '''<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
@@ -52,14 +66,20 @@ def foot():
 def tail():
     return f'{ICONS}<script type="application/json" id="works-data">{json.dumps(W, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script><script src="js/site.js" defer></script></body></html>'
 
-def card(w, cls='sq'):
-    p = small(poster(w)); ui = ' ui' if w['group'] in ('tools', 'research') else ''
-    img = f'<img src="{e(p)}" alt="" loading="lazy" width="600" height="{600 if cls=="sq" else 338}">' if p else f'<span class="pt">{e(w.get("year",""))}</span>'
+def card(w, cls=None):
+    cls = cls or orient(w)
+    m = w.get('media') or {}
+    p = small((m.get('poster16') if cls == 'wide' and m.get('poster16') else poster(w))); ui = ' ui' if w['group'] in ('tools', 'research') else ''
+    hgt = {'sq': 600, 'wide': 338, 'tall': 1067}.get(cls, 338)
+    img = f'<img src="{e(p)}" alt="" loading="lazy" width="600" height="{hgt}">' if p else f'<span class="pt">{e(w.get("year",""))}</span>'
     live = ' ↗' if (w.get('links') or {}).get('live') else ''
     return f'<a class="card {cls}{ui}" href="?w={e(w["id"])}" data-id="{e(w["id"])}"><div class="art{"" if p else " ph"}" data-info="{e((w.get("copy") or {}).get("one",""))}">{img}<span class="pl" aria-hidden="true">{ico("play","sm")}</span></div><div class="t">{e(w["title"])}</div><div class="s">{e(w.get("subtitle",""))}{live}</div></a>'
-def row(title, items, cls='sq', more='works.html'):
+def row(title, items, cls=None, more='works.html'):
     items = [w for w in items if has_media(w)]
     if not items: return ''
+    if cls is None:
+        # 규격 통일: 행 안의 다수 방향으로 맞춘다(행은 균일해야 함)
+        tall = sum(1 for w in items if orient(w) == 'tall'); cls = 'tall' if tall > len(items) / 2 else 'wide'
     return f'''<section class="row" data-queue><div class="wrap hd"><h2>{e(title)}</h2>{f'<a href="{more}">전체 보기 ›</a>' if more else ''}</div>
 <div class="wrap"><div class="trk"><div class="ar l"><button aria-label="왼쪽으로">{ico("chev-l")}</button></div><div class="sc">{''.join(card(w, cls) for w in items)}</div><div class="ar r"><button aria-label="오른쪽으로">{ico("chev-r")}</button></div></div></div></section>'''
 
@@ -79,22 +99,24 @@ def home():
         c = w.get('copy') or {}
         slides.append(f'''<div class="slide{" on" if i==0 else ""}" data-id="{e(w["id"])}" aria-hidden="{"false" if i==0 else "true"}"{"" if i==0 else " inert"}>{art}<div class="veil"></div>
 <div class="tx"><div class="wrap in"><div>{f'<p class="who">{e(WHO)}</p>' if i==0 else ''}<div class="k">{e(GROUPS.get(w["group"],""))} · {e(w.get("year",""))}</div><h1>{nb(w["title"])}</h1><p class="one">{e(c.get("one",""))}</p>
-<div class="bt"><button class="btn acc" data-open="{e(w["id"])}">{ico("play","sm")} 재생</button><button class="btn ghost" data-open="{e(w["id"])}">상세</button></div></div>
-<div class="dots" role="tablist" aria-label="피처드 전환">{''.join(f'<button data-i="{j}" class="{"on" if j==i else ""}" aria-label="{j+1}번째 작품"></button>' for j in range(len(feat)))}<button class="pp" aria-label="미리보기 일시정지">{ico("pause","sm")}</button></div></div></div></div>''')
-    rep_ids = ['td_review2605', 'td_declutter', 'td_godaangn', 'mg_keyword_spring', 'top3_subliminal', 'sf_bizjul', 'creativereporter', 'previz-studio']
+<div class="bt"><button class="btn" data-open="{e(w["id"])}">{ico("play","sm")} 재생</button><button class="btn ghost" data-open="{e(w["id"])}">상세</button></div></div>
+<div class="dots" role="tablist" aria-label="피처드 전환">{''.join(f'<button data-i="{j}" class="{"on" if j==i else ""}" aria-label="{j+1}번째 작품"></button>' for j in range(len(feat)))}<button class="pp" aria-label="미리보기 일시정지">{ico("pause","sm")}</button><button class="snd" aria-label="소리 켜기" hidden>{ico("mute","sm")}</button></div></div></div></div>''')
+    rep_ids = ['td_review2605', 'td_declutter', 'cr_10y', 'top3_subliminal', 'creativereporter', 'previz-studio', 'mg_bizreview', 'karrotfield']
     rep = [BY[i] for i in rep_ids if i in BY]
     perf = [w for w in W if w['group'] == 'performance' and w['id'] not in rep_ids]
+    perf_t = [w for w in perf if orient(w) == 'tall']; perf_w = [w for w in perf if orient(w) != 'tall']
     personal = [w for w in W if w['group'] == 'personal' and w['id'] not in rep_ids]
     tools = [w for w in W if w['group'] == 'tools' and w['id'] not in rep_ids]
     ai = [w for w in W if w['group'] == 'ai']
     research = [w for w in W if w['group'] == 'research']
     body = f'''<body class="home" data-base="./">{nav('index.html')}<main>
 <section class="bb" aria-label="피처드 작업"><div class="frame">{''.join(slides)}</div></section>
-{row('대표 작업', rep, 'sq')}
-{row('퍼포먼스 소재', perf, 'sq')}
+{row('대표 작업', rep, 'wide')}
+{row('퍼포먼스 소재 · 세로', perf_t, 'tall')}
+{row('퍼포먼스 소재 · 가로', perf_w, 'wide')}
 {row('개인 작업', personal, 'wide')}
 {row('도구 · 자동화', tools, 'wide', 'tools.html')}
-{row('AI 생성', ai, 'sq')}
+{row('AI 생성', ai, 'wide')}
 {row('기획 · 리서치', research, 'wide')}
 </main>{foot()}{tail()}'''
     return head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat[0]) if feat else None) + body
@@ -116,7 +138,7 @@ def works():
     rail = '<aside class="rail" aria-label="필터"><h4>그룹</h4>' + f'<button data-f="group" aria-pressed="true">전체 <small>{len(items)}</small></button>' + ''.join(f'<button data-f="group" data-v="{k}">{GROUPS[k]} <small>{g[k]}</small></button>' for k in GROUPS if k in g)
     rail += '<h4>매체</h4>' + ''.join(f'<button data-f="channel" data-v="{e(k)}">{e(k)} <small>{v}</small></button>' for k, v in sorted(ch.items(), key=lambda x: -x[1]))
     rail += '<h4>연도</h4>' + ''.join(f'<button data-f="year" data-v="{k}">{k} <small>{v}</small></button>' for k, v in sorted(yr.items(), key=lambda x: -int(x[0]))) + '</aside>'
-    grid = ''.join(card(w, 'sq') for w in items if has_media(w))
+    grid = ''.join(card(w) for w in items if has_media(w))
     body = f'''<body data-base="./">{nav('works.html')}<main><div class="wrap sec"><h1 class="pg-h">작업</h1>
 <div class="lib">{rail}<div data-queue><div class="tb"><span class="cnt">{sum(1 for w in items if has_media(w))}건</span><span style="display:flex;gap:var(--s1)"><span class="seg" data-k="sort"><button data-v="rec" aria-pressed="true">추천순</button><button data-v="new" aria-pressed="false">최신순</button></span><span class="seg" data-k="view"><button data-v="grid" aria-pressed="true">그리드</button><button data-v="list" aria-pressed="false">목록</button></span></span></div>
 <div class="grid">{grid}</div><div class="list" hidden></div></div></div></div></main>{foot()}{tail()}'''

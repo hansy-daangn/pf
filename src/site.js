@@ -19,16 +19,17 @@
   const url = p => (!p ? '' : /^https?:/.test(p) ? p : BASE + p);
   const posterOf = w => (w.media && (w.media.poster || w.media.shot)) || '';
   const hasMedia = w => !!posterOf(w);
+  const orientOf = w => (w.media && w.media.pw && w.media.ph && w.media.ph / w.media.pw > 1.2) ? 'tall' : 'wide';
   const aspectOf = w => { const f = (w.formats || [])[0] || '16:9'; const m = /^(\d+):(\d+)$/.exec(f); return m ? [+m[1], +m[2]] : [16, 9]; };
 
   /* ---------- 시안 스위치 (확정 후 PREF 기본값만 바꾸면 됨) ---------- */
-  const PREF = { theme: 'light', bb: 'full', card: 'sq', hover: 'play', stage: 'panel', tempo: 'base', pip: 'right' };
+  const PREF = { theme: 'light', bb: 'full', card: 'native', hover: 'play', stage: 'wide', tempo: 'base', pip: 'right' };
   const VARIANTS = [
     ['theme', '테마', [['light', '라이트', '애플 TV 앱(iOS/web) · 현재'], ['home-dark', '홈만 다크', '홈은 상영관처럼, 서브페이지는 라이트'], ['dark', '전체 다크', '넷플릭스 · 왓챠 · 웨이브']]],
     ['bb', '빌보드', [['full', '풀블리드', '넷플릭스 · 프라임 — 화면 전체'], ['card', '카드형', '애플 TV · 쿠팡플레이 — 둥근 카드']]],
-    ['card', '카드 비율', [['sq', '정방 1:1', '유튜브 뮤직 · 애플뮤직 · 현재'], ['wide', '와이드 16:9', '넷플릭스 · 유튜브 · 프라임'], ['tall', '세로 2:3', '왓챠 · 쿠팡플레이 · 애플 TV']]],
+    ['card', '카드 비율', [['native', '규격 그대로', '16:9 행 + 9:16 행 분리 — 애플 Top Shelf 3비율 · iOS 26 세로 포스터'], ['wide', '전부 16:9', '넷플릭스 · 안드로이드 TV 기본 — 세로 소재는 위쪽 크롭'], ['sq', '전부 1:1', '애플뮤직 · 유튜브 뮤직']]],
     ['hover', '카드 호버', [['play', '제자리 프리뷰', '유튜브 — 자리에서 무음 재생'], ['expand', '확대 + 한 줄', '애플 TV — 살짝 확대, 정보 한 줄'], ['pop', '확장 카드', '넷플릭스 — 0.5초 뒤 1.5배 팝오버 + 프리뷰']]],
-    ['stage', '상영관', [['panel', '스테이지 + 패널', '유튜브 — 설명 패널 항상 표시 · 현재'], ['wide', '시네마', '넷플릭스 · 애플 TV — 영상 최대, 정보는 ⓘ 서랍']]],
+    ['stage', '상영관', [['wide', '시네마', '넷플릭스 · 애플 TV — 영상 최대, 일시정지하면 정보 서랍이 열림(ⓘ·i)'], ['panel', '스테이지 + 패널', '유튜브 — 설명 패널 항상 표시']]],
     ['tempo', '모션 템포', [['base', '400ms', '애플 기본 · 현재'], ['fast', '280ms', '넷플릭스 — 빠릿'], ['slow', '520ms', '애플 TV+ — 여유']]],
   ];
   try { Object.assign(PREF, JSON.parse(localStorage.getItem('pf.dev') || '{}')); } catch (e) { }
@@ -40,7 +41,7 @@
     d.innerHTML = `<button class="vpb" aria-expanded="false">시안 비교</button><div class="vpp" role="dialog" aria-label="시안 선택">` +
       VARIANTS.map(([k, t, os]) => `<div><h5>${t}</h5>${os.map(([v, l, why]) => `<label class="opt"><input type="radio" name="vp-${k}" value="${v}"${PREF[k] === v ? ' checked' : ''}><span><b>${l}</b><small>${why}</small></span></label>`).join('')}</div>`).join('') +
       `<div class="sum"><code></code><button type="button">조합 복사</button></div></div>`;
-    document.body.appendChild(d); if (window.PF_PANEL_OPEN) { d.classList.add('on'); }
+    document.body.appendChild(d); if (window.PF_PANEL_OPEN && innerWidth > 900) { d.classList.add('on'); }
     const sum = $('.sum code', d); const upd = () => { sum.textContent = code(); };
     upd();
     $('.vpb', d).setAttribute('aria-expanded', d.classList.contains('on')); $('.vpb', d).addEventListener('click', () => { d.classList.toggle('on'); $('.vpb', d).setAttribute('aria-expanded', d.classList.contains('on')); });
@@ -61,10 +62,10 @@
     const V = $('video', P); let cur = null, card = null, hideT = null;
     const show = (c, w) => {
       clearTimeout(hideT); cur = w; card = c; const r = c.getBoundingClientRect(); const scale = 1.5; const pw = Math.min(r.width * scale, innerWidth - 32);
-      P.style.setProperty('--pw', pw + 'px'); const [aw, ah] = (w.formats || [])[0] === '9:16' ? [16, 9] : [16, 9]; P.style.setProperty('--pa', `${aw}/${ah}`);
+      const tall = orientOf(w) === 'tall'; const [aw, ah] = tall ? [9, 16] : [16, 9]; const pwv = tall ? Math.min(r.width * 1.35, innerWidth - 32) : pw; P.style.setProperty('--pw', pwv + 'px'); P.style.setProperty('--pa', `${aw}/${ah}`);
       const im = $('img', P); im.src = url(posterOf(w)); $('.t', P).textContent = w.title; $('.s', P).textContent = w.subtitle || ''; $('.o', P).textContent = (w.copy && w.copy.one) || '';
-      let left = r.left + r.width / 2 - pw / 2; left = Math.max(16, Math.min(left, innerWidth - pw - 16));
-      const ph = pw * ah / aw + 132; let top = r.top + r.height / 2 - ph / 2; top = Math.max(72, Math.min(top, innerHeight - ph - 16));
+      let left = r.left + r.width / 2 - pwv / 2; left = Math.max(16, Math.min(left, innerWidth - pwv - 16));
+      const ph = pwv * ah / aw + 132; let top = r.top + r.height / 2 - ph / 2; top = Math.max(72, Math.min(top, innerHeight - ph - 16));
       P.style.left = left + 'px'; P.style.top = top + 'px'; P.style.transformOrigin = `${r.left + r.width / 2 - left}px ${r.top + r.height / 2 - top}px`;
       P.classList.add('on'); V.classList.remove('on'); const src = w.media && w.media.preview; if (src && !RM && !SAVE) { V.src = url(src); V.play().then(() => V.classList.add('on')).catch(() => { }); } else { V.removeAttribute('src'); }
     };
@@ -85,7 +86,7 @@
       stopHov();
       if (PREF.hover === 'pop') { hovTimer = setTimeout(() => Pop.show(card, w), 500); return; }
       if (!src) return;
-      hovTimer = setTimeout(() => { let v = $('video', card); if (!v) { v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none'; v.setAttribute('aria-hidden', 'true'); $('.art', card).appendChild(v); } v.src = url(src); v.play().then(() => v.classList.add('on')).catch(() => { }); hovVid = v; }, 380);
+      hovTimer = setTimeout(() => { let v = $('video', card); if (!v) { v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none'; v.setAttribute('aria-hidden', 'true'); $('.art', card).appendChild(v); } v.src = url(src); v.play().then(() => v.classList.add('on')).catch(() => { }); hovVid = v; }, 500);
     };
     const leave = () => { stopHov(); if (PREF.hover === 'pop') Pop.hide(); };
     card.addEventListener('pointerenter', start); card.addEventListener('focus', start);
@@ -99,22 +100,24 @@
     const L = $('.ar.l', trk), R = $('.ar.r', trk);
     const upd = () => { if (!L) return; L.classList.toggle('can', sc.scrollLeft > 8); R.classList.toggle('can', sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 8); };
     sc.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
-    L && L.addEventListener('click', () => sc.scrollBy({ left: -sc.clientWidth * .8, behavior: RM ? 'auto' : 'smooth' }));
-    R && R.addEventListener('click', () => sc.scrollBy({ left: sc.clientWidth * .8, behavior: RM ? 'auto' : 'smooth' }));
+    L && L.addEventListener('click', () => sc.scrollBy({ left: -sc.clientWidth * .9, behavior: RM ? 'auto' : 'smooth' }));
+    R && R.addEventListener('click', () => sc.scrollBy({ left: sc.clientWidth * .9, behavior: RM ? 'auto' : 'smooth' }));
   });
 
   /* ---------- 빌보드 ---------- */
   const BB = $('.bb');
   if (BB) {
-    const slides = $$('.slide', BB), dots = $$('.dots button[data-i]', BB), pp = $('.dots .pp', BB);
+    const slides = $$('.slide', BB), dots = $$('.dots button[data-i]', BB), pp = $('.dots .pp', BB); const GAP = RM ? 0 : 700;
     let i = 0, paused = false, loopT = null;
     const loopOf = v => { const l = (v.dataset.loop || '0,8').split(',').map(Number); return { a: l[0] || 0, b: l[1] || 8 }; };
     const play = (s) => {
       const v = $('video', s); if (!v || RM || SAVE || paused || MOBILE()) return;
-      if (!v.src) { v.src = v.dataset.src; v.addEventListener('timeupdate', () => { const { a, b } = loopOf(v); if (v.currentTime >= b) { v.classList.remove('on'); v.pause(); clearTimeout(loopT); loopT = setTimeout(() => { v.currentTime = a; if (s.classList.contains('on') && !paused) v.play().then(() => v.classList.add('on')).catch(() => { }); }, 700); } }); }
-      clearTimeout(loopT); loopT = setTimeout(() => { if (s.classList.contains('on') && !paused) { v.currentTime = loopOf(v).a; v.play().then(() => v.classList.add('on')).catch(() => { }); } }, 3000);
+      if (!v.src) { v.src = v.dataset.src; v.addEventListener('timeupdate', () => { const { a, b } = loopOf(v); if (v.currentTime >= b) { v.classList.remove('on'); v.pause(); clearTimeout(loopT); loopT = setTimeout(() => { v.currentTime = a; if (s.classList.contains('on') && !paused) v.play().then(() => v.classList.add('on')).catch(() => { }); }, GAP); } }); }
+      clearTimeout(loopT); loopT = setTimeout(() => { if (s.classList.contains('on') && !paused) { v.currentTime = loopOf(v).a; v.play().then(() => { v.classList.add('on'); const sb = $('.snd', s); if (sb) { sb.hidden = false; } }).catch(() => { }); } }, 3000);
     };
-    const stop = (s) => { clearTimeout(loopT); const v = $('video', s); if (v) { v.pause(); v.classList.remove('on'); } };
+    const setSnd = (s, muted) => { const sb = $('.snd', s); if (!sb) return; sb.innerHTML = ico(muted ? 'mute' : 'vol', 'sm'); sb.setAttribute('aria-label', muted ? '소리 켜기' : '소리 끄기'); };
+    $$('.snd', BB).forEach(sb => sb.addEventListener('click', () => { const s = sb.closest('.slide'); const v = $('video', s); if (!v) return; v.muted = !v.muted; setSnd(s, v.muted); if (!v.muted) stopHov(); }));
+    const stop = (s) => { clearTimeout(loopT); const v = $('video', s); if (v) { v.pause(); v.classList.remove('on'); v.muted = true; setSnd(s, true); const sb = $('.snd', s); if (sb) sb.hidden = true; } };
     const hydrate = (s) => { const im = $('img[data-src]', s); if (im) { im.src = im.dataset.src; im.removeAttribute('data-src'); } const bl = $('.blur[data-bg]', s); if (bl) { bl.style.backgroundImage = `url(${bl.dataset.bg})`; bl.removeAttribute('data-bg'); } };
     const go = (n) => { stop(slides[i]); slides[i].classList.remove('on'); slides[i].setAttribute('aria-hidden', 'true'); slides[i].setAttribute('inert', ''); dots[i] && dots[i].classList.remove('on'); i = (n + slides.length) % slides.length; hydrate(slides[i]); slides[i].classList.add('on'); slides[i].setAttribute('aria-hidden', 'false'); slides[i].removeAttribute('inert'); dots[i] && dots[i].classList.add('on'); play(slides[i]); };
     window.__bbPause = () => stop(slides[i]); window.__bbResume = () => play(slides[i]);
@@ -195,12 +198,12 @@
       document.title = `${w.title} — HANSY`;
     };
     const switchFmt = (i) => { const s = sources(cur)[i]; if (!s) return; setAspect(s.w || 16, s.h || 9); const wasPlaying = !V.paused; V.src = url(s.src); if (wasPlaying || autoplay) V.play().catch(() => { }); };
-    const jump = (n) => { if (n < 0 || n >= queue.length) return; idx = n; cur = BY[queue[idx]]; autoplay = true; render(cur); wake(); };
+    const jump = (n) => { if (n < 0 || n >= queue.length) return; idx = n; cur = BY[queue[idx]]; autoplay = true; delete T.dataset.infoLock; T.classList.toggle('info', PREF.stage === 'wide' && kindOf(cur) !== 'video'); render(cur); wake(); };
     const open = (id, opt = {}) => {
       const w = BY[id]; if (!w) return; lastFocus = document.activeElement;
       queue = (opt.queue && opt.queue.length ? opt.queue : [id]).filter(x => BY[x]); idx = Math.max(0, queue.indexOf(id)); autoplay = opt.autoplay !== false; reel = !!opt.reel;
       if (P.classList.contains('on')) hidePip(false);
-      cur = w; T.classList.add('on'); document.body.style.overflow = 'hidden'; render(w); wake(); T.tabIndex = -1; T.focus({ preventScroll: true }); window.__bbPause && window.__bbPause();
+      cur = w; T.classList.add('on'); document.body.style.overflow = 'hidden'; delete T.dataset.infoLock; T.classList.toggle('info', PREF.stage === 'wide' && (kindOf(w) !== 'video' || !autoplay)); render(w); wake(); T.tabIndex = -1; T.focus({ preventScroll: true }); window.__bbPause && window.__bbPause();
       const u = `${location.pathname}?w=${encodeURIComponent(id)}`; if (opt.replace || (hist.st() && hist.st().t)) hist.replace({ t: 1 }, u); else hist.push({ t: 1 }, u);
     };
     const close = (toPip = true, fromPop = false) => {
@@ -221,7 +224,8 @@
     P.addEventListener('click', e => { if (e.target === V) $('.exp', P).click(); });
     const toggle = () => { if (!cur || kindOf(cur) !== 'video') return; V.paused ? V.play().catch(() => { }) : V.pause(); };
     $('.close', T).addEventListener('click', () => close(true));
-    $('.infob', T).addEventListener('click', () => T.classList.toggle('info'));
+    const toggleInfo = () => { T.classList.toggle('info'); T.dataset.infoLock = '1'; };
+    $('.infob', T).addEventListener('click', toggleInfo);
     el.pp.addEventListener('click', toggle); el.vw.addEventListener('click', e => { if (e.target === V || e.target.closest('.big')) toggle(); });
     $('.prev', T).addEventListener('click', () => jump(idx - 1)); $('.nxt', T).addEventListener('click', () => jump(idx + 1));
     el.mute.addEventListener('click', () => { V.muted = !V.muted; });
@@ -231,20 +235,20 @@
     el.next.addEventListener('click', () => jump(idx + 1)); el.next.addEventListener('keydown', e => { if (e.key === 'Enter') jump(idx + 1); });
     el.tabs.forEach(b => b.addEventListener('click', () => showTab(b.dataset.t)));
     V.addEventListener('loadedmetadata', () => { if (V.videoWidth && V.videoHeight && el.vw.contains(V)) setAspect(V.videoWidth, V.videoHeight); });
-    V.addEventListener('play', () => { el.pp.innerHTML = ico('pause'); el.pp.setAttribute('aria-label', '일시정지'); el.vw.classList.remove('paused'); });
-    V.addEventListener('pause', () => { el.pp.innerHTML = ico('play'); el.pp.setAttribute('aria-label', '재생'); el.vw.classList.add('paused'); });
+    V.addEventListener('play', () => { el.pp.innerHTML = ico('pause'); el.pp.setAttribute('aria-label', '일시정지'); el.vw.classList.remove('paused'); if (PREF.stage === 'wide' && !T.dataset.infoLock) T.classList.remove('info'); });
+    V.addEventListener('pause', () => { el.pp.innerHTML = ico('play'); el.pp.setAttribute('aria-label', '재생'); el.vw.classList.add('paused'); if (PREF.stage === 'wide' && T.classList.contains('on') && el.vw.contains(V) && !T.dataset.infoLock) T.classList.add('info'); });
     V.addEventListener('volumechange', () => { el.mute.innerHTML = ico(V.muted ? 'mute' : 'vol'); el.mute.setAttribute('aria-label', V.muted ? '음소거 해제' : '음소거'); });
     V.addEventListener('timeupdate', () => {
       const p = V.duration ? V.currentTime / V.duration : 0; el.pgi.style.width = (p * 100) + '%'; $('.pg i', P).style.width = (p * 100) + '%'; el.cur.textContent = fmtT(V.currentTime); el.durE.textContent = V.duration ? '-' + fmtT(V.duration - V.currentTime) : '0:00'; el.pg.setAttribute('aria-valuenow', Math.round(p * 100));
-      if (V.duration && V.duration - V.currentTime <= 8 && !el.next.classList.contains('on') && !el.next.dataset.dismissed && queue[idx + 1] && T.classList.contains('on')) { const n = BY[queue[idx + 1]]; $('img', el.next).src = url(posterOf(n)); $('b', el.next).textContent = n.title; const cd = $('.cd', el.next); cd.innerHTML = ico('play', 'sm'); cd.style.setProperty('--p', 0); el.next.classList.add('on'); }
+      if (V.duration && V.duration >= 60 && V.duration - V.currentTime <= 8 && !el.next.classList.contains('on') && !el.next.dataset.dismissed && queue[idx + 1] && T.classList.contains('on')) { const n = BY[queue[idx + 1]]; $('img', el.next).src = url(posterOf(n)); $('b', el.next).textContent = n.title; const cd = $('.cd', el.next); cd.innerHTML = ico('play', 'sm'); cd.style.setProperty('--p', 0); el.next.classList.add('on'); }
     });
     V.addEventListener('ended', () => {
       if (P.classList.contains('on')) { if (idx + 1 < queue.length && kindOf(BY[queue[idx + 1]]) === 'video') { idx++; cur = BY[queue[idx]]; V.src = url(sources(cur)[0].src); V.play().catch(() => { }); $('.bar b', P).textContent = cur.title; } else hidePip(true); return; }
       const n = BY[queue[idx + 1]]; if (!n) { el.vw.classList.add('paused'); return; }
       $('img', el.next).src = url(posterOf(n)); $('b', el.next).textContent = n.title; el.next.classList.add('on');
       if (!reel) return;
-      let left = 8; const cd = $('.cd', el.next); cd.textContent = left; cd.style.setProperty('--p', 0);
-      clearInterval(cdT); cdT = setInterval(() => { left--; cd.textContent = left; cd.style.setProperty('--p', (8 - left) * 12.5); if (left <= 0) { clearInterval(cdT); jump(idx + 1); } }, 1000);
+      let left = 5; const cd = $('.cd', el.next); cd.textContent = left; cd.style.setProperty('--p', 0);
+      clearInterval(cdT); cdT = setInterval(() => { left--; cd.textContent = left; cd.style.setProperty('--p', (5 - left) * 20); if (left <= 0) { clearInterval(cdT); jump(idx + 1); } }, 1000);
     });
     const seekAt = (clientX) => { const r = el.pg.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (clientX - r.left) / r.width)); if (V.duration) V.currentTime = p * V.duration; };
     el.pg.addEventListener('pointerdown', e => { seekAt(e.clientX); const mv = ev => seekAt(ev.clientX); const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); }; addEventListener('pointermove', mv); addEventListener('pointerup', up); });
@@ -261,7 +265,10 @@
       else if (k === 'ArrowLeft') { e.shiftKey ? jump(idx - 1) : (V.currentTime -= 5); }
       else if (k === 'ArrowRight') { e.shiftKey ? jump(idx + 1) : (V.currentTime += 5); }
       else if (k === 'j') V.currentTime -= 10; else if (k === 'l') V.currentTime += 10;
-      else if (k === 'm') V.muted = !V.muted; else if (k === 'f') $('.full', T).click(); else if (k === 'p') $('.pipb', T).click(); else if (k === 'n' || (k === 'N' && e.shiftKey)) jump(idx + 1); else if (k === 'i') T.classList.toggle('info');
+      else if (/^[0-9]$/.test(k) && V.duration) V.currentTime = V.duration * (+k / 10);
+      else if (k === 'ArrowUp') { e.preventDefault(); V.volume = Math.min(1, V.volume + .05); V.muted = false; } else if (k === 'ArrowDown') { e.preventDefault(); V.volume = Math.max(0, V.volume - .05); }
+      else if (k === 'Home') V.currentTime = 0; else if (k === 'End' && V.duration) V.currentTime = V.duration - .1;
+      else if (k === 'm') V.muted = !V.muted; else if (k === 'f') $('.full', T).click(); else if (k === 'p') $('.pipb', T).click(); else if (k === 'n' || (k === 'N' && e.shiftKey)) jump(idx + 1); else if (k === 'i') toggleInfo();
     });
     return { open, close };
   })();
@@ -276,14 +283,20 @@
     const match = w => (!st.group || w.group === st.group) && (!st.channel || (w.channels || []).includes(st.channel)) && (!st.year || String(w.year) === st.year);
     const sortFn = (a, b) => st.sort === 'new' ? ((b.period || b.year) > (a.period || a.year) ? 1 : -1) : ((a.grade - b.grade) || ((a.sort || 99) - (b.sort || 99)));
     const uiCls = w => (w.group === 'tools' || w.group === 'research') ? ' ui' : '';
-    const cardHTML = (w) => { const p = posterOf(w); return `<a class="card sq${uiCls(w)}" href="?w=${esc(w.id)}" data-id="${esc(w.id)}"><div class="art${p ? '' : ' ph'}" data-info="${esc(w.copy && w.copy.one || '')}">${p ? `<img src="${esc(url(p))}" alt="" loading="lazy" width="600" height="600">` : `<span class="pt">${esc(w.year || '')}</span>`}<span class="pl">${ico('play', 'sm')}</span></div><div class="t">${esc(w.title)}</div><div class="s">${esc(w.subtitle || '')}${(w.links && w.links.live) ? ' ↗' : ''}</div></a>`; };
+    const cardHTML = (w) => { const o = orientOf(w); const p = (o === 'wide' && w.media && w.media.poster16) || posterOf(w); return `<a class="card ${o}${uiCls(w)}" href="?w=${esc(w.id)}" data-id="${esc(w.id)}"><div class="art${p ? '' : ' ph'}" data-info="${esc(w.copy && w.copy.one || '')}">${p ? `<img src="${esc(url(p))}" alt="" loading="lazy" width="600" height="600">` : `<span class="pt">${esc(w.year || '')}</span>`}<span class="pl">${ico('play', 'sm')}</span></div><div class="t">${esc(w.title)}</div><div class="s">${esc(w.subtitle || '')}${(w.links && w.links.live) ? ' ↗' : ''}</div></a>`; };
     const rowHTML = (w, i) => { const p = posterOf(w); return `<button class="li" data-id="${esc(w.id)}"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="th">${p ? `<img src="${esc(url(p))}" alt="" loading="lazy" width="128" height="128">` : ''}</span><span class="t">${esc(w.title)}<small>${esc(w.copy && w.copy.one || '')}</small></span><span class="m">${esc(w.role || w.subtitle || '')}</span><span class="c m">${esc((w.channels || []).join(' · '))}</span><span class="y">${w.year || ''}</span></button>`; };
+    const U = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u')) || 8;
+    const span = () => { if (grid.hidden || !grid.offsetParent) return; grid.classList.remove('ms'); let ok = 0; $$('.card', grid).forEach(c => { c.style.gridRowEnd = ''; const h = c.getBoundingClientRect().height; if (h) { c.style.gridRowEnd = `span ${Math.ceil(h / U)}`; ok++; } }); if (ok) grid.classList.add('ms'); };
+    let spanT = null; const respan = () => { clearTimeout(spanT); spanT = setTimeout(span, 60); };
+    addEventListener('resize', respan); grid.addEventListener('load', respan, true);
+    new MutationObserver(respan).observe(document.body, { attributes: true, attributeFilter: ['data-card'] });
     const draw = () => {
       const all = items.filter(match).sort(sortFn); const rs = st.view === 'grid' ? all.filter(hasMedia) : all;
       cnt.textContent = `${rs.length}건` + (st.view === 'grid' && all.length !== rs.length ? ` · 목록에 ${all.length - rs.length}건 더` : '');
       grid.hidden = st.view !== 'grid'; list.hidden = st.view !== 'list';
       (st.view === 'grid' ? grid : list).innerHTML = rs.map(st.view === 'grid' ? cardHTML : rowHTML).join('');
       $$('.card[data-id]', grid).forEach(bindCard); $$('.li[data-id]', list).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.id, { queue: rs.map(x => x.id) })));
+      span();
       $$('.rail button').forEach(b => b.setAttribute('aria-pressed', st[b.dataset.f] === (b.dataset.v || null) || (!st[b.dataset.f] && !b.dataset.v)));
     };
     $$('.rail button').forEach(b => b.addEventListener('click', () => { st[b.dataset.f] = st[b.dataset.f] === b.dataset.v ? null : (b.dataset.v || null); draw(); }));
