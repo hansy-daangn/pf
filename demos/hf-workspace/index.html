@@ -341,7 +341,7 @@ textarea:focus,.inp:focus,select:focus{border-color:var(--lime)}
   </div>
   <aside class="lbside">
     <div class="row"><b id="lbTitle" class="grow"></b><button class="btn ghost sm" id="lbClose">닫기</button></div>
-    <div class="row"><button class="btn sm" id="lbLike">♥ 좋아요</button><button class="btn sm" id="lbMove">폴더로 이동</button><a class="btn sm" id="lbRaw" target="_blank" rel="noopener">원본</a></div>
+    <div class="row"><button class="btn sm" id="lbLike">♥ 좋아요</button><button class="btn sm" id="lbMove">폴더로 이동</button><a class="btn sm" id="lbRaw" download="image.svg">원본</a></div>
     <div class="pmeta" id="lbMeta"></div>
     <div class="pr" id="lbPrompt"></div>
     <div class="row"><button class="btn sm" id="lbCopy">프롬프트 복사</button><button class="btn sm" id="lbReuse">이 프롬프트로 생성</button></div>
@@ -497,7 +497,7 @@ async function fire(text) {
     const num = Object.keys(DBX.data.images).length + 1;
     DBX.data.images[String(num).padStart(2, "0")] = { num, round: rn, face: i % 2 ? "없음" : "있음", url: it.min_url, job: it.job_id, note: rn + " 변주 " + (i + 1) };
     dbNotify("images");
-    if (i === jobs.length - 1) { q.status = "ready"; q.summary = rn + " — 피드백 반영 4장"; q.analysis = ["배경 단순화 반영 · 4/4", "표정 통일 · 3/4"]; dbNotify("rounds"); }
+    if (i === jobs.length - 1) { q.status = "ready"; q.summary = rn + " — 피드백 반영 4장"; q.analysis = ["배경 단순화 반영 · 4/4", "표정 통일 · 3/4"]; dbNotify("rounds"); loadProjects().then(() => { renderFolders(); if (S.view === "hf") loadItems(true); }); }
   }, 4200 + i * 1100));
   return {};
 }
@@ -965,7 +965,7 @@ async function pollExt() {
   if (S.watchBatch) {
     try { const txt = await tool("results", { batch: S.watchBatch, limit: 50 }); const st = [...String(txt).matchAll(/^#\d+\s+\[(\w+)\]/gm)].map(x => x[1]);
       const done = st.filter(x => x === "done").length; if (st.length) $("#gMsg").textContent = `${S.watchBatch} · ${done}/${st.length}장 완료`;
-      if (st.length && st.every(x => x === "done" || x === "failed" || x === "canceled")) { S.watchBatch = null; setTimeout(() => { loadProjects(); if (S.view === "hf") loadItems(true); }, 45000); }
+      if (st.length && st.every(x => x === "done" || x === "failed" || x === "canceled")) { S.watchBatch = null; setTimeout(() => { loadProjects().then(() => { renderFolders(); if (S.view === "hf") loadItems(true); }); }, 800); }
     } catch (e) {}
   }
   if (evalBusy) {
@@ -1133,7 +1133,7 @@ const fireErr = e => { const c = e && e.code || ""; const d = (e && e.message ? 
 (async () => {
   S.pid = SANTA; db = MOCK_DB; mcp = MOCK_MCP; downloads = MOCK_DL;
   openProject(S.pid);
-  if (mcp) { await loadProjects(); renderFolders(); if (S.view === "hf") loadItems(true); pollExt(); setInterval(pollExt, 30000); setInterval(loadProjects, 90000); document.addEventListener("visibilitychange", pollExt); loadMirror(); }
+  if (mcp) { await loadProjects(); renderFolders(); if (S.view === "hf") loadItems(true); pollExt(); setInterval(pollExt, 2500); setInterval(loadProjects, 90000); document.addEventListener("visibilitychange", pollExt); loadMirror(); }
   if (!db) return;
   db.doc("ws/main").onSnapshot(d => { const v = d.data && d.data(); if (v && Array.isArray(v.pins)) { S.pins = v.pins; renderHeader(); } });
   db.collection("images").onSnapshot(snap => { E.images = snap.docs.map(d => ({ id: d.id, ...d.data() })); E.gotImages = true; reconcile(); requestRender(); });

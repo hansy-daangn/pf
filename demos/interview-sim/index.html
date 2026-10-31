@@ -162,7 +162,7 @@ kbd{font-family:var(--mono);font-size:11px;background:var(--soft);border:1px sol
 <body>
 <div id="app">
   <header id="top">
-    <div class="brand">인터뷰 구도 시뮬레이터</div>
+    <div class="brand">인터뷰 구도 시뮬레이터</div><span class="demo">예시 모드</span>
     <nav id="stores" aria-label="매장"></nav>
     <div class="sp"></div>
     <div class="grp">
@@ -673,7 +673,7 @@ function buildPanel() {
   lightW.push(bOn, bI, kOn, kI, pI);
   p.appendChild(sec('조명', row(bOn, bI), row(kOn, kI), row(pI, btn('추천 위치', () => { setLightsForInterview('A'); refreshLights(); commit('조명 추천 위치'); toast('키: A캠 축 40° · 백라이트: 반대편 뒤 140° 45° 1.8m (편집뷰 초록 호)'); })), el('<span class="note">위치는 편집뷰에서 드래그 · 초록 호 = 백라이트 권장 구역</span>')));
   // 푸터
-  const foot = el('<div class="foot"><span id="cloudst"><span class="demo">예시 모드</span></span><span></span></div>');
+  const foot = el('<div class="foot"><span id="cloudst"></span><span></span></div>');
   foot.lastChild.append(btn('JSON ⇩', exportJSON, 'ghost'), btn('⇧', importJSON, 'ghost'), btn('?', showHelp, 'ghost'));
   p.appendChild(foot); setCloudStatus(cloudState); renderPhotos();
 }
@@ -698,7 +698,7 @@ function renderPhotos() {
 function gotoPhoto(p) { if (!p.pose) return; const c = CAM(); Object.assign(c, { x: p.pose.x, y: p.pose.y, z: p.pose.z, pan: p.pose.pan, tilt: p.pose.tilt, roll: p.pose.roll || 0 }); c.focal = clamp(photoFocalFor(p, c.aspect), 8, 300); setView('cam'); camChanged(true, '사진 시점'); }
 function showHelp() { openModal('단축키', el(`<div class="keys"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>Q</kbd><kbd>E</kbd></span><span>이동 / 높이 · <kbd>Shift</kbd> 빠르게</span><span>드래그 · 휠</span><span>팬틸트 · 화각 (<kbd>Alt</kbd>+휠 높이, <kbd>Alt</kbd>+드래그 궤도)</span><span><kbd>Ctrl</kbd>+<kbd>S</kbd></span><span>샷 저장 (<kbd>Shift</kbd> 추가 시 A+B)</span><span><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Y</kbd></span><span>되돌리기 / 다시 실행</span><span><kbd>Tab</kbd></span><span>카메라뷰 ↔ 편집뷰 (PiP 클릭)</span><span><kbd>1</kbd> <kbd>2</kbd></span><span>A / B</span><span><kbd>G</kbd> <kbd>C</kbd> <kbd>V</kbd> <kbd>O</kbd></span><span>그리드 / 십자 / 16:9↔9:16 / 사진 겹침</span><span><kbd>T</kbd></span><span>탑뷰(편집뷰)</span><span><kbd>F</kbd></span><span>클린 전체화면 · <kbd>Esc</kbd> 또는 4번 탭</span><span><kbd>[</kbd> <kbd>]</kbd> <kbd>Del</kbd></span><span>이전/다음 샷 · 삭제</span><span>편집뷰</span><span>카메라·조명·사장님 드래그 배치 · <kbd>Shift</kbd>+드래그 높이</span></div>`), [{ label: '닫기', fn: closeModal, primary: true }]); }
 let cloudState = 'connecting';
-function setCloudStatus(s) { cloudState = 'off'; const n = $('#cloudst'); if (!n) return; n.innerHTML = '<span class="demo">예시 모드</span>'; }
+function setCloudStatus(s) { cloudState = 'off'; const n = $('#cloudst'); if (n) n.textContent = ''; }
 
 /* ───── 스틸 렌더 ───── */
 function renderStill(camId, longSide = 1920, opts = {}) {

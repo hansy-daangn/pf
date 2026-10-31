@@ -1303,7 +1303,6 @@ const rpc=(fn,body,ms)=>sb('/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-T
 const SBC='bakery_art_cache_v17',DOC_MAX=250*1024;const HOLDS={};const REF={};let SUI={hidden:[],hist:[],t:0};let VRT={r:{},t:0};const SYNC={ok:null,at:0,pend:new Set(),busy:false,putAt:{}};
 const COL={shot:'shots',hold:'holds',sref:'sheetref',sui:'sheetui',vr:'vrate'};
 const kp=k=>{const i=k.indexOf(':');return [k.slice(0,i),k.slice(i+1)]};
-const capUse=n=>(async()=>{try{return window.claude&&typeof window.claude.use==='function'?await window.claude.use(n):null}catch(e){return null}})();
 const DBP=Promise.resolve(null),ASP=Promise.resolve(null);
 async function assetDel(id){const a=await ASP;if(a&&id)try{await a.delete(id)}catch(e){}}
 const bytes=s=>new Blob([s]).size;

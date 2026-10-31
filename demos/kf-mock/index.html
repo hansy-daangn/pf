@@ -130,7 +130,8 @@ textarea:focus{box-shadow:inset 0 0 0 1.5px var(--ink);background:var(--surface)
 .acts button{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.92);color:var(--muted);display:grid;place-items:center;box-shadow:0 1px 3px rgba(14,14,16,.18)}
 .acts button:hover{color:var(--ink)}
 .acts button[aria-pressed="true"]{color:var(--ink)}
-.acts button:disabled{color:var(--faint);opacity:.6}
+.acts button:disabled{color:var(--faint)}
+.art:hover .acts button:disabled,.art:focus-within .acts button:disabled{opacity:.55}
 .acts svg{width:13px;height:13px}
 .res .m{display:flex;justify-content:space-between;gap:6px;font-size:var(--fs-1);color:var(--faint);font-weight:650;padding:0 2px;min-width:0}
 .res .m span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -205,9 +206,10 @@ td .sw{vertical-align:middle;margin-right:8px}
 .lb .box{position:relative;background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);max-width:min(880px,100%);max-height:100%;display:grid;grid-template-columns:minmax(0,1fr) 240px;overflow:hidden}
 @media(max-width:700px){.lb .box{grid-template-columns:1fr;overflow:auto}}
 .lb .img{background:var(--surface-3);display:grid;place-items:center;padding:20px;min-height:280px}
-.lb .img svg{max-width:100%;max-height:min(70vh,560px);border-radius:6px;box-shadow:0 4px 18px rgba(14,14,16,.18)}
+.lb .img .big{width:min(100%,calc(min(70vh,560px) * var(--ar)))}
+.lb .img .big svg{width:100%;height:auto;border-radius:6px;box-shadow:0 4px 18px rgba(14,14,16,.18)}
 .lb .side{padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
-.lb .side .ph{font-size:var(--fs-3);line-height:1.55;word-break:break-word}
+.lb .side .ph{font-size:var(--fs-3);line-height:1.55;word-break:break-word;padding-right:36px}
 .lb .side .mt{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:var(--fs-2);color:var(--muted)}
 .lb .side .mt b{color:var(--ink);font-weight:700}
 .lb .side .row{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
@@ -287,6 +289,12 @@ td .sw{vertical-align:middle;margin-right:8px}
 
   <!-- 키 관리 -->
   <section class="view keys" id="keys" role="tabpanel" hidden>
+    <div class="g4 ksum">
+      <div class="card tile"><span class="k">활성 키</span><span class="v num"><span id="kOn"></span><small>/ 3</small></span></div>
+      <div class="card tile"><span class="k">이번 달 합계</span><span class="v num" id="kSum"></span></div>
+      <div class="card tile"><span class="k">마지막 호출</span><span class="v">2시간 전</span><span class="s">Claude 커넥터</span></div>
+      <div class="card tile"><span class="k">연결 경로</span><span class="v">3</span><span class="s">웹 · Slack 봇 · Claude 커넥터</span></div>
+    </div>
     <div class="khead"><span class="k">개인 키</span><button class="btn" type="button" id="issue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>새 키 발급</button></div>
     <div class="card ktable">
       <table>
@@ -461,7 +469,8 @@ let lbFrom=null;
 function openLB(x){
   const m=modelOf(x.model);lbFrom=document.activeElement;
   const lb=$("#lb");lb.hidden=false;
-  lb.innerHTML=`<div class="box"><div class="img">${art(x.seed,x.ratio,640)}</div><div class="side"><div class="ph">${esc(x.prompt)}</div>
+  const[ra,rb]=x.ratio.split(":").map(Number);
+  lb.innerHTML=`<div class="box"><div class="img"><div class="big" style="--ar:${(ra/rb).toFixed(4)}">${art(x.seed,x.ratio,640)}</div></div><div class="side"><div class="ph">${esc(x.prompt)}</div>
     <div class="mt num"><span>모델</span><b>${m.name}</b><span>비율</span><b>${x.ratio}</b><span>경로</span><b>${x.prov}</b><span>비용</span><b>${usd(x.price)}</b></div>
     <div class="row"><button class="btn ghost" type="button" id="lbFav" aria-pressed="${x.fav}">${ICON.star}즐겨찾기</button><button class="btn ghost" type="button" id="lbRg">${ICON.redo}재생성</button><button class="btn ghost" type="button" disabled>${ICON.down}다운로드</button></div></div>
     <button class="x" type="button" id="lbX" aria-label="닫기">${ICON.x}</button></div>`;
@@ -511,13 +520,13 @@ function renderUsage(){
   const run=S.jobs.filter(j=>j.st==="running").length,wait=S.jobs.filter(j=>j.st==="queued").length;
   $("#uLive").textContent=`${run} · ${wait}`;$("#uLiveS").textContent=S.paused?"일시정지 중":`동시 ${S.conc}개까지`;
   /* 일별 지출 차트 */
-  const W=800,H=120,pl=4,pb=18,days=u.cur.slice();if(days.length)days[days.length-1]={...days[days.length-1],spend:days[days.length-1].spend+S.spentSession};
-  const mx=Math.max(...days.map(d=>d.spend),0.5),bw=(W-pl*2)/days.length,gap=Math.min(4,bw*0.3);
-  let g="";days.forEach((d,i)=>{const h=(d.spend/mx)*(H-pb-10),x=pl+i*bw,y=H-pb-h;const peak=d.spend===mx;
+  const W=Math.max(300,$("#uChart").clientWidth||800),H=132,pb=18,days=u.cur.slice();if(days.length)days[days.length-1]={...days[days.length-1],spend:days[days.length-1].spend+S.spentSession};
+  const mx=Math.max(...days.map(d=>d.spend),0.5),bw=Math.min(44,W/days.length),pl=(W-bw*days.length)/2,gap=Math.min(6,bw*0.3);
+  let g="";days.forEach((d,i)=>{const h=(d.spend/mx)*(H-pb-14),x=pl+i*bw,y=H-pb-h;const peak=d.spend===mx;
     g+=`<g class="hz"><rect x="${x.toFixed(1)}" y="0" width="${bw.toFixed(1)}" height="${H-pb}" fill="transparent"/><title>${d.label} · ${usd(d.spend)} · ${d.gens}건</title><rect class="b" x="${(x+gap/2).toFixed(1)}" y="${y.toFixed(1)}" width="${(bw-gap).toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="${Math.min(3,(bw-gap)/2).toFixed(1)}" fill="${peak?"var(--karrot)":i===days.length-1?"var(--ink)":"var(--hair-2)"}"/></g>`;
     if(peak)g+=`<text x="${(x+bw/2).toFixed(1)}" y="${Math.max(9,y-5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="var(--karrot)">${usd(d.spend)}</text>`;
     const every=n===7?1:n===30?5:15;if(i%every===0||i===days.length-1)g+=`<text x="${(x+bw/2).toFixed(1)}" y="${H-4}" text-anchor="middle" font-size="9" font-weight="650" fill="var(--faint)">${d.label}</text>`;});
-  $("#uChart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" aria-hidden="true">${g}</svg>`;
+  $("#uChart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:100%;height:auto" aria-hidden="true">${g}</svg>`;
   $("#uChartCap").textContent=`최대 ${usd(mx)} · 합계 ${usd(u.spend)}`;
   /* 사용자별 */
   const r=rng("kf-people-"+S.period);const shares=PEOPLE.map(()=>0.3+r()*1);const tot=shares.reduce((a,b)=>a+b,0);
@@ -538,6 +547,7 @@ $("#usage").addEventListener("click",e=>{
   if(e.target.closest("#cSlack")){S.slack=!S.slack;renderUsage();return;}
   if(e.target.closest("#cPause")){S.paused=!S.paused;renderUsage();renderQueue();if(!S.paused)pump();return;}
 });
+let rzT=null;window.addEventListener("resize",()=>{clearTimeout(rzT);rzT=setTimeout(()=>{if(S.tab==="usage")renderUsage();},120);});
 const conc=$("#cConc");conc.innerHTML=[1,2,3,4,5,6].map(n=>`<option value="${n}" ${n===S.conc?"selected":""}>${n}</option>`).join("");
 conc.onchange=()=>{S.conc=+conc.value;renderUsage();pump();};
 
@@ -550,6 +560,7 @@ function renderKeys(){
   $("#kRows").innerHTML=KEYS.map((k,i)=>`<tr><td class="nm">${k.name}<small>${k.sub}</small></td><td><span class="key">${k.key}</span></td><td class="num">${k.issued}</td><td>${k.last}</td><td class="num">${usd(k.month)}</td>
     <td><button type="button" class="sw" role="switch" aria-checked="${k.on}" data-key="${i}" aria-label="${k.name} 상태"></button><span class="pill ${k.on?"on":"off"}">${k.on?"활성":"정지"}</span></td>
     <td style="text-align:right"><button type="button" class="danger" data-revoke="${i}">폐기</button></td></tr>`).join("");
+  $("#kOn").textContent=KEYS.filter(k=>k.on).length;$("#kSum").textContent=usd(KEYS.reduce((a,k)=>a+k.month,0));
 }
 $("#keys").addEventListener("click",e=>{
   const sw=e.target.closest("[data-key]");if(sw){const k=KEYS[+sw.dataset.key];k.on=!k.on;renderKeys();return;}
