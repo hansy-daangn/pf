@@ -2283,26 +2283,32 @@
   "channels": [],
   "formats": [],
   "media": {
-   "poster": null,
+   "poster": "assets/shots/witness-relay.jpg",
    "preview": null,
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": null
+   "shot": "assets/shots/witness-relay.jpg"
   },
   "links": {
    "live": null,
    "github": null,
    "artifact": "https://claude.ai/artifact/TPPQ6zZMiXnPcfN7oNFv67",
-   "embed": null,
+   "embed": "demos/witness-relay/index.html",
    "artifact2": "https://claude.ai/artifact/LRLLR6EGXMBFmXAYkqaGAE",
-   "artifact3": "https://claude.ai/artifact/RXQTkeYa21fumedPUnGjvr"
+   "artifact3": "https://claude.ai/artifact/RXQTkeYa21fumedPUnGjvr",
+   "embeds": [
+    {
+     "label": "최종 기획안 v5 (수치 마스킹)",
+     "src": "demos/witness-relay/index.html"
+    }
+   ]
   },
   "copy": {
    "one": "사장님 인터뷰 재편집 영상 기획안 15·20·39초 시리즈",
-   "problem": null,
-   "decision": null,
-   "result": null
+   "problem": "기존 사장님 인터뷰 광고 8편과 겹치지 않는 문장만으로, 촬영본에서 새 영상 1편을 뽑아야 했다.",
+   "decision": "증인당 한 블록 · 업종이 다른 3명 · 숫자 먼저 순서로 구성하고, 미디어바이어·타깃 사장님·편집 PD·법무·팩트체커 5명이 4라운드로 공격해 고쳤다.",
+   "result": "v5 확정(38.9초 1편). 법무 조건·팩트 지적을 본문에 반영, 집행 전 확인 항목을 대체안과 함께 명시."
   },
   "metrics": [],
   "tags": [
@@ -2328,26 +2334,36 @@
   "channels": [],
   "formats": [],
   "media": {
-   "poster": null,
+   "poster": "assets/shots/keyword-report.jpg",
    "preview": null,
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": null,
+   "shot": "assets/shots/keyword-report.jpg",
    "note": "캡처 시 사내 수치 마스킹"
   },
   "links": {
    "live": null,
    "github": null,
    "artifact": "https://claude.ai/artifact/7mg21CKC1SfN5zKKeaCrsd",
-   "embed": null,
-   "artifact2": "https://claude.ai/artifact/CysUuRMSMPNQZnZVbWubqh"
+   "embed": "demos/keyword-report/index.html",
+   "artifact2": "https://claude.ai/artifact/CysUuRMSMPNQZnZVbWubqh",
+   "embeds": [
+    {
+     "label": "소재 리포트 (수치 마스킹)",
+     "src": "demos/keyword-report/index.html"
+    },
+    {
+     "label": "런꾸 릴스 인사이트",
+     "src": "demos/runkku-dashboard/index.html"
+    }
+   ]
   },
   "copy": {
    "one": "키워드 템플릿 소재 리포트 · 런꾸 릴스 인사이트 대시보드",
-   "problem": null,
-   "decision": null,
-   "result": null
+   "problem": "시즌별 키워드 템플릿 소재의 성과가 매체 리포트에 흩어져 있어, 어떤 규격·형식에 예산을 줘야 하는지 한 장으로 보이지 않았다.",
+   "decision": "Google·Moloco 집계를 소재 DB 기준으로 묶어 규격 × 형식 × 시즌 한 장 리포트로 정리했다. 런꾸 챌린지 릴스는 보존율·유입 경로 대시보드로 따로 읽었다.",
+   "result": "다음 세트에서 고칠 두 가지(1:1 예산 재배분, 영상 비중 확대)로 결론을 좁혔다. 공개본은 실제 수치를 자릿수만 남기고 가렸다."
   },
   "metrics": [],
   "tags": [
@@ -2838,24 +2854,30 @@
   "channels": [],
   "formats": [],
   "media": {
-   "poster": null,
+   "poster": "assets/shots/ad-collector-guide.jpg",
    "preview": null,
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": null,
+   "shot": "assets/shots/ad-collector-guide.jpg",
    "note": "수집물(타사 광고)은 노출하지 않고 도구 화면만 캡처"
   },
   "links": {
    "live": null,
    "github": null,
    "artifact": "https://claude.ai/artifact/DJzFwvDYNXmc39M4tdrT6d",
-   "embed": null
+   "embed": "demos/ad-collector-guide/index.html",
+   "embeds": [
+    {
+     "label": "설치 가이드",
+     "src": "demos/ad-collector-guide/index.html"
+    }
+   ]
   },
   "copy": {
    "one": "메타 광고 라이브러리 레퍼런스를 모으는 크롬 확장 + 대시보드",
-   "problem": null,
-   "decision": null,
+   "problem": "메타 광고 라이브러리의 레퍼런스를 매번 손으로 캡처·정리하고 있었다.",
+   "decision": "MV3 크롬 확장으로 광고 라이브러리 화면에서 바로 수집하고, 정적 HTML 대시보드에서 모아 본다. 수집물(타사 광고)은 공개하지 않고 도구 화면만 보여준다.",
    "result": null
   },
   "metrics": [],
@@ -3709,5 +3731,67 @@
   ],
   "featured": false,
   "sort": 21
+ },
+ {
+  "id": "aipp",
+  "grade": 2,
+  "group": "ai",
+  "title": "aipp — 당근 2D 페르소나 → 3D 토이 피규어 양산 체계 (R1~R58)",
+  "subtitle": "기획 · 생성 · 검수 · 2026-08",
+  "year": 2026,
+  "period": "2026-08",
+  "role": "목표·판정 기준 정의 · 실험 설계 · 검수 — 실행·채점은 Claude 에이전트",
+  "tools": [
+   "Higgsfield (Seedream · GPT Image · Nano Banana)",
+   "Claude Code",
+   "Obsidian 라운드 로그"
+  ],
+  "channels": [],
+  "formats": [],
+  "media": {
+   "poster": "assets/shots/aipp-board.jpg",
+   "preview": null,
+   "full": null,
+   "youtube": null,
+   "variants": [],
+   "shot": "assets/shots/aipp-board.jpg"
+  },
+  "links": {
+   "live": null,
+   "github": null,
+   "artifact": "https://claude.ai/artifact/SF1dkLETNHiWc7nBZJsDCu",
+   "embed": "demos/aipp-board/index.html",
+   "embeds": [
+    {
+     "label": "검토 보드 (읽기 전용)",
+     "src": "demos/aipp-board/index.html"
+    }
+   ]
+  },
+  "copy": {
+   "one": "당근 2D 페르소나를 3D 토이 피규어로 — 양산 체계 R1~R58",
+   "problem": "당근 2D 페르소나를 같은 품질의 3D 토이 피규어로 반복 생산해야 하는데, 생성 결과가 라운드마다 흔들렸다.",
+   "decision": "라운드(R1~R58) 단위로 목표·판정 기준·실험 설계를 고정하고, 실행과 채점은 Claude 에이전트에 맡겼다. 합/불·보류 판정은 검토 보드에 기록해 다음 라운드의 조건으로 넘겼다.",
+   "result": null
+  },
+  "metrics": [
+   {
+    "label": "정본",
+    "value": "8종 재시도 0회",
+    "visible": true
+   },
+   {
+    "label": "T포즈 의상 마스터",
+    "value": "40장",
+    "visible": true
+   }
+  ],
+  "tags": [
+   "AI 이미지",
+   "캐릭터",
+   "스타일 재현"
+  ],
+  "featured": false,
+  "sort": 530
  }
 ]

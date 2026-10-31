@@ -1,0 +1,111 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ad Collector 가이드</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* 레이아웃: 좁은 단일 컬럼 + 상단 탭, 탭마다 한 화면 */
+:root{
+  --bg:#ffffff; --soft:#f5f5f3; --ink:#1b1c1f; --sub:#6b6e75; --line:#ececea;
+  --accent:#ff6f0f; --accent-w:#fff2e8;
+  --f-body:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:640px;margin:0 auto;padding-block:36px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:26px;font-weight:900;letter-spacing:-.6px;margin:0 0 20px;display:flex;align-items:center;gap:10px}
+h1 i{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+h1 svg{width:15px;height:15px;fill:#fff}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;overflow-x:auto}
+.tabs button{border:0;background:none;font:700 14px var(--f-body);color:var(--sub);padding:10px 12px;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
+.row:last-child{border-bottom:0}
+.k{width:26px;height:26px;border-radius:8px;background:var(--soft);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--ink)}
+.k svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.k.on{background:var(--accent-w);color:var(--accent)}
+.k.on svg{fill:var(--accent)}
+.v{min-width:0}
+.v b{font-weight:700}
+.v small{display:block;color:var(--sub);font-size:13px;margin-top:2px}
+.code{display:flex;gap:8px;align-items:center;margin-top:8px;background:var(--soft);border-radius:10px;padding:6px 6px 6px 12px;min-width:0}
+.code code{font-family:var(--f-mono);font-size:12.5px;flex:1;min-width:0;overflow-x:auto;white-space:nowrap}
+.copy{border:0;background:#fff;border-radius:7px;height:28px;padding:0 10px;font:700 12px var(--f-body);color:var(--ink);cursor:pointer;flex:none;box-shadow:0 0 0 1px var(--line)}
+.copy:hover{color:var(--accent)}
+.tip{margin-top:18px;background:var(--accent-w);border-radius:12px;padding:12px 14px;font-size:13.5px;color:#7a3300}
+a{color:var(--accent);font-weight:700;text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+
+<div class="wrap">
+  <h1><i><svg viewBox="0 0 24 24"><path d="M12 2.5l2.94 5.96 6.56.95-4.75 4.63 1.12 6.53L12 17.5l-5.87 3.07 1.12-6.53L2.5 9.41l6.56-.95z"/></svg></i>Ad Collector</h1>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-install" aria-selected="true" data-p="install">설치</button>
+    <button role="tab" id="t-buttons" aria-selected="false" data-p="buttons">버튼</button>
+    <button role="tab" id="t-dash" aria-selected="false" data-p="dash">대시보드</button>
+    <button role="tab" id="t-api" aria-selected="false" data-p="api">API</button>
+  </div>
+
+  <section id="install" role="tabpanel">
+    <div class="rows">
+      <div class="row"><span class="k">1</span><div class="v">확장 프로그램 페이지 열기<div class="code"><code id="c1">chrome://extensions</code><button class="copy" data-c="c1">복사</button></div></div></div>
+      <div class="row"><span class="k">2</span><div class="v"><b>개발자 모드</b> 켜기</div></div>
+      <div class="row"><span class="k">3</span><div class="v"><b>압축해제된 확장 프로그램 로드</b> → 폴더 선택<div class="code"><code id="c2">…\메타광고수집기\extension</code><button class="copy" data-c="c2">복사</button></div></div></div>
+      <div class="row"><span class="k">↻</span><div class="v">업데이트 받았을 때<small>확장 프로그램 페이지에서 Ad Collector의 새로고침 버튼 → 라이브러리 탭 새로고침</small></div></div>
+    </div>
+  </section>
+
+  <section id="buttons" role="tabpanel" hidden>
+    <div class="rows">
+      <div class="row"><span class="k on"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.94 5.96 6.56.95-4.75 4.63 1.12 6.53L12 17.5l-5.87 3.07 1.12-6.53L2.5 9.41l6.56-.95z"/></svg></span><div class="v"><b>즐겨찾기</b><small>보고 있던 소재가 대표 이미지로 저장돼요</small></div></div>
+      <div class="row"><span class="k"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><div class="v"><b>폴더에 추가</b><small>폴더 체크, 또는 새 폴더를 만들며 담기</small></div></div>
+      <div class="row"><span class="k"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg></span><div class="v"><b>다운로드</b><small>지금 보이는 소재 1개</small></div></div>
+      <div class="row"><span class="k">A</span><div class="v"><b>세트 다운로드</b><small>캐러셀·다이내믹 소재의 영상/이미지 전부</small></div></div>
+      <div class="row"><span class="k">#</span><div class="v"><b>노출 #3 · 42일 · ×5</b><small>노출 순위 · 게재 일수 · 같은 소재를 쓰는 광고 수</small></div></div>
+    </div>
+    <p class="tip">검색하면 자동으로 <b>노출 많은 순</b>으로 열려요. 하단 바에서 오래 게재된 광고·영상만 같은 필터를 걸 수 있어요.</p>
+  </section>
+
+  <section id="dash" role="tabpanel" hidden>
+    <div class="rows">
+      <div class="row"><span class="k">→</span><div class="v"><b>여는 법</b><small>툴바의 주황 ★ 아이콘, 또는 라이브러리 하단 바의 '대시보드'</small><div class="code"><code id="c3">chrome-extension://cmgfpklhajanembpoinhepjhodhblkja/dashboard.html</code><button class="copy" data-c="c3">복사</button></div></div></div>
+      <div class="row"><span class="k">▦</span><div class="v"><b>보기</b><small>카드 / 갤러리(소재만) · 전체 / 이미지 / 영상</small></div></div>
+      <div class="row"><span class="k">↓</span><div class="v"><b>정렬</b><small>기본은 노출 많은 순. 오래 게재된 순·복제 많은 순도 가능</small></div></div>
+      <div class="row"><span class="k"><svg viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H9l2 2.5h7.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg></span><div class="v"><b>폴더</b><small>만들기 · 더블클릭으로 이름 변경 · 삭제 · 카드를 폴더로 끌어 담기</small></div></div>
+      <div class="row"><span class="k">⬇</span><div class="v"><b>전체 다운로드</b><small>다운로드\메타광고\폴더명\ 에 저장</small></div></div>
+    </div>
+    <p class="tip">★·폴더에 담는 순간 원본 파일이 이 PC에 보관돼요. 메타 링크가 만료되거나 광고가 내려가도 계속 보여요.</p>
+  </section>
+
+  <section id="api" role="tabpanel" hidden>
+    <div class="rows">
+      <div class="row"><span class="k">1</span><div class="v"><b>신원 확인 승인 대기</b><small><a href="https://www.facebook.com/ID" target="_blank" rel="noopener">facebook.com/ID</a> · 최대 48시간</small></div></div>
+      <div class="row"><span class="k">2</span><div class="v"><b>토큰 넣기</b><small>대시보드 → 설정 → 붙여넣기 → '확인'</small></div></div>
+      <div class="row"><span class="k">3</span><div class="v"><b>검색</b><small>대시보드 → API 검색 · EU 도달 많은 순 정렬</small></div></div>
+    </div>
+    <p class="tip">API는 Meta 정책상 EU에 노출된 광고와 정치·사회 이슈 광고만 보여줘요. 한국 광고는 라이브러리 화면의 버튼으로 모으세요.</p>
+  </section>
+</div>
+
+<script>
+var tabs = document.querySelectorAll('[role="tab"]');
+function show(id) {
+  tabs.forEach(function (t) { t.setAttribute('aria-selected', t.dataset.p === id ? 'true' : 'false'); });
+  document.querySelectorAll('[role="tabpanel"]').forEach(function (p) { p.hidden = p.id !== id; });
+}
+tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.dataset.p); }); });
+document.querySelectorAll('.copy').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var el = document.getElementById(b.dataset.c);
+    var ok = function () { b.textContent = '복사됨'; setTimeout(function () { b.textContent = '복사'; }, 1400); };
+    var sel = function () { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try { navigator.clipboard.writeText(el.textContent).then(ok, sel); } catch (e) { sel(); }
+  });
+});
+</script>
+
+</body></html>
