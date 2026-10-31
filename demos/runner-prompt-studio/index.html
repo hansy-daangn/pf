@@ -112,6 +112,7 @@ footer{margin-top:38px;border-top:2px solid var(--ink);padding-top:20px}
   background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:9px 16px;border-radius:99px;transition:.2s}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.demo{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--ink3);margin-left:auto}
 </style>
 
 <div class="shell">
@@ -123,7 +124,7 @@ footer{margin-top:38px;border-top:2px solid var(--ink);padding-top:20px}
     <span class="lg"><i class="sw l"></i>원문 골격 — 절대 고정</span>
     <span class="lg"><i class="sw p"></i>내가 고른 값</span>
     <span class="lg"><i class="sw s"></i>레슨런 — 방향 · 무리 · 모션</span>
-    
+    <span class="demo">예시 모드</span>
   </div>
 </header>
 
@@ -549,10 +550,10 @@ function copyNow(){
     navigator.clipboard.writeText(p).then(function(){toast("프롬프트를 복사했습니다");},function(){fb(p);});
   }else fb(p);
 }
-function fb(p){var ta=document.createElement("textarea");ta.value=p;ta.style.cssText="position:fixed;opacity:0";
-  document.body.appendChild(ta);ta.select();
-  try{document.execCommand("copy");toast("프롬프트를 복사했습니다");}catch(e){toast("복사 실패 \u2014 직접 선택해 주세요");}
-  document.body.removeChild(ta);}
+function selOut(){try{var r=document.createRange();r.selectNodeContents($("out"));var g=window.getSelection();g.removeAllRanges();g.addRange(r);$("out").scrollIntoView({block:"nearest"});}catch(e){}}
+function fb(p){var ok=false;
+  try{var ta=document.createElement("textarea");ta.value=p;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();ok=document.execCommand("copy");document.body.removeChild(ta);}catch(e){ok=false;}
+  if(ok){toast("프롬프트를 복사했습니다");}else{selOut();toast("선택해 뒀습니다 \u2014 Ctrl+C");}}
 $("copy").addEventListener("click",copyNow);
 $("copy2").addEventListener("click",copyNow);
 $("reset").addEventListener("click",function(){S=JSON.parse(JSON.stringify(D));render();toast("기본값으로 되돌렸습니다");});
