@@ -1,0 +1,611 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>상세보기 확정안 v3 — C3 판정 레일 · 당근 소재분석툴</title>
+<style>
+
+  /* ═════ 사이트 토큰 그대로 ═════ */
+  :root{
+    --canvas:#ECECE7; --surface:#FFFFFF; --surface-2:#F4F4F0; --surface-3:#EDEDE7;
+    --ink:#1B1A16; --muted:#74726A; --faint:#A4A299;
+    --karrot:#FF6F0F; --karrot-2:#FF8A3D; --karrot-f:#FFEDDF;
+    --g2:#1E88E5; --g2-f:#D6ECFB; --g1:#1C8A6E; --g1-f:#E0F1EA;
+    --mid:#8A887E; --mid-f:#EBEBE4;
+    --w1:#C2871C; --w1-f:#F7EBD0; --w2:#C73F54; --w2-f:#F8DCE1;
+    --r:16px; --r-sm:10px;
+    --fs-1:10px; --fs-2:11.5px; --fs-3:12.5px; --fs-4:15px; --fs-5:23px;
+    --hair:#F0EFE9; --hair-2:#E6E5DE;
+    --spk:#C9C7BE; --spk-ep:#B4B2A8;
+    --sh:0 1px 2px rgba(20,20,15,.05), 0 8px 24px -16px rgba(20,20,15,.22);
+    --sans:"Pretendard Variable",Pretendard,system-ui,-apple-system,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--canvas);color:var(--ink);font-family:var(--sans);font-size:var(--fs-3);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  svg{display:block}
+
+  /* ═════ 문서 크롬 ═════ */
+  .wrap{max-width:1280px;margin:0 auto;padding:40px 28px 90px}
+  .doc-h{margin:0 0 6px;font-size:var(--fs-5);font-weight:800;letter-spacing:-.02em}
+  .doc-s{margin:0 0 20px;color:var(--muted);font-size:var(--fs-3);max-width:860px}
+  .fb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;max-width:920px;margin:0 0 34px}
+  @media(max-width:860px){.fb{grid-template-columns:1fr}}
+  .fb div{display:flex;gap:8px;align-items:baseline;font-size:var(--fs-2);color:var(--muted);background:var(--surface);border-radius:var(--r-sm);padding:9px 12px}
+  .fb b{color:var(--g1);font-weight:800;flex:0 0 auto}
+  .cnav{position:sticky;top:0;z-index:50;display:flex;gap:4px;background:var(--canvas);padding:10px 0 14px;margin:0 0 8px}
+  .cnav a{flex:0 0 auto;text-decoration:none;color:var(--muted);font-weight:700;font-size:var(--fs-3);padding:7px 16px;border-radius:999px;background:var(--surface)}
+  .cnav a:hover{color:var(--ink)}
+  .cnav a.on{background:var(--ink);color:#fff}
+
+  .concept{margin:0 0 74px}
+  .c-head{display:flex;align-items:baseline;gap:12px;margin:0 0 4px}
+  .c-badge{flex:0 0 auto;padding:0 10px;height:30px;border-radius:9px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:var(--fs-3);align-self:center}
+  .c-head h2{margin:0;font-size:19px;font-weight:800;letter-spacing:-.015em}
+  .c-head .c-tag{font-size:var(--fs-2);color:var(--muted);font-weight:600}
+  .c-sum{margin:6px 0 16px;color:var(--muted);font-size:var(--fs-3);max-width:860px}
+  .c-sum b{color:var(--ink);font-weight:700}
+
+  .mseg{display:inline-flex;gap:2px;background:rgba(27,26,22,.06);border-radius:10px;padding:3px;margin:0 0 14px}
+  .mseg button{padding:7px 18px;border-radius:8px;font-weight:700;font-size:var(--fs-3);color:var(--muted);transition:.12s}
+  .mseg button:hover{color:var(--ink)}
+  .mseg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(20,20,15,.12)}
+
+  .stage-out{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+  .stage-hd{padding:18px 20px 0}
+  .stage-cap{display:flex;align-items:center;gap:8px;font-size:var(--fs-1);color:var(--faint);font-weight:650;letter-spacing:.05em;text-transform:uppercase;margin:0 0 12px}
+  .stage-cap i{font-style:normal;color:var(--muted)}
+  .fake-row{display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:var(--fs-2);color:var(--faint);border-bottom:1px solid var(--hair)}
+  .fake-row b{color:var(--muted);font-weight:650}
+
+  /* ═════ 공통 어휘 ═════ */
+  .sp{display:inline-block;padding:2px 8px;border-radius:7px;font-weight:740;font-size:var(--fs-2);white-space:nowrap}
+  .sp-g2{background:var(--g2-f);color:var(--g2)} .sp-g1{background:var(--g1-f);color:var(--g1)}
+  .sp-mid{background:var(--mid-f);color:var(--mid)} .sp-w1{background:var(--w1-f);color:var(--w1)} .sp-w2{background:var(--w2-f);color:var(--w2)}
+  .livedot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--g1);flex:0 0 auto}
+  .q{display:inline-grid;place-items:center;width:13px;height:13px;border-radius:50%;background:var(--surface-3);color:var(--faint);font-size:9px;font-weight:800;cursor:help;flex:0 0 auto}
+  .microcap{font-size:var(--fs-1);font-weight:750;letter-spacing:.02em;color:var(--faint);line-height:1.45;word-break:keep-all}
+  .microcap em{font-style:normal;font-weight:550;letter-spacing:0;text-transform:none;color:var(--faint)}
+
+  /* 스파크라인 — 평시 회색(시각 우선순위 낮게), 행 호버 시에만 잉크색으로 선명해진다 */
+  .spk path{stroke:var(--spk);transition:stroke .12s}
+  .spk .ep{fill:var(--spk-ep);transition:fill .12s}
+  .hv:hover .spk path{stroke:var(--ink)}
+  .hv:hover .spk .ep{fill:var(--ink)}
+  .hv{border-radius:6px}
+  .hv:hover{background:var(--surface-2)}
+
+  /* ═════ 스테이지(공통 좌측) — 미디어 · 메타 · 수명 · (영상이면) 시청 유지 ═════ */
+  .cc{display:grid;grid-template-columns:var(--stw,340px) minmax(0,1fr);gap:0;align-items:stretch}
+  @media(max-width:980px){.cc{grid-template-columns:1fr}}
+  .cc-stage{background:var(--surface-2);padding:24px 26px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:flex-start}
+  .cc-frame{position:relative;width:100%;border-radius:12px;overflow:hidden;box-shadow:var(--sh)}
+  /* 조작 버튼 — 썸네일 좌측 상단에 얹는다. 어두운 영상 위에도, 밝은 이미지 위에도 읽혀야 하므로
+     반투명 검정 바탕 + 흰 글자로 고정한다(소재 색에 따라 대비가 무너지지 않게). */
+  .fr-act{position:absolute;top:8px;left:8px;display:flex;gap:5px;z-index:2}
+  .fbtn{padding:4px 11px;border-radius:999px;background:rgba(12,11,8,.62);color:#F5F2EA;
+    font-size:var(--fs-1);font-weight:750;backdrop-filter:blur(4px);transition:.12s}
+  .fbtn:hover{background:rgba(12,11,8,.86);color:#fff}
+  .cc-frame.v{max-width:212px} .cc-frame.p{max-width:240px} .cc-frame.s{max-width:264px} .cc-frame.h{max-width:300px}
+  .st-charts{width:100%;max-width:300px;margin-top:14px;display:flex;flex-direction:column;gap:14px}
+  .st-blk .microcap{margin-bottom:5px}
+
+  /* ═════ 레일 공통 ═════ */
+  .rail{padding:22px 26px 20px;min-width:0}
+  .r-foot{display:flex;gap:6px;align-items:center;margin-top:16px;padding-top:10px;border-top:1px solid var(--hair)}
+  .r-foot .more{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:999px;border:1px solid var(--surface-3);color:var(--muted);font-size:var(--fs-1);font-weight:650}
+  .r-foot .more:hover{border-color:var(--muted);color:var(--ink)}
+  .r-foot .more i{font-style:normal;color:var(--faint);font-weight:500}
+  /* 지표와 비교를 가르는 단 하나의 구분선 — 소제목 대신 선과 여백이 말한다 */
+  .divider{border:0;border-top:1px solid var(--hair-2);margin:14px 0 4px}
+
+  /* 행 문법: [라벨 | 값 | 스파크 | (등급) | 상위%] */
+  .lr{display:grid;align-items:center;gap:12px;padding:5.5px 4px;border-top:1px solid var(--hair)}
+  .lr:first-child{border-top:0}
+  .lr .k{color:var(--muted);font-weight:600;font-size:var(--fs-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lr .v{font-weight:760;font-size:var(--fs-3);white-space:nowrap;text-align:right}
+  .lr .r{font-size:var(--fs-1);color:var(--faint);white-space:nowrap;justify-self:end}
+  .lr .spk{justify-self:start}
+
+  /* ── C1 · 원장 레일: 5열(등급 칩 포함) 단일 원장 ── */
+  .c1 .lr{grid-template-columns:124px 92px 88px 82px 1fr}
+  .c1 .lr .chip-slot{white-space:nowrap}
+  .c1 .lr.cmp .v{grid-column:2/4;text-align:left}
+  .c1 .gapline{height:9px;border-top:1px solid var(--hair)} /* 성과↔실증 사이 숨 고르기 */
+  .c1 .r-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+  .c1 .r-id{min-width:0;flex:1}
+  .c1 .r-score{flex:0 0 auto;text-align:right}
+  .c1 .r-score .n{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.05}
+  .c1 .r-score .sp{margin-top:4px}
+
+  /* ── C2 · 이열 레일: 성과|실증 나란히, 등급 칩 없음(색·상위%만), 촘촘 ── */
+  .c2 .r-top{display:flex;align-items:center;gap:10px;margin-bottom:4px;min-width:0}
+  .c2 .r-top .sp{flex:0 0 auto}
+  /* C2는 수명·영상 차트가 스테이지가 아니라 레일 3번째 열 — 스테이지는 미디어만 담아 짧고,
+     레일과 좌우 높이가 맞아 '한 화면 스캔'이라는 정체성이 성립한다 */
+  .c2 .cols{display:grid;grid-template-columns:1fr 1fr 180px;gap:0 24px;margin-top:12px}
+  .c2 .cols>*{min-width:0}
+  @media(max-width:1100px){.c2 .cols{grid-template-columns:1fr}}
+  .c2 .chartcol{display:flex;flex-direction:column;gap:14px;padding-top:19px}
+  .c2 .lr{grid-template-columns:94px 72px 74px 1fr;gap:9px;padding:4.5px 4px}
+  .c2 .lr.cmp{grid-template-columns:150px auto 1fr;gap:12px}
+  .c2 .lr.cmp .v{text-align:left}
+  .c2 .colcap{font-size:var(--fs-1);color:var(--faint);font-weight:650;padding:0 4px 4px;display:flex;gap:5px;align-items:center}
+  .c2 .cmp2{display:grid;grid-template-columns:1fr 1fr;gap:0 32px;max-width:840px}
+  @media(max-width:1100px){.c2 .cmp2{grid-template-columns:1fr}}
+
+  /* ── C3 · 판정 레일: 점수·진단·KPI 히어로(스파크 내장) + 미니 2열 ── */
+  /* r-top(점수·등급·진단) 폐지 — 이름·등급은 표 행에 이미 있고, 점수는 화면에서 쓰지 않는다.
+     진단 문장도 아래 KPI 히어로가 같은 말을 더 정확히 하므로 중복이었다. 남길 것은 조작 버튼뿐. */
+  /* 호버하면 그 지점 값이 뜬다(네이티브 title) — 점도 같이 커져 어디를 짚었는지 보인다 */
+  .hz{cursor:default}
+  .hz:hover .hd{opacity:1}
+  .c3 .r-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:6px}
+  .c3 .r-verdict{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+  .c3 .r-verdict .n{font-size:34px;font-weight:800;letter-spacing:-.035em;line-height:1}
+  .c3 .r-id{min-width:0;flex:1}
+  /* kpis가 레일의 첫 줄 — 위에 선도 여백도 두지 않는다. 아래 경계만으로 지표와 갈린다 */
+  .c3 .kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0 0 8px;border-bottom:1px solid var(--hair)}
+  .c3 .kpi{padding:2px 20px 13px 4px}
+  .c3 .kpi+.kpi{border-left:1px solid var(--hair);padding-left:20px}
+  .c3 .kpi .role{font-size:var(--fs-1);color:var(--faint);font-weight:650}
+  .c3 .kpi .kv{display:flex;align-items:baseline;gap:7px;margin:3px 0 5px}
+  .c3 .kpi .kv b{font-size:var(--fs-5);font-weight:790;letter-spacing:-.02em}
+  .c3 .kpi .kv small{font-size:var(--fs-2);color:var(--muted);font-weight:600}
+  /* ── 근접성 ──
+     종전엔 순위(상위 N%)가 열 끝에 붙어(justify-self:end) **다음 열 라벨과 10px**,
+     같은 행의 스파크와는 30px 넘게 떨어졌다. 관련 없는 것끼리 더 붙어 보이는 배치였다.
+     이제 순위를 스파크 바로 옆에 붙이고, 남는 폭은 열 오른쪽 밖으로 흘려보낸다.
+     그러면 남는 폭이 그대로 '열 사이 여백'이 되어 덩어리 경계가 저절로 생긴다.
+     규칙: 한 행 안 = 10px · 열 사이 = 최소 56px (5배 이상 차이나야 덩어리로 읽힌다) */
+  .c3 .mini2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 168px;gap:0 28px;margin-top:8px}
+  .c3 .chartcol{display:flex;flex-direction:column;gap:16px;padding-top:6px;min-width:0}
+  .c3 .chartcol .st-blk .microcap{margin-bottom:5px}
+  @media(max-width:1100px){.c3 .mini2{grid-template-columns:1fr 1fr;gap:0 40px}.c3 .chartcol{grid-column:1/-1;flex-direction:row;gap:32px;padding-top:14px}.c3 .chartcol .st-blk{flex:1;min-width:0}}
+  @media(max-width:760px){.c3 .mini2{grid-template-columns:1fr}.c3 .chartcol{flex-direction:column}}
+  .c3 .lr{grid-template-columns:minmax(78px,104px) minmax(52px,auto) 76px minmax(40px,1fr);gap:9px;padding:6px 4px}
+  .c3 .lr .v{font-size:var(--fs-2)}
+  .c3 .lr .rslot{justify-self:start;min-width:0}   /* 스파크 옆에 — 열 끝으로 밀지 않는다 */
+  .c3 .lr .rslot .r{justify-self:unset}
+  .c3 .lr.cmp{grid-template-columns:158px auto minmax(52px,1fr);gap:12px}
+  .c3 .lr.cmp .v{text-align:left}
+  /* ── 타매체 교차 비교 ──
+     평소엔 숨어 있다가, 아래 '몰로코 같은 소재 비교' 행에 마우스를 올리면
+     위 지표 행에 그 매체의 값 차이와 추이가 겹쳐 나타난다.
+     항상 보이게 하면 한 행에 숫자가 셋이라 아무것도 읽히지 않는다 — 물어볼 때만 답한다. */
+  .c3 .xd{display:none;font-size:var(--fs-1);font-weight:800;white-space:nowrap}
+  .c3 .spk .xp{display:none;stroke-opacity:.85}
+  /* 델타는 '상위 N%' 자리를 **대체**한다 — 칸을 새로 만들면 그 열만 넓어져 표가 흔들린다.
+     비교하는 순간엔 순위보다 차이가 궁금하므로 자리를 내주는 편이 맞다. */
+  .c3 .rail.xm-moloco .lr.hasx-moloco .r,
+  .c3 .rail.xm-meta   .lr.hasx-meta   .r,
+  .c3 .rail.xm-ace    .lr.hasx-ace    .r,
+  .c3 .rail.xm-aeo    .lr.hasx-aeo    .r{display:none}
+  .c3 .rail.xm-moloco .lr.hasx-moloco .xd-moloco,
+  .c3 .rail.xm-meta   .lr.hasx-meta   .xd-meta,
+  .c3 .rail.xm-ace    .lr.hasx-ace    .xd-ace,
+  .c3 .rail.xm-aeo    .lr.hasx-aeo    .xd-aeo{display:inline}
+  .c3 .rail.xm-moloco .xp-moloco,.c3 .rail.xm-meta .xp-meta,.c3 .rail.xm-ace .xp-ace,.c3 .rail.xm-aeo .xp-aeo{display:block}
+  .c3 .lr.cmp[data-xm]{cursor:help}
+  .c3 .lr.cmp[data-xm]:hover{background:var(--karrot-f)}
+  .c3 .divider{margin:18px 0 6px}
+  .c3 .cmp2{display:grid;grid-template-columns:1fr 1fr;gap:0 56px}
+  @media(max-width:1100px){.c3 .cmp2{grid-template-columns:1fr;gap:0}}
+  @media(max-width:1100px){.c3 .cmp2{grid-template-columns:1fr}}
+
+  /* ═════ 미디어 목업 ═════ */
+  .ph{position:relative;width:100%;overflow:hidden;background:#141410}
+  .ph.v{aspect-ratio:9/16} .ph.s{aspect-ratio:1/1} .ph.h{aspect-ratio:16/9} .ph.p{aspect-ratio:3/4}
+  .ph .bg{position:absolute;inset:0}
+  .ph .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center}
+  .ph .play::after{content:"";display:block;border-style:solid;border-width:8px 0 8px 13px;border-color:transparent transparent transparent #fff;margin-left:3px}
+  .ph .dur{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:var(--fs-1);font-weight:700;padding:1px 6px;border-radius:4px}
+
+  /* ═════ 채점표 ═════ */
+  .judge{margin-top:16px;background:var(--surface);border-radius:var(--r-sm);padding:16px 18px}
+  .judge-h{display:flex;align-items:baseline;gap:8px;margin:0 0 10px}
+  .judge-h b{font-size:var(--fs-3);font-weight:760}
+  .judge-h span{font-size:var(--fs-1);color:var(--faint)}
+  .judge table{width:100%;border-collapse:collapse;font-size:var(--fs-2)}
+  .judge td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--hair)}
+  .judge tr:last-child td{border-bottom:0}
+  .judge td.c{white-space:nowrap;font-weight:760;width:52px}
+  .judge td.crit{white-space:nowrap;font-weight:650;color:var(--muted);width:120px}
+  .judge td.note{color:var(--muted)}
+  .judge .cut{margin:12px 0 0;padding-top:10px;border-top:1px dashed var(--hair-2);font-size:var(--fs-2);color:var(--muted);line-height:1.6}
+  .judge .cut b{color:var(--ink);font-weight:700}
+  .judge .cut li{margin:3px 0}
+  .judge .cut ul{margin:4px 0 0;padding-left:16px}
+
+  .final{background:var(--surface);border-radius:var(--r);box-shadow:var(--sh);padding:22px 26px;margin-top:8px}
+  .final h2{margin:0 0 12px;font-size:var(--fs-4);font-weight:780}
+  .final table{width:100%;border-collapse:collapse;font-size:var(--fs-2)}
+  .final th,.final td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--hair)}
+  .final th{color:var(--faint);font-weight:650;font-size:var(--fs-1);text-transform:uppercase;letter-spacing:.04em}
+  .final td:first-child{font-weight:700;white-space:nowrap}
+  .final .reco{margin:14px 0 0;padding:12px 14px;border-radius:var(--r-sm);background:var(--karrot-f);color:var(--ink);font-size:var(--fs-3);line-height:1.6}
+  .final .reco b{font-weight:760}
+
+
+  /* ═════ v3 — 실데이터 전 블록 수용 ═════ */
+  .cc-meta{display:flex;gap:6px;align-items:center;font-size:var(--fs-1);color:var(--faint);flex-wrap:wrap;justify-content:center;max-width:100%;word-break:keep-all}
+  .cc-meta b{color:var(--muted);font-weight:650}
+  .cc-meta a{color:var(--muted);text-decoration:none}
+  .lcap{font-size:var(--fs-1);color:var(--faint);font-weight:650;padding:0 4px 5px;word-break:keep-all;line-height:1.45}
+  .lcap em{font-style:normal;font-weight:550}
+  .subcap{font-size:var(--fs-1);color:var(--faint);font-weight:650;padding:8px 4px 2px;border-top:1px dashed var(--hair-2);margin-top:6px;word-break:keep-all}
+  /* 비교군 행: [라벨 | 실유저 위치(값색) | 광고비 위치(회색)] */
+  .c3 .lr.peer{grid-template-columns:minmax(130px,168px) minmax(0,1fr) minmax(0,1fr);gap:10px}
+  .c3 .lr.peer .v{text-align:left;font-size:var(--fs-2)}
+  .c3 .lr.peer .c{font-size:var(--fs-1);color:var(--faint);white-space:nowrap}
+  /* 타매체 행: [매체+판정 | 값 | (호버 유도)] */
+  .jchip{display:inline-block;padding:1px 7px;border-radius:6px;font-size:var(--fs-1);font-weight:750;margin-left:6px;vertical-align:0.5px}
+  .jchip.same{background:var(--g1-f);color:var(--g1)} .jchip.sim{background:var(--mid-f);color:var(--mid)}
+  /* 애셋 보고서 — 접힘, 펼치면 2열 원장 */
+  .gx{display:none;margin-top:10px}
+  .gx.on{display:grid;grid-template-columns:1fr 1fr;gap:0 56px}
+  @media(max-width:1100px){.gx.on{grid-template-columns:1fr}}
+  .r-foot .more.on i{color:var(--karrot)}
+</style>
+
+<div class="wrap">
+  <h1 class="doc-h">상세보기 확정안 v3 — C3 · 판정 레일 <small style="font-size:var(--fs-2);color:var(--muted);font-weight:600">실데이터 전 블록 수용판</small></h1>
+  <p class="doc-s">8/10 실화면에서 확인된 문제(옛 문법 블록의 겹침·전 기간 그래프·애셋 보고서 노이즈)를 반영해, <b>실데이터에 존재하는 모든 블록</b> — 성과 전 지표 · 실증 세부(서비스 접속 포함) · 비교군(전 매체 포함) · 타매체 판정 · 구글 애셋 보고서 — 를 <b>하나의 행 문법</b>으로 다시 설계했습니다. 매체 세그먼트를 눌러 같은 규칙의 렌더링을 확인하세요.</p>
+  <div class="fb">
+    <div><b>✓ 1</b><span><b>모든 지표가 상세에 보인다</b> — 표에 있어도 상세에서 다 보이되, 중요한 것(KPI 3슬롯)이 더 크게.</span></div>
+    <div><b>✓ 2</b><span>그래프·스파크는 <b>최근 8주 창</b> — 전체 기간은 수명 캡션의 "수명 N주" 숫자가 담당. 추이가 체감된다.</span></div>
+    <div><b>✓ 3</b><span>실증 세부·비교군(전 매체)·타매체 판정·애셋 보고서까지 <b>전부 같은 행 문법</b> [라벨 · 값(등급색) · 스파크 · 상위%].</span></div>
+    <div><b>✓ 4</b><span>애셋 보고서는 <b>접힘이 기본</b> — 펼치면 2열 원장. 모델링 값(전환 가치 조 단위)은 잘라냈다.</span></div>
+  </div>
+
+  <nav class="cnav" id="cnav">
+    <a href="#c3" class="on">C3 · 판정 레일 v3</a>
+  </nav>
+
+  <section class="concept" id="c3">
+    <div class="c-head"><span class="c-badge">C3</span><h2>판정 레일 v3</h2><span class="c-tag">KPI 히어로 → 세부 3단(성과·실증·차트) → 비교 2단 → 애셋(접힘)</span></div>
+    <p class="c-sum">레일은 <b>KPI 히어로 3슬롯</b>(규모·효율·유저 질)으로 열고, 세부는 <b>성과 | 실증 | 차트</b> 3단 — 실증 열은 코호트 캡션과 서비스 접속 서브구간까지 같은 행 문법으로 흡수합니다. 구분선 아래 <b>비교군 내 위치</b>(같은 광고그룹·서비스 × 이 매체·전 매체 4행)와 <b>타매체 같은 소재</b>(동일/유사 판정), 마지막에 <b>구글 애셋 보고서</b>(접힘). 수명 곡선은 최근 8주 창에 급증 지점 <b>×배수</b>를 표기합니다. 타매체 <b>동일</b> 행에 마우스를 올리면 위 지표 행에 그 매체와의 차이가 겹쳐 보입니다.</p>
+    <div class="mseg" data-c="3"><button class="on" data-m="aeo">구글 AEO</button><button data-m="ace">구글 ACE</button><button data-m="moloco">몰로코</button></div>
+    <div class="stage-out">
+      <div class="stage-hd"><div class="stage-cap">상세보기 <i id="cap3"></i>· 표의 행을 펼친 상태</div>
+      <div class="fake-row"><b>▾</b> <span>표 행 (소재 목록의 현재 행 — 클릭으로 여닫음)</span></div></div>
+      <div id="mk3"></div>
+    </div>
+    <div class="judge">
+      <div class="judge-h"><b>적대자 채점</b><span>10점 만점 · v3 실블록 수용 후 재채점</span></div>
+      <table id="judgeT">
+        <tr><td class="crit">가독성</td><td class="c">9</td><td class="note">전 블록이 한 행 문법이라 눈이 문법을 한 번만 배운다. 캡션은 정보(코호트 주차·표본)만, 한글 단어 단위 줄바꿈.</td></tr>
+        <tr><td class="crit">공간 활용</td><td class="c">9</td><td class="note">애셋 보고서 접힘·차트 3열 배치로 첫 화면에 판정∼비교가 들어온다. 실증 열이 서브구간(서비스 접속)까지 흡수해 별도 박스가 없다.</td></tr>
+        <tr><td class="crit">계층·위계</td><td class="c">10</td><td class="note">23px KPI → 11.5px 세부 → 10px 캡션의 3단 위계. 다각형은 스테이지(보조), 애셋은 접힘(3차 정보)으로 물러난다.</td></tr>
+        <tr><td class="crit">미니멀리즘</td><td class="c">8</td><td class="note">실블록을 다 담으면서 칩은 타매체 판정(동일/유사) 하나만 남겼다. 등급은 값 색+상위%가 말한다. 조 단위 모델링 값은 절단.</td></tr>
+        <tr><td class="crit">직관·간결</td><td class="c">9</td><td class="note">최근 8주 창이라 스파크·수명의 방향이 바로 읽힌다. ×배수·−%p·동일/유사가 "언제 밀었나·왜·다른 데선"에 답한다.</td></tr>
+        <tr><td class="crit">톤앤매너</td><td class="c">9</td><td class="note">기존 토큰·등급색만 사용. 새 표면(서브캡션·판정 칩)도 기존 스케일 안(10px·11.5px).</td></tr>
+      </table>
+      <div class="cut"><b>라운드에서 잘려나간 것</b><ul>
+        <li>전환 가치·모든 전환 가치(₩1,995,253,851·₩10,000,571,482) — 모델링 값이 조 단위로 널뛰며 실제 판단에 쓰이지 않는다. 애셋 보고서에서도 제외.</li>
+        <li>타매체 표의 "비교하기" 버튼 열 — 행 자체를 호버/클릭 대상으로. 버튼 열 하나가 표 전체를 넓혔다.</li>
+        <li>실증 블록의 등급 칩(매우 좋음·좋음…) — 값 색+상위%와 삼중 중복. 색약 대비는 상위% 텍스트가 담당.</li>
+        <li>전체 기간 그래프 — 최근 8주 창으로. 23주를 다 그리면 최근 변화가 3px에 눌린다. 전체 기간 누적은 캡션 숫자로.</li>
+        <li>비교군 2×2 행렬의 표 머리(이 매체 안/전 매체) — 행 라벨("광고그룹 · 전 매체 253개")에 흡수. 머리행이 데이터 4행보다 무거웠다.</li>
+      </ul></div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ═════ 예시 데이터 — 8/10 실화면 수치 기준 · 매체 3종 같은 스키마 · 스파크는 최근 8주 ═════ */
+const M={
+aeo:{
+ media:"구글 AEO",name:"이번 주말에 놀러 나가요! 놓치지 아까운 봄 인기매물 당근해요",live:true,fo:"영상",ar:"h",res:"1920×1080",dur:"0:30",src:1,
+ kpi:[
+  {k:"광고비",role:"규모",v:"4,563.8만원",tier:"m",rank:"상위 1%",med:"같은 매체 중앙값 512만원",sp:[6,7,7,8,9,10,9,11]},
+  {k:"신규 단가",role:"효율",v:"₩8,161",tier:"w1",rank:"상위 73%",med:"중앙값 ₩5,940",sp:[6,6,7,7,8,8,9,8]},
+  {k:"다음날 재방문",role:"유저 질",v:"31.8%",tier:"g1",rank:"상위 30%",med:"중앙값 28.4%",sp:[5,6,6,7,6,7,7,7]}],
+ perf:[
+  {k:"데려온 유저",v:"5,592",tier:"g2",rank:"상위 6%",sp:[5,6,7,7,8,9,8,9]},
+  {k:"노출",v:"244.9만",tier:"g2",rank:"상위 2%",sp:[6,7,8,9,10,11,10,11]},
+  {k:"홈 방문",v:"465.7만",tier:"g2",rank:"상위 2%",sp:[5,6,7,8,9,10,10,11]},
+  {k:"CTR",v:"0.70%",tier:"m",rank:"상위 54%",sp:[7,6,7,6,7,6,7,7]},
+  {k:"CPM",v:"₩18,639",tier:"w2",rank:"상위 91%",sp:[6,7,7,8,8,9,9,10]},
+  {k:"ROAS",v:"219.13",tier:"m",rank:"상위 45%",sp:[6,6,7,7,6,7,7,8]}],
+ cohortCap:"실유저 실증 · 7/20 주 코호트 · 표본 33,801명 · 광고그룹 단위",
+ cohort:[
+  {k:"신규 실유저",v:"33,801",tier:"g2",rank:"상위 3%",sp:[5,6,7,8,9,9,10,10]},
+  {k:"7일 내 재방문",v:"62.8%",tier:"m",rank:"상위 43%",sp:[6,6,7,6,7,7,7,7]},
+  {k:"첫 주 4일 이상",v:"19.6%",tier:"g1",rank:"상위 37%",sp:[5,5,6,6,6,7,7,7]},
+  {k:"설치 한 달 뒤 방문",v:"46.5%",tier:"w1",rank:"상위 65%",sp:[7,7,6,6,6,5,5,5]}],
+ svcCap:"7일 내 서비스 접속 · 신규 설치 코호트",
+ svc:[
+  {k:"중고거래 탭 접속",v:"44.1%",tier:"g1",rank:"상위 18%"},
+  {k:"홈피드 접속",v:"66.3%",tier:"w1",rank:"상위 65%"},
+  {k:"앱 재방문",v:"76.2%",tier:"g1",rank:"상위 30%"}],
+ peers:[
+  {k:"광고그룹 내 · 22개",u:"실유저 상위 20%",uT:"g1",c:"광고비 상위 2%"},
+  {k:"서비스 내 · 63개",u:"실유저 상위 8%",uT:"g2",c:"광고비 상위 1%"},
+  {k:"광고그룹 · 전 매체 253개",u:"",uT:null,c:"광고비 상위 1%",xo:1},
+  {k:"서비스 · 전 매체 912개",u:"",uT:null,c:"광고비 상위 1%",xo:1}],
+ xm:[
+  {m:"Google ACE",j:"동일",v:"광고비 51.2만원",key:"ace",
+   x:{"노출":{d:"−238만",t:"m",sp:[2,2,3,3,3,4,3,4]},"CTR":{d:"+0.31%p",t:"g2",sp:[8,8,9,9,9,10,10,10]},"CPM":{d:"−₩7,420",t:"g2",sp:[3,3,4,4,4,5,4,5]}}},
+  {m:"Google ACE",j:"유사",v:"광고비 13.8만원"},
+  {m:"Google ACE",j:"유사",v:"광고비 1.3만원"}],
+ asset:{lab:"구글 애셋 보고서",sub:"13주 합산 · 애셋 귀속",rows:[
+  {k:"설치(애셋 귀속)",v:"5,113",tier:"g2",rank:"상위 4%"},
+  {k:"비용/설치",v:"₩8,926",tier:"w1",rank:"상위 65%"},
+  {k:"전환율(설치)",v:"29.90%",tier:"g1",rank:"상위 39%"},
+  {k:"평균 CPC",v:"₩2,669",tier:"w1",rank:"상위 75%"},
+  {k:"클릭률",v:"0.70%",tier:"m",rank:"상위 55%"},
+  {k:"조회연결 전환",v:"77.4만",tier:"g2",rank:"상위 3%"}]},
+ life:{wk:23,win:8,tot:"7,726.8만원",sp:[1,1,7,8,9,10,9,11]},
+ video:{pts:[100,64,50,42,36]}},
+ace:{
+ media:"구글 ACE",name:"홈피드_10years_브랜딩_가로_A",live:true,fo:"영상",ar:"h",res:"1920×1080",dur:"0:15",src:1,
+ kpi:[
+  {k:"광고비",role:"규모",v:"2,980만원",tier:"m",rank:"상위 12%",med:"중앙값 640만원",sp:[5,7,8,9,11,11,12,12]},
+  {k:"CPM",role:"효율",v:"₩2,150",tier:"g1",rank:"상위 22%",med:"중앙값 ₩2,840",sp:[8,8,7,7,7,6,6,6]},
+  {k:"홈피드 접속 7일",role:"유저 질",v:"18.3%",tier:"w1",rank:"하위 28%",med:"중앙값 22.4%",sp:[7,7,6,6,6,5,5,5]}],
+ perf:[
+  {k:"노출",v:"412만",tier:"g2",rank:"상위 6%",sp:[6,7,9,10,11,11,12,12]},
+  {k:"조회율",v:"31.7%",tier:"m",rank:"상위 38%",sp:[6,7,7,8,7,8,8,8]},
+  {k:"클릭",v:"3.4만",tier:"m",rank:"상위 41%",sp:[6,6,7,7,7,8,8,8]},
+  {k:"CPC",v:"₩876",tier:"g1",rank:"상위 24%",sp:[8,7,7,7,6,6,6,6]}],
+ cohortCap:"실유저 실증 · 7/20 주 코호트 · 광고그룹 단위",
+ cohort:[
+  {k:"신규 실유저",v:"940",tier:"m",rank:"상위 44%",sp:[5,5,6,6,6,7,6,7]},
+  {k:"7일 내 재방문",v:"51.2%",tier:"m",rank:"상위 52%",sp:[6,6,6,7,6,7,7,7]},
+  {k:"설치 한 달 뒤 방문",v:"24.1%",tier:"m",rank:"상위 55%",sp:[6,6,6,6,7,6,6,6]}],
+ svcCap:"7일 내 서비스 접속 · 신규 설치 코호트",
+ svc:[
+  {k:"홈피드 접속",v:"18.3%",tier:"w1",rank:"하위 28%"},
+  {k:"앱 재방문",v:"51.2%",tier:"m",rank:"상위 52%"}],
+ peers:[
+  {k:"광고그룹 내 · 9개",u:"실유저 상위 39%",uT:"m",c:"광고비 상위 18%"},
+  {k:"서비스 내 · 17개",u:"실유저 상위 47%",uT:"m",c:"광고비 상위 24%"}],
+ xm:[
+  {m:"구글 AEO",j:"동일",v:"CPM −₩310",key:"aeo",
+   x:{"노출":{d:"−230만",t:"w1",sp:[3,4,5,6,6,7,7,7]},"조회율":{d:"+6.2%p",t:"g2",sp:[8,8,9,9,10,10,11,11]}}}],
+ asset:{lab:"구글 애셋 보고서",sub:"13주 합산 · 애셋 귀속",rows:[
+  {k:"설치(애셋 귀속)",v:"812",tier:"m",rank:"상위 41%"},
+  {k:"비용/설치",v:"₩36,700",tier:"w2",rank:"상위 88%"},
+  {k:"평균 CPC",v:"₩876",tier:"g1",rank:"상위 24%"},
+  {k:"클릭률",v:"0.82%",tier:"m",rank:"상위 44%"}]},
+ life:{wk:8,win:8,tot:"7,960만원",sp:[5,6,8,9,9,10,11,11]},
+ video:{pts:[100,74,52,37,26]}},
+moloco:{
+ media:"몰로코",name:"img_maugrowth_PickUpMonthly_768x1024",live:false,fo:"이미지",ar:"p",res:"768×1024",dur:null,src:1,
+ kpi:[
+  {k:"광고비",role:"규모",v:"1,090만원",tier:"m",rank:"상위 35%",med:"중앙값 402만원",sp:[3,5,6,7,8,7,5,0]},
+  {k:"eCPA",role:"효율",v:"₩1,870",tier:"g2",rank:"상위 18%",med:"중앙값 ₩2,660",sp:[8,7,6,6,5,5,5,5]},
+  {k:"홈피드 접속 7일",role:"유저 질",v:"58.9%",tier:"g2",rank:"상위 11%",med:"중앙값 41.2%",sp:[5,6,6,7,7,8,8,8]}],
+ perf:[
+  {k:"데려온 유저",v:"5,851",tier:"g1",rank:"상위 23%",sp:[4,6,8,9,10,9,7,0]},
+  {k:"CTR(외부 지면)",v:"1.62%",tier:"m",rank:"상위 44%",sp:[6,6,7,7,6,7,6,6]},
+  {k:"D1 잔존율",v:"38.9%",tier:"g1",rank:"상위 27%",sp:[6,7,7,8,8,8,8,8]}],
+ cohortCap:"실유저 실증 · 재관여 · 7/21·7/28 주",
+ cohort:[
+  {k:"되돌린 유저",v:"4,320",tier:"g1",rank:"상위 21%",sp:[4,6,7,8,8,7,6,5]},
+  {k:"유효 복귀",v:"46.1%",tier:"g1",rank:"기준선 +9.2%p",sp:[5,6,6,7,7,8,8,8]},
+  {k:"유효 복귀 단가",v:"₩4,060",tier:"m",rank:"상위 37%",sp:[8,7,7,6,6,6,6,6]}],
+ svcCap:"7일 내 서비스 접속 · 복귀 후 7일",
+ svc:[
+  {k:"홈피드 접속",v:"58.9%",tier:"g2",rank:"상위 11%"},
+  {k:"앱 재방문",v:"63.4%",tier:"g1",rank:"상위 33%"}],
+ peers:[
+  {k:"광고그룹 내 · 8개",u:"실유저 상위 19%",uT:"g1",c:"광고비 상위 26%"},
+  {k:"서비스 내 · 21개",u:"실유저 상위 28%",uT:"g1",c:"광고비 상위 42%"},
+  {k:"서비스 · 전 매체 214개",u:"",uT:null,c:"광고비 상위 38%",xo:1}],
+ xm:[
+  {m:"구글 AEO",j:"동일",v:"광고비 +455만원",key:"aeo",
+   x:{"데려온 유저":{d:"−1,240",t:"w1",sp:[3,4,5,6,7,6,5,4]},"CTR(외부 지면)":{d:"−0.9%p",t:"w1",sp:[4,4,5,5,4,5,4,4]}}},
+  {m:"메타",j:"유사",v:"eCPA +₩240"}],
+ asset:null,
+ life:{wk:7,win:7,tot:"3,140만원",ended:1,sp:[3,5,6,7,8,7,5,0]},
+ video:null}
+};
+
+/* ═════ 헬퍼 ═════ */
+const TIERC={g2:"var(--g2)",g1:"var(--g1)",m:"var(--ink)",w1:"var(--w1)",w2:"var(--w2)"};
+const COHORT_TIP="유저 단위 실증(BigQuery 주간 갱신) — 상위%는 같은 주 코호트 안 백분위 · 하한 추정치";
+const PEER_TIP="같은 비교군 안에서 이 소재의 위치.&#10;실유저 = 실제 데려온 유저 수 · 광고비 = 예산이 몰린 정도.&#10;전 매체 행은 광고비만 — 유저·전환은 매체마다 귀속이 달라 섞으면 거짓 비교.";
+const nb=t=>String(t).replace(/ /g," ");
+
+/* 스파크라인 — 최근 8주 · 평시 회색(호버 시 잉크색) · 타매체 겹침은 같은 축 */
+function spk(arr,w,h,over){
+  w=w||76;h=h||18;const p=2.5,n=arr.length;
+  const all=[...arr,...Object.values(over||{}).flat()];
+  const mn=Math.min(...all),mx=Math.max(...all);
+  const X=i=>p+i*(w-2*p)/(n-1),Y=v=>h-p-((v-mn)/((mx-mn)||1))*(h-2*p);
+  const path=a=>a.map((v,i)=>(i?" L":"M")+` ${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join("");
+  let ov="";
+  for(const k in (over||{}))
+    ov+=`<path class="xp xp-${k}" d="${path(over[k].slice(0,n))}" fill="none" stroke="var(--karrot)" stroke-width="1.4" stroke-dasharray="3 2" stroke-linejoin="round"/>`;
+  return `<svg class="spk" viewBox="0 0 ${w} ${h}" style="width:${w}px;height:${h}px">${ov}<path d="${path(arr)}" fill="none" stroke-width="1.4" stroke-linejoin="round"/><circle class="ep" cx="${X(n-1).toFixed(1)}" cy="${Y(arr[n-1]).toFixed(1)}" r="2.2"/></svg>`;
+}
+/* 수명 — 최근 8주 창. 피크 ▼ · 최대 증액 붉은 구간+점+×N · 종료/진행 점 */
+function lifeSVG(sp,W,H,ended){
+  W=W||168;H=H||64;const p=6,n=sp.length,mx=Math.max(...sp,1);
+  const X=i=>p+i*(W-2*p)/(n-1),Y=v=>H-10-(v/mx)*(H-24);
+  let ln="";sp.forEach((v,i)=>{ln+=(i?" L":"M")+` ${X(i).toFixed(1)} ${Y(v).toFixed(1)}`;});
+  let g=`<path d="${ln} L ${X(n-1).toFixed(1)} ${H-10} L ${X(0).toFixed(1)} ${H-10} Z" fill="var(--karrot)" fill-opacity="0.13"/><path d="${ln}" fill="none" stroke="var(--karrot)" stroke-width="1.7" stroke-linejoin="round"/>`;
+  let ri=-1,rx=0;
+  for(let i=1;i<n;i++){if(sp[i-1]>0){const r=sp[i]/sp[i-1];if(r>=1.5&&r>rx){rx=r;ri=i;}}}
+  const pk=sp.indexOf(Math.max(...sp)),px=X(pk),py=Y(sp[pk]);
+  g+=`<path d="M ${(px-4).toFixed(1)} ${(py-11).toFixed(1)} L ${(px+4).toFixed(1)} ${(py-11).toFixed(1)} L ${px.toFixed(1)} ${(py-4).toFixed(1)} Z" fill="var(--karrot)"/>`;
+  if(ri>0){
+    g+=`<path d="M ${X(ri-1).toFixed(1)} ${Y(sp[ri-1]).toFixed(1)} L ${X(ri).toFixed(1)} ${Y(sp[ri]).toFixed(1)}" fill="none" stroke="var(--w2)" stroke-width="2.4" stroke-linecap="round"/>`;
+    g+=`<circle cx="${X(ri).toFixed(1)}" cy="${Y(sp[ri]).toFixed(1)}" r="2.9" fill="var(--w2)"/>`;
+    const anch=ri>=n-2?"end":(ri<=1?"start":"middle");
+    const ty=(ri===pk?Y(sp[ri])-15:Y(sp[ri])-6);
+    g+=`<text x="${X(ri).toFixed(1)}" y="${Math.max(9,ty).toFixed(1)}" text-anchor="${anch}" font-size="10" font-weight="800" fill="var(--w2)" paint-order="stroke" stroke="#FFFDF7" stroke-width="3" stroke-linejoin="round">×${rx.toFixed(1)}</text>`;}
+  g+=`<circle cx="${X(n-1)}" cy="${Y(sp[n-1])}" r="2.6" fill="${!ended&&sp[n-1]>0?"#35B979":"var(--faint)"}"/>`;
+  const bw=(W-2*p)/(n-1);
+  sp.forEach((v,i)=>{
+    g+=`<g class="hz"><rect x="${(X(i)-bw/2).toFixed(1)}" y="0" width="${bw.toFixed(1)}" height="${H}" fill="transparent"/>`
+      +`<title>${n-i}주 전 · 주간 광고비 ${v.toLocaleString()}백만원${i===pk?" · 피크":""}${i===ri?` · 직전 주 대비 ×${rx.toFixed(1)}`:""}</title>`
+      +`<circle class="hd" cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.4" fill="var(--karrot)" opacity="0"/></g>`;});
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto">${g}</svg>`;
+}
+/* 영상 시청 유지 — 유독 큰 이탈 구간 하나만 −%p */
+function vretSVG(pts,W,H){
+  W=W||168;H=H||70;const pl=8,pr=8,pt=14,pb=10,iw=W-pl-pr,ih=H-pt-pb;
+  const SEG=["0→25%","25→50%","50→75%","75→100%"];
+  const X=i=>pl+i*iw/(pts.length-1),Y=v=>pt+(1-v/100)*ih;
+  let ln="";pts.forEach((v,i)=>{ln+=(i?" L":"M")+` ${X(i).toFixed(1)} ${Y(v).toFixed(1)}`;});
+  let g=`<path d="${ln} L ${X(pts.length-1)} ${H-pb} L ${X(0)} ${H-pb} Z" fill="var(--g1)" fill-opacity="0.1"/><path d="${ln}" fill="none" stroke="var(--g1)" stroke-width="1.7"/>`;
+  const drop=pts.slice(1).map((v,i)=>pts[i]-v);
+  const mxD=Math.max(...drop),avg=drop.reduce((a,b)=>a+b,0)/drop.length,di=drop.indexOf(mxD);
+  pts.forEach((v,i)=>{g+=`<circle cx="${X(i)}" cy="${Y(v)}" r="2.2" fill="var(--g1)"/>`;});
+  drop.forEach((dv,i)=>{
+    g+=`<g class="hz"><rect x="${X(i).toFixed(1)}" y="0" width="${(X(i+1)-X(i)).toFixed(1)}" height="${H}" fill="transparent"/>`
+      +`<title>${SEG[i]} 구간 · 도달 ${pts[i]}% → ${pts[i+1]}% · 이탈 ${dv}%p</title></g>`;});
+  if(mxD>=15&&mxD>=avg*1.5){
+    const mx1=Math.max(22,X(di)+(X(di+1)-X(di))*0.66),my=(Y(pts[di])+Y(pts[di+1]))/2+5;
+    g+=`<line x1="${X(di).toFixed(1)}" y1="${Y(pts[di]).toFixed(1)}" x2="${X(di+1).toFixed(1)}" y2="${Y(pts[di+1]).toFixed(1)}" stroke="var(--w1)" stroke-width="2.4"/>`;
+    g+=`<text x="${mx1.toFixed(1)}" y="${Math.max(9,my-7).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="var(--w1)" paint-order="stroke" stroke="#FFFDF7" stroke-width="3" stroke-linejoin="round">−${mxD}%p</text>`;}
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto">${g}</svg>`;
+}
+/* 또래 대비 위치 다각형 — 광고비 축 제외 · 점선 고리 = 중간 */
+function radarSVG(d,W){
+  W=W||300;
+  const pctOf=r=>{let m=String(r||"").match(/상위 (\d+)%/);if(m)return 100-+m[1];
+    m=String(r||"").match(/하위 (\d+)%/);return m?+m[1]:null;};
+  const items=[];const seen=new Set();
+  for(const o of [...d.kpi,...d.cohort,...(d.svc||[])]){
+    if(seen.has(o.k))continue;seen.add(o.k);
+    if(o.k.includes("광고비"))continue;
+    const p=pctOf(o.rank);if(p==null)continue;
+    items.push({lab:o.k,pct:p,tier:o.tier,val:o.v});}
+  const it=items.slice(0,6);
+  if(it.length<3)return "";
+  const H=190,cx=W/2,cy=H/2+2,R=52;
+  const N=it.length,ang=i=>-Math.PI/2+i*2*Math.PI/N;
+  const P=(i,r)=>[cx+Math.cos(ang(i))*R*r,cy+Math.sin(ang(i))*R*r];
+  const poly=fr=>it.map((o,i)=>P(i,fr(o)).map(n=>n.toFixed(1)).join(",")).join(" ");
+  let g="";
+  for(const r of[0.25,0.5,0.75,1])
+    g+=`<polygon points="${poly(()=>r)}" fill="none" stroke="${r===0.5?"var(--faint)":"var(--hair-2)"}" stroke-width="${r===0.5?1.1:1}"${r===0.5?' stroke-dasharray="4 3" stroke-opacity="0.6"':""}/>`;
+  for(let i=0;i<N;i++){const[x,y]=P(i,1);
+    g+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--hair-2)" stroke-width="1"/>`;}
+  const rOf=o=>Math.max(0.07,Math.min(1,o.pct/100));
+  g+=`<polygon points="${poly(rOf)}" fill="var(--karrot)" fill-opacity="0.12" stroke="var(--karrot)" stroke-width="1.6" stroke-opacity="0.7"/>`;
+  it.forEach((o,i)=>{const[x,y]=P(i,rOf(o));
+    g+=`<g class="hz"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.4" fill="${TIERC[o.tier]||"var(--mid)"}" stroke="#FFFDF7" stroke-width="1.4"/>`
+      +`<title>${o.lab} ${o.val} · 또래 중 상위 ${100-o.pct}%</title></g>`;});
+  it.forEach((o,i)=>{const[x,y]=P(i,1.30),a=ang(i);
+    const anc=Math.abs(Math.cos(a))<0.34?"middle":(Math.cos(a)>0?"start":"end");
+    g+=`<text x="${x.toFixed(1)}" y="${(y+3.2).toFixed(1)}" font-size="9.5" font-weight="600" text-anchor="${anc}" fill="var(--muted)">${o.lab.length>9?o.lab.slice(0,8)+"…":o.lab}</text>`;});
+  return `<div class="st-blk"><div class="microcap">또래 대비 위치 · <em>점선 고리 = 중간 · 바깥 = 좋음</em></div><svg viewBox="0 0 ${W} ${H}" style="width:100%;max-width:${W}px;height:auto">${g}</svg></div>`;}
+/* 미디어 목업 */
+function phHTML(d){
+  const isImg=d.ar==="s"||d.ar==="p";
+  const grad=isImg?"background:linear-gradient(150deg,#FF6F0F,#FF8A3D 55%,#FFB37A)"
+    :d.ar==="v"?"background:linear-gradient(165deg,#20242E,#33404F 60%,#4A6076)"
+    :"background:linear-gradient(160deg,#25211B,#3E362A 60%,#5A4D38)";
+  return `<div class="ph ${d.ar}"><div class="bg" style="${grad}"></div>`
+    +`${d.fo==="영상"?'<div class="play"></div>':""}${d.dur?`<div class="dur num">${d.dur}</div>`:""}</div>`;
+}
+function lifeCap(L){
+  const parts=[nb(`수명 ${L.wk}주`)];
+  if(L.win<L.wk)parts.push(nb(`최근 ${L.win}주 표시`));
+  parts.push(nb(`누적 ${L.tot}`));
+  parts.push(L.ended?`<em>종료</em>`:`<em>진행중</em>`);
+  return parts.join(" · ");
+}
+function vretCap(pts){
+  const drop=pts.slice(1).map((v,i)=>pts[i]-v);
+  const mx=Math.max(...drop),avg=drop.reduce((a,b)=>a+b,0)/drop.length;
+  const SEG=["0→25%","25→50%","50→75%","75→100%"];
+  const parts=[nb(`완주 ${pts[pts.length-1]}%`)];
+  if(mx>=15&&mx>=avg*1.5)parts.push(nb(`최대 이탈 ${SEG[drop.indexOf(mx)]}`));
+  else parts.push(`<em>고른 이탈</em>`);
+  return parts.join(" · ");
+}
+/* 스테이지 — 미디어(고정·비교 오버레이) · 메타 한 줄(표에 없는 것만) · 다각형 */
+function stageHTML(d){
+  return `<div class="cc-stage">
+    <div class="cc-frame ${d.ar}">${phHTML(d)}
+      <div class="fr-act">
+        <button class="fbtn" title="이 상세를 고정해 다른 소재와 나란히 본다">고정</button>
+        <button class="fbtn" title="비교 목록에 담는다">비교</button>
+      </div>
+    </div>
+    ${d.src?`<div class="cc-meta"><span class="num">${d.res}</span> · <a href="#" onclick="return false">원본 ↗</a></div>`:""}
+    <div class="st-charts">${radarSVG(d,300)}</div>
+  </div>`;
+}
+
+/* ═════ C3 v3 렌더 ═════ */
+function render3(d){
+  const xRows=d.xm.filter(o=>o.key&&o.x);
+  const overOf=k=>{const o={};for(const r of xRows)if(r.x[k])o[r.key]=r.x[k].sp;return o;};
+  const deltaOf=k=>xRows.filter(r=>r.x[k])
+    .map(r=>`<span class="xd xd-${r.key}" style="color:${TIERC[r.x[k].t]}">${r.x[k].d}</span>`).join("");
+  const hasx=k=>xRows.filter(r=>r.x[k]).map(r=>" hasx-"+r.key).join("");
+  const lr=o=>`<div class="lr hv${hasx(o.k)}"><span class="k" title="${o.k}">${o.k}</span>`
+    +`<b class="v num" style="color:${TIERC[o.tier]}">${o.v}</b>`
+    +`${o.sp?spk(o.sp,76,18,overOf(o.k)):"<span></span>"}`
+    +`<span class="rslot"><span class="r">${o.rank||""}</span>${deltaOf(o.k)}</span></div>`;
+  const peer=o=>`<div class="lr cmp peer hv" title="${PEER_TIP.replace(/&#10;/g,"\n")}">`
+    +`<span class="k" title="${o.k}">${o.k}</span>`
+    +(o.xo?`<span class="c">${o.c}</span><span></span>`
+          :`<b class="v num" style="color:${TIERC[o.uT]}">${o.u}</b><span class="c">${o.c}</span>`)
+    +`</div>`;
+  const xmRow=o=>`<div class="lr cmp hv"${o.key&&o.x?` data-xm="${o.key}"`:""} title="같은 소재의 다른 매체 버전 — ${o.key&&o.x?"올리면 위 지표 행에 그 매체와의 차이가 겹쳐 보입니다":"판정: "+o.j}">`
+    +`<span class="k">${o.m}<span class="jchip ${o.j==="동일"?"same":"sim"}">${o.j}</span></span>`
+    +`<b class="v num" style="color:var(--ink)">${o.v}</b><span class="r"></span></div>`;
+  const kpis=`<div class="kpis">${d.kpi.map(k=>`<div class="kpi hv" title="${k.med}"><div class="role">${k.role} · ${k.k}</div><div class="kv"><b class="num" style="color:${TIERC[k.tier]}">${k.v}</b><small>${k.rank}</small></div>${spk(k.sp,118,24)}</div>`).join("")}</div>`;
+  const svcRows=d.svc&&d.svc.length?`<div class="subcap">${nb(d.svcCap)}</div>`+d.svc.map(o=>lr({...o,sp:null})).join(""):"";
+  const charts=`<div class="chartcol">
+      <div class="st-blk"><div class="microcap">${lifeCap(d.life)}</div>${lifeSVG(d.life.sp,168,64,d.life.ended)}</div>
+      ${d.video?`<div class="st-blk"><div class="microcap">${vretCap(d.video.pts)}</div>${vretSVG(d.video.pts,168,70)}</div>`:""}
+    </div>`;
+  const assetFoot=d.asset?`<div class="r-foot"><button class="more" data-gx>${d.asset.lab} <i>${d.asset.sub}</i> <span class="car">▾</span></button></div>
+    <div class="gx"><div>${d.asset.rows.slice(0,Math.ceil(d.asset.rows.length/2)).map(o=>lr({...o,sp:null})).join("")}</div><div>${d.asset.rows.slice(Math.ceil(d.asset.rows.length/2)).map(o=>lr({...o,sp:null})).join("")}</div></div>`:"";
+  return `<div class="cc c3" style="--stw:340px">
+  ${stageHTML(d)}
+  <div class="rail">
+    ${kpis}
+    <div class="mini2">
+      <div><div class="lcap">${nb("매체 리포트 · 최근 8주")}</div>${d.perf.map(lr).join("")}</div>
+      <div><div class="lcap"><span style="white-space:nowrap">${nb("실유저 실증")}&#8202;<span class="q" title="${COHORT_TIP}">?</span></span> · ${nb(d.cohortCap.replace(/^실유저 실증 · /,""))}</div>${d.cohort.map(lr).join("")}${svcRows}</div>
+      ${charts}
+    </div>
+    <hr class="divider">
+    <div class="cmp2">
+      <div>${d.peers.map(peer).join("")}</div>
+      <div>${d.xm.map(xmRow).join("")}</div>
+    </div>
+    ${assetFoot}
+  </div>
+</div>`;}
+
+/* ═════ 마운트 + 매체 전환 + 상호작용 ═════ */
+const CUR={3:"aeo"};
+function mount(c){
+  const d=M[CUR[c]];
+  const host=document.getElementById("mk"+c);
+  host.innerHTML=render3(d);
+  document.getElementById("cap"+c).textContent=d.media+" · "+(d.name.length>30?d.name.slice(0,29)+"…":d.name)+" ";
+  const rail=host.querySelector(".rail");
+  if(!rail)return;
+  /* 타매체 '동일' 행 호버 → 위 지표 행에 그 매체 차이·추이 겹침 */
+  host.querySelectorAll(".lr.cmp[data-xm]").forEach(row=>{
+    const m=row.dataset.xm;
+    const on=()=>rail.classList.add("xm-"+m);
+    const off=()=>rail.classList.remove("xm-"+m);
+    row.addEventListener("mouseenter",on); row.addEventListener("mouseleave",off);
+    row.addEventListener("focusin",on);    row.addEventListener("focusout",off);
+  });
+  /* 애셋 보고서 접기/펼치기 */
+  const gxBtn=host.querySelector("[data-gx]"),gx=host.querySelector(".gx");
+  if(gxBtn&&gx)gxBtn.onclick=()=>{const on=gx.classList.toggle("on");gxBtn.classList.toggle("on",on);gxBtn.querySelector(".car").textContent=on?"▴":"▾";};
+}
+document.querySelectorAll(".mseg").forEach(seg=>{
+  seg.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    seg.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+    CUR[seg.dataset.c]=b.dataset.m;mount(seg.dataset.c);
+  });
+});
+mount(3);
+</script>
+
+</body></html>

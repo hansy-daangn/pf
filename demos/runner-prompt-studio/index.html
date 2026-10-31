@@ -1,0 +1,571 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>로컬러너스 프롬프트 스튜디오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --paper:#EAE5DC; --surface:#FCFAF7; --surface2:#F3EFE8; --sunk:#E4DED4;
+  --ink:#211B17; --ink2:#5A5049; --ink3:#8C8178;
+  --line:#DAD2C7; --line2:#C4B9AC;
+  --law:#AE3826; --lawBg:#F7E1DB; --lawInk:#8A2A1B;
+  --pick:#1B5A5E; --pickBg:#DCEAEA; --pickInk:#144A4E;
+  --les:#8A6212; --lesBg:#F6E9CF; --lesInk:#6E4D0B;
+  --ban:#6A625B; --banBg:#E9E4DC;
+  --ok:#3D6B31; --okBg:#E1EBDA;
+  --sans:"IBM Plex Sans KR",-apple-system,"Malgun Gothic",sans-serif;
+  --cond:"IBM Plex Sans Condensed","IBM Plex Sans KR",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;padding-bottom:74px}
+@media(min-width:1081px){body{padding-bottom:0}}
+.shell{max-width:1320px;margin:0 auto;padding:24px 18px 60px}
+.eyebrow{font-family:var(--cond);font-weight:700;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--law)}
+h1{font-size:clamp(25px,3.6vw,34px);line-height:1.14;margin:5px 0 7px;font-weight:700;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--ink2);max-width:66ch;margin:0;font-size:14.5px}
+header{border-bottom:2px solid var(--ink);padding-bottom:16px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2)}
+.sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+.sw.l{background:var(--law)} .sw.p{background:var(--pick)} .sw.s{background:var(--les)} .sw.b{background:var(--ban)}
+
+.work{display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:24px;align-items:start;margin-top:22px}
+@media(max-width:1080px){.work{grid-template-columns:1fr}}
+
+.axes{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+@media(max-width:660px){.axes{grid-template-columns:1fr}}
+.ax{border-top:1px solid var(--line);padding:13px 0 15px;grid-column:span 1}
+.ax.wide{grid-column:1/-1}
+.ax:first-child{border-top:0;padding-top:0}
+.axh{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.axn{font-family:var(--mono);font-size:10.5px;color:var(--ink3);font-weight:600;letter-spacing:.02em}
+.axt{font-family:var(--cond);font-weight:700;font-size:13.5px;letter-spacing:.07em;text-transform:uppercase}
+.opt{font-size:10.5px;font-family:var(--cond);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);
+  border:1px solid var(--line2);border-radius:3px;padding:0 4px}
+.axhint{font-size:12px;color:var(--ink3);flex:1 1 100%;margin-top:-2px;line-height:1.45}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--sans);font-size:13px;background:var(--surface);border:1px solid var(--line2);color:var(--ink2);
+  padding:6px 11px;border-radius:8px;cursor:pointer;line-height:1.3;text-align:left;transition:.1s}
+.chip:hover{border-color:var(--pick);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--pick);border-color:var(--pick);color:#fff;font-weight:600}
+.chip[disabled]{opacity:.32;cursor:not-allowed;background:var(--sunk)}
+.chip:focus-visible{outline:2px solid var(--law);outline-offset:2px}
+.chip small{display:block;font-family:var(--mono);font-size:10px;opacity:.72;letter-spacing:-.01em;margin-top:1px}
+.chip[aria-pressed="true"] small{opacity:.85}
+.tag{display:inline-block;font-family:var(--mono);font-size:9px;padding:1px 4px;border-radius:3px;margin-left:5px;
+  background:var(--lesBg);color:var(--lesInk);font-weight:600;vertical-align:1px}
+.chip[aria-pressed="true"] .tag{background:rgba(255,255,255,.24);color:#fff}
+.tag.no{background:var(--lawBg);color:var(--lawInk)}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:8px;overflow:hidden;background:var(--surface)}
+.stepper button{width:34px;height:34px;border:0;background:transparent;color:var(--ink2);font-size:16px;cursor:pointer}
+.stepper button:hover{background:var(--surface2);color:var(--law)}
+.stepper span{font-family:var(--mono);font-weight:600;min-width:48px;text-align:center;font-variant-numeric:tabular-nums;font-size:13px}
+.note{font-size:12px;color:var(--lesInk);background:var(--lesBg);border-radius:6px;padding:5px 9px;margin-top:7px;line-height:1.5}
+
+.panel{background:var(--surface);border:1px solid var(--line2);border-radius:12px;overflow:hidden;position:sticky;top:16px}
+@media(max-width:1080px){.panel{position:static}}
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border-bottom:1px solid var(--line);background:var(--surface2)}
+.ptitle{font-family:var(--cond);font-weight:700;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase}
+.wc{font-family:var(--mono);font-size:11px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.wc b{color:var(--ok)} .wc.over b{color:var(--law)}
+.out{font-family:var(--mono);font-size:12.3px;line-height:1.68;padding:13px;white-space:pre-wrap;word-break:break-word;
+  max-height:40vh;overflow-y:auto}
+@media(max-width:1080px){.out{max-height:none}}
+.out .s-law{color:var(--lawInk);background:var(--lawBg);border-radius:2px;box-shadow:0 0 0 1px var(--lawBg)}
+.out .s-pick{color:var(--pickInk);background:var(--pickBg);border-radius:2px;box-shadow:0 0 0 1px var(--pickBg);font-weight:500}
+.out .s-les{color:var(--lesInk);background:var(--lesBg);border-radius:2px;box-shadow:0 0 0 1px var(--lesBg)}
+.out .s-ban{color:var(--ban);background:var(--banBg);border-radius:2px;box-shadow:0 0 0 1px var(--banBg)}
+.pact{display:flex;gap:7px;padding:11px 13px;border-top:1px solid var(--line);background:var(--surface2)}
+.btn{flex:1;font-family:var(--sans);font-weight:600;font-size:13.5px;border:0;border-radius:8px;padding:10px;cursor:pointer;background:var(--law);color:#fff}
+.btn.alt{background:transparent;border:1px solid var(--line2);color:var(--ink2);flex:0 0 auto;padding:10px 13px}
+.btn.alt:hover{border-color:var(--pick);color:var(--pick)}
+.btn:active{transform:translateY(1px)}
+.audit{border-top:1px solid var(--line);padding:11px 13px}
+.ahead{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.score{font-family:var(--mono);font-size:11px;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--okBg);color:var(--ok)}
+.score.bad{background:var(--lawBg);color:var(--lawInk)}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;margin:0;padding:0;list-style:none}
+@media(max-width:520px){.checks{grid-template-columns:1fr}}
+.checks li{font-size:11.8px;color:var(--ink2);display:flex;gap:5px;align-items:baseline;line-height:1.45}
+.checks li i{font-style:normal;font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--ok);flex:0 0 11px}
+.checks li.fail{color:var(--lawInk)} .checks li.fail i{color:var(--law)}
+.setup{border-top:1px solid var(--line);padding:11px 13px;background:var(--surface2)}
+.kv{display:grid;grid-template-columns:76px minmax(0,1fr);gap:3px 10px;font-size:12px}
+.kv dt{font-family:var(--cond);font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);font-size:10.5px;padding-top:2px}
+.kv dd{margin:0;font-family:var(--mono);font-size:11.3px;color:var(--ink2);word-break:break-word}
+.warnbox{margin-top:9px;font-size:12px;background:var(--lesBg);color:var(--lesInk);border-radius:7px;padding:7px 9px;line-height:1.5}
+
+.mobar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:8px;align-items:center;padding:9px 14px;background:var(--surface);border-top:1px solid var(--line2)}
+@media(min-width:1081px){.mobar{display:none}}
+.mobar .wc{flex:1}
+footer{margin-top:38px;border-top:2px solid var(--ink);padding-top:20px}
+.lessons{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:13px;margin-top:13px}
+.lcard{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:12px 13px}
+.lcard h3{font-family:var(--cond);font-size:12px;letter-spacing:.07em;text-transform:uppercase;margin:0 0 6px;color:var(--pick)}
+.lcard ul{margin:0;padding-left:15px;font-size:12.8px;color:var(--ink2);line-height:1.55}
+.lcard li{margin-bottom:4px}
+.lcard code{font-family:var(--mono);font-size:11px;background:var(--surface2);padding:1px 3px;border-radius:3px;color:var(--ink)}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(12px);bottom:88px;z-index:60;opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;font-size:13px;font-weight:600;padding:9px 16px;border-radius:99px;transition:.2s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="shell">
+<header>
+  <div class="eyebrow">로컬러너스 티징 필름 · 스틸</div>
+  <h1>로컬러너스 프롬프트 스튜디오</h1>
+  <p class="sub">사용자가 <b>정답</b>으로 판정한 에디토리얼 사진 서술 골격만 씁니다. 열 문장, 1,000–1,350자. 항목 나열형 사양서와 금지어 꼬리는 폐기했습니다. 축 열두 개 중 서로 물고 있는 조합(통로형 장소↔좌우 횡단, 정면↔패닝, 약한 블러↔마무리 무드 등)은 고르는 즉시 자동으로 맞춰지고, 그 이유가 칩 아래에 표시됩니다.</p>
+  <div class="legend">
+    <span class="lg"><i class="sw l"></i>원문 골격 — 절대 고정</span>
+    <span class="lg"><i class="sw p"></i>내가 고른 값</span>
+    <span class="lg"><i class="sw s"></i>레슨런 — 방향 · 무리 · 모션</span>
+    
+  </div>
+</header>
+
+<div class="work">
+  <div class="axes" id="axes"></div>
+
+  <aside class="panel">
+    <div class="ptop"><span class="ptitle">프롬프트</span><span class="wc" id="wc"></span></div>
+    <div class="out" id="out"></div>
+    <div class="pact">
+      <button class="btn" id="copy" type="button">프롬프트 복사</button>
+      <button class="btn alt" id="shuffle" type="button">랜덤 변주</button>
+      <button class="btn alt" id="reset" type="button">초기화</button>
+    </div>
+    <div class="audit">
+      <div class="ahead"><span class="ptitle">원칙 자동 검사</span><span class="score" id="score"></span></div>
+      <ul class="checks" id="checks"></ul>
+    </div>
+    <div class="setup">
+      <div class="ptitle" style="margin-bottom:7px">힉스필드 설정</div>
+      <dl class="kv" id="setup"></dl>
+      <div class="warnbox" id="engWarn" hidden></div>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="eyebrow">방법론</div>
+  <h2 style="font-size:19px;margin:3px 0 0;font-weight:700">왜 이 골격이 정답인가</h2>
+  <div class="lessons">
+    <div class="lcard"><h3>명세가 아니라 한 장의 사진 서술</h3><ul>
+      <li>오답은 <b>사양서</b>였습니다. <code>Camera one metre from the nearest runner</code> · <code>It is late morning, around ten in the morning</code> — 항목 나열은 모델이 한 장면으로 합성하지 못합니다.</li>
+      <li>정답 골격은 <b>사진 캡션</b>입니다. 문장마다 주어·술어가 있고, 앞 문장 위에 한 겹씩 쌓입니다.</li>
+      <li>문장 끝마다 <b>효과절</b>을 답니다. <code>creating a vast sense of scale</code> · <code>highlighting energy and tension</code> — 왜 그렇게 찍는지가 있어야 그렇게 찍힙니다.</li>
+    </ul></div>
+    <div class="lcard"><h3>주인공은 한 명, 무리는 수식</h3><ul>
+      <li>여러 명을 동등하게 세우면 <b>초점이 없어 전부 뭉갭니다.</b> 주인공 한 명을 세우고 <code>she / her</code>로 문장을 이어갑니다.</li>
+      <li>무리는 주인공을 꾸미는 절로만. <code>with blurred fellow runners of her crew close in the foreground and more of them behind her</code>.</li>
+      <li>인원수를 세지 않습니다. <code>five runners</code>처럼 세는 순간 정렬된 단체사진이 됩니다.</li>
+    </ul></div>
+    <div class="lcard"><h3>방향은 길과 한 절로 묶는다</h3><ul>
+      <li>사람의 방향만 쓰면 <b>길은 딴 데로 뻗습니다.</b> 벽·문으로 돌진하는 컷의 원인입니다.</li>
+      <li><code>the sidewalk running left to right across the frame and she running the same way, to the right, in profile</code> — 길과 사람을 <b>한 절</b>에.</li>
+      <li>등을 보이며 멀어지는 방향은 뺐습니다. 다가옴 · 좌우 횡단 · 대각 진입만 씁니다.</li>
+    </ul></div>
+    <div class="lcard"><h3>빛은 시각이 아니라 동사</h3><ul>
+      <li>오답의 <code>It is late morning, around ten in the morning</code>은 화면을 아무것도 바꾸지 못했습니다.</li>
+      <li>빛이 <b>무엇을 하는지</b> 씁니다. <code>A single, sharp beam of high midday light cuts across her form, casting bold, angular shadows</code>.</li>
+      <li>시간대는 빛의 각도와 그림자 길이로 저절로 지정됩니다.</li>
+    </ul></div>
+    <div class="lcard"><h3>모션블러 = 대상 + 원인</h3><ul>
+      <li><code>strong motion blur on limbs, with the environment slightly streaked from camera panning</code> — <b>무엇이</b> 흐려지고 <b>왜</b> 흐려지는지.</li>
+      <li>선택적 선명함이 긴장을 만듭니다. <code>Only parts of her body … are crisply lit while others fade into motion</code>.</li>
+      <li>마무리 <code>Grainy film look footage with hectic chaotic motion blur</code>가 전체 질감을 한 번 더 못 박습니다.</li>
+    </ul></div>
+    <div class="lcard"><h3>네 명의 적대 검증에서 잡힌 것</h3><ul>
+      <li><b>축이 서로를 무너뜨립니다.</b> 좁은 통로에서 좌우로 달리면 벽으로, 정면으로 오는 피사체에 패닝을 걸면 방향이, 전경 스침은 무리의 진행축을 깹니다 — 전부 자동으로 잠갔습니다.</li>
+      <li><b>검사가 만점만 내면 검사가 아닙니다.</b> 자기가 넣은 문자열을 다시 찾던 항목을 걷어내고, 관사·차도 어휘·배번표·인원수·방향 섞임처럼 <b>실제로 실패할 수 있는 것</b>만 26개 남겼습니다.</li>
+      <li>무작위 6만 조합 전수 검사 <b>실패 0</b>, 길이 1,090–1,345자.</li>
+    </ul></div>
+    <div class="lcard"><h3>금지어를 쓰지 않는다</h3><ul>
+      <li>구옛 <code>no A, no B, no C</code> 꼬리는 <b>전부 삭제</b>했습니다. 부정어는 그 대상을 불러옵니다.</li>
+      <li>대신 <b>긍정 서술로 자리를 선점</b>합니다. 배번표는 <code>a high-performance deep burgundy running set</code>이, 차도는 장소마다 박아 둔 보행로 명사가 막습니다. 다만 이건 확률을 낮추는 장치지 보증이 아닙니다 — 뽑은 뒤 골라내야 합니다.</li>
+      <li>목표 길이 <b>1,000–1,350자 · 열 문장</b>. 길어지면 뭉갭니다.</li>
+    </ul></div>
+  </div>
+</footer>
+</div>
+
+<div class="mobar"><span class="wc" id="wc2"></span><button class="btn" id="copy2" type="button" style="flex:0 0 auto;padding:9px 18px">복사</button></div>
+<div class="toast" id="toast">복사했습니다</div>
+
+<script>
+(function(){
+"use strict";
+var LAW="law", PICK="pick", LES="les";
+
+/* ============ 0. 엔진 ============ */
+var ENGINES={
+ soul2:{ko:"Soul 2.0",tag:"주력",film:"portra",
+  setup:[["모델","Higgsfield Soul 2.0"],["프리셋","RUNNERS_FILM (무드보드)"],["비율·화질","9:16 · 2k"],["배치","2/4 (선별용)"],["참조","첨부 없음 · 프리셋만"],["비용","무료 gens · 0크레딧"]],
+  warn:"등을 보이는 컷은 정면으로 뒤집는 버릇이 있습니다. 이 골격에는 멀어지는 방향이 아예 없습니다."},
+ cinema:{ko:"Soul Cinema",tag:"인물 근접",film:"cinestill",
+  setup:[["모델","Higgsfield Soul Cinema"],["스타일","General"],["비율·화질","9:16 · 2k"],["Camera","Off"],["참조","첨부 없음 (있으면 제거)"],["비용","무료 gens · 0크레딧"]],
+  warn:"서버가 프롬프트를 보강해 문장이 흔들립니다. 하늘 비중이 큰 로우앵글에서 화면이 90° 돌아가는 사고가 납니다."},
+ seed:{ko:"Seedream 5.0 lite",tag:"참조 4장",film:"lowcon",
+  setup:[["모델","Seedream 5.0 lite"],["Unlimited","ON (첨부 후 재점등)"],["비율·화질","9:16 · 4K"],["배치","1/4"],["참조 4장","runners_p35 · p04 · p25 · p14"],["첨부","파일 슬롯당 1장씩"],["비용","Unlimited · 0크레딧"]],
+  warn:"대비가 쨍하게 나옵니다. 필름은 저대비 모션픽처 스톡으로 두세요."}
+};
+
+/* ============ 1. 주인공 — 반드시 한 명 ============ */
+var SUBJECTS={
+ w_late:{ko:"20대 후반 여성",sub:"정답 기본값",en:"a Korean woman runner in her late twenties",
+   S:"She",wears:"wears",run:"she running",form:"her form",body:"her body",face:"her face",poss:"her",obj:"her"},
+ w_mid:{ko:"20대 중반 여성",en:"a Korean woman runner in her mid twenties",
+   S:"She",wears:"wears",run:"she running",form:"her form",body:"her body",face:"her face",poss:"her",obj:"her"},
+ w_early:{ko:"20대 초반 여성",en:"a Korean woman runner in her early twenties",
+   S:"She",wears:"wears",run:"she running",form:"her form",body:"her body",face:"her face",poss:"her",obj:"her"},
+ m_late:{ko:"20대 후반 남성",en:"a Korean male runner in his late twenties",
+   S:"He",wears:"wears",run:"he running",form:"his form",body:"his body",face:"his face",poss:"his",obj:"him"}
+};
+
+/* ============ 2. 프레이밍 ============ */
+var FRAMES={
+ full:{ko:"전신",sub:"정답 기본값",en:"Full-body",shoes:true,face:false},
+ waist:{ko:"상반신",en:"Waist-up",shoes:false,face:false},
+ close:{ko:"얼굴 근접",sub:"신발 · 전경 자동 제외",en:"Tight close-up",shoes:false,face:true}
+};
+
+/* ============ 3. 장소 — 보이는 대로만, 고유명사 없음 ============ */
+var PLACES={
+ sidewalk:{ko:"상점가 인도",sub:"정답 기본값",prep:"on",path:"narrow city sidewalk lined with small shops",
+   bg:"low brick buildings and streaked shopfronts",ground:"sidewalk",tex:"urban textures",
+   scale:"creating a vast sense of scale",corridor:false},
+ alley:{ko:"좁은 골목",prep:"in",path:"narrow alley between low brick houses",
+   bg:"low brick walls and streaked overhead wires",ground:"alley",tex:"urban textures",
+   scale:"the walls pressing in close on both sides",corridor:true},
+ market:{ko:"시장 통로",prep:"in",path:"covered market walkway under striped awnings",
+   bg:"stacked wooden crates and streaked cloth sheeting",ground:"walkway",tex:"market textures",
+   scale:"the stalls pressing in close on both sides",corridor:true},
+ river:{ko:"강변 보행로",prep:"on",path:"riverside walking path",
+   bg:"tall trees and a long footbridge streaked across the water",ground:"path",tex:"riverside textures",
+   scale:"creating a vast sense of scale",corridor:false},
+ park:{ko:"공원 산책로",prep:"on",path:"park path under old trees",
+   bg:"green foliage and streaked wooden benches",ground:"path",tex:"green textures",
+   scale:"creating a vast sense of scale",corridor:false},
+ walkway:{ko:"난간 있는 보행 통로",prep:"on",path:"raised pedestrian walkway with green steel railings",
+   bg:"repeating railings and streaked rooftops beyond",ground:"walkway",tex:"urban textures",
+   scale:"creating a vast sense of scale",corridor:false},
+ underpass:{ko:"굴다리",prep:"in",path:"short pedestrian tunnel opening onto sunlight",
+   bg:"concrete arch walls and a bright, streaked exit",ground:"tunnel floor",tex:"concrete textures",
+   scale:"the arch pressing in close on both sides",corridor:true},
+ slope:{ko:"계단 옆 오르막길",prep:"on",path:"stepped walkway between tiled house fronts",
+   bg:"low garden walls and streaked handrails",ground:"walkway",tex:"urban textures",
+   scale:"the house fronts pressing in close on both sides",corridor:true},
+ rooftop:{ko:"옥상 사이 통로",prep:"on",path:"narrow walkway between low rooftops",
+   bg:"water tanks and streaked laundry lines",ground:"walkway",tex:"rooftop textures",
+   scale:"creating a vast sense of scale",corridor:false}
+};
+
+/* ============ 4. 방향 — 길과 사람을 한 절로, 끝에 중앙 배치 ============ */
+var CENTRE=", centred in the tall frame";
+var DIRS={
+ lr:{ko:"왼쪽 → 오른쪽",sub:"패닝 최적 · 트인 길만",lateral:true,
+   f:function(P,B){return "the "+P.ground+" running left to right across the frame and "+B.run+" the same way, to the right, in profile"+CENTRE;}},
+ rl:{ko:"오른쪽 → 왼쪽",sub:"패닝 최적 · 트인 길만",lateral:true,
+   f:function(P,B){return "the "+P.ground+" running right to left across the frame and "+B.run+" the same way, to the left, in profile"+CENTRE;}},
+ toward:{ko:"정면으로 다가옴",sub:"렌즈를 스쳐 지나기 직전",lateral:false,
+   f:function(P,B){return "the "+P.ground+" running straight toward the camera and "+B.run+" the same way, straight at the lens"+CENTRE;}},
+ diag:{ko:"대각선으로 다가옴",sub:"안쪽 왼편 → 앞쪽 오른편",lateral:false,
+   f:function(P,B){return "the "+P.ground+" running diagonally from the far left to the near right and "+B.run+" the same way, toward the camera, in three-quarter view"+CENTRE;}}
+};
+
+/* ============ 5. 함께 뛰는 무리 — 주인공을 꾸미는 절로만 ============ */
+var CREW={
+ fg_bg:{ko:"전경 + 후경",sub:"정답 기본값",lateralOnly:false,
+   f:function(B){return "blurred fellow runners of "+B.poss+" crew close in the foreground and more of them behind "+B.obj;}},
+ behind:{ko:"뒤쪽에만",lateralOnly:false,
+   f:function(B){return "the rest of "+B.poss+" crew blurred a few steps behind "+B.obj;}},
+ beside:{ko:"옆에 나란히",lateralOnly:false,
+   f:function(B){return "a few crew mates blurred alongside "+B.obj+" and more of them further back";}},
+ ahead:{ko:"앞서가는 무리",lateralOnly:false,
+   f:function(B){return "the rest of "+B.poss+" crew blurred a few strides ahead of "+B.obj;}},
+ sweep:{ko:"전경을 스침",sub:"좌우 횡단에서만",lateralOnly:true,
+   f:function(B){return "a blurred crew mate cutting close past the lens on the same line";}}
+};
+
+/* ============ 6. 빛 — 시각이 아니라 빛의 행동 ============ */
+var LIGHTS={
+ noon:{ko:"정오 직사광",sub:"정답 기본값",leaves:false,day:true,
+   f:function(B,P){return "A single, sharp beam of high midday light cuts across "+B.form+", casting bold, angular shadows";}},
+ gap:{ko:"건물 틈새 빛",sub:"띠처럼 떨어짐",leaves:false,day:true,
+   f:function(B,P){return "A shaft of midday light falls through a gap overhead and cuts across "+B.form+", casting bold, angular shadows";}},
+ dapple:{ko:"나뭇잎 사이 얼룩광",sub:"나무 있는 곳만",leaves:true,day:true,
+   f:function(B,P){return "Dappled midday light falls through the leaves across "+B.form+", casting broken, angular shadows";}},
+ morning:{ko:"이른 아침 낮은 빛",sub:"대낮 규칙 이탈",leaves:false,day:false,
+   f:function(B,P){return "A single, sharp beam of low morning light rakes across "+B.form+", throwing long, angular shadows";}}
+};
+
+/* ============ 7. 모션 — 무엇이 왜 흐려지는가 ============ */
+var BLURS={
+ limbs_pan:{ko:"팔다리 + 가벼운 패닝",sub:"정답 기본값",bgblur:true,soft:false,
+   f:function(B){return "strong motion blur on limbs, with the environment slightly streaked from camera panning";}},
+ body_pan:{ko:"몸 전체 + 패닝",sub:"팔부터 다리까지",bgblur:true,soft:false,
+   f:function(B){return "strong motion blur across "+B.body+" from swinging arms to trailing legs, with the environment streaked from camera panning";}},
+ hard_pan:{ko:"패닝 강하게",sub:"배경이 통째로 흐름",bgblur:false,soft:false,
+   f:function(B){return "strong motion blur on limbs, with the whole environment dragged into long horizontal streaks by the panning camera";}},
+ shudder:{ko:"손떨림 더해짐",sub:"프레임 전체가 떨림",bgblur:true,soft:false,
+   f:function(B){return "strong motion blur on limbs and a hard handheld shudder through the whole frame, with the environment streaked from camera panning";}},
+ whip:{ko:"휩팬",sub:"전부 스트릭",bgblur:false,soft:false,
+   s6:function(B,P,FR){return "Only "+(FR.face?B.face+" and the hair whipping past it":B.poss+" shoulders and the immediate foreground "+P.ground)+" hold an edge while everything else tears away, highlighting energy and tension.";},
+   f:function(B){return "the whole frame torn into long streaks by a whip pan, "+B.poss+" form still the one solid shape in it";}},
+ soft:{ko:"약하게",sub:"얼굴이 또렷함",bgblur:true,soft:true,
+   f:function(B){return "light motion blur on limbs, with the environment slightly streaked from camera panning";}}
+};
+
+/* ============ 8. 렌즈 ============ */
+var LENSES={
+ f24:{ko:"24mm 광각",sub:"전경이 다가옴",art:"a",en:"24mm lens",dof:"deep focus with the near foreground looming"},
+ f35:{ko:"35mm",sub:"르포",art:"a",en:"35mm lens",dof:"shallow depth of field"},
+ f50:{ko:"50mm",sub:"정답 기본값",art:"a",en:"50mm lens",dof:"shallow depth of field"},
+ f85:{ko:"85mm 준망원",sub:"배경 압축",art:"an",en:"85mm lens",dof:"shallow depth of field"}
+};
+
+/* ============ 9. 필름 · 룩 ============ */
+var FILMS={
+ portra:{ko:"Portra 400",sub:"정답 기본값",en:"Kodak Portra 400 film",look:"soft grain, warm tones"},
+ gold:{ko:"Gold 200",sub:"노란빛",en:"Kodak Gold 200 film",look:"fine grain, golden tones"},
+ superia:{ko:"Superia",sub:"초록빛",en:"Fuji Superia film",look:"soft grain, cool greens"},
+ cinestill:{ko:"CineStill",sub:"하이라이트 번짐",en:"CineStill film",look:"soft grain, glowing highlights"},
+ lowcon:{ko:"Vision3 500T",sub:"Seedream용 저대비",en:"Kodak Vision3 500T film",look:"heavy grain, muted colors"}
+};
+
+/* ============ 10. 의상 색 ============ */
+var OUTFITS={
+ burgundy:{ko:"버건디",sub:"정답 기본값",en:"deep burgundy"},
+ oxblood:{ko:"옥스블러드",en:"deep oxblood"},
+ cobalt:{ko:"코발트",en:"deep cobalt"},
+ forest:{ko:"포레스트 그린",en:"deep forest green"},
+ plum:{ko:"플럼",en:"deep plum"},
+ rust:{ko:"러스트",en:"deep rust"},
+ teal:{ko:"딥 틸",en:"deep teal"}
+};
+
+/* ============ 11. 마무리 무드 ============ */
+var MOODS={
+ kinetic:{ko:"질주감",sub:"정답 기본값",soft:false,
+   f:function(P){return "Dynamic framing, visual rhythm, "+P.tex+". Editorial, cinematic, kinetic. Grainy film look footage with hectic chaotic motion blur.";}},
+ raw:{ko:"거친 다큐",soft:false,
+   f:function(P){return "Loose framing, visual rhythm, "+P.tex+". Editorial, documentary, raw. Grainy film look footage with hectic chaotic motion blur.";}},
+ campaign:{ko:"패션 캠페인",soft:false,
+   f:function(P){return "Bold framing, visual rhythm, "+P.tex+". Editorial, campaign, kinetic. Grainy film look footage with hectic chaotic motion blur.";}},
+ quiet:{ko:"차분한 잡지",sub:"약한 블러와 한 쌍",soft:true,
+   f:function(P){return "Dynamic framing, visual rhythm, "+P.tex+". Editorial, cinematic, quiet. Grainy film look footage with soft natural motion blur.";}}
+};
+
+/* ============ 상태 ============ */
+var D={eng:"soul2",subj:"w_late",frame:"full",place:"sidewalk",dir:"lr",crew:"fg_bg",
+       light:"noon",blur:"limbs_pan",lens:"f50",film:"portra",outfit:"burgundy",mood:"kinetic"};
+var S=JSON.parse(JSON.stringify(D));
+
+/* ============ 조립 — 정답 골격 열 문장 ============ */
+function seg(k,t){return {k:k,t:t};}
+function build(){
+  var B=SUBJECTS[S.subj],P=PLACES[S.place],C=CREW[S.crew],L=LIGHTS[S.light],M=BLURS[S.blur],
+      LN=LENSES[S.lens],F=FILMS[S.film],O=OUTFITS[S.outfit],FR=FRAMES[S.frame],MD=MOODS[S.mood];
+  var out=[];
+  /* 1 장르 + 주인공 + 동작 + 장소 */
+  out.push(seg(LAW, FR.en+" editorial fashion photo of "+B.en+", captured mid-stride "+P.prep+" a "+P.path+","));
+  /* 1b 길 축 · 달리는 방향 · 중앙 배치를 한 절로 */
+  out.push(seg(LES, DIRS[S.dir].f(P,B)+"."));
+  /* 2 의상 (근접 컷에서는 신발 구를 뺀다) */
+  out.push(seg(PICK, B.S+" "+B.wears+" a high-performance "+O.en+" running set"+(FR.shoes?" and colorful performance sneakers":"")+","));
+  /* 2b 함께 뛰는 무리 */
+  out.push(seg(LES,"with "+C.f(B)+"."));
+  /* 3 배경 + 공간감 */
+  out.push(seg(PICK, M.bgblur
+    ? "The background features blurred, "+P.bg+", "+P.scale+"."
+    : "The background features "+P.bg.replace("streaked ","")+" pulled into long streaks, "+P.scale+"."));
+  /* 4 빛의 행동 */
+  out.push(seg(PICK, L.f(B,P)+"."));
+  /* 5 모션 */
+  out.push(seg(LES, "The composition is fast and fluid: "+M.f(B)+"."));
+  /* 6 선택적 선명함 — 프레이밍·모션에 따라 대상만 교체 */
+  out.push(seg(LAW, M.s6 ? M.s6(B,P,FR)
+    : FR.face
+      ? "Only parts of "+B.face+" and the loose hair whipping past it are crisply lit while others fade into motion, highlighting energy and tension."
+      : "Only parts of "+B.body+" and the immediate foreground "+P.ground+" are crisply lit while others fade into motion, highlighting energy and tension."));
+  /* 7 카메라 한 문장 */
+  out.push(seg(PICK, "Shot handheld with "+LN.art+" "+LN.en+" on "+F.en+", the horizon slightly canted, "+F.look+", "+LN.dof+"."));
+  /* 8 마무리 무드 3연타 */
+  out.push(seg(LAW, MD.f(P)));
+  return out;
+}
+function plain(){return build().map(function(s){return s.t;}).join(" ");}
+
+/* ============ 검사 — 실제로 실패할 수 있는 것만 ============ */
+function audit(){
+  var p=plain(),l=p.toLowerCase(),len=p.length,P=PLACES[S.place],M=BLURS[S.blur];
+  var sen=p.split(/[.!?](?:\s|$)/).filter(function(x){return x.trim().length;}).length;
+  return [
+   ["관사 오류 없음",!/\ba (a|e|i|o|u|8|11|18)/.test(l)&&!/\ban (b|c|d|f|g|j|k|l|m|n|p|q|r|s|t|v|w|y|z|2|3|5|9)/.test(l)],
+   ["복수 주인공 없음",!/\bthey\b|\bthem run|\btwo korean/.test(l)],
+   ["인원수 세지 않음",!/\b(two|three|four|five|six|seven|a pair of|[2-9])\s+(korean|runners|women|men|crew)/.test(l)],
+   ["길 축 = 달리는 방향",/(running (left to right|right to left|straight toward|diagonally))[^.]*and (she|he) running the same way/.test(l)],
+   ["멀어지는 방향 없음",!/away from the camera|back to the lens|backs to/.test(l)],
+   ["복도형 장소 = 세로 방향만",!P.corridor||!DIRS[S.dir].lateral],
+   ["무리 방향 = 주인공 방향",S.crew!=="sweep"||DIRS[S.dir].lateral],
+   ["화면 중앙 명시",/centred in the tall frame/.test(l)],
+   ["수평 기울기 명시",/horizon slightly canted/.test(l)],
+   ["핸드헬드 명시",/shot handheld/.test(l)],
+   ["좁은 길 ↔ 넓은 공간감 모순 없음",!P.corridor||/pressing in close/.test(l)],
+   ["배경 흐림 ↔ 스트릭 모순 없음",M.bgblur?/features blurred,/.test(l):(!/streaked/.test(l)&&/pulled into long streaks/.test(l))],
+   ["모션 강도 ↔ 마무리 일치",MOODS[S.mood].soft===M.soft],
+   ["선명함 서술이 모션과 모순 없음",/crisply lit while others fade into motion|hold an edge while everything else tears away/.test(l)],
+   ["근접 컷 = 신발 · 바닥 없음",S.frame!=="close"||(!/sneakers/.test(l)&&!/immediate foreground/.test(l))],
+   ["나뭇잎 광 = 나무 있는 곳",S.light!=="dapple"||["park","river"].indexOf(S.place)>-1],
+   ["대낮 유지",LIGHTS[S.light].day?true:"이른 아침 선택됨 — 대낮 선호에서 벗어납니다"],
+   ["차도 · 탈것 어휘 없음",!/\broad(way)?\b|\bstreet\b|\blane\b|\btraffic\b|\bcars?\b|\bcurb\b|\bbridge\b|\boverpass\b|\bvehicle|asphalt|asfalto|viaduto/.test(l)],
+   ["배번표 · 유니폼 어휘 없음",!/\bbib\b|jersey|singlet|race number|marathon|\bpack of\b|team kit/.test(l)],
+   ["글자 유발 어휘 없음",!/signage|lettering|hangul|poster|banner|price tag|label|billboard/.test(l)],
+   ["브랜드(의류) 없음",!/adidas|nike|puma|asics|logo/.test(l)],
+   ["고유 지명 없음",!/seoul|korea,|mangwon|han river/.test(l)],
+   ["흑백 아님",!/black and white|monochrome|grayscale/.test(l)],
+   ["금지 꼬리 없음",!/\bno [a-z]+ [a-z]+[,.]/.test(l)],
+   ["길이 1,000–1,350자",(len>=1000&&len<=1350)?String(len)+"자":false],
+   ["문장 열 개 안팎",(sen>=9&&sen<=11)?sen+"문장":false]
+  ];
+}
+
+/* ============ UI ============ */
+var $=function(i){return document.getElementById(i);};
+var AXES=[
+ {n:"00",t:"엔진",key:"eng",map:ENGINES,sub:function(o){return o.setup[0][1];},tag:function(o){return o.tag;},wide:true,
+  hint:"엔진을 바꾸면 필름이 권장값으로 따라오고, 반대로 저대비 필름을 고르면 엔진이 Seedream으로 바뀝니다."},
+ {n:"01",t:"주인공",key:"subj",map:SUBJECTS,sub:function(o){return o.sub;},wide:true,
+  hint:"반드시 한 명. 대명사로 문장을 이어갑니다. 여럿을 동등하게 세우면 초점이 사라집니다."},
+ {n:"02",t:"프레이밍",key:"frame",map:FRAMES,sub:function(o){return o.sub;},
+  hint:"첫 단어가 프레이밍입니다. 근접 컷을 고르면 신발·바닥 구가 자동으로 빠집니다."},
+ {n:"03",t:"장소",key:"place",map:PLACES,sub:function(o){return o.sub;},wide:true,
+  hint:"고유명사 없이 보이는 것으로만. 좁은 통로형 장소는 좌우 횡단이 잠깁니다."},
+ {n:"04",t:"달리는 방향",key:"dir",map:DIRS,sub:function(o){return o.sub;},wide:true,
+  hint:"길이 뻗은 축·달리는 축·중앙 배치를 한 절에 묶습니다. 벽으로 돌진하는 컷이 여기서 잡힙니다."},
+ {n:"05",t:"함께 뛰는 무리",key:"crew",map:CREW,sub:function(o){return o.sub;},wide:true,
+  hint:"주인공을 꾸미는 절로만. 무리도 같은 방향으로 달립니다."},
+ {n:"06",t:"빛",key:"light",map:LIGHTS,sub:function(o){return o.sub;},wide:true,
+  hint:"시각을 쓰지 않고 빛이 무엇을 하는지 씁니다."},
+ {n:"07",t:"모션",key:"blur",map:BLURS,sub:function(o){return o.sub;},wide:true,
+  hint:"무엇이 흐려지고 왜 흐려지는지. 휩팬만 선명함 문장을 함께 바꿉니다."},
+ {n:"08",t:"렌즈",key:"lens",map:LENSES,sub:function(o){return o.sub;},wide:true,
+  hint:"24mm는 심도 묘사가 깊은 초점으로 자동 교체됩니다."},
+ {n:"09",t:"필름 · 룩",key:"film",map:FILMS,sub:function(o){return o.sub;},wide:true},
+ {n:"10",t:"의상 색",key:"outfit",map:OUTFITS,sub:function(o){return o.sub;}},
+ {n:"11",t:"마무리 무드",key:"mood",map:MOODS,sub:function(o){return o.sub;},wide:true,
+  hint:"차분한 무드를 고르면 모션도 약한 블러로 함께 내려갑니다."}
+];
+
+function disabled(key,k,o){
+  if(key==="dir"&&PLACES[S.place].corridor&&o.lateral) return "좁은 통로에서 좌우로 달리면 벽을 향해 달리게 됩니다.";
+  if(key==="light"&&o.leaves&&["park","river"].indexOf(S.place)<0) return "나무가 있는 장소(공원 · 강변)에서만 씁니다.";
+  if(key==="crew"&&o.lateralOnly&&!DIRS[S.dir].lateral) return "전경 스침은 좌우 횡단일 때만 방향이 섞이지 않습니다.";
+  return null;
+}
+
+function renderAxes(){
+  var box=$("axes");box.innerHTML="";
+  AXES.forEach(function(ax){
+    var d=document.createElement("div");d.className="ax"+(ax.wide?" wide":"");
+    d.innerHTML='<div class="axh"><span class="axn">'+ax.n+'</span><span class="axt">'+ax.t+'</span>'+
+      (ax.hint?'<span class="axhint">'+ax.hint+'</span>':'')+'</div>';
+    var cw=document.createElement("div");cw.className="chips";var notes=[];
+    Object.keys(ax.map).forEach(function(k){
+      var o=ax.map[k],why=disabled(ax.key,k,o);
+      var b=document.createElement("button");b.type="button";b.className="chip";
+      b.setAttribute("aria-pressed",(S[ax.key]===k&&!why)?"true":"false");
+      if(why){b.disabled=true; if(notes.indexOf(why)<0)notes.push(why);}
+      var tg=ax.tag?ax.tag(o):null;
+      b.innerHTML=(o.ko||k)+(tg?'<span class="tag">'+tg+'</span>':'')+(ax.sub&&ax.sub(o)?'<small>'+ax.sub(o)+'</small>':'');
+      b.addEventListener("click",function(){ S[ax.key]=k; sync(ax.key); render(); });
+      cw.appendChild(b);
+    });
+    d.appendChild(cw);
+    notes.forEach(function(t){d.appendChild(note(t));});
+    box.appendChild(d);
+  });
+}
+function note(t){var n=document.createElement("div");n.className="note";n.textContent=t;return n;}
+
+/* 서로 물고 있는 조합만 자동 조정 */
+function sync(changed){
+  if(changed==="eng"){ S.film=ENGINES[S.eng].film; }
+  if(changed==="film"){ if(S.film==="lowcon"&&S.eng!=="seed") S.eng="seed"; if(S.film!=="lowcon"&&S.eng==="seed") S.eng="soul2"; }
+  if(changed==="mood"){ S.blur=MOODS[S.mood].soft?"soft":(S.blur==="soft"?"limbs_pan":S.blur); }
+  /* 통로형 장소 × 좌우 횡단 = 벽으로 달리기 */
+  if(PLACES[S.place].corridor && DIRS[S.dir].lateral) S.dir="diag";
+  /* 정면·대각으로 오는 피사체는 수평 스트릭이 생기지 않는다 */
+  if(!DIRS[S.dir].lateral && (S.blur==="hard_pan"||S.blur==="whip")) S.blur="body_pan";
+  /* 전경 스침은 좌우 횡단에서만 방향이 섞이지 않는다 */
+  if(!DIRS[S.dir].lateral && S.crew==="sweep") S.crew="fg_bg";
+  /* 나뭇잎 얼룩광은 나무가 있는 곳만 */
+  if(LIGHTS[S.light].leaves && ["park","river"].indexOf(S.place)<0) S.light="noon";
+  /* 모션 강도와 마무리 무드는 같은 편 */
+  if(BLURS[S.blur].soft !== MOODS[S.mood].soft) S.mood = BLURS[S.blur].soft?"quiet":"kinetic";
+  /* 근접 컷은 전경 무리를 쓰지 않는다 */
+  if(S.frame==="close" && (S.crew==="sweep"||S.crew==="fg_bg")) S.crew="behind";
+}
+
+function render(){
+  renderAxes();
+  var segs=build(),html="",txt=plain();
+  segs.forEach(function(s,i){ html+='<span class="s-'+s.k+'">'+s.t.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</span>'+(i<segs.length-1?" ":""); });
+  $("out").innerHTML=html;
+  var ch=txt.length,over=ch>1350||ch<1000;
+  var wt='<b>'+ch+'</b>자 · 목표 1,000–1,350';
+  $("wc").innerHTML=wt;$("wc").className="wc"+(over?" over":"");
+  $("wc2").innerHTML=wt;$("wc2").className="wc"+(over?" over":"");
+  var res=audit(),pass=res.filter(function(r){return r[1]===true||typeof r[1]==="string";}).length;
+  var ul=$("checks");ul.innerHTML="";
+  res.forEach(function(r){
+    var okk=r[1]===true||typeof r[1]==="string";
+    var li=document.createElement("li");if(!okk)li.className="fail";
+    li.innerHTML='<i>'+(okk?"\u2713":"\u2715")+'</i><span>'+r[0]+(typeof r[1]==="string"?' \u2014 '+r[1]:'')+'</span>';
+    ul.appendChild(li);
+  });
+  $("score").textContent=pass+" / "+res.length;
+  $("score").className="score"+(pass<res.length?" bad":"");
+  var E=ENGINES[S.eng],dl=$("setup");dl.innerHTML="";
+  E.setup.forEach(function(kv){var dt=document.createElement("dt");dt.textContent=kv[0];
+    var dd=document.createElement("dd");dd.textContent=kv[1];dl.appendChild(dt);dl.appendChild(dd);});
+  var msgs=[];
+  if(E.warn)msgs.push(E.warn);
+  if(DIRS[S.dir].lateral)msgs.push("좌우 횡단은 가로 구도와 궁합이 좋습니다. 9:16으로 뽑으면 팔다리가 좌우로 잘릴 수 있으니 인물을 조금 작게 잡으세요.");
+  if(S.eng==="cinema"&&(S.place==="river"||S.place==="walkway"||S.place==="rooftop"))msgs.push("하늘이 큰 장소는 Soul Cinema에서 화면이 90° 돌아간 전례가 있습니다. Soul 2.0을 권합니다.");
+  if(!LIGHTS[S.light].day)msgs.push("이른 아침은 \u2018해가 잘 드는 대낮\u2019 선호에서 벗어난 값입니다.");
+  var wb=$("engWarn");wb.textContent=msgs.join(" ");wb.hidden=msgs.length===0;
+}
+
+/* ============ 액션 ============ */
+function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");setTimeout(function(){t.classList.remove("on");},1400);}
+function copyNow(){
+  var p=plain();
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(p).then(function(){toast("프롬프트를 복사했습니다");},function(){fb(p);});
+  }else fb(p);
+}
+function fb(p){var ta=document.createElement("textarea");ta.value=p;ta.style.cssText="position:fixed;opacity:0";
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand("copy");toast("프롬프트를 복사했습니다");}catch(e){toast("복사 실패 \u2014 직접 선택해 주세요");}
+  document.body.removeChild(ta);}
+$("copy").addEventListener("click",copyNow);
+$("copy2").addEventListener("click",copyNow);
+$("reset").addEventListener("click",function(){S=JSON.parse(JSON.stringify(D));render();toast("기본값으로 되돌렸습니다");});
+$("shuffle").addEventListener("click",function(){
+  function pick(o,skip){var k=Object.keys(o).filter(function(x){return skip.indexOf(x)<0;});return k[Math.floor(Math.random()*k.length)];}
+  S.subj=pick(SUBJECTS,[]); S.frame=pick(FRAMES,[]); S.place=pick(PLACES,[]); S.dir=pick(DIRS,[]);
+  S.crew=pick(CREW,[]); S.light=pick(LIGHTS,[]); S.blur=pick(BLURS,[]); S.lens=pick(LENSES,[]);
+  S.outfit=pick(OUTFITS,[]); S.mood=pick(MOODS,[]);
+  ["place","light","dir","blur","mood","frame"].forEach(sync);
+  render();
+});
+render();
+})();
+</script>
+
+</body></html>

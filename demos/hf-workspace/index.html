@@ -1,0 +1,1071 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>힉스필드 작업공간</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* 레이아웃: 상단 헤더(프로젝트 전환 ▾ + 고정 탭 + 확장 상태) → 프로젝트 머리(제목·보기 전환) → 힉스필드 보기(폴더 칩·도구줄·그리드) 또는 평가 보기(라운드·피드백·점수 카드) */
+:root{
+  --bg:#131416; --bg2:#18191c; --panel:#1c1e21; --panel2:#23262a; --panel3:#2a2d32;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14); --line3:rgba(255,255,255,.22);
+  --tx:#f7f7f8; --tx2:#a8a8a8; --tx3:#7f7f7f;
+  --lime:#d1fe17; --lime-ink:#1a1a1a; --red:#ff4d5e; --cyan:#9ce6f3; --pink:#ff9ad5; --yellow:#ffef33;
+  --r1:8px; --r2:12px; --r3:16px;
+  --font:"Inter","Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--tx);font:14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+img{display:block}
+:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.btn{border:0;border-radius:10px;background:var(--panel2);color:var(--tx);padding:8px 14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background .15s,color .15s,opacity .15s;text-decoration:none;font-size:13px}
+.btn:hover{background:var(--panel3)}
+.btn.pri{background:var(--lime);color:var(--lime-ink)}
+.btn.pri:hover{background:#e2ff5c}
+.btn.ghost{background:transparent;color:var(--tx2)}
+.btn.ghost:hover{background:var(--panel2);color:var(--tx)}
+.btn.sm{padding:6px 10px;font-size:12.5px;border-radius:8px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn svg{width:15px;height:15px;flex:none}
+.wrap{max-width:1480px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+/* 헤더 */
+.hd{position:sticky;top:0;z-index:30;background:rgba(19,20,22,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.hdin{display:flex;align-items:center;gap:10px;height:56px}
+.mark{width:26px;height:26px;border-radius:8px;background:var(--lime);display:grid;place-items:center;flex:none}
+.mark svg{width:16px;height:16px}
+.psw{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel);border-radius:10px;padding:6px 10px 6px 12px;cursor:pointer;max-width:320px;min-width:0;transition:background .15s,border-color .15s}
+.psw:hover{background:var(--panel2);border-color:var(--line3)}
+.psw b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.psw svg{width:14px;height:14px;flex:none;color:var(--tx2);transition:transform .15s}
+.psw[aria-expanded="true"] svg{transform:rotate(180deg)}
+.pdot{width:8px;height:8px;border-radius:3px;flex:none;background:var(--tx3)}
+.ptabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
+.ptabs::-webkit-scrollbar{display:none}
+.ptab{border:0;background:transparent;color:var(--tx2);padding:7px 12px;border-radius:9px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px;font-weight:500;transition:background .15s,color .15s}
+.ptab:hover{background:var(--panel2);color:var(--tx)}
+.ptab[aria-current="true"]{background:var(--panel2);color:var(--tx)}
+.hdr{display:flex;align-items:center;gap:8px;margin-left:auto;flex:none}
+.ext{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--tx2);padding:6px 10px;border-radius:9px;background:var(--panel);white-space:nowrap}
+.ext i{width:8px;height:8px;border-radius:50%;background:var(--tx3);flex:none}
+.ext[data-s="on"] i{background:var(--lime);box-shadow:0 0 0 3px rgba(209,254,23,.15)}
+.ext[data-s="off"] i{background:var(--red)}
+.tnav{border:0;background:transparent;color:var(--tx2);padding:7px 12px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13.5px;white-space:nowrap;transition:background .15s,color .15s}
+.tnav:hover{background:var(--panel2);color:var(--tx)}
+.tnav[aria-pressed="true"]{background:var(--panel2);color:var(--lime)}
+.tnav svg{width:17px;height:17px;flex:none}
+.ibtn{position:relative;border:0;background:transparent;color:var(--tx2);width:36px;height:36px;border-radius:9px;display:grid;place-items:center;cursor:pointer;flex:none;transition:background .15s,color .15s}
+.ibtn:hover,.ibtn[aria-expanded="true"]{background:var(--panel2);color:var(--tx)}
+.ibtn svg{width:18px;height:18px}
+.sdot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:transparent;pointer-events:none}
+.sdot[data-s="off"]{background:var(--red)}
+.pop.setpop{left:auto;right:max(16px,env(safe-area-inset-right,0px));width:min(320px,calc(100vw - 32px));gap:2px}
+.pop.setpop .ext{background:transparent;padding:6px 10px;white-space:normal}
+@media (max-width:760px){.ptabs{display:none}.hdr .btn span{display:none}}
+/* 프로젝트 전환 팝업 */
+.pop{position:fixed;z-index:40;top:calc(56px + env(safe-area-inset-top,0px));left:max(16px,env(safe-area-inset-left,0px));width:min(380px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line2);border-radius:var(--r3);box-shadow:0 24px 60px rgba(0,0,0,.5);padding:8px;display:flex;flex-direction:column;gap:4px;max-height:min(560px,calc(100vh - 90px))}
+.pop input{width:100%;border:1px solid var(--line2);background:var(--bg2);border-radius:10px;padding:9px 12px;color:var(--tx);font:inherit;outline:none}
+.pop input:focus{border-color:var(--lime)}
+.plist{overflow-y:auto;display:flex;flex-direction:column;gap:2px;padding:4px 0}
+.plh{font-size:11.5px;color:var(--tx3);padding:8px 10px 4px;letter-spacing:.02em}
+.pit{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;border:0;background:transparent;text-align:left;width:100%}
+.pit:hover,.pit[data-active="true"]{background:var(--panel2)}
+.pit .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pit .ct{color:var(--tx3);font-size:12px;font-variant-numeric:tabular-nums}
+.pin{border:0;background:transparent;color:var(--tx3);width:26px;height:26px;border-radius:7px;display:grid;place-items:center;cursor:pointer;flex:none}
+.pin:hover{background:var(--panel3);color:var(--tx)}
+.pin[aria-pressed="true"]{color:var(--lime)}
+.pin svg{width:15px;height:15px}
+.popf{border-top:1px solid var(--line);padding-top:6px}
+/* 프로젝트 머리 */
+.phead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:22px 0 14px}
+.ptitle{font-size:26px;font-weight:700;letter-spacing:-.02em;margin:0;line-height:1.2;outline:none;border-radius:8px;padding:0 4px;margin-left:-4px}
+.ptitle[contenteditable="true"]{background:var(--panel2);box-shadow:0 0 0 2px var(--lime)}
+.pmeta{color:var(--tx2);font-size:13px;font-variant-numeric:tabular-nums}
+.seg{display:flex;background:var(--panel);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--tx2);padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:500;font-size:13px;white-space:nowrap;transition:background .15s,color .15s}
+.seg button:hover{color:var(--tx)}
+.seg button[aria-pressed="true"]{background:var(--panel3);color:var(--tx)}
+.grow{flex:1}
+/* 폴더 칩 */
+.fbar{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:thin}
+.chip{border:1px solid var(--line);background:transparent;color:var(--tx2);padding:7px 12px;border-radius:999px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;transition:background .15s,color .15s,border-color .15s}
+.chip:hover{background:var(--panel2);color:var(--tx)}
+.chip[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink);border-color:var(--lime)}
+.chip .n{font-variant-numeric:tabular-nums;opacity:.7;font-size:12px}
+.chip.add{border-style:dashed}
+.chip input{background:transparent;border:0;color:var(--tx);font:inherit;outline:none;width:120px}
+.tbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-bottom:14px}
+/* 그리드 */
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(var(--tile,220px),calc(50% - 4px)),1fr));gap:8px}
+@media (hover:none){.tile .ov{opacity:1}}
+.tile{position:relative;border-radius:var(--r2);overflow:hidden;background:var(--panel);aspect-ratio:var(--ar,4/3);cursor:zoom-in;border:1px solid transparent;transition:border-color .15s}
+.tile img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .25s}
+.tile img.ok{opacity:1}
+.tile:hover{border-color:var(--line3)}
+.tile[aria-selected="true"]{border-color:var(--lime);box-shadow:0 0 0 1px var(--lime) inset}
+.tile .ov{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:flex-start;padding:8px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 40%);opacity:0;transition:opacity .15s}
+.tile:hover .ov,.tile[aria-selected="true"] .ov,.tile .ov.keep{opacity:1}
+.ck,.hrt{width:30px;height:30px;border-radius:9px;border:0;display:grid;place-items:center;cursor:pointer;background:rgba(19,20,22,.7);color:var(--tx);backdrop-filter:blur(6px)}
+.ck svg,.hrt svg{width:16px;height:16px}
+.ck[aria-pressed="true"]{background:var(--lime);color:var(--lime-ink)}
+.hrt[aria-pressed="true"]{color:var(--red)}
+.hrt.fixed{position:absolute;right:8px;top:8px;opacity:1}
+.tile .fl{position:absolute;left:8px;bottom:8px;font-size:11.5px;background:rgba(19,20,22,.72);color:var(--tx);border-radius:7px;padding:2px 7px;backdrop-filter:blur(6px);max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.empty{padding:70px 16px;text-align:center;color:var(--tx2);border:1px dashed var(--line2);border-radius:var(--r2)}
+.more{display:flex;justify-content:center;padding:18px 0 40px}
+/* 선택 바 */
+.selbar{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:35;background:var(--panel2);border:1px solid var(--line2);border-radius:14px;box-shadow:0 18px 50px rgba(0,0,0,.55);display:flex;align-items:center;gap:6px;padding:6px 6px 6px 14px;max-width:calc(100vw - 24px);overflow-x:auto}
+.selbar b{white-space:nowrap;font-variant-numeric:tabular-nums;margin-right:4px}
+.menu{position:fixed;z-index:50;background:var(--panel);border:1px solid var(--line2);border-radius:12px;box-shadow:0 18px 50px rgba(0,0,0,.55);padding:6px;min-width:200px;max-height:360px;overflow-y:auto}
+.menu button{display:flex;width:100%;border:0;background:transparent;padding:8px 10px;border-radius:8px;cursor:pointer;text-align:left;gap:8px;align-items:center}
+.menu button:hover{background:var(--panel2)}
+.menu .sep{height:1px;background:var(--line);margin:4px 2px}
+/* 라이트박스 */
+.lb{position:fixed;inset:0;z-index:60;background:rgba(10,10,12,.94);display:grid;grid-template-columns:1fr minmax(0,360px);padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));gap:16px}
+.lbimg{position:relative;display:grid;place-items:center;min-height:0;min-width:0}
+.lbimg img{max-width:100%;max-height:calc(100vh - 40px);border-radius:12px;object-fit:contain}
+.lbside{background:var(--panel);border-radius:var(--r3);padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;min-height:0}
+.lbside .pr{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12.5px;color:var(--tx2);background:var(--bg2);border-radius:10px;padding:10px;max-height:40vh;overflow-y:auto}
+.lbnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(35,38,42,.8);color:var(--tx);cursor:pointer;display:grid;place-items:center}
+.lbnav.l{left:8px}.lbnav.r{right:8px}
+.lbnav svg{width:20px;height:20px}
+.lbx{position:absolute;top:8px;right:8px}
+@media (max-width:860px){.lb{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.lbside{max-height:42vh}}
+/* 생성 패널 */
+.drawer{position:fixed;z-index:45;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));width:min(440px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line2);border-radius:var(--r3);box-shadow:0 24px 60px rgba(0,0,0,.55);padding:16px;display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 100px);overflow-y:auto}
+.drawer h3{margin:0;font-size:16px}
+textarea,.inp,select{width:100%;border:1px solid var(--line2);background:var(--bg2);border-radius:10px;padding:9px 11px;color:var(--tx);font:inherit;font-size:13px;outline:none;resize:vertical}
+textarea:focus,.inp:focus,select:focus{border-color:var(--lime)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lbl{font-size:12px;color:var(--tx2);min-width:44px}
+.refs{display:flex;gap:6px;flex-wrap:wrap}
+.refs img{width:52px;height:52px;object-fit:cover;border-radius:8px}
+.toast{position:fixed;left:50%;top:calc(66px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:70;background:var(--panel3);border:1px solid var(--line2);color:var(--tx);border-radius:10px;padding:9px 14px;font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.45);max-width:calc(100vw - 32px)}
+/* 평가 보기 */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card.best{border-color:var(--lime)}
+.thumb{display:block;width:100%;aspect-ratio:4/3;background:var(--bg2);border:0;padding:0;cursor:zoom-in;position:relative}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.head{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.num{font-size:20px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tag{font-size:12px;color:var(--tx2);background:var(--panel2);border-radius:999px;padding:2px 9px}
+.tag.hf{background:rgba(209,254,23,.12);color:var(--lime)}
+.avg{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700;font-size:16px}
+.avg small{font-weight:400;color:var(--tx3);font-size:12px;margin-left:2px}
+.ibtn{border:1px solid var(--line);background:var(--panel2);border-radius:9px;width:32px;height:32px;display:grid;place-items:center;cursor:pointer;color:var(--tx2);padding:0;transition:background .15s,color .15s}
+.ibtn:hover{background:var(--panel3);color:var(--tx)}
+.ibtn svg{width:16px;height:16px}
+.ibtn.heart[aria-pressed="true"]{color:var(--red);border-color:rgba(255,77,94,.4)}
+.note{font-size:12.5px;color:var(--tx2);margin:0}
+.card.trashed .thumb img{filter:grayscale(1);opacity:.5}
+.crit{display:grid;grid-template-columns:auto 1fr;gap:5px 8px;align-items:center}
+.crit label{font-size:12.5px;white-space:nowrap;color:var(--tx2)}
+.score{display:flex;gap:3px;justify-content:flex-end}
+.score button{width:26px;height:24px;border-radius:7px;border:1px solid var(--line);background:var(--bg2);font-size:13px;color:var(--tx3);cursor:pointer;font-variant-numeric:tabular-nums;transition:background .1s}
+.score button:hover{background:var(--panel3)}
+.score button.on{background:var(--lime);border-color:var(--lime);color:var(--lime-ink);font-weight:700}
+.score button.fill{background:var(--panel3);color:var(--tx)}
+.saved{font-size:12px;color:var(--lime);height:16px}
+.egrid{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:12px;padding-bottom:40px}
+@media (max-width:900px){.egrid{--cols:2!important}}
+@media (max-width:520px){.egrid{--cols:1!important}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r2);padding:14px 16px;margin:0 0 12px;display:flex;flex-direction:column;gap:10px}
+.panel h2{font-size:16px;font-weight:600;margin:0}
+.rphead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{font-size:12px;border-radius:999px;padding:3px 10px;background:var(--panel2);color:var(--tx);font-variant-numeric:tabular-nums}
+.pill[data-s="generating"],.pill[data-s="queued"]{background:rgba(255,239,51,.12);color:var(--yellow)}
+.pill[data-s="blocked"]{background:rgba(255,77,94,.14);color:var(--red)}
+.pill[data-s="ready"]{background:rgba(209,254,23,.12);color:var(--lime)}
+#doneBtn{margin-left:auto}
+.rpmsg{margin:0;font-size:13px;color:var(--tx2)}
+.rpmsg:empty{display:none}
+.rplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto}
+.rplist li{border-top:1px solid var(--line);padding-top:8px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;min-width:0}
+.rplist .rn{font-weight:700}
+.rplist .rb{min-width:0;display:flex;flex-direction:column;gap:4px}
+.rplist .rs{overflow-wrap:anywhere}
+.rplist .rr{overflow-wrap:anywhere;font-size:13px;color:var(--red)}
+.rplist .ra{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12.5px;color:var(--tx2)}
+.rplist .ask{font-size:13px;background:rgba(255,239,51,.1);color:var(--yellow);border-radius:8px;padding:6px 10px}
+.fbrow{display:flex;gap:10px;align-items:stretch}
+.fbrow textarea{min-height:60px;flex:1;min-width:0}
+.fblist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:240px;overflow-y:auto}
+.fblist li{border-top:1px solid var(--line);padding-top:8px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.fblist time{font-size:12px;color:var(--tx3);font-variant-numeric:tabular-nums}
+.fblist .t{white-space:pre-wrap;overflow-wrap:anywhere}
+.fblist .r{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;background:var(--panel2);border-radius:8px;padding:6px 10px}
+.fblist .r b{color:var(--lime);font-weight:600;margin-right:6px}
+.etools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:4px 0 14px}
+.toolmsg{font-size:12.5px;color:var(--tx2);margin:0 0 10px}
+.toolmsg:empty{display:none}
+.eview .stats{display:flex;gap:14px;color:var(--tx2);font-variant-numeric:tabular-nums;font-size:13px}
+.eview .stats b{color:var(--tx);font-weight:600}
+@media (max-width:520px){.fbrow{flex-direction:column}}
+/* AI Cast(캐롯필드 AI Cast 원본 화면 + 힉스필드 Unlimited) */
+.cbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 0 10px}
+.cbar .fbar{padding:0;flex:1;min-width:0}
+.cproj{color:var(--tx);border-color:var(--line2);font-weight:600}
+.cproj b{font-weight:600;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cframe{display:block;width:100%;height:calc(100dvh - 190px);min-height:620px;border:0;background:var(--bg)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="hd"><div class="wrap hdin">
+  <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c3-1 4-4 4-7s2-6 6-7M15 5c1 2 1 4 4 5"/></svg></span>
+  <button class="psw" id="pSwitch" aria-haspopup="listbox" aria-expanded="false"><i class="pdot" id="pDot"></i><b id="pName">프로젝트</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+  <nav class="ptabs" id="pTabs" aria-label="고정한 프로젝트" hidden></nav>
+  <div class="hdr">
+    <button class="tnav" id="castNav" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 3l.7 1.6L21 5l-1.3.4L19 7l-.7-1.6L17 5l1.3-.4z" fill="currentColor" stroke="none"/></svg><span>AI Cast</span></button>
+    <button class="ibtn" id="setBtn" type="button" aria-label="설정" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="sdot" id="setDot" data-s=""></i></button>
+  </div>
+</div></header>
+
+<div class="pop setpop" id="setPop" hidden>
+  <div class="plh">힉스필드 연결</div>
+  <span class="ext" id="extPill" data-s=""><i></i><span id="extTxt">확장 확인 중</span></span>
+  <span class="ext" id="syncPill" data-s=""><i></i><span id="syncTxt">동기화 확인 중</span></span>
+  <div class="popf">
+    <button class="pit" id="sSync" type="button"><span class="nm">지금 동기화</span></button>
+    <button class="pit" id="sReload" type="button"><span class="nm">확장 새로고침 (새 파일 반영)</span></button>
+  </div>
+</div>
+
+<div class="pop" id="pPop" hidden>
+  <input id="pSearch" placeholder="프로젝트 찾기" autocomplete="off">
+  <div class="plist" id="pList" role="listbox"></div>
+  <div class="popf"><button class="pit" id="pNew"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span class="nm">새 프로젝트</span></button></div>
+</div>
+
+<main class="wrap">
+  <section class="phead" id="pHead">
+    <h1 class="ptitle" id="pTitle" title="두 번 눌러 이름 바꾸기">프로젝트</h1>
+    <span class="pmeta" id="pMeta"></span>
+    <span class="grow"></span>
+    <div class="seg" id="viewSeg">
+      <button type="button" data-v="eval" aria-pressed="true">평가</button>
+      <button type="button" data-v="hf" aria-pressed="false">힉스필드</button>
+    </div>
+    <a class="btn ghost sm" id="hfLink" target="_blank" rel="noopener">힉스필드에서 열기<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+    <button class="btn pri sm" id="genOpen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>생성</span></button>
+  </section>
+
+  <section id="hfView">
+    <div class="fbar" id="fBar"></div>
+    <div class="tbar">
+      <div class="seg" id="sortSeg"><button type="button" data-v="new" aria-pressed="true">최신순</button><button type="button" data-v="old" aria-pressed="false">오래된순</button></div>
+      <div class="seg" id="sizeSeg"><button type="button" data-v="160" aria-pressed="false">작게</button><button type="button" data-v="220" aria-pressed="true">보통</button><button type="button" data-v="320" aria-pressed="false">크게</button></div>
+      <span class="grow"></span>
+      <button class="btn ghost sm" id="selAll">보이는 것 모두 선택</button>
+      <button class="btn ghost sm" id="refresh">새로고침</button>
+    </div>
+    <div class="hgrid" id="hGrid"></div>
+    <div class="more"><button class="btn" id="moreBtn" hidden>더 보기</button></div>
+  </section>
+
+  <section id="evalView" class="eview" hidden>
+    <section class="panel" aria-labelledby="rpTitle">
+      <div class="rphead">
+        <h2 id="rpTitle">라운드</h2>
+        <span class="pill" id="rpPill"></span>
+        <span class="pill" id="genPill" hidden></span>
+        <button type="button" class="btn pri" id="doneBtn" disabled>피드백 완료</button>
+      </div>
+      <p class="rpmsg" id="rpMsg" aria-live="polite"></p>
+      <ol class="rplist" id="rpList"></ol>
+    </section>
+    <section class="panel" aria-labelledby="fbTitle">
+      <h2 id="fbTitle">전체 피드백</h2>
+      <div class="fbrow">
+        <textarea id="fbInput" placeholder="라운드 전체에 대한 의견, 다음에 바꿀 점"></textarea>
+        <button type="button" class="btn" id="fbSend">남기기</button>
+      </div>
+      <ol class="fblist" id="fbList"></ol>
+    </section>
+    <div class="etools">
+      <div class="stats" id="stats"></div>
+      <span class="grow"></span>
+      <div class="seg" id="segRound" role="group" aria-label="라운드"></div>
+      <div class="seg" id="segFace" role="group" aria-label="얼굴">
+        <button type="button" data-v="all" aria-pressed="true">전체</button>
+        <button type="button" data-v="없음" aria-pressed="false">얼굴 없음</button>
+        <button type="button" data-v="있음" aria-pressed="false">얼굴 있음</button>
+      </div>
+      <div class="seg" id="segSort" role="group" aria-label="정렬">
+        <button type="button" data-v="num" aria-pressed="true">번호순</button>
+        <button type="button" data-v="score" aria-pressed="false">점수순</button>
+        <button type="button" data-v="todo" aria-pressed="false">미평가</button>
+      </div>
+      <div class="seg" id="segCols" role="group" aria-label="열">
+        <button type="button" data-v="2" aria-pressed="false">2열</button>
+        <button type="button" data-v="3" aria-pressed="true">3열</button>
+      </div>
+      <button type="button" class="btn sm" id="bestView" aria-pressed="false">♥만 보기</button>
+      <button type="button" class="btn sm" id="bestZip" hidden></button>
+      <button type="button" class="btn sm" id="trashView" aria-pressed="false"></button>
+    </div>
+    <p class="toolmsg" id="toolMsg" aria-live="polite"></p>
+    <div class="egrid" id="grid"><div class="empty">생성 이미지를 불러오는 중이에요.</div></div>
+  </section>
+
+  <section id="castView" hidden>
+    <div class="cbar">
+      <span class="lbl">저장 위치</span>
+      <button type="button" class="chip cproj" id="cProj" aria-haspopup="listbox"><i class="pdot" id="cDot"></i><b id="cName">프로젝트</b><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="fbar" id="cFold"></div>
+      <div class="seg" id="cMode" role="group" aria-label="결과물">
+        <button type="button" data-v="photo" aria-pressed="true">사진</button>
+        <button type="button" data-v="sheet" aria-pressed="false">시트 16:9</button>
+        <button type="button" data-v="interview" aria-pressed="false">인터뷰컷 9:16</button>
+      </div>
+    </div>
+    <iframe id="castFrame" class="cframe" title="AI Cast"></iframe>
+  </section>
+</main>
+
+<div class="selbar" id="selBar" hidden>
+  <b id="selN">0개 선택</b>
+  <button class="btn sm" id="sLike">♥ 좋아요</button>
+  <button class="btn sm" id="sUnlike">좋아요 해제</button>
+  <button class="btn sm" id="sMove">폴더로 이동</button>
+  <button class="btn sm" id="sRef">참조로 생성</button>
+  <button class="btn ghost sm" id="sClear">해제</button>
+</div>
+
+<div class="lb" id="lb" hidden>
+  <div class="lbimg"><img id="lbImg" alt="">
+    <button class="lbnav l" id="lbPrev" aria-label="이전"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg></button>
+    <button class="lbnav r" id="lbNext" aria-label="다음"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></button>
+  </div>
+  <aside class="lbside">
+    <div class="row"><b id="lbTitle" class="grow"></b><button class="btn ghost sm" id="lbClose">닫기</button></div>
+    <div class="row"><button class="btn sm" id="lbLike">♥ 좋아요</button><button class="btn sm" id="lbMove">폴더로 이동</button><a class="btn sm" id="lbRaw" target="_blank" rel="noopener">원본</a></div>
+    <div class="pmeta" id="lbMeta"></div>
+    <div class="pr" id="lbPrompt"></div>
+    <div class="row"><button class="btn sm" id="lbCopy">프롬프트 복사</button><button class="btn sm" id="lbReuse">이 프롬프트로 생성</button></div>
+  </aside>
+</div>
+
+<div class="drawer" id="gen" hidden>
+  <div class="row"><h3 class="grow">생성</h3><button class="btn ghost sm" id="genClose">닫기</button></div>
+  <textarea id="gPrompt" rows="6" placeholder="프롬프트 (참조 이미지는 <<<image 1>>> 처럼 순서대로 부를 수 있어요)"></textarea>
+  <div class="row"><span class="lbl">비율</span><div class="seg" id="gAr"></div></div>
+  <div class="row"><span class="lbl">장수</span><div class="seg" id="gCount"></div></div>
+  <div class="row"><span class="lbl">폴더</span><select id="gFolder" style="flex:1"></select></div>
+  <div class="row"><span class="lbl">참조</span><div class="refs" id="gRefs"></div></div>
+  <div class="row"><span class="grow pmeta" id="gMsg"></span><button class="btn pri" id="gGo">대기열에 넣기</button></div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ── 기본값 ─────────────────────────────────────────── */
+const SANTA = "0ec9b152-40cd-4bfd-9c4e-f5add1b39fab";
+const PERSONA = "8b13c763-f160-4c27-8fd6-dd5cb68f5f27";
+const FALLBACK = [
+  { id: SANTA, name: "산타알바 당근이", slug: "new-project-6", color: "cyan", count: 0, folders: [] },
+  { id: PERSONA, name: "사장님 페르소나 캐릭터시트", slug: "project-5", color: "lime", count: 0, folders: [] }];
+const EVAL = { [SANTA]: true };
+const HFQ = "hfq-mcp";
+const TRIGGER_ID = "trig_01MGFYvmwgiNffAr1e736oTX";
+const COLORS = { lime: "#d1fe17", cyan: "#9ce6f3", pink: "#ff9ad5", yellow: "#ffef33", blue: "#5b91fe", orange: "#ff8a3d", red: "#ff4d5e", green: "#4ee466" };
+const AR = ["4:3", "3:4", "1:1", "16:9", "9:16", "3:2", "2:3"];
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ICON = {
+  heart: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>',
+  heartO: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.8 4.5c2.1 0 3.6 1.1 5.2 3 1.6-1.9 3.1-3 5.2-3 3.8 0 5.9 3.9 4.4 7.3C19.5 16.4 12 21 12 21z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  starO: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>',
+  restore: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>',
+  dl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>'
+};
+let mcp = null, db = null, downloads = null;
+const S = { projects: FALLBACK.slice(), pid: null, view: "hf", folder: "all", order: "new", items: [], total: 0, offset: 0, loading: false,
+  sel: new Set(), lastSel: null, mirror: new Map(), pins: [SANTA, PERSONA], ext: { alive: null }, refs: [] };
+try { const c = localStorage.getItem("hfw_tile"); if (c) document.documentElement.style.setProperty("--tile", c + "px"); } catch (e) {}
+
+/* ── 공통 ─────────────────────────────────────────── */
+let toastT = null;
+function toast(t, ms = 2600) { const el = $("#toast"); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true }, ms); }
+async function tool(name, args) {
+  if (!mcp) throw { code: "no_mcp" };
+  const r = await mcp.callTool(HFQ, name, args || {}, { cache: false });
+  const p = r.payload !== undefined ? r.payload : (r.content || []).map(c => c.text || "").join("\n");
+  if (typeof p === "string" && p.startsWith("오류:")) throw new Error(p.slice(3).trim());
+  return p;
+}
+const errText = e => e && e.code === "no_mcp" ? "claude.ai에서 열어야 힉스필드와 연결돼요." :
+  e && e.code === "not_granted" ? "hfq-mcp 연결을 허용해 주세요." :
+  e && (e.code === "server_not_connected" || e.code === "needs_reauth") ? "hfq-mcp 커넥터 연결을 확인해 주세요." :
+  "힉스필드 연동 오류" + (e && (e.message || e.code) ? ": " + String(e.message || e.code).slice(0, 120) : "");
+const proj = id => S.projects.find(p => p.id === id) || FALLBACK.find(p => p.id === id) || null;
+const cur = () => proj(S.pid);
+const jobOf = img => img.job || ((String(img.hf || "").match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/) || [])[0]) || null;
+const arCss = ar => { const m = String(ar || "4:3").split(":").map(Number); return m.length === 2 && m[0] && m[1] ? `${m[0]}/${m[1]}` : "4/3"; };
+
+/* ── 프로젝트 목록·전환 ───────────────────────────── */
+async function loadProjects() {
+  try {
+    const d = await tool("projects", {});
+    if (d && Array.isArray(d.projects) && d.projects.length) {
+      S.projects = d.projects;
+      for (const f of FALLBACK) if (!S.projects.find(p => p.id === f.id)) S.projects.push(f);
+    }
+  } catch (e) { }
+  renderHeader();
+  if (S.view === "cast") renderCastBar();
+}
+function sortedProjects() {
+  const pins = S.pins.map(id => proj(id)).filter(Boolean);
+  const rest = S.projects.filter(p => !S.pins.includes(p.id));
+  return { pins, rest };
+}
+function dot(p) { return COLORS[p && p.color] || "#7f7f7f"; }
+function renderHeader() {
+  const p = cur();
+  $("#pName").textContent = p ? p.name : "프로젝트";
+  $("#pDot").style.background = dot(p);
+  const tabs = $("#pTabs"); tabs.innerHTML = "";
+  for (const q of sortedProjects().pins) {
+    const b = document.createElement("button"); b.className = "ptab"; b.type = "button";
+    b.innerHTML = `<i class="pdot" style="background:${dot(q)}"></i>`; b.append(document.createTextNode(q.name));
+    b.setAttribute("aria-current", String(q.id === S.pid));
+    b.addEventListener("click", () => openProject(q.id));
+    tabs.appendChild(b);
+  }
+  if (p) {
+    $("#pTitle").textContent = p.name;
+    const fc = (p.folders || []).length;
+    $("#pMeta").textContent = `${(p.count ?? 0).toLocaleString()}장${fc ? ` · 폴더 ${fc}` : ""}`;
+    $("#hfLink").href = `https://higgsfield.ai/generate/@hansy/${p.slug || ""}`;
+    $("#viewSeg").hidden = !EVAL[p.id];
+  }
+}
+function renderPop() {
+  const q = $("#pSearch").value.trim().toLowerCase();
+  const { pins, rest } = sortedProjects();
+  const L = $("#pList"); L.innerHTML = "";
+  const sec = (title, arr) => {
+    const list = arr.filter(p => !q || (p.name || "").toLowerCase().includes(q));
+    if (!list.length) return;
+    const h = document.createElement("div"); h.className = "plh"; h.textContent = title; L.appendChild(h);
+    for (const p of list) {
+      const row = document.createElement("div"); row.className = "pit"; row.setAttribute("role", "option"); row.tabIndex = 0;
+      row.dataset.id = p.id; row.dataset.active = String(p.id === S.pid);
+      row.innerHTML = `<i class="pdot" style="background:${dot(p)}"></i><span class="nm"></span><span class="ct">${(p.count ?? 0).toLocaleString()}</span><button class="pin" type="button" aria-label="고정" aria-pressed="${S.pins.includes(p.id)}">${S.pins.includes(p.id) ? ICON.star : ICON.starO}</button>`;
+      row.querySelector(".nm").textContent = p.name;
+      row.addEventListener("click", e => { if (e.target.closest(".pin")) return; closePop(); openProject(p.id); });
+      row.addEventListener("keydown", e => { if (e.key === "Enter") { closePop(); openProject(p.id); } });
+      row.querySelector(".pin").addEventListener("click", () => togglePin(p.id));
+      L.appendChild(row);
+    }
+  };
+  sec("고정", pins); sec("모든 프로젝트", rest);
+  if (!L.children.length) L.innerHTML = '<div class="plh">찾는 프로젝트가 없어요</div>';
+}
+function openPop() { $("#pPop").hidden = false; $("#pSwitch").setAttribute("aria-expanded", "true"); $("#pSearch").value = ""; renderPop(); setTimeout(() => $("#pSearch").focus(), 0); }
+function closePop() { $("#pPop").hidden = true; $("#pSwitch").setAttribute("aria-expanded", "false"); }
+$("#pSwitch").addEventListener("click", () => $("#pPop").hidden ? openPop() : closePop());
+$("#pSearch").addEventListener("input", renderPop);
+$("#pSearch").addEventListener("keydown", e => {
+  const rows = [...document.querySelectorAll("#pList .pit")];
+  if (e.key === "Enter" && rows[0]) { closePop(); openProject(rows[0].dataset.id); }
+  if (e.key === "ArrowDown" && rows[0]) { e.preventDefault(); rows[0].focus(); }
+  if (e.key === "Escape") closePop();
+});
+document.addEventListener("click", e => { if (!$("#pPop").hidden && !e.target.closest("#pPop") && !e.target.closest("#pSwitch")) closePop(); });
+async function togglePin(id) {
+  S.pins = S.pins.includes(id) ? S.pins.filter(x => x !== id) : [...S.pins, id];
+  renderPop(); renderHeader();
+  if (db) try { await db.doc("ws/main").set({ pins: S.pins, at: Date.now() }); } catch (e) {}
+}
+$("#pNew").addEventListener("click", async () => {
+  closePop();
+  const name = (prompt("새 프로젝트 이름") || "").trim(); if (!name) return;
+  try { await tool("project_create", { name }); toast(`「${name}」을 힉스필드에 만드는 중이에요. 30초~1분 뒤 목록에 나타나요.`, 4000); setTimeout(loadProjects, 45000); }
+  catch (e) { toast(errText(e)); }
+});
+
+function projView(id) {
+  let v = EVAL[id] ? "eval" : "hf"; try { v = localStorage.getItem("hfw_view_" + id) || v; } catch (e) {}
+  return v === "hf" || (v === "eval" && EVAL[id]) ? v : EVAL[id] ? "eval" : "hf";
+}
+function openProject(id) {
+  if (!proj(id)) id = SANTA;
+  S.pid = id; S.folder = "all"; S.sel.clear(); renderSel(); S.items = [];
+  try { localStorage.setItem("hfw_pid", id); } catch (e) {}
+  renderHeader(); renderFolders();
+  if (S.view === "cast") { castReload(); return; }   // AI Cast는 상단 고정 기능: 프로젝트를 바꾸면 저장 위치만 바뀐다
+  setView(projView(id), true);
+  loadItems(true);
+}
+function setView(v, silent) {
+  S.view = v; const cast = v === "cast";
+  document.querySelectorAll("#viewSeg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v)));
+  $("#pHead").hidden = cast; $("#hfView").hidden = v !== "hf"; $("#evalView").hidden = v !== "eval"; $("#castView").hidden = !cast;
+  $("#castNav").setAttribute("aria-pressed", String(cast));
+  try { localStorage.setItem("hfw_mode", cast ? "cast" : "project"); if (!silent && !cast) localStorage.setItem("hfw_view_" + S.pid, v); } catch (e) {}
+  if (cast) castShow();
+  if (v === "eval") renderEval();
+  if (v === "hf" && !S.items.length) loadItems(true);
+}
+$("#castNav").addEventListener("click", () => setView(S.view === "cast" ? projView(S.pid) : "cast", true));
+
+/* 설정(톱니): 확장·동기화 상태와 동작 */
+function openSet(on) { $("#setPop").hidden = !on; $("#setBtn").setAttribute("aria-expanded", String(on)); if (on) pollExt(); }
+$("#setBtn").addEventListener("click", e => { e.stopPropagation(); openSet($("#setPop").hidden); });
+document.addEventListener("click", e => { if (!$("#setPop").hidden && !e.target.closest("#setPop") && !e.target.closest("#setBtn")) openSet(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#setPop").hidden) openSet(false); });
+$("#sSync").addEventListener("click", async () => { openSet(false); try { await tool("sync", {}); toast("힉스필드에서 다시 읽어 오는 중이에요. 1~2분 걸려요."); setTimeout(() => loadProjects().then(() => { if (S.view === "hf") loadItems(true); }), 60000); } catch (e) { toast(errText(e)); } });
+$("#sReload").addEventListener("click", async () => { openSet(false); try { await tool("control", { reload: true }); toast("확장이 30초 안에 새 파일을 다시 읽어요."); } catch (e) { toast(errText(e)); } });
+$("#viewSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setView(b.dataset.v); });
+
+/* ── AI Cast: 캐롯필드 AI Cast 화면(aicast.html)을 그대로 띄우고, 생성·목록·좋아요·폴더를 hfq-mcp로 잇는다 ── */
+const CAST = { mode: "photo", folder: {}, loaded: false };
+try { CAST.mode = localStorage.getItem("hfw_cast_mode") || "photo"; CAST.folder = JSON.parse(localStorage.getItem("hfw_cast_folder") || "{}"); } catch (e) {}
+const castFolder = () => { const p = cur(), id = CAST.folder[S.pid]; return (id && p && (p.folders || []).find(f => f.id === id)) || null; };
+function castCtx() {
+  const p = cur(), f = castFolder();
+  return { project: p ? { id: p.id, name: p.name } : null, folder: f ? { id: f.id, name: f.name } : null, mode: CAST.mode,
+    projects: S.projects.map(x => ({ id: x.id, name: x.name, count: x.count, cover_url: x.cover_url, folders: x.folders || [] })) };
+}
+function castPost() { const w = $("#castFrame").contentWindow; if (w) w.postMessage({ __kfx: "ctx", ctx: castCtx() }, "*"); }
+function castShow() {
+  renderCastBar();
+  if (!CAST.loaded) { CAST.loaded = true; $("#castFrame").src = "aicast.html#/ai-influencer"; } else castPost();
+}
+function castReload() {
+  renderCastBar(); if (!CAST.loaded) return castShow();
+  castPost(); try { $("#castFrame").contentWindow.location.reload(); } catch (e) { $("#castFrame").src = "aicast.html#/ai-influencer"; }
+}
+function renderCastBar() {
+  const p = cur(), bar = $("#cFold"); bar.innerHTML = ""; const curF = castFolder();
+  $("#cName").textContent = p ? p.name : "프로젝트"; $("#cDot").style.background = dot(p);
+  const chip = (id, label, n) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip";
+    b.setAttribute("aria-pressed", String((curF ? curF.id : "") === id));
+    b.append(document.createTextNode(label));
+    if (n !== undefined && n !== null) { const s2 = document.createElement("span"); s2.className = "n"; s2.textContent = n; b.appendChild(s2); }
+    b.addEventListener("click", () => { CAST.folder[S.pid] = id || null; try { localStorage.setItem("hfw_cast_folder", JSON.stringify(CAST.folder)); } catch (e) {} castReload(); });
+    bar.appendChild(b);
+  };
+  chip("", "프로젝트 바로 아래", p && p.count != null ? p.count : null);
+  for (const f of (p && p.folders) || []) if (f.name !== "Getting Started") chip(f.id, f.name, f.count);
+  const add = document.createElement("button"); add.type = "button"; add.className = "chip add"; add.textContent = "+ 폴더";
+  add.addEventListener("click", () => {
+    add.innerHTML = ""; const i = document.createElement("input"); i.placeholder = "폴더 이름"; add.appendChild(i); i.focus();
+    const done = async ok => { const name = i.value.trim(); renderCastBar(); if (!ok || !name) return;
+      try { const r = await tool("folder_create", { project: p.id, name }); toast(r && r.exists ? "이미 있는 폴더예요." : `「${name}」 폴더를 힉스필드에도 만드는 중이에요. 30초쯤 뒤 칩이 생겨요.`, 3600); setTimeout(() => loadProjects().then(renderCastBar), 35000); }
+      catch (e) { toast(errText(e)); } };
+    i.addEventListener("keydown", e => { if (e.key === "Enter") done(true); if (e.key === "Escape") done(false); });
+    i.addEventListener("blur", () => done(!!i.value.trim()));
+  }, { once: true });
+  bar.appendChild(add);
+  document.querySelectorAll("#cMode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === CAST.mode)));
+}
+$("#cProj").addEventListener("click", e => { e.stopPropagation(); openPop(); });
+$("#cMode").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  CAST.mode = b.dataset.v; try { localStorage.setItem("hfw_cast_mode", CAST.mode); } catch (x) {}
+  renderCastBar(); castPost();
+});
+addEventListener("message", async e => {
+  const fr = $("#castFrame"); if (!fr || e.source !== fr.contentWindow) return;
+  const d = e.data; if (!d || !d.__kfx) return;
+  if (d.__kfx === "hello") castPost();
+  else if (d.__kfx === "call") {
+    let data, error;
+    try { data = await tool(d.name, d.args); if (typeof data === "string") { try { data = JSON.parse(data); } catch (x) {} } }
+    catch (err) { error = errText(err); }
+    try { e.source.postMessage({ __kfx: "res", id: d.id, data, error }, "*"); } catch (x) {}
+  }
+  else if (d.__kfx === "queued") { const f = castFolder(), p = cur(); toast(`AI Cast ${d.n}장 대기열에 넣었어요 → ${p ? p.name : ""}${f ? " / " + f.name : ""}`); pollExt(); }
+  else if (d.__kfx === "folders") setTimeout(() => loadProjects().then(renderCastBar), 35000);
+  else if (d.__kfx === "download" && d.blob) {
+    if (!downloads) { toast("이 화면에서는 저장할 수 없어요. claude.ai에서 열어 주세요."); return; }
+    try { await downloads.save({ filename: d.name || "image.png", data: d.blob }); } catch (err) { const m = dlError(err); if (m) toast(m); }
+  }
+});
+
+/* 프로젝트 이름 바꾸기(두 번 눌러) */
+$("#pTitle").addEventListener("dblclick", () => {
+  const t = $("#pTitle"); t.contentEditable = "true"; t.focus();
+  const r = document.createRange(); r.selectNodeContents(t); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+});
+$("#pTitle").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); e.target.blur(); } if (e.key === "Escape") { e.target.textContent = cur().name; e.target.blur(); } });
+$("#pTitle").addEventListener("blur", async e => {
+  const t = e.target; if (t.contentEditable !== "true") return; t.contentEditable = "false";
+  const name = t.textContent.trim(), p = cur(); if (!name || name === p.name) { t.textContent = p.name; return; }
+  p.name = name; renderHeader();
+  try { await tool("rename", { id: p.id, name }); toast("힉스필드 프로젝트 이름도 바꾸는 중이에요."); } catch (err) { toast(errText(err)); }
+});
+
+/* ── 폴더 칩 ───────────────────────────────────────── */
+function renderFolders() {
+  const p = cur(), bar = $("#fBar"); bar.innerHTML = "";
+  const chip = (v, label, n) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.dataset.v = v;
+    b.setAttribute("aria-pressed", String(S.folder === v));
+    b.append(document.createTextNode(label));
+    if (n !== undefined && n !== null) { const s = document.createElement("span"); s.className = "n"; s.textContent = n; b.appendChild(s); }
+    b.addEventListener("click", () => { S.folder = v; renderFolders(); loadItems(true); });
+    bar.appendChild(b);
+  };
+  chip("all", "전체", p && p.count != null ? p.count : null);
+  chip("liked", "♥ 좋아요");
+  chip("loose", "미분류");
+  for (const f of (p && p.folders) || []) chip(f.id, f.name, f.count);
+  const add = document.createElement("button"); add.type = "button"; add.className = "chip add"; add.textContent = "+ 폴더";
+  add.addEventListener("click", () => {
+    add.innerHTML = ""; const i = document.createElement("input"); i.placeholder = "폴더 이름"; add.appendChild(i); i.focus();
+    const done = async ok => { const name = i.value.trim(); renderFolders(); if (!ok || !name) return;
+      try { const r = await tool("folder_create", { project: p.id, name }); toast(r && r.exists ? "이미 있는 폴더예요." : `「${name}」 폴더를 힉스필드에도 만드는 중이에요.`); setTimeout(loadProjects, 40000); }
+      catch (e) { toast(errText(e)); } };
+    i.addEventListener("keydown", e => { if (e.key === "Enter") done(true); if (e.key === "Escape") done(false); });
+    i.addEventListener("blur", () => done(!!i.value.trim()));
+  }, { once: true });
+  bar.appendChild(add);
+}
+
+/* ── 힉스필드 보기: 생성물 그리드 ─────────────────── */
+async function loadItems(reset) {
+  const p = cur(); if (!p) return;
+  if (reset) { S.items = []; S.offset = 0; S.total = 0; $("#hGrid").innerHTML = '<div class="empty">불러오는 중이에요.</div>'; }
+  if (S.loading) return; S.loading = true;
+  const args = { project: p.id, offset: S.offset, limit: 60, order: S.order };
+  if (S.folder === "liked") args.liked = true; else if (S.folder === "loose") args.loose = true; else if (S.folder !== "all") args.folder = S.folder;
+  try {
+    const d = await tool("items", args);
+    const pidNow = p.id;
+    if (S.pid !== pidNow) return;
+    S.total = d.total || 0; S.items = S.items.concat(d.items || []); S.offset = S.items.length;
+    if (p.id === SANTA) for (const it of d.items || []) S.mirror.set(it.job_id, it);
+    renderGrid();
+  } catch (e) {
+    const msg = /찾지 못했어요/.test(String(e.message || "")) ? "아직 힉스필드와 동기화되지 않았어요. 확장이 켜져 있으면 1~2분 안에 채워져요." : errText(e);
+    if (reset) $("#hGrid").innerHTML = `<div class="empty">${esc(msg)}</div>`;
+  } finally { S.loading = false; }
+}
+function folderName(id) { const f = ((cur() || {}).folders || []).find(x => x.id === id); return f ? f.name : null; }
+function renderGrid() {
+  const g = $("#hGrid");
+  if (!S.items.length) { g.innerHTML = `<div class="empty">${S.folder === "liked" ? "좋아요한 이미지가 없어요." : "이미지가 없어요."}</div>`; $("#moreBtn").hidden = true; return; }
+  g.innerHTML = "";
+  S.items.forEach((it, idx) => {
+    const t = document.createElement("div"); t.className = "tile"; t.dataset.i = idx;
+    t.setAttribute("aria-selected", String(S.sel.has(it.job_id)));
+    const fl = (it.folder_ids || []).map(folderName).filter(Boolean);
+    t.innerHTML = `<img loading="lazy" alt="">
+      <div class="ov"><button class="ck" type="button" aria-label="선택" aria-pressed="${S.sel.has(it.job_id)}">${ICON.check}</button>
+      <button class="hrt" type="button" aria-label="좋아요" aria-pressed="${!!it.is_fav}">${it.is_fav ? ICON.heart : ICON.heartO}</button></div>
+      ${fl.length && S.folder === "all" ? `<span class="fl"></span>` : ""}`;
+    if (it.is_fav) t.querySelector(".ov").classList.add("keep");
+    if (fl.length && S.folder === "all") t.querySelector(".fl").textContent = fl.join(" · ");
+    const img = t.querySelector("img");
+    img.onload = () => img.classList.add("ok");
+    img.onerror = () => thumbFallback(img, it);
+    img.src = it.min_url || it.raw_url || "";
+    t.addEventListener("click", e => {
+      if (e.target.closest(".ck")) { toggleSel(it, idx, e.shiftKey); return; }
+      if (e.target.closest(".hrt")) { like([it.job_id], !it.is_fav); return; }
+      if (e.shiftKey || e.metaKey || e.ctrlKey || S.sel.size) { toggleSel(it, idx, e.shiftKey); return; }
+      openLb(idx);
+    });
+    g.appendChild(t);
+  });
+  $("#moreBtn").hidden = S.items.length >= S.total;
+  $("#moreBtn").textContent = `더 보기 (${S.items.length}/${S.total})`;
+}
+const thumbQ = []; let thumbBusy = 0;
+function thumbFallback(img, it) {
+  if (img.dataset.fb) return; img.dataset.fb = "1";
+  thumbQ.push(async () => { try { const d = await tool("thumb", { job_id: it.job_id }); if (d && d.data) img.src = d.data; } catch (e) {} });
+  pumpThumbs();
+}
+function pumpThumbs() { while (thumbBusy < 4 && thumbQ.length) { thumbBusy++; thumbQ.shift()().finally(() => { thumbBusy--; pumpThumbs(); }); } }
+$("#moreBtn").addEventListener("click", () => loadItems(false));
+new IntersectionObserver(es => { if (es.some(e => e.isIntersecting) && !$("#moreBtn").hidden && !S.loading && S.view === "hf") loadItems(false); }, { rootMargin: "600px" }).observe($("#moreBtn"));
+$("#sortSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.order = b.dataset.v; setSegV($("#sortSeg"), S.order); loadItems(true); });
+$("#sizeSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; setSegV($("#sizeSeg"), b.dataset.v); document.documentElement.style.setProperty("--tile", b.dataset.v + "px"); try { localStorage.setItem("hfw_tile", b.dataset.v); } catch (er) {} });
+try { const c = localStorage.getItem("hfw_tile"); if (c) setSegV($("#sizeSeg"), c); } catch (e) {}
+$("#refresh").addEventListener("click", async () => { try { await tool("sync", { project: S.pid }); } catch (e) {} toast("힉스필드에서 다시 읽어 오는 중이에요."); loadProjects().then(() => { renderFolders(); loadItems(true); }); });
+function setSegV(el, v) { el.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); }
+
+/* 선택 */
+function toggleSel(it, idx, range) {
+  if (range && S.lastSel !== null) {
+    const [a, b] = [Math.min(S.lastSel, idx), Math.max(S.lastSel, idx)];
+    for (let i = a; i <= b; i++) S.sel.add(S.items[i].job_id);
+  } else S.sel.has(it.job_id) ? S.sel.delete(it.job_id) : S.sel.add(it.job_id);
+  S.lastSel = idx; renderSel(); renderGridSel();
+}
+function renderGridSel() { document.querySelectorAll("#hGrid .tile").forEach(t => { const it = S.items[+t.dataset.i]; const on = S.sel.has(it.job_id); t.setAttribute("aria-selected", String(on)); t.querySelector(".ck").setAttribute("aria-pressed", String(on)); }); }
+function renderSel() { $("#selBar").hidden = !S.sel.size; $("#selN").textContent = `${S.sel.size}개 선택`; }
+$("#selAll").addEventListener("click", () => { S.items.forEach(it => S.sel.add(it.job_id)); renderSel(); renderGridSel(); });
+$("#sClear").addEventListener("click", () => { S.sel.clear(); renderSel(); renderGridSel(); });
+$("#sLike").addEventListener("click", () => like([...S.sel], true));
+$("#sUnlike").addEventListener("click", () => like([...S.sel], false));
+$("#sMove").addEventListener("click", e => folderMenu(e.currentTarget, [...S.sel]));
+$("#sRef").addEventListener("click", () => { S.refs = S.items.filter(it => S.sel.has(it.job_id)).slice(0, 5); openGen(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { if (!$("#lb").hidden) closeLb(); else if (S.sel.size) { S.sel.clear(); renderSel(); renderGridSel(); } }
+  if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !/INPUT|TEXTAREA/.test(document.activeElement.tagName) && !document.activeElement.isContentEditable)) { e.preventDefault(); openPop(); }
+  if (!$("#lb").hidden && e.key === "ArrowLeft") lbStep(-1);
+  if (!$("#lb").hidden && e.key === "ArrowRight") lbStep(1);
+});
+
+/* 좋아요·폴더 이동 */
+async function like(ids, on) {
+  if (!ids.length) return;
+  for (const it of S.items) if (ids.includes(it.job_id)) it.is_fav = on;
+  for (const it of LB.list) if (ids.includes(it.job_id)) it.is_fav = on;
+  for (const id of ids) { const m = S.mirror.get(id); if (m) m.is_fav = on; }
+  if (S.view === "hf") renderGrid();
+  try { await tool("like", { job_ids: ids, on }); toast(on ? `♥ ${ids.length}개 — 힉스필드에도 반영 중` : `좋아요 해제 ${ids.length}개 — 힉스필드에도 반영 중`); }
+  catch (e) { toast(errText(e)); }
+  if (lbIdx !== null) renderLb();
+}
+let menuEl = null;
+function closeMenu() { if (menuEl) { menuEl.remove(); menuEl = null; } }
+document.addEventListener("click", e => { if (menuEl && !e.target.closest(".menu") && !e.target.closest("#sMove") && !e.target.closest("#lbMove")) closeMenu(); });
+function folderMenu(anchor, ids) {
+  closeMenu(); const p = cur(); if (!ids.length) return;
+  const m = document.createElement("div"); m.className = "menu";
+  const add = (label, to) => { const b = document.createElement("button"); b.textContent = label; b.addEventListener("click", () => { closeMenu(); moveTo(ids, to); }); m.appendChild(b); };
+  for (const f of p.folders || []) add(f.name, f.id);
+  if ((p.folders || []).length) { const s = document.createElement("div"); s.className = "sep"; m.appendChild(s); }
+  add("미분류로 빼기", "root");
+  const nb = document.createElement("button"); nb.textContent = "+ 새 폴더 만들어 넣기";
+  nb.addEventListener("click", async () => { closeMenu(); const name = (prompt("새 폴더 이름") || "").trim(); if (!name) return;
+    try { await tool("folder_create", { project: p.id, name }); toast("폴더를 만드는 중이에요. 만들어지면 다시 옮겨 주세요."); setTimeout(loadProjects, 40000); } catch (e) { toast(errText(e)); } });
+  m.appendChild(nb);
+  document.body.appendChild(m); menuEl = m;
+  const r = anchor.getBoundingClientRect();
+  m.style.left = Math.min(r.left, innerWidth - m.offsetWidth - 12) + "px";
+  m.style.top = (r.top - m.offsetHeight - 8 > 8 ? r.top - m.offsetHeight - 8 : r.bottom + 8) + "px";
+}
+async function moveTo(ids, to) {
+  const p = cur();
+  try {
+    await tool("file", { project: p.id, job_ids: ids, mode: "move", to });
+    for (const it of S.items) if (ids.includes(it.job_id)) it.folder_ids = [to === "root" ? p.id : to];
+    if (S.folder !== "all" && S.folder !== "liked") S.items = S.items.filter(it => !ids.includes(it.job_id) || (it.folder_ids || []).includes(S.folder));
+    S.sel.clear(); renderSel(); renderGrid();
+    toast(`${ids.length}개를 「${to === "root" ? "미분류" : folderName(to) || "폴더"}」로 옮겨요 — 힉스필드에도 반영 중`);
+  } catch (e) { toast(errText(e)); }
+}
+
+/* 라이트박스 */
+let lbIdx = null; const LB = { list: [], total: 0, src: "hf" };
+async function openLb(i) { LB.list = S.items; LB.total = S.total; LB.src = "hf"; lbIdx = i; $("#lb").hidden = false; renderLb(); }
+function closeLb() { $("#lb").hidden = true; lbIdx = null; }
+function lbStep(d) { if (lbIdx === null || !LB.list.length) return; lbIdx = (lbIdx + d + LB.list.length) % LB.list.length; renderLb(); if (LB.src === "hf" && lbIdx >= S.items.length - 3 && S.items.length < S.total) loadItems(false).then(() => { LB.list = S.items; LB.total = S.total; }); }
+async function renderLb() {
+  const it = LB.list[lbIdx]; if (!it) return;
+  const im = $("#lbImg"); im.onerror = () => thumbFallback(im, it); delete im.dataset.fb; im.src = it.min_url || it.raw_url;
+  $("#lbTitle").textContent = it.num ? `#${pad(it.num)}` : `${lbIdx + 1} / ${LB.total}`;
+  $("#lbLike").innerHTML = (it.is_fav ? "♥ 좋아요 해제" : "♡ 좋아요");
+  $("#lbRaw").href = it.raw_url || it.min_url;
+  const fl = (it.folder_ids || []).map(folderName).filter(Boolean);
+  $("#lbMeta").textContent = [new Date((it.created || 0) * 1000).toLocaleString("ko-KR"), fl.length ? "폴더 " + fl.join(", ") : "미분류"].join(" · ");
+  $("#lbPrompt").textContent = it.prompt || "";
+  if (it.job_id) try { const d = await tool("item", { job_id: it.job_id }); if (d && LB.list[lbIdx] === it) { it.full = d.prompt; $("#lbPrompt").textContent = d.prompt || ""; } } catch (e) {}
+}
+$("#lbClose").addEventListener("click", closeLb);
+$("#lbPrev").addEventListener("click", () => lbStep(-1));
+$("#lbNext").addEventListener("click", () => lbStep(1));
+$("#lbLike").addEventListener("click", async () => { const it = LB.list[lbIdx]; if (LB.src === "eval") { const img = E.images.find(i => i.num === it.num); if (img) { await toggleBest(img); it.is_fav = favOf(img); renderLb(); } } else like([it.job_id], !it.is_fav); });
+$("#lbMove").addEventListener("click", e => { const it = LB.list[lbIdx]; if (it.job_id) folderMenu(e.currentTarget, [it.job_id]); else toast("힉스필드와 아직 연결되지 않은 이미지예요."); });
+$("#lbCopy").addEventListener("click", async () => { const it = LB.list[lbIdx]; try { await navigator.clipboard.writeText(it.full || it.prompt || ""); toast("프롬프트를 복사했어요."); } catch (e) { toast("복사하지 못했어요."); } });
+$("#lbReuse").addEventListener("click", () => { const it = LB.list[lbIdx]; $("#gPrompt").value = it.full || it.prompt || ""; S.refs = []; closeLb(); openGen(); });
+
+/* ── 생성 패널 ─────────────────────────────────────── */
+let gAr = "4:3", gCount = 4;
+function renderGenOpts() {
+  const a = $("#gAr"); a.innerHTML = ""; for (const r of AR) { const b = document.createElement("button"); b.type = "button"; b.textContent = r; b.setAttribute("aria-pressed", String(r === gAr)); b.onclick = () => { gAr = r; renderGenOpts(); }; a.appendChild(b); }
+  const c = $("#gCount"); c.innerHTML = ""; for (const n of [1, 2, 4, 8]) { const b = document.createElement("button"); b.type = "button"; b.textContent = n + "장"; b.setAttribute("aria-pressed", String(n === gCount)); b.onclick = () => { gCount = n; renderGenOpts(); }; c.appendChild(b); }
+  const f = $("#gFolder"); const p = cur(); const keep = f.value;
+  f.innerHTML = `<option value="">프로젝트 바로 아래</option>` + ((p && p.folders) || []).map(x => `<option value="${esc(x.name)}">${esc(x.name)}</option>`).join("") + `<option value="__new">+ 새 폴더 이름 입력</option>`;
+  if (keep && [...f.options].some(o => o.value === keep)) f.value = keep;
+  const r = $("#gRefs"); r.innerHTML = S.refs.length ? "" : '<span class="pmeta">그리드에서 이미지를 고른 뒤 「참조로 생성」을 누르면 여기 붙어요</span>';
+  S.refs.forEach((it, i) => { const im = document.createElement("img"); im.src = it.min_url; im.title = `image ${i + 1}`; r.appendChild(im); });
+}
+function openGen() { renderGenOpts(); $("#gen").hidden = false; $("#gPrompt").focus(); }
+$("#genOpen").addEventListener("click", () => { S.refs = S.refs || []; openGen(); });
+$("#genClose").addEventListener("click", () => { $("#gen").hidden = true; });
+$("#gFolder").addEventListener("change", e => { if (e.target.value === "__new") { const n = (prompt("새 폴더 이름") || "").trim(); if (n) { const o = new Option(n, n, true, true); e.target.add(o, e.target.options.length - 1); } else e.target.value = ""; } });
+$("#gGo").addEventListener("click", async () => {
+  const p = cur(), prompt_ = $("#gPrompt").value.trim(); if (!prompt_) { $("#gMsg").textContent = "프롬프트를 넣어 주세요."; return; }
+  const d = new Date(); const batch = `${(p.slug || "p").replace(/[^a-z0-9-]/gi, "")}_${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}`;
+  const folder = $("#gFolder").value || undefined;
+  $("#gGo").disabled = true; $("#gMsg").textContent = "넣는 중…";
+  try {
+    const r = await tool("generate", { batch, project: p.id, folder, jobs: [{ prompt: prompt_, ar: gAr, count: gCount, refs: S.refs.map(it => it.raw_url || it.min_url), tag: "W" }] });
+    $("#gMsg").textContent = `${gCount}장 대기열에 넣었어요. 끝나면 이 프로젝트${folder ? "의 「" + folder + "」" : ""}에 자동으로 들어와요.`;
+    S.watchBatch = batch;
+  } catch (e) { $("#gMsg").textContent = errText(e); }
+  finally { $("#gGo").disabled = false; }
+});
+
+/* ── 확장 상태 ─────────────────────────────────────── */
+function setExt(s, t) { $("#extPill").dataset.s = s; $("#extTxt").textContent = t; }
+async function pollExt() {
+  if (!mcp || document.visibilityState !== "visible") return;
+  try {
+    const p = await tool("status", {}); const q = p.queue || {}; const run = q.running || (p.runner && p.runner.running) || 0;
+    S.ext.alive = p.alive === true;
+    const parts = []; if (q.pending) parts.push(`대기 ${q.pending}`); if (run) parts.push(`생성 중 ${run}`);
+    if (p.sync && p.sync.pending_ops) parts.push(`반영 대기 ${p.sync.pending_ops}`);
+    const ver = p.runner && p.runner.ver ? ` v${p.runner.ver}` : "";
+    setExt(S.ext.alive ? "on" : "off", (S.ext.alive ? `확장 켜짐${ver}` : "확장 꺼짐 — 힉스필드 탭과 확장을 켜 주세요") + (parts.length ? " · " + parts.join(" · ") : ""));
+    const sy = p.sync || {};
+    $("#syncPill").dataset.s = sy.alive ? "on" : "off";
+    $("#syncTxt").textContent = sy.alive ? "프로젝트 동기화 켜짐" : sy.last_seen_sec == null ? "프로젝트 동기화 꺼짐 — 확장 v1.1이 필요해요" : "프로젝트 동기화 멈춤";
+    $("#setDot").dataset.s = S.ext.alive && sy.alive ? "on" : "off";
+  } catch (e) { S.ext.alive = null; setExt("", e && e.code === "not_granted" ? "연결 허용 필요" : "확장 상태 확인 불가"); $("#setDot").dataset.s = ""; }
+  if (S.watchBatch) {
+    try { const txt = await tool("results", { batch: S.watchBatch, limit: 50 }); const st = [...String(txt).matchAll(/^#\d+\s+\[(\w+)\]/gm)].map(x => x[1]);
+      const done = st.filter(x => x === "done").length; if (st.length) $("#gMsg").textContent = `${S.watchBatch} · ${done}/${st.length}장 완료`;
+      if (st.length && st.every(x => x === "done" || x === "failed" || x === "canceled")) { S.watchBatch = null; setTimeout(() => { loadProjects(); if (S.view === "hf") loadItems(true); }, 45000); }
+    } catch (e) {}
+  }
+  if (evalBusy) {
+    try { const txt = await tool("results", { batch: evalBusy.batch, limit: 50 }); const st = [...String(txt).matchAll(/^#\d+\s+\[(\w+)\]/gm)].map(x => x[1]);
+      const done = st.filter(x => x === "done").length, fail = st.filter(x => x === "failed").length;
+      setGen(st.length ? `${evalBusy.round} ${done}/${st.length}장 완료` + (fail ? ` · 실패 ${fail}` : "") : `${evalBusy.round} 생성 준비 중`);
+    } catch (e) { setGen(""); }
+  } else setGen("");
+}
+function setGen(t) { const g = $("#genPill"); g.hidden = !t; g.textContent = t || ""; }
+
+/* ══ 평가 보기 (산타알바 당근이 라운드) ══════════════ */
+const CRIT = [["c1", "당근이 얼굴·복장"], ["c2", "아이"], ["c3", "부모"], ["c4", "포즈·액션"], ["c5", "그림체"], ["c6", "배경·원근감"]];
+const STATUS = { planned: "대기", queued: "요청됨", generating: "생성 중", ready: "완료", blocked: "막힘" };
+const E = { images: [], scores: {}, round: "all", face: "all", sort: "num", showTrash: false, onlyBest: false };
+let evalBusy = null, reconciled = false;
+function avgOf(sc) { if (!sc) return null; const v = CRIT.map(c => sc[c[0]]).filter(x => typeof x === "number"); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; }
+function setSeg(el, v) { el.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === v))); }
+function renderRoundsSeg() { const rs = [...new Set(E.images.map(i => i.round))].sort((a, b) => (parseInt(a.slice(1)) || 0) - (parseInt(b.slice(1)) || 0)); const el = $("#segRound"); el.innerHTML = ""; ["all", ...rs].forEach(r => { const b = document.createElement("button"); b.type = "button"; b.dataset.v = r; b.textContent = r === "all" ? "전체 라운드" : r; b.setAttribute("aria-pressed", String(r === E.round)); el.appendChild(b); }); }
+const drafts = {}, timers = {}; let pendingRender = false;
+const editingMemo = () => { const a = document.activeElement; return !!(a && a.id && a.id.startsWith("memo-")); };
+function requestRender() { if (S.view !== "eval") return; if (editingMemo()) { pendingRender = true; return; } pendingRender = false; renderEval(); }
+document.addEventListener("focusout", e => { if (!(e.target.id || "").startsWith("memo-")) return; setTimeout(() => { if (pendingRender && !editingMemo()) requestRender(); }, 0); });
+const isTrash = i => !!E.scores[pad(i.num)]?.trash;
+const favOf = i => { const j = jobOf(i); const m = j && S.mirror.get(j); return !!E.scores[pad(i.num)]?.best || !!(m && m.is_fav); };
+function renderEval() {
+  if (S.view !== "eval") return;
+  renderRoundsSeg();
+  const trashCount = E.images.filter(isTrash).length;
+  const tv = $("#trashView"); tv.innerHTML = ICON.trash + `휴지통 ${trashCount}`; tv.setAttribute("aria-pressed", String(E.showTrash));
+  const bestList = E.images.filter(i => favOf(i) && !isTrash(i));
+  $("#bestView").setAttribute("aria-pressed", String(E.onlyBest)); $("#bestView").textContent = `♥만 보기 ${bestList.length}`;
+  const bz = $("#bestZip"); bz.innerHTML = ICON.dl + `♥ ${bestList.length}장 받기`; bz.hidden = !downloads; bz.disabled = !bestList.length;
+  let list = E.images.filter(i => (E.showTrash ? isTrash(i) : !isTrash(i)) && (!E.onlyBest || favOf(i)) && (E.round === "all" || i.round === E.round) && (E.face === "all" || i.face === E.face));
+  if (E.sort === "num") list.sort((a, b) => a.num - b.num);
+  if (E.sort === "score") list.sort((a, b) => (avgOf(E.scores[pad(b.num)]) ?? -1) - (avgOf(E.scores[pad(a.num)]) ?? -1));
+  if (E.sort === "todo") list = list.filter(i => avgOf(E.scores[pad(i.num)]) === null).sort((a, b) => a.num - b.num);
+  const live = E.images.filter(i => !isTrash(i));
+  const scored = live.filter(i => avgOf(E.scores[pad(i.num)]) !== null).length;
+  $("#stats").innerHTML = `<span>평가 대상 <b>${live.length}</b></span><span>평가 <b>${scored}</b></span><span>♥ <b>${bestList.length}</b></span>`;
+  const g = $("#grid");
+  if (!list.length) { g.innerHTML = `<div class="empty">${E.showTrash ? "휴지통이 비어 있어요." : E.onlyBest ? "♥ 표시한 이미지가 없어요." : E.images.length ? "조건에 맞는 이미지가 없어요." : "생성 이미지가 아직 없어요."}</div>`; return; }
+  g.innerHTML = "";
+  list.forEach(img => {
+    const id = pad(img.num); const sc = E.scores[id] || {}; const a = avgOf(sc); const fav = favOf(img);
+    const card = document.createElement("article"); card.className = "card" + (fav ? " best" : "") + (sc.trash ? " trashed" : "");
+    card.innerHTML = `<button class="thumb" type="button" aria-label="#${id} 크게 보기"><img loading="lazy" src="${esc(img.url)}" alt="#${id} 생성 이미지"></button>
+    <div class="body">
+      <div class="head"><span class="num">#${id}</span><span class="tag">${esc(img.round)}</span><span class="tag">얼굴 ${esc(img.face)}</span>${jobOf(img) ? '<span class="tag hf">힉스필드 연동</span>' : ""}
+        <span class="avg">${a === null ? "–" : a.toFixed(1)}<small>/5</small></span>
+        <button class="ibtn heart" type="button" aria-label="좋아요" aria-pressed="${fav}">${fav ? ICON.heart : ICON.heartO}</button>
+        ${downloads ? `<button class="ibtn dl" type="button" aria-label="#${id} 내려받기">${ICON.dl}</button>` : ""}
+        <button class="ibtn trash" type="button" aria-label="${sc.trash ? "복원" : "휴지통으로"}">${sc.trash ? ICON.restore : ICON.trash}</button></div>
+      ${img.note ? `<p class="note"></p>` : ""}
+      <div class="crit"></div>
+      <textarea id="memo-${id}" placeholder="메모 (입력을 멈추거나 칸을 벗어나면 저장)"></textarea>
+      <div class="saved" aria-live="polite"></div>
+    </div>`;
+    if (img.note) card.querySelector(".note").textContent = img.note;
+    const crit = card.querySelector(".crit");
+    CRIT.forEach(([k, label]) => {
+      const l = document.createElement("label"); l.textContent = label; l.id = `l-${id}-${k}`;
+      const s = document.createElement("div"); s.className = "score"; s.setAttribute("role", "group"); s.setAttribute("aria-labelledby", l.id);
+      for (let n = 1; n <= 5; n++) { const b = document.createElement("button"); b.type = "button"; b.textContent = n;
+        if (sc[k] === n) b.classList.add("on"); else if (typeof sc[k] === "number" && n < sc[k]) b.classList.add("fill");
+        b.addEventListener("click", () => save(id, { [k]: sc[k] === n ? null : n })); s.appendChild(b); }
+      crit.append(l, s);
+    });
+    const ta = card.querySelector("textarea"); ta.value = drafts[id] ?? sc.memo ?? "";
+    let composing = false;
+    const schedule = () => { clearTimeout(timers[id]); timers[id] = setTimeout(() => { if (!composing) save(id, { memo: drafts[id] }, true); }, 1500); };
+    ta.addEventListener("compositionstart", () => { composing = true; clearTimeout(timers[id]); });
+    ta.addEventListener("compositionend", () => { composing = false; drafts[id] = ta.value; schedule(); });
+    ta.addEventListener("input", e => { drafts[id] = ta.value; if (e.isComposing || composing) return; schedule(); });
+    ta.addEventListener("blur", () => { if (drafts[id] === undefined) return; clearTimeout(timers[id]); const v = drafts[id]; save(id, { memo: v }, true).then(() => { if (drafts[id] === v) delete drafts[id]; }); });
+    card.querySelector(".heart").addEventListener("click", () => toggleBest(img));
+    card.querySelector(".trash").addEventListener("click", () => save(id, { trash: sc.trash ? null : true }));
+    card.querySelector(".dl")?.addEventListener("click", () => downloadOne(img));
+    card.querySelector(".thumb").addEventListener("click", () => openEvalLb(img));
+    g.appendChild(card);
+  });
+}
+async function toggleBest(img) {
+  const id = pad(img.num), on = !favOf(img), j = jobOf(img);
+  if (j) { const m = S.mirror.get(j); if (m) m.is_fav = on; }
+  await save(id, { best: on || null });
+  if (j && S.mirror.has(j)) { try { await tool("like", { job_ids: [j], on }); } catch (e) { toast(errText(e)); } }
+}
+async function save(id, patch, quiet) {
+  const c = { ...(E.scores[id] || {}), ...patch, updatedAt: Date.now() };
+  Object.keys(c).forEach(k => { if (c[k] === null) delete c[k]; });
+  if (drafts[id] !== undefined) c.memo = drafts[id];
+  E.scores[id] = c; if (!quiet) requestRender();
+  if (!db) return;
+  const el = () => document.querySelector(`#memo-${id}`)?.parentElement?.querySelector(".saved");
+  try { await db.doc("scores/" + id).set(c); const s = el(); if (s) { s.style.color = ""; s.textContent = "저장됨"; setTimeout(() => { s.textContent = ""; }, 1200); } }
+  catch (e) { const s = el(); if (s) { s.style.color = "var(--red)"; s.textContent = "저장 안 됨: 로그인 상태나 편집 권한을 확인해 주세요"; } }
+}
+/* 힉스필드 좋아요 ↔ 평가 ♥ 맞추기(합집합: 한쪽에만 있으면 다른 쪽에도 켠다, 페이지를 열 때 한 번) */
+async function reconcile() {
+  if (reconciled || !db || !E.gotImages || !E.gotScores || !S.mirror.size) return; reconciled = true;
+  const toLike = [];
+  for (const img of E.images) {
+    const j = jobOf(img); const m = j && S.mirror.get(j); if (!m) continue;
+    const id = pad(img.num); const best = !!E.scores[id]?.best;
+    if (best && !m.is_fav) { toLike.push(j); m.is_fav = true; }
+    if (!best && m.is_fav) await save(id, { best: true }, true);
+  }
+  if (toLike.length) { try { await tool("like", { job_ids: toLike, on: true }); } catch (e) {} }
+  requestRender();
+}
+async function loadMirror() {
+  try { for (let off = 0; off < 1000; off += 200) { const d = await tool("items", { project: SANTA, offset: off, limit: 200 }); for (const it of d.items || []) S.mirror.set(it.job_id, it); if ((d.items || []).length < 200) break; } reconcile(); requestRender(); } catch (e) {}
+}
+/* 내려받기(평가 이미지) */
+const toolMsg = t => { $("#toolMsg").textContent = t || ""; };
+const extOf = b => /png/.test(b.type) ? "png" : /webp/.test(b.type) ? "webp" : "jpg";
+const fileName = (img, b) => `dangeuni_santa_${pad(img.num)}_${img.round}.${extOf(b)}`;
+async function fetchBlob(img) { const r = await fetch(img.url); if (!r.ok) throw new Error("fetch " + r.status); return r.blob(); }
+function dlError(e) { const c = e && e.code; if (c === "declined") return ""; if (c === "rate_limited") return "이미 저장 창이 열려 있어요. 닫은 뒤 다시 눌러 주세요."; return "내려받지 못했어요. 잠시 후 다시 시도해 주세요."; }
+async function downloadOne(img) { try { const b = await fetchBlob(img); await downloads.save({ filename: fileName(img, b), data: b }); toolMsg(""); } catch (e) { toolMsg(dlError(e)); } }
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u) { let c = 0xFFFFFFFF; for (let i = 0; i < u.length; i++) c = CRC[(c ^ u[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function makeZip(files) {
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0;
+  files.forEach(f => { const name = enc.encode(f.name), crc = crc32(f.data), sz = f.data.length;
+    const h = new DataView(new ArrayBuffer(30)); h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(8, 0, true); h.setUint32(14, crc, true); h.setUint32(18, sz, true); h.setUint32(22, sz, true); h.setUint16(26, name.length, true);
+    parts.push(new Uint8Array(h.buffer), name, f.data);
+    const c = new DataView(new ArrayBuffer(46)); c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint32(16, crc, true); c.setUint32(20, sz, true); c.setUint32(24, sz, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    central.push(new Uint8Array(c.buffer), name); off += 30 + name.length + sz; });
+  const cdSize = central.reduce((a, p) => a + p.length, 0);
+  const e = new DataView(new ArrayBuffer(22)); e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, cdSize, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...central, new Uint8Array(e.buffer)], { type: "application/zip" });
+}
+$("#bestZip").addEventListener("click", async () => {
+  const list = E.images.filter(i => favOf(i) && !isTrash(i)).sort((a, b) => a.num - b.num); if (!list.length) return;
+  const btn = $("#bestZip"); btn.disabled = true;
+  try { const files = []; for (let k = 0; k < list.length; k++) { toolMsg(`♥ 이미지 묶는 중 ${k + 1}/${list.length}`); const b = await fetchBlob(list[k]); files.push({ name: fileName(list[k], b), data: new Uint8Array(await b.arrayBuffer()) }); }
+    toolMsg(""); const d = new Date(); await downloads.save({ filename: `dangeuni_santa_best_${d.getMonth() + 1}${pad(d.getDate())}.zip`, data: makeZip(files) }); }
+  catch (e) { toolMsg(dlError(e)); } finally { btn.disabled = false; }
+});
+function openEvalLb(img) {
+  const list = E.images.filter(i => !isTrash(i)).sort((a, b) => a.num - b.num);
+  const items = list.map(i => { const j = jobOf(i); const m = j && S.mirror.get(j); return { job_id: j || "", min_url: i.url, raw_url: (m && m.raw_url) || i.hf || i.url, is_fav: favOf(i), folder_ids: (m && m.folder_ids) || [], created: (m && m.created) || 0, prompt: (m && m.prompt) || i.note || "", num: i.num }; });
+  LB.list = items; LB.total = items.length; LB.src = "eval"; lbIdx = Math.max(0, list.indexOf(img)); $("#lb").hidden = false; renderLb();
+}
+$("#segRound").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; E.round = b.dataset.v; renderEval(); });
+$("#segFace").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; E.face = b.dataset.v; setSeg($("#segFace"), E.face); renderEval(); });
+$("#segSort").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; E.sort = b.dataset.v; setSeg($("#segSort"), E.sort); renderEval(); });
+$("#trashView").addEventListener("click", () => { E.showTrash = !E.showTrash; if (E.showTrash) E.onlyBest = false; renderEval(); });
+$("#bestView").addEventListener("click", () => { E.onlyBest = !E.onlyBest; if (E.onlyBest) E.showTrash = false; renderEval(); });
+function setCols(v) { $("#grid").style.setProperty("--cols", v); setSeg($("#segCols"), v); try { localStorage.setItem("cols", v); } catch (e) {} }
+$("#segCols").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setCols(b.dataset.v); });
+try { const c = localStorage.getItem("cols"); if (c === "2" || c === "3") setCols(c); } catch (e) {}
+
+/* 자동 라운드(피드백 완료) */
+const FIRE_ERR = { needs_reauth: "Claude Code Remote 연결이 만료됐어요. claude.ai 설정의 커넥터에서 다시 연결해 주세요.", server_not_connected: "Claude Code Remote 커넥터가 연결돼 있지 않아요.", approval_required: "자동 실행 승인이 필요해요. 버튼을 다시 누르고 뜨는 창에서 허용해 주세요.", not_in_manifest: "이 작업공간에서 자동 실행이 허용되지 않았어요. 버튼을 다시 누르고 허용해 주세요.", blocked_by_policy: "조직 정책이 자동 실행을 막고 있어요." };
+async function fire(text) { if (!mcp) throw { code: "no_mcp" }; return mcp.callTool("Claude Code Remote", "fire_trigger", { trigger_id: TRIGGER_ID, text }); }
+const fireErr = e => { const c = e && e.code || ""; const d = (e && e.message ? String(e.message) : "").replace(/\s+/g, " ").slice(0, 140);
+  if (c === "no_mcp") return "claude.ai에서 열어야 자동 실행을 부를 수 있어요.";
+  if (FIRE_ERR[c]) return FIRE_ERR[c];
+  if (/not.?found|disabled|enabled/i.test(d)) return "자동 실행 작업을 찾지 못했거나 꺼져 있어요. Claude에게 '라운드 자동 실행 켜줘'라고 말해 주세요. (" + (c || "error") + ")";
+  return "자동 실행 요청이 실패했어요. 잠시 후 다시 눌러 주세요." + (c || d ? " (" + [c, d].filter(Boolean).join(": ") + ")" : ""); };
+
+/* ── 시작 ─────────────────────────────────────────── */
+(async () => {
+  try { S.pid = localStorage.getItem("hfw_pid") || SANTA; } catch (e) { S.pid = SANTA; }
+  openProject(S.pid);
+  db = window.claude ? await window.claude.use("db") : null;
+  mcp = window.claude ? await window.claude.use("mcp") : null;
+  window.claude && window.claude.use("downloads").then(d => { downloads = d; requestRender(); });
+  try { if (localStorage.getItem("hfw_mode") === "cast") setView("cast", true); } catch (e) {}
+  if (mcp) { await loadProjects(); renderFolders(); if (S.view === "hf") loadItems(true); pollExt(); setInterval(pollExt, 30000); setInterval(loadProjects, 90000); document.addEventListener("visibilitychange", pollExt); loadMirror(); }
+  else { setExt("", "claude.ai에서 열어 주세요"); if (S.view === "hf") $("#hGrid").innerHTML = '<div class="empty">claude.ai에서 열어야 힉스필드 프로젝트를 불러올 수 있어요.</div>'; }
+  if (!db) { $("#grid").innerHTML = '<div class="empty">로그인한 상태에서 열어야 평가 데이터를 불러올 수 있어요.</div>'; return; }
+  db.doc("ws/main").onSnapshot(d => { const v = d.data && d.data(); if (v && Array.isArray(v.pins)) { S.pins = v.pins; renderHeader(); } });
+  db.collection("images").onSnapshot(snap => { E.images = snap.docs.map(d => ({ id: d.id, ...d.data() })); E.gotImages = true; reconcile(); requestRender(); });
+  db.collection("scores").onSnapshot(snap => { const m = {}; snap.docs.forEach(d => { m[d.id] = d.data(); }); Object.keys(drafts).forEach(id => { if (m[id]) m[id] = { ...m[id], memo: drafts[id] }; }); E.scores = m; E.gotScores = true; reconcile(); requestRender(); });
+  let rounds = [];
+  const rnum = r => parseInt(String(r.round || r.id).replace(/\D/g, "")) || 0;
+  function renderRoundPanel() {
+    rounds.sort((a, b) => rnum(b) - rnum(a));
+    const ol = $("#rpList"); ol.innerHTML = "";
+    rounds.forEach(r => { const li = document.createElement("li");
+      const n = document.createElement("span"); n.className = "rn"; n.textContent = r.round || r.id;
+      const b = document.createElement("div"); b.className = "rb";
+      const p = document.createElement("span"); p.className = "pill"; p.dataset.s = r.status || ""; p.textContent = STATUS[r.status] || r.status || ""; p.style.alignSelf = "flex-start"; b.appendChild(p);
+      const txt = r.summary || r.request; if (txt) { const s = document.createElement("div"); s.className = "rs"; s.textContent = txt; b.appendChild(s); }
+      if (r.status === "blocked" && r.reason) { const s = document.createElement("div"); s.className = "rr"; s.textContent = "막힌 이유: " + r.reason; b.appendChild(s); }
+      if (r.analysis) { const a = document.createElement("div"); a.className = "ra"; a.textContent = Array.isArray(r.analysis) ? r.analysis.join("\n") : r.analysis; b.appendChild(a); }
+      if (r.ask) { const k = document.createElement("div"); k.className = "ask"; k.textContent = r.ask; b.appendChild(k); }
+      li.append(n, b); ol.appendChild(li); });
+    const busy = rounds.find(r => r.status === "queued" || r.status === "generating");
+    const lastReady = rounds.find(r => r.status === "ready");
+    const prev = evalBusy && evalBusy.round;
+    evalBusy = busy ? { round: busy.round || busy.id, batch: busy.batch || ("santa_" + (busy.round || busy.id)) } : null;
+    if ((evalBusy && evalBusy.round) !== prev) pollExt();
+    const pill = $("#rpPill");
+    if (busy) { pill.dataset.s = busy.status; pill.textContent = `${busy.round || busy.id} ${STATUS[busy.status]}`; }
+    else if (lastReady) { pill.dataset.s = "ready"; pill.textContent = `${lastReady.round || lastReady.id} 평가 중`; }
+    else { pill.dataset.s = ""; pill.textContent = ""; }
+    $("#doneBtn").disabled = !!busy || !lastReady;
+    $("#doneBtn").textContent = lastReady && !busy ? `${lastReady.round || lastReady.id} 피드백 완료` : "피드백 완료";
+  }
+  db.collection("rounds").onSnapshot(snap => { rounds = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderRoundPanel(); });
+  $("#doneBtn").addEventListener("click", async () => {
+    const lastReady = rounds.find(r => r.status === "ready"); if (!lastReady) return;
+    const next = "R" + (rnum(lastReady) + 1);
+    const { id: _omit, ...nextDoc } = rounds.find(r => (r.round || r.id) === next) || {};
+    const prev = nextDoc.status || "planned";
+    const btn = $("#doneBtn"), msg = $("#rpMsg"); btn.disabled = true; msg.textContent = "다음 라운드를 요청하는 중이에요.";
+    try { await db.doc("rounds/" + next).set({ ...nextDoc, round: next, status: "queued", queuedAt: Date.now(), after: lastReady.round || lastReady.id }); }
+    catch (e) { msg.textContent = "라운드 상태를 저장하지 못했어요. 로그인과 편집 권한을 확인해 주세요."; btn.disabled = false; return; }
+    try { await fire(`${lastReady.round || lastReady.id} 피드백 완료. ${next} 진행.`);
+      msg.textContent = S.ext.alive === false ? `${next} 진행을 요청했어요. 확장이 꺼져 있어 생성은 시작되지 않아요.` : `${next} 진행을 시작했어요. 몇 분 뒤 이미지가 여기에 쌓이고, 힉스필드 프로젝트의 「${next}」 폴더에도 들어가요.`; }
+    catch (e) { msg.textContent = fireErr(e); try { await db.doc("rounds/" + next).set({ ...nextDoc, round: next, status: prev }); } catch (_) {} }
+  });
+  db.collection("feedback").onSnapshot(snap => {
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (b.at || 0) - (a.at || 0));
+    const ol = $("#fbList"); ol.innerHTML = "";
+    items.forEach(it => { const li = document.createElement("li");
+      const t = document.createElement("time"); t.textContent = new Date(it.at || 0).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+      const p = document.createElement("div"); p.className = "t"; p.textContent = it.text || ""; li.append(t, p);
+      if (it.reply) { const r = document.createElement("div"); r.className = "r"; const b = document.createElement("b"); b.textContent = "반영"; r.append(b, document.createTextNode(it.reply)); li.appendChild(r); }
+      ol.appendChild(li); });
+  });
+  const send = $("#fbSend"), inp = $("#fbInput");
+  send.addEventListener("click", async () => { const text = inp.value.trim(); if (!text) return; send.disabled = true;
+    try { const at = Date.now(); await db.collection("feedback").doc(String(at)).set({ text, at }); inp.value = ""; }
+    catch (e) { inp.setAttribute("aria-invalid", "true"); send.textContent = "다시 시도"; }
+    finally { send.disabled = false; } });
+})();
+</script>
+
+</body></html>

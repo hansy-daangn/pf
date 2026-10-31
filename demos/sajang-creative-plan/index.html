@@ -1,0 +1,209 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>사장님향 상시 소재 기획안</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* 레이아웃: 소재당 1화면(헤더·후킹 논리·타임라인 표·하단 변주) × 3, 맨 앞 결론표, 맨 뒤 근거 코드표 */
+:root{--bg:#f7f6f2;--panel:#fff;--fg:#1d1f22;--muted:#5b6068;--line:#dcd9d0;--accent:#ff6f0f;--accent-soft:#ffe9d9;
+--in:#f6dc6b;--in-fg:#4a3b00;--data:#9fc5ea;--data-fg:#0b2e52;--proc:#a9dcb5;--proc-fg:#0f3d1e;--out:#cdb8ec;--out-fg:#2d1457;--bad:#e5544b;--bad-soft:#fde3e1;
+--f-display:'Black Han Sans','IBM Plex Sans KR',sans-serif;--f-body:'IBM Plex Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;--f-mono:'IBM Plex Mono',Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181b;--panel:#212328;--fg:#ecebe6;--muted:#a8aab0;--line:#3a3d44;--accent:#ff7d2a;--accent-soft:#3a2614;--in:#5c4f10;--in-fg:#ffe79a;--data:#1f3f61;--data-fg:#bfe0ff;--proc:#1f4a2c;--proc-fg:#bdf0c8;--out:#3a2a5e;--out-fg:#e3d4ff;--bad:#ff6b63;--bad-soft:#4a1f1c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17181b;--panel:#212328;--fg:#ecebe6;--muted:#a8aab0;--line:#3a3d44;--accent:#ff7d2a;--accent-soft:#3a2614;--in:#5c4f10;--in-fg:#ffe79a;--data:#1f3f61;--data-fg:#bfe0ff;--proc:#1f4a2c;--proc-fg:#bdf0c8;--out:#3a2a5e;--out-fg:#e3d4ff;--bad:#ff6b63;--bad-soft:#4a1f1c;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:14.5px;line-height:1.6;margin:0;padding-block:0 60px;padding-inline:16px}
+.wrap{max-width:1080px;margin:0 auto}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(28px,4.5vw,40px);line-height:1.2;margin:0;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:40px 0 0;padding-top:14px;border-top:3px solid var(--fg)}
+p{margin:8px 0;max-width:76ch}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;color:var(--muted)}
+.meta{color:var(--muted);font-size:12.5px;margin-top:6px}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:4px;line-height:1.5;white-space:normal}
+.t-in{background:var(--in);color:var(--in-fg)}.t-data{background:var(--data);color:var(--data-fg)}.t-proc{background:var(--proc);color:var(--proc-fg)}.t-out{background:var(--out);color:var(--out-fg)}.t-bad{background:var(--bad-soft);color:var(--bad)}.t-line{background:var(--accent-soft);color:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:12.5px;align-items:center}
+table{border-collapse:collapse;width:100%;font-size:13px;background:var(--panel)}
+.tw{max-width:100%;overflow-x:auto;border:1px solid var(--line);margin-top:12px}
+th{text-align:left;font-size:11.5px;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:8px 9px;border-bottom:2px solid var(--line);background:var(--bg);white-space:nowrap}
+td{padding:8px 9px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.sb{margin-top:16px;border:1px solid var(--line);background:var(--panel);min-width:0}
+.sb-head{padding:14px 16px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.sb-head>*{min-width:0}
+.sb-head .title{font-family:var(--f-display);font-size:24px;line-height:1.2}
+.sb-head .title small{font-family:var(--f-mono);font-size:13px;color:var(--accent);margin-right:8px}
+.sb-head .row{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--muted)}
+.sb-head .row b{color:var(--fg)}
+.hook{padding:12px 16px;border-bottom:1px solid var(--line);background:var(--bg);font-size:13.5px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px 18px}
+.hook b{color:var(--accent);font-family:var(--f-mono);font-size:11.5px;letter-spacing:.04em;display:block}
+.sb .tw{border:0;margin:0}
+.sb td:first-child{font-family:var(--f-mono);white-space:nowrap;color:var(--accent);font-weight:600;width:62px}
+.sb td.scene{width:26%}
+.sb td.say{font-weight:500}
+.sb td .sub{display:inline-block;background:var(--bg);border:1px solid var(--line);padding:1px 6px;font-size:12px;margin-top:4px;color:var(--fg)}
+.sb td.ev{font-size:12px;color:var(--muted);width:24%}
+.sb td.ev code{font-size:11px}
+.sb-foot{padding:10px 16px;border-top:1px solid var(--line);font-size:12.5px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px 18px}
+.sb-foot b{display:block;color:var(--muted);font-size:11.5px;letter-spacing:.04em}
+.copy{font-family:var(--f-display);font-size:19px;line-height:1.3;padding:10px 14px;background:var(--bg);border:1px dashed var(--line);margin-top:8px}
+.copy small{display:block;font-family:var(--f-body);font-size:12.5px;font-weight:400;color:var(--muted);margin-top:5px}
+code{font-family:var(--f-mono);font-size:12px;background:var(--bg);padding:0 4px;border:1px solid var(--line)}
+.conc{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--accent);padding:14px 16px;margin-top:16px}
+.conc p{margin:4px 0;max-width:none}
+.note{font-size:12.5px;color:var(--muted)}
+.src{font-size:12px;color:var(--muted);line-height:1.6}
+.src a{color:var(--fg)}
+a{color:var(--accent)}
+</style>
+<div class="wrap">
+<header>
+  <div class="eyebrow">당근비즈니스 · 사장님향 페이드 · 상시 소재 3종</div>
+  <h1>사장님향 상시 소재 기획안</h1>
+  <div class="meta">2026-10-13 · 재료: 사장님 발언 149건(카페·지식iN·동네생활, 75%가 2025.10~2026.10) · 의사결정 데이터 92건 · 플레이북(제약) · 당근 공식 팩트</div>
+  <div class="conc">
+    <p><b>결론</b> — 사장님은 광고를 <b>"당근 보고 왔어요" 한 마디·전화 1통</b>으로만 판정한다(클릭·노출 불만 13건이 모든 채널 공통 1위). 그래서 3종 모두 <b>사장님이 쓰는 단위로 증거를 보여주고, 사장님 육성으로 열며, 버튼이 광고 만들기·가게 등록으로 직결</b>된다.</p>
+    <p><b>라인별 1종</b> — ① 이탈: 「正자 23개」 (다시 켠 사장님의 '당근 보고 왔어요' 집계) ② 신규: 「문구는 당근이 써드려요」 (못 만들어서 못 켜는 사장님) ③ 잠재: 「{동네} 미용실 12곳은 이미 당근에」 (옆 가게 선점 + 무료 등록).</p>
+  </div>
+  <div class="legend"><span class="tag t-in">노랑 = 후킹 재료</span><span class="tag t-data">파랑 = 근거</span><span class="tag t-proc">초록 = 전개</span><span class="tag t-out">보라 = CTA·결과</span><span class="tag t-line">주황 = 라인</span> <span class="note">근거 코드: <code>Q</code> 사장님 발언 · <code>D</code> 데이터 · <code>P</code> 플레이북 · <code>F</code> 공식 팩트 — 맨 아래 표</span></div>
+</header>
+
+<div class="tw"><table>
+  <tr><th>#</th><th>소재</th><th>라인 · 캠페인</th><th>형식</th><th>0~3초 후킹</th><th>사장님이 끝까지 보는 이유</th><th>집행까지 경로 · KPI</th></tr>
+  <tr><td>1</td><td><b>正자 23개</b></td><td><span class="tag t-line">이탈</span> 광고 생성 리타게팅</td><td>영상 30s 1:1·9:16 + 실사 정지컷</td><td>"저도 당근 광고 껐었어요" + 계산대 메모지 正正正</td><td>지난번엔 왜 안 됐고 이번엔 왜 되는지(쿠폰) 답이 12초에 나옴</td><td>광고 다시 켜기 + 즉시 캐시 → 유상소진 1건당</td></tr>
+  <tr><td>2</td><td><b>문구는 당근이 써드려요</b></td><td><span class="tag t-line">신규</span> 첫 소진(BSP)</td><td>타이포 안내문 이미지 9규격 + 15s 보조 영상</td><td>"사진 1장 주세요. 문구 3개는 당근이 써드려요"</td><td>'뭘 올려야 하나·재주 없다'는 막힘을 헤드라인이 바로 치움</td><td>26만원 받고 광고 만들기(버튼 직결) → 첫 소진 1건당</td></tr>
+  <tr><td>3</td><td><b>{동네} 미용실 12곳은 이미 당근에</b></td><td><span class="tag t-line">잠재</span> 비프 생성·광고주센터 진입</td><td>동네지도 캡처 톤 이미지 9규격 + 15s 모션</td><td>동네명 + 같은 업종 가게 수(실수치)</td><td>"우리 동네 누가 있지, 나만 없나" → 빈 핀이 자기 가게</td><td>무료로 가게 올리기(전화 영업 없음 명시) → 비프 1건당·계정 1건당</td></tr>
+</table></div>
+
+<h2>소재 1 · 正자 23개</h2>
+<div class="sb">
+  <div class="sb-head">
+    <div class="title"><small>이탈 · 영상 30초</small>正자 23개 — "당근 보고 왔어요" 집계</div>
+    <div class="row"><span>출연 <b>실제 사장님 1명(고깃집)</b> · 업종 변주 미용실·에어컨청소</span><span>촬영 <b>휴대폰 실사, 얼굴 작게, 일하면서</b></span><span>랜딩 <b>광고 만들기 딥링크 + 즉시 캐시(사장님 전용)</b></span></div>
+  </div>
+  <div class="hook">
+    <div><b>심는 질문(0~3초)</b>"껐던 사람이 왜 다시 켰지? 저 正자는 뭐지?" — 이탈 사장님이 자기 상황('클릭만 되고 안 옴')을 첫 문장에서 듣는다 <span class="tag t-data">Q1·Q2</span></div>
+    <div><b>끝까지 보는 이유</b>증거가 클릭이 아니라 '당근 보고 왔어요' 횟수(사장님 판정 단위)이고, 12초에 "지난번과 다른 한 가지"가 나온다 <span class="tag t-data">Q3·Q4·P1</span></div>
+    <div><b>집행 경로</b>하루 7천원 → 한 분 9천원 산수(사장님 머릿속 단위) → '내가 켜고 끈다·선결제 없음'으로 결제 공포 제거 → 즉시 캐시 버튼 <span class="tag t-data">Q5·Q6·D1·P2</span></div>
+  </div>
+  <div class="tw"><table>
+    <tr><th>초</th><th>화면</th><th>멘트(육성) · 자막</th><th>장치 · 근거</th></tr>
+    <tr><td>0–2</td><td class="scene">계산대 옆 메모지에 正자 한 획을 긋는 손. 얼굴 없음.</td><td class="say">"저도 당근 광고 껐었어요. 클릭만 되고 아무도 안 와서."<br><span class="sub">클릭만 되고, 아무도 안 왔다</span></td><td class="ev">사장님 육성 오프닝(타이틀 카드 금지) <code>P3</code> · 불만 1위 문장 그대로 <code>Q1</code></td></tr>
+    <tr><td>2–6</td><td class="scene">메모지 풀샷: "당근 보고 왔어요" 正 ×4 + 3획 = 23</td><td class="say">"이건 이번 달에 '당근 보고 왔어요' 소리 들은 횟수예요. 스물셋."<br><span class="sub">10월 "당근 보고 왔어요" 23번</span></td><td class="ev">판정 단위 = 손님 말 <code>Q2</code> · 정밀 숫자는 사람이 말할 때 앵커 <code>D2</code></td></tr>
+    <tr><td>6–12</td><td class="scene">폰 리포트 화면 인서트: 반응수(전화·채팅·쿠폰 사용)</td><td class="say">"지난번이랑 딱 하나 달랐어요. 이번엔 쿠폰을 걸고 켰어요. 메인 메뉴 30%."<br><span class="sub">달라진 건 하나 — 쿠폰 걸고 켬</span></td><td class="ev">광고 단독 실패·쿠폰 결합 성공 패턴 <code>Q3·Q4</code> · 재시도 명분 제공</td></tr>
+    <tr><td>12–18</td><td class="scene">불판 닦는 손·가게 풀샷. 자막 저울 아이콘.</td><td class="say">"하루 7천원, 한 달 20만원쯤. 스물세 분이면 한 분에 만 원이 안 돼요."<br><span class="sub">하루 7,000원 → 한 분 9,000원</span></td><td class="ev">심리 단위 하루 1만원 <code>D1·Q5</code> · 광고비↔손님 산수 장면 <code>P4</code></td></tr>
+    <tr><td>18–23</td><td class="scene">폰 화면: 광고 켜기/끄기 토글, 일예산 5,000원</td><td class="say">"끄고 싶으면 여기서 꺼요. 전화 올 일도 없고."<br><span class="sub">내가 켜고 내가 끈다 · 선결제 없음</span></td><td class="ev">결제 공포·대행 전화 트라우마 <code>Q6·Q7</code> · 일예산 최소 5,000원 <code>F1</code></td></tr>
+    <tr><td>23–27</td><td class="scene">문 열리는 소리, 사장님 고개 돌림(첫 얼굴)</td><td class="say">(손님) "당근 보고 왔는데요—" (사장님) "…스물넷."<br><span class="sub">24</span></td><td class="ev">감정 전환 1회(무표정→웃음) <code>D3</code> · 증거 단위 재확인</td></tr>
+    <tr><td>27–30</td><td class="scene">CTA 카드, 버튼 하나</td><td class="say"><span class="sub">광고 다시 켜기 → 광고캐시 {N}만원 바로</span></td><td class="ev">이탈 = 즉시 지급·조건 단순·마감 문구 없음 <code>P2</code></td></tr>
+  </table></div>
+  <div class="sb-foot">
+    <div><b>이미지 버전(정지컷)</b>메모지 正자 실사 1장 + "10월, '당근 보고 왔어요' 23번 · 하루 7천원" 타이포. 인터뷰컷 아닌 장면컷 <code>P5</code></div>
+    <div><b>변주</b>업종 3(고깃집·미용실·에어컨청소), 숫자는 출연자 실제 리포트. 상담업·학원은 "첫 상담 쿠폰"으로 치환</div>
+    <div><b>리스크</b>쿠폰 없이 집행하는 사장님에겐 재현 안 됨 → 랜딩에 '쿠폰 같이 만들기' 1단계 추가 권장. 성과 '보장' 발언 금지</div>
+  </div>
+</div>
+
+<h2>소재 2 · 문구는 당근이 써드려요</h2>
+<div class="sb">
+  <div class="sb-head">
+    <div class="title"><small>신규 · 이미지 주력 + 15초</small>사진 1장 주세요. 광고 문구는 당근이 3개 써드려요</div>
+    <div class="row"><span>대상 <b>광고 계정 있음 · 유상소진 없음</b></span><span>주력 <b>타이포 안내문 9규격(1200×600 필수, 띠배너 제외)</b></span><span>랜딩 <b>당근사장님 지원 프로그램 → 버튼이 광고 만들기로 직결</b></span></div>
+  </div>
+  <div class="hook">
+    <div><b>심는 질문</b>"문구를 써준다고? 나 글 못 쓰는데" — 신규 사장님이 광고를 못 켜는 이유는 돈보다 '뭘 올릴지 모름·재주 없음·생노가다' <span class="tag t-data">Q8·Q9·Q10</span></div>
+    <div><b>끝까지 보는 이유</b>헤드라인이 할 일을 없애고, 26만원이 두 번째 줄에 바로 읽힌다(안내문 형식 1.08). '만들어 주는 지원'이 신규 첫 소진을 가장 많이 만든 콘텐츠 데이터와 같은 메커니즘 <span class="tag t-data">P6·P7</span></div>
+    <div><b>집행 경로</b>버튼 = 광고 만들기(절차·퀴즈 없음) → 앱 '추천받기'가 문구 3개 생성 → 하루 5,000원 설정 → 첫 소진 <span class="tag t-data">F2·F3·P8</span></div>
+  </div>
+  <div class="copy">첫 광고 사장님께<br>사진 1장 주세요. 광고 문구는 당근이 3개 써드려요<small>광고비 최대 26만원 지원(웰컴 1만 · 첫 7일 50% 캐시백 최대 5만 · 월 보너스 최대 20만) · 하루 5,000원부터 · {동네} 이웃에게만 · 버튼 → <b>26만원 받고 광고 만들기</b></small></div>
+  <div class="tw"><table>
+    <tr><th>초</th><th>화면(보조 영상 15s)</th><th>멘트 · 자막</th><th>장치 · 근거</th></tr>
+    <tr><td>0–3</td><td class="scene">사장님 손이 폰으로 매대·메뉴 사진 1장 찍음</td><td class="say">"사진은 찍을 줄 알죠. 글이 문제지."<br><span class="sub">사진 1장은 찍을 수 있다</span></td><td class="ev">막힘의 실제 언어 <code>Q8·Q9</code> · 육성 오프닝 <code>P3</code></td></tr>
+    <tr><td>3–8</td><td class="scene">앱 광고 만들기 → '추천받기' 탭 → 문구 3개 생성(실제 UI)</td><td class="say"><span class="sub">광고 문구 3개, 당근이 써드려요 — 고르기만 하세요</span></td><td class="ev">확정 기능(최대 3개 자동 생성) <code>F2</code> · UI 5초 상한</td></tr>
+    <tr><td>8–11</td><td class="scene">안내문 카드(위 카피 그대로)</td><td class="say"><span class="sub">첫 광고 광고비 최대 26만원</span></td><td class="ev">금액이 바로 읽히는 안내문 1.08 vs 일러스트 0.90 <code>P6</code></td></tr>
+    <tr><td>11–15</td><td class="scene">CTA</td><td class="say"><span class="sub">26만원 받고 광고 만들기 · {동네} 이웃에게만 보여요</span></td><td class="ev">동네·근처 신규 피드 1.5배, 동네명 +17% <code>P9·D4</code></td></tr>
+  </table></div>
+  <div class="sb-foot">
+    <div><b>변주</b>순수 타이포 vs 업종 실사 배경(식음·뷰티·학원) A/B · 동네명 변수 유/무</div>
+    <div><b>금지</b>'무료'·'노하우'·'AI' 헤드라인 — AI는 작은 글씨(60대 디지털 필요성 2.61점) <code>P10·D5</code></div>
+    <div><b>검증 포인트</b>플레이북 미검증 가설("만들어 주는 지원 × 페이드 신규"). 26만원 단독 안내문(대조군)과 같은 시기 A/B</div>
+  </div>
+</div>
+
+<h2>소재 3 · {동네} 미용실 12곳은 이미 당근에</h2>
+<div class="sb">
+  <div class="sb-head">
+    <div class="title"><small>잠재 · 이미지 주력 + 15초 모션</small>{동네} 미용실 12곳은 이미 당근에 있어요</div>
+    <div class="row"><span>대상 <b>광고 계정 없음(비프 없거나 미활성)</b></span><span>주력 <b>동네지도 화면 캡처 톤 이미지 9규격</b></span><span>랜딩 <b>비즈프로필 무료 생성(유저 페이지와 분리)</b></span></div>
+  </div>
+  <div class="hook">
+    <div><b>심는 질문</b>"우리 동네 누가 올렸지? 나만 없나?" — 잠재 사장님이 움직이는 계기는 지원금보다 '옆 가게가 당근에서 광고하더라'와 경쟁점 오픈 <span class="tag t-data">Q11·Q12·D6</span></div>
+    <div><b>끝까지 보는 이유</b>동네명 + 같은 업종 실수치 + 빈 핀. 사례·마감·지면 설명을 쓰지 않고 '무료'만 약속(잠재는 무료·저가 진입만 통함) <span class="tag t-data">P11·P12</span></div>
+    <div><b>집행 경로</b>무료 등록 버튼 → 비프 생성 → "광고는 나중에, 원할 때만 · 전화 영업 없음"으로 대행 트라우마 차단 → 신규 라인(소재 2)으로 인계 <span class="tag t-data">Q7·D7</span></div>
+  </div>
+  <div class="copy">{동네} 미용실 12곳이 이미 당근에 있어요<small>이웃 2명 중 1명이 보는 동네지도 · 가게 등록은 무료, 5분 · 광고 전화 안 해요, 앱에서 직접 · 버튼 → <b>무료로 가게 올리기</b></small></div>
+  <div class="tw"><table>
+    <tr><th>초</th><th>화면(모션 15s)</th><th>자막</th><th>장치 · 근거</th></tr>
+    <tr><td>0–3</td><td class="scene">동네지도 화면, 업종 칩 '미용실' 탭 → 핀 12개가 뜸(가게명 블러)</td><td class="say"><span class="sub">{동네} 미용실 12곳이 이미 당근에</span></td><td class="ev">동네명 변수 + 실수치 <code>D4</code> · 경쟁 심화 61%·86.9% <code>D6</code> · 화면 캡처 이미지 1.3배 <code>P13</code></td></tr>
+    <tr><td>3–7</td><td class="scene">핀 2개에 말풍선 '단골 1,281' '후기 300'</td><td class="say"><span class="sub">이웃 2명 중 1명이 보는 지도</span></td><td class="ev">공식 문구 <code>F4</code> · 같은 업종·같은 동네 증거가 '다수' 증거보다 강함 <code>D8</code></td></tr>
+    <tr><td>7–11</td><td class="scene">빈 자리에 점선 핀 → "여기, 아직 없는 가게"</td><td class="say"><span class="sub">가게 등록 무료 · 올리는 데 5분</span></td><td class="ev">잠재 = 무료 약속(무료 1.77%·990원 4.71% ≫ FOMO 0.6%) <code>P11</code> · 진입 장벽은 '몰랐다' 76.2% <code>D9</code></td></tr>
+    <tr><td>11–15</td><td class="scene">CTA</td><td class="say"><span class="sub">무료로 가게 올리기</span> · 작은 글씨: 광고는 나중에, 원할 때만 · 전화 영업 없음</td><td class="ev">대행 전화·약정 피해 11건, 분쟁 94.8%가 300만원 이하 소액 <code>Q7·D7</code></td></tr>
+  </table></div>
+  <div class="sb-foot">
+    <div><b>수치 운용</b>구·동 단위 업종별 비즈프로필 수 1회 추출(업종 10종 × 상위 30개 구). 5곳 미만이면 상위 업종으로 치환, 추출 불가 시 폴백 "{동네} 이웃 2명 중 1명이 쓰는 당근에 아직 없는 가게"</div>
+    <div><b>금지</b>사례 영상·이미지 재활용(잠재 UA 사례 이미지 1건당 22.7만원), 마감 압박, '앱 곳곳에 보여요' 지면 설명 <code>P12</code></div>
+    <div><b>리스크</b>"나만 없다"는 압박으로 읽히면 반감 → 서술은 사실만, 비난 어휘 없음. 당근=중고앱 인식(Q13)은 '동네지도' 화면 자체가 답</div>
+  </div>
+</div>
+
+<h2>판정 · 투입</h2>
+<div class="tw"><table>
+  <tr><th>소재</th><th>리그(같은 캠페인·같은 형식 평균=1.00)</th><th>판정 시점</th><th>확대 / 교체</th><th>1차 A/B(변수 1개)</th></tr>
+  <tr><td>1 正자</td><td>광고 생성 리타게팅 영상(기준 14,548원/건)</td><td>유상소진 300건 또는 2주</td><td>+5% 확대 / −5% 교체. 영상은 7일 CTR을 조기 신호로 허용(상관 0.80)</td><td>6~12초 '쿠폰' 구간 유/무</td></tr>
+  <tr><td>2 써드려요</td><td>첫 소진 BSP 이미지(안내문 1.08이 대조군)</td><td>첫 소진 1건당, 2주</td><td>CTR로 고르지 않음(이미지 상관 0.10)</td><td>'써드려요' 헤드라인 vs 26만원 단독</td></tr>
+  <tr><td>3 12곳</td><td>비프 생성·광고주센터 진입 이미지(비프 1건당·계정 1건당)</td><td>비프 300건 또는 2주</td><td>유상소진으로 평가 금지(소진자 60%가 복귀 광고주)</td><td>실수치 vs 폴백 문구</td></tr>
+</table></div>
+<p class="note">투입 순서: 1 → 2 → 3(리타게팅 예산 비중 72% 유지). 혜택 금액 <code>{N}만원</code>은 캠페인 시점 값으로 교체, 상시 소재에 마감 문구 없음. 네이버 카페 2곳은 Chrome 확장 사이트 차단으로 본문 직접 수집 불가 → 검색 노출 원문(아프니까 사장이다 17글 등 25개 카페)으로 대체했음.</p>
+
+<h2>근거 코드표</h2>
+<div class="tw"><table>
+  <tr><th>코드</th><th>내용</th><th>출처</th></tr>
+  <tr><td>Q1</td><td>"노출·클릭은 되는데 전화·문의·방문이 없다" — 13건, 당근·플레이스·배민 공통 1위 불만</td><td>quotes_boss #2·#7·#9·#27·#59·#62 외</td></tr>
+  <tr><td>Q2</td><td>성공 판정 단위 = "당근 보고 왔다"는 손님 말: 없어서 중단(당구장), 그 말로 가게가 채워짐(은평 미용실)</td><td>#12·#45·#50</td></tr>
+  <tr><td>Q3</td><td>"메인 메뉴 30% 할인 걸었을 때 유입률 3배" / "단골 전용 쿠폰 시점부터 폭발"</td><td>#25·#50·#40</td></tr>
+  <tr><td>Q4</td><td>실패담 대부분 쿠폰·소식 없이 광고 단독(운세 2만원→77클릭 0연락, 학원·공부방) vs 성공담은 쿠폰+소식+꾸준함(월 10만×3년 단골 1,281)</td><td>#7·#8·#9 vs #39·#35·#36</td></tr>
+  <tr><td>Q5</td><td>"하루 7000-10000원으로 꾸준하게" / "전단지 20만원 중 5만원만 충전해서" — 사장님끼리 권하는 단위</td><td>#39·#136</td></tr>
+  <tr><td>Q6</td><td>"어설프게 돈만 날리는 거 아닌가 싶어 선뜻 결제를 못 하겠더라고요" / "광고 끄자니 노출 떨어질까 불안" — 9건·9건</td><td>#93·#32·#59·#143</td></tr>
+  <tr><td>Q7</td><td>대행사 전화·약정 피해 11건(316만·330만·396만·365만원), "하루 1만원이면" 프레임을 사기도 씀</td><td>#55·#85·#86·#131·#147</td></tr>
+  <tr><td>Q8</td><td>"제가 사진 올리는 거나 글쓰는 거 등 재주가 없어서" / "매일 쓸 내용이 없어서"</td><td>#34·#100</td></tr>
+  <tr><td>Q9</td><td>"장사하면서 이거까지 하는 거 완전 생노가다" / "기계치라 디지털 쪽은 완전 문외한"</td><td>#134·#99</td></tr>
+  <tr><td>Q10</td><td>효과 없음을 본인 콘텐츠 탓으로 돌림 — "제가 실력이 없어서 그런가"</td><td>#34·#139</td></tr>
+  <tr><td>Q11</td><td>"지인들이 당근마켓으로 광고해서 손님 많이 오더라" / "꾸준히 광고 올리는 당구장들이 제법" / "당근으로도 문의 받는 곳이 꽤 늘었다고"</td><td>#94·#138·#91</td></tr>
+  <tr><td>Q12</td><td>경쟁점 오픈 → "매출 반토막" / "주위에만 5군데 오픈" / "길 건너 오픈, 홍보에 난리"</td><td>#124·#127·#125</td></tr>
+  <tr><td>Q13</td><td>"거기서 무슨 홍보를 해. 중고거래하는 곳인데" — 잠재의 첫 반응</td><td>#53</td></tr>
+  <tr><td>D1</td><td>심리적 단위: 네이버 광고주 60% 월 10만 이하, 배민 평균 23만(매출 3.6%), 울트라콜 8.8만, 외식 배달앱 월 35.8만</td><td>data_decision 2-A·2-B</td></tr>
+  <tr><td>D2</td><td>정밀 숫자는 사람이 말할 때만 앵커 효과(d=.82 vs .1)</td><td>Zhang&amp;Schwarz 2013</td></tr>
+  <tr><td>D3</td><td>감정 변화가 많은 출연자 CVR 3.3배, 얼굴 화면 20% 이하 CTR +31%</td><td>VidMob TikTok 1,400개</td></tr>
+  <tr><td>D4</td><td>동네명 동적 삽입 성과 +17%(Nextdoor) · CRM 동네명 피드 1.3~1.4배</td><td>Nextdoor 2023 · 플레이북 CRM</td></tr>
+  <tr><td>D5</td><td>디지털 기초·입문 83.3% · 60대 디지털 필요성 2.61/5 · 마케팅 효과 '자신 없음' 73%</td><td>중기중앙회 2026-06 · Constant Contact 2024</td></tr>
+  <tr><td>D6</td><td>경영 애로 1위 경쟁 심화 61.0%(소상공인) · 외식업 86.9%, 4년 연속 상승</td><td>소상공인실태조사 2024년 기준 · 2025 외식업체 경영실태조사</td></tr>
+  <tr><td>D7</td><td>온라인광고 분쟁 94.8%가 300만원 이하, 개업 1개월 내 콜드콜 사기 패턴, 공정위 전담반</td><td>KISA 2022 · 아주경제 2026-07 · 공정위</td></tr>
+  <tr><td>D8</td><td>'이 방 투숙객' 유사 집단 증거 +33% &gt; '대다수' +26% · 외식업 정보원 '지인(동종업체)' 18.5%</td><td>Goldstein·Cialdini 2008 · 외식업 실태조사</td></tr>
+  <tr><td>D9</td><td>지원사업 미참여 이유 '몰랐다' 76.2% · 써본 사람 지속 의향 94.2%(네이버 쿠폰)</td><td>중기중앙회 2026-06 · 네이버 2024-07</td></tr>
+  <tr><td>P1</td><td>이탈: 실제 사장님 사례 영상이 최저 비용(12,481원/건, 영상끼리 +8%)</td><td>플레이북 퍼포먼스</td></tr>
+  <tr><td>P2</td><td>이탈: 광고캐시 즉시·단순 조건(즉시 지급 14.4% vs 절차 11.5%), 3천~1만원 전환 동일</td><td>플레이북 프로모션</td></tr>
+  <tr><td>P3</td><td>상위 영상 6편 전부 사장님 육성 오프닝, 하위 6편 전부 타이틀·슬로건·UI 오프닝(초 단위 자막 분석)</td><td>플레이북 영상 18편 자막 데이터</td></tr>
+  <tr><td>P4</td><td>최다 집행 영상(3.5억)의 핵심 = 광고비↔손님 저울 산수 장면; 매출·손님 소구 이미지 +4% vs 없음 −10%</td><td>플레이북 퍼포먼스</td></tr>
+  <tr><td>P5</td><td>사례 정지컷은 인터뷰컷(−7~−10%)이 아니라 장면컷·실사 인물(+11%)</td><td>플레이북 퍼포먼스</td></tr>
+  <tr><td>P6</td><td>신규: 금액이 바로 읽히는 안내문 1.08 vs 일러스트 0.90, 영상 각도 무관(±3%)</td><td>플레이북 퍼포먼스</td></tr>
+  <tr><td>P7</td><td>신규: '제작·구축을 대신해 주는 지원'이 첫 소진 최다(1만 명당 3.6명, 현금성 2.0명) — 페이드 적용은 미검증</td><td>플레이북 콘텐츠·다음에 검증할 것</td></tr>
+  <tr><td>P8</td><td>버튼이 광고 만들기로 바로 잇는 페이지가 신규 10.9% vs 구인 페이지 3.8%</td><td>플레이북 프로모션</td></tr>
+  <tr><td>P9</td><td>신규: 동네·근처 소구 피드 1.5배</td><td>플레이북 CRM</td></tr>
+  <tr><td>P10</td><td>'무료'·'정보·노하우'를 제목에 두면 0.4~0.8배; 조건절 제목 0.6~0.8배</td><td>플레이북 CRM</td></tr>
+  <tr><td>P11</td><td>잠재: 저가 진입 4.71%·무료 1.77% ≫ 마감 0.61%·자산 0.57%</td><td>플레이북 프로모션</td></tr>
+  <tr><td>P12</td><td>잠재: 사례 이미지 재활용 1건당 22.7만원, 지면 설명 이미지 −16~−22%, 이미지 &gt; 영상(비프 2.9만 vs 3.8만)</td><td>플레이북 퍼포먼스</td></tr>
+  <tr><td>P13</td><td>실제 앱 화면·글자 이미지 1.3배, 쿠폰·지폐 그래픽 0.7배, 연예인 0.5배</td><td>플레이북 CRM 피드</td></tr>
+  <tr><td>F1</td><td>디스플레이 일예산 최소 5,000원, 클릭 시만 과금, 본인·무효 클릭 미과금</td><td>당근 이용가이드</td></tr>
+  <tr><td>F2</td><td>'추천받기': 내 업체에 맞는 광고 내용 최대 3개 자동 생성 + 제목 추천(간편모드 현행)</td><td>당근 이용가이드</td></tr>
+  <tr><td>F3</td><td>지원 프로그램 최대 26만원 = 웰컴 1만 + 첫 7일 50% 캐시백 최대 5만 + 월 2~5% 보너스 최대 20만(간편모드·1인 1회)</td><td>business.daangn.com/event/support-program</td></tr>
+  <tr><td>F4</td><td>"동네 이웃 2명 중 1명" · 비즈프로필 300만 · 단골 1,000만 · 가입 4,300만</td><td>당근 공식 사이트·보도자료 2026</td></tr>
+</table></div>
+<p class="src">원문 파일: quotes_boss.md(149건) · data_decision.md(92건) · research_product.md · 플레이북 <a href="https://dotori.karrot.work/artifacts/bp2nuci5vw">dotori.karrot.work/artifacts/bp2nuci5vw</a></p>
+</div>
+
+</body></html>

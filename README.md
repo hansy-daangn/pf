@@ -1,16 +1,9 @@
-# 빌드 없는 정적 사이트. `index.html`만 열면 그대로 동작합니다.
+# HANSY — 김한결 포트폴리오 (v2)
 
-- 기본 — https://hansy-daangn.github.io/pf/
-- 네이버 제출용 (연락처·이메일 제외) — https://hansy-daangn.github.io/pf/naver.html
+https://hansy-daangn.github.io/pf/
 
-```
-index.html / naver.html   사이트 전체 (HTML·CSS·JS 인라인)
-content.json              모든 텍스트 (편집 모드가 여기에 커밋, 두 페이지 공유)
-creatives.json            갤러리 소재 데이터
-assets/                   영상 · 포스터 · 도식
-docs/                     문서 — 시작은 docs/00-인덱스.md
-```
-
-`main`에 푸시하면 GitHub Actions가 Pages로 자동 배포합니다.
-
-`index.html` 구조를 고치면 `naver.html`에도 같은 수정이 필요합니다. 문구만 고치는 경우엔 `content.json` 하나로 양쪽에 반영됩니다.
+- 정적 사이트: `index.html`(홈) · `works.html`(작업 라이브러리) · `tools.html`(도구·자동화) · `resume.html`(이력서) · `about.html`(소개)
+- 공통: `css/site.css`(토큰 7개 체계) · `js/site.js`(상영관 플레이어·PiP·필터) · `data/works.json`(단일 데이터)
+- `demos/`: Claude 아티팩트를 자체 호스팅한 라이브 데모(상영관 iframe) · `assets/`: 포스터·영상·스크린샷 · `assets/bb/`: 빌보드용 짧은 루프
+- `v1/`: 이전 버전(2026-09) 보존본 — 연락처 등 개인정보 제거
+- 빌드 소스는 별도 작업 폴더(`pf_site/src/build.py`)에서 생성. 수정은 `data/works.json` → 재빌드.

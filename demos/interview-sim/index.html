@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>인터뷰 구도 시뮬레이터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js","three/addons/":"./vendor/addons/"}}</script>
+<script src="./vendor/jszip.min.js"></script>
+<style>
+:root{
+  /* 모니터 중심 + 좁은 인스펙터 + 필름스트립. 라이트 UI 고정 */
+  --bg:#eceef1; --panel:#ffffff; --soft:#f4f5f7; --line:#dde1e6; --line2:#c9ced6; --ink:#171a1f; --mute:#69717d;
+  --accent:#ff6f0f; --accent-soft:#fff1e8; --ok:#1f9d55; --warn:#d98a06; --bad:#dc2626; --matte:#0b0c0f; --edit-bg:#e4e7eb;
+  --font:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --side:292px; --strip:150px; --top:46px; color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:13px/1.45 var(--font);-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 10px;line-height:1.2}
+button:hover{border-color:var(--line2);background:var(--soft)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+button.ghost{border-color:transparent;background:transparent}
+button.ghost:hover{background:var(--soft)}
+button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+button:disabled{opacity:.4;cursor:default}
+button.icon{width:32px;height:32px;padding:0;display:inline-grid;place-items:center}
+svg.i{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:2px;gap:2px}
+.seg button{border:0;border-radius:7px;padding:5px 10px;background:transparent;color:var(--mute);font-weight:500}
+.seg button.on{background:var(--ink);color:#fff}
+.seg.accent button.on{background:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--mute)}
+.chip.on{border-color:var(--ink);color:var(--ink);background:var(--soft);font-weight:600}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--line2);vertical-align:middle}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)} .dot.warn{background:var(--warn)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+#app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) var(--side);grid-template-rows:var(--top) minmax(0,1fr) var(--strip);transition:grid-template-columns .2s,grid-template-rows .2s}
+#app.noside{--side:0px} #app.nostrip{--strip:0px}
+#app.clean{grid-template-columns:1fr;grid-template-rows:1fr}
+#app.clean #top,#app.clean #side,#app.clean #shots,#app.clean #toolbar,#app.clean #hud,#app.clean #pip,#app.clean #joy,#app.clean #editbar,#app.clean #warn{display:none!important}
+
+#top{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 10px;background:var(--panel);border-bottom:1px solid var(--line);min-width:0;overflow-x:auto;overflow-y:hidden;white-space:nowrap}
+#top::-webkit-scrollbar{display:none}
+#top .brand{font-weight:600;white-space:nowrap}
+#stores{display:flex;gap:2px;border-left:1px solid var(--line);padding-left:8px}
+#stores button{border:0;background:transparent;padding:6px 10px;border-radius:7px;color:var(--mute);font-weight:500}
+#stores button.on{color:var(--ink);background:var(--soft);font-weight:600}
+#top .sp{flex:1}
+#top .grp{display:flex;align-items:center;gap:6px}
+
+#stage{position:relative;background:var(--matte);overflow:hidden;min-width:0;min-height:0;touch-action:none;user-select:none;-webkit-user-select:none}
+#stage.edit{background:var(--edit-bg)}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#frame{position:absolute;pointer-events:none;overflow:hidden}
+#frame .grid{position:absolute;inset:0;display:none;background-image:linear-gradient(to right,rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(to bottom,rgba(255,255,255,.5) 1px,transparent 1px);background-size:33.3333% 33.3333%;background-position:-1px -1px;mix-blend-mode:difference}
+#frame .cross{position:absolute;left:50%;top:50%;width:34px;height:34px;transform:translate(-50%,-50%);display:none;mix-blend-mode:difference}
+#frame .cross:before,#frame .cross:after{content:"";position:absolute;background:rgba(255,255,255,.85)}
+#frame .cross:before{left:50%;top:0;width:1px;height:100%} #frame .cross:after{top:50%;left:0;height:1px;width:100%}
+#frame .vcrop{position:absolute;top:0;bottom:0;display:none;border-left:1px dashed rgba(255,255,255,.75);border-right:1px dashed rgba(255,255,255,.75);box-shadow:0 0 0 2000px rgba(0,0,0,.28);pointer-events:none}
+#frame .vcrop:after{content:"9:16";position:absolute;right:6px;top:6px;color:#fff;font:500 11px var(--mono);opacity:.8}
+#frame.grid .grid,#frame.cross .cross{display:block}
+#frame img.match{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.5;display:none}
+#frame.match img.match{display:block}
+#hud{position:absolute;left:12px;top:10px;display:flex;gap:6px;pointer-events:none;max-width:80%}
+#hud .h{background:rgba(12,13,16,.7);color:#fff;border-radius:7px;padding:4px 9px;font-family:var(--mono);font-size:12px;backdrop-filter:blur(6px);white-space:nowrap}
+#hud .h.warnc{background:rgba(217,38,38,.85)}
+#stage.edit #hud .h{background:rgba(255,255,255,.85);color:var(--ink);border:1px solid var(--line)}
+#warn{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:var(--bad);color:#fff;border-radius:999px;padding:4px 12px;font-weight:600;display:none;pointer-events:none}
+#warn.on{display:block}
+#toolbar{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:12px;padding:5px;backdrop-filter:blur(8px);box-shadow:0 6px 24px rgba(0,0,0,.18);max-width:calc(100% - 24px);flex-wrap:wrap;justify-content:center}
+#editbar{position:absolute;left:12px;bottom:12px;display:flex;gap:6px;background:rgba(255,255,255,.93);border:1px solid var(--line);border-radius:12px;padding:5px}
+#pip{position:absolute;right:14px;bottom:14px;border:2px solid rgba(255,255,255,.9);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer;overflow:hidden}
+#pip .tag{position:absolute;left:6px;top:6px;background:rgba(12,13,16,.7);color:#fff;font-size:11px;padding:2px 7px;border-radius:6px;font-family:var(--mono)}
+#pip:hover{border-color:var(--accent)}
+#joy{position:absolute;left:16px;bottom:84px;display:none;gap:10px;align-items:flex-end}
+#joy .pad{width:104px;height:104px;border-radius:50%;background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.5);position:relative}
+#joy .knob{position:absolute;left:50%;top:50%;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.9);transform:translate(-50%,-50%)}
+#joy .ud{display:flex;flex-direction:column;gap:6px}
+#joy .ud button{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.9);font-size:17px}
+@media (pointer:coarse){#joy{display:flex}}
+
+#side{background:var(--panel);border-left:1px solid var(--line);overflow:hidden auto;min-width:0;display:flex;flex-direction:column;padding:4px 12px 16px}
+#app.noside #side{border:0}
+.sec{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.sec:last-of-type{border-bottom:0}
+.sec h4{margin:0;font-size:12px;font-weight:600;color:var(--mute);letter-spacing:.02em}
+.row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.row.between{justify-content:space-between}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.scrub{user-select:none;-webkit-user-select:none;display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:var(--soft);cursor:ew-resize;touch-action:none;min-width:0}
+.scrub .l{color:var(--mute);font-size:12px;white-space:nowrap} .scrub .v{font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.scrub input{width:60px;border:0;background:transparent;font-family:var(--mono);text-align:right;padding:0}
+.sw{display:inline-flex;align-items:center;gap:7px;cursor:pointer}
+.sw input{appearance:none;width:30px;height:18px;border-radius:999px;background:var(--line2);position:relative;margin:0;cursor:pointer;transition:background .15s}
+.sw input:checked{background:var(--accent)}
+.sw input:before{content:"";position:absolute;left:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left .15s}
+.sw input:checked:before{left:14px}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.photos .ph{position:relative;border-radius:7px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1;cursor:pointer;background:var(--soft)}
+.photos .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.photos .ph .n{position:absolute;left:4px;top:4px;background:rgba(12,13,16,.7);color:#fff;font-size:10px;padding:1px 5px;border-radius:5px;font-family:var(--mono)}
+.photos .ph .st{position:absolute;right:4px;bottom:4px;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.2)}
+.photos .ph .st.on{background:var(--ok)}
+.photos .ph.sel{outline:2px solid var(--accent);outline-offset:-1px}
+.note{color:var(--mute);font-size:12px}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:10px;color:var(--mute);font-size:12px}
+
+#shots{grid-column:1/-1;background:var(--panel);border-top:1px solid var(--line);display:flex;min-width:0;min-height:0;overflow:hidden}
+#shots .hd{width:104px;flex:none;border-right:1px solid var(--line);padding:10px;display:flex;flex-direction:column;justify-content:space-between}
+#shots .hd b{font-size:12px} #shots .hd .c{font-family:var(--mono);color:var(--mute);font-size:12px}
+#cards{flex:1;display:flex;gap:10px;padding:10px;overflow:auto hidden;align-items:stretch;min-width:0}
+.card{position:relative;flex:none;width:196px;border:1px solid var(--line);border-radius:10px;background:var(--panel);display:flex;flex-direction:column;overflow:hidden;cursor:pointer}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.1)} .card.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)} .card.drag{opacity:.4} .card.over{transform:translateX(6px)}
+.card .th{position:relative;background:#111;aspect-ratio:16/9;display:grid;place-items:center;overflow:hidden}
+.card .th img{width:100%;height:100%;object-fit:contain;display:block}
+.card .th .num{position:absolute;left:6px;top:6px;background:rgba(12,13,16,.75);color:#fff;font-family:var(--mono);font-size:11px;padding:1px 6px;border-radius:5px}
+.card .th .cam{position:absolute;right:6px;top:6px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:11px;padding:1px 6px;border-radius:5px} .card .th .cam.B{background:#3b6fd6}
+.card .th .star{position:absolute;right:6px;bottom:6px;border:0;background:rgba(12,13,16,.6);color:#fff;border-radius:6px;padding:2px 6px;font-size:12px} .card .th .star.on{background:var(--accent)}
+.card .bd{padding:6px 8px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.card .bd .lb{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .bd .mt{font-family:var(--mono);font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .menu{position:absolute;right:4px;bottom:4px;width:26px;height:26px;padding:0;border:0;background:transparent;color:var(--mute);border-radius:6px}
+#cmenu{position:fixed;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.15);display:none;flex-direction:column;z-index:70;min-width:160px;padding:4px}
+#cmenu.on{display:flex} #cmenu button{border:0;background:transparent;text-align:left;padding:7px 10px;border-radius:6px} #cmenu button:hover{background:var(--soft)} #cmenu button.danger{color:var(--bad)}
+.empty{color:var(--mute);align-self:center;padding:0 10px}
+
+#toast{position:fixed;left:50%;bottom:calc(var(--strip) + 22px);transform:translateX(-50%);display:flex;flex-direction:column;gap:6px;z-index:50;pointer-events:none}
+#toast .t{background:var(--ink);color:#fff;border-radius:10px;padding:8px 14px;box-shadow:0 8px 24px rgba(0,0,0,.25);display:flex;gap:12px;align-items:center;pointer-events:auto;animation:up .18s ease-out}
+#toast .t button{border:0;background:rgba(255,255,255,.14);color:#fff;padding:3px 8px;border-radius:6px}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#modal{position:fixed;inset:0;background:rgba(10,12,16,.45);display:none;place-items:center;z-index:60;padding:16px}
+#modal.on{display:grid}
+#modal .box{background:var(--panel);border-radius:14px;width:min(560px,100%);max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column}
+#modal .box.wide{width:min(960px,100%)}
+#modal .mh{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line);font-weight:600;font-size:14px}
+#modal .mb{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+#modal .mf{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+#modal textarea,#modal input[type=text]{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--soft)}
+#modal textarea{min-height:80px;resize:vertical}
+#modal .prev{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+#modal .prev figure{margin:0;display:flex;flex-direction:column;gap:4px} #modal .prev img{width:100%;border-radius:8px;border:1px solid var(--line);background:#000} #modal .prev figcaption{font-family:var(--mono);font-size:11px;color:var(--mute)}
+kbd{font-family:var(--mono);font-size:11px;background:var(--soft);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px}
+@media (max-width:820px){
+  :root{--side:0px;--strip:122px}
+  #side{position:fixed;right:0;top:var(--top);bottom:0;width:min(88vw,330px);z-index:20;transform:translateX(100%);transition:transform .2s;box-shadow:-10px 0 30px rgba(0,0,0,.15)}
+  #app.sideopen #side{transform:none} #app{grid-template-columns:1fr} .card{width:160px}
+  #top{gap:4px;padding:0 6px} #top .brand{display:none} #stores{border:0;padding-left:0} #top .seg button{padding:5px 7px} #saveshot{padding:6px 8px}
+  #toolbar{bottom:8px;padding:4px;gap:4px} #toolbar button{padding:5px 7px;font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div class="brand">인터뷰 구도 시뮬레이터</div>
+    <nav id="stores" aria-label="매장"></nav>
+    <div class="sp"></div>
+    <div class="grp">
+      <div class="seg" id="viewseg"><button data-v="cam" class="on">카메라뷰</button><button data-v="edit">편집뷰</button></div>
+      <div class="seg accent" id="camseg"><button data-c="A" class="on">A</button><button data-c="B">B</button></div>
+    </div>
+    <div class="grp">
+      <button class="icon ghost" id="undo" title="되돌리기 (Ctrl+Z)"><svg class="i" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+      <button class="icon ghost" id="redo" title="다시 실행 (Ctrl+Y)"><svg class="i" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+      <button id="saveshot" class="primary" title="Ctrl+S">샷 저장</button>
+      <button id="export">내보내기</button>
+      <button class="icon ghost" id="fs" title="전체화면 클린 모드 (F)"><svg class="i" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
+      <button class="icon ghost" id="sidebtn" title="패널"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg></button>
+    </div>
+  </header>
+  <main id="stage">
+    <canvas id="gl"></canvas>
+    <div id="frame"><div class="grid"></div><div class="cross"></div><div class="vcrop"></div><img class="match" alt=""></div>
+    <div id="hud"></div>
+    <div id="warn">벽·집기에 막힘</div>
+    <div id="toolbar">
+      <div class="seg" id="aspseg"><button data-a="16:9" class="on">16:9</button><button data-a="9:16">9:16</button></div>
+      <button id="vcropbtn" title="16:9 안의 9:16 크롭 가이드">세로 가이드</button>
+      <button id="gridbtn" title="G">그리드</button>
+      <button id="crossbtn" title="C">십자</button>
+      <button id="ovbtn" title="선택한 레퍼런스 사진 겹쳐 보기 (O)">사진 겹침</button>
+    </div>
+    <div id="editbar"><button id="topbtn" title="T">탑뷰</button><button id="fitbtn">전체</button></div>
+    <div id="pip"><span class="tag">3D</span></div>
+    <div id="joy"><div class="pad"><div class="knob"></div></div><div class="ud"><button data-d="1">▲</button><button data-d="-1">▼</button></div></div>
+  </main>
+  <aside id="side"></aside>
+  <section id="shots">
+    <div class="hd"><div><b>샷리스트</b><div class="c" id="shotcount">0 · 확정 0</div></div><button class="ghost" id="stripbtn">접기</button></div>
+    <div id="cards"></div>
+  </section>
+</div>
+<div id="toast"></div>
+<div id="cmenu"></div>
+<div id="modal"><div class="box"><div class="mh"><span id="mtitle"></span><button class="icon ghost" id="mclose">✕</button></div><div class="mb" id="mbody"></div><div class="mf" id="mfoot"></div></div></div>
+<script type="module">
+import * as THREE from 'three';
+
+/* ───── 상수 ───── */
+const SENSOR = { w: 35.6, h: 20.0 };            // 소니 FX3 16:9 유효 센서(mm)
+const ASPECTS = { '16:9': 16/9, '9:16': 9/16 };
+const FOCALS = [ {mm:24,ko:'광각'}, {mm:35,ko:'표준'}, {mm:50,ko:'인물'}, {mm:85,ko:'망원'} ];
+const SIZE_KO = { ECU:'익스트림 CU', CU:'클로즈업', MCU:'미디엄 CU', MS:'미디엄', MLS:'카우보이', FS:'풀샷', LS:'롱샷', WS:'와이드' };
+const LAYOUTS = {"kimbap": {"name": "김밥처럼", "kind": "kimbap", "room": {"w": 4.4, "d": 8.6, "h": 2.75}, "colors": {"floor": "#cfcac2", "ceil": "#f3f3f1", "wall": "#eceae5"}, "items": [{"name": "주방 카운터", "x": -1.85, "z": 1.2, "w": 0.7, "d": 3.6, "h": 0.95, "color": "#efece5", "y": 0, "rotY": 0, "kind": "box"}, {"name": "카운터 상판", "x": -1.85, "z": 1.2, "w": 0.7, "d": 3.6, "h": 0.05, "color": "#dcd8cf", "y": 0.95, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "스팀테이블", "x": -1.95, "z": 1.9, "w": 0.5, "d": 1.6, "h": 0.25, "color": "#c9ccd0", "y": 1.0, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "메뉴판", "x": -2.19, "z": 1.3, "w": 0.02, "d": 3.0, "h": 0.5, "color": "#2b2b2e", "y": 1.95, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "패스 창", "x": -2.19, "z": 0.2, "w": 0.02, "d": 1.2, "h": 0.8, "color": "#5b5a57", "y": 1.1, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "냉장고", "x": -1.85, "z": -3.9, "w": 0.7, "d": 0.7, "h": 1.9, "color": "#e4e6ea", "y": 0, "rotY": 0, "kind": "box"}, {"name": "정수기", "x": -1.95, "z": -3.2, "w": 0.4, "d": 0.45, "h": 1.1, "color": "#f0f0f0", "y": 0, "rotY": 0, "kind": "box"}, {"name": "테이블", "x": 1.75, "z": -3.0, "w": 0.7, "d": 0.7, "h": 0.73, "color": "#f3f1ec", "y": 0, "rotY": 0, "kind": "table"}, {"name": "테이블", "x": 1.75, "z": -1.8, "w": 0.7, "d": 0.7, "h": 0.73, "color": "#f3f1ec", "y": 0, "rotY": 0, "kind": "table"}, {"name": "테이블", "x": 1.75, "z": -0.6, "w": 0.7, "d": 0.7, "h": 0.73, "color": "#f3f1ec", "y": 0, "rotY": 0, "kind": "table"}, {"name": "테이블", "x": 1.75, "z": 0.6, "w": 0.7, "d": 0.7, "h": 0.73, "color": "#f3f1ec", "y": 0, "rotY": 0, "kind": "table"}, {"name": "테이블", "x": 1.75, "z": 1.8, "w": 0.7, "d": 0.7, "h": 0.73, "color": "#f3f1ec", "y": 0, "rotY": 0, "kind": "table"}, {"name": "의자", "x": 1.75, "z": -3.6, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 0, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": -2.4, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": -2.4, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 0, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": -1.2000000000000002, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": -1.2, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 0, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": 0.0, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": 0.0, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 0, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": 1.2, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": 1.2000000000000002, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 0, "kind": "chair"}, {"name": "의자", "x": 1.75, "z": 2.4, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#c9a877", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "테이블", "x": -0.85, "z": -3.0, "w": 0.7, "d": 0.7, "h": 0.73, "color": "#f3f1ec", "y": 0, "rotY": 0, "kind": "table"}, {"name": "테이블", "x": -0.85, "z": -1.8, "w": 0.7, "d": 0.7, "h": 0.73, "color": "#f3f1ec", "y": 0, "rotY": 0, "kind": "table"}, {"name": "의자", "x": -0.85, "z": -3.6, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#2f3136", "y": 0, "rotY": 0, "kind": "chair"}, {"name": "의자", "x": -0.85, "z": -2.4, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#2f3136", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "의자", "x": -0.85, "z": -2.4, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#2f3136", "y": 0, "rotY": 0, "kind": "chair"}, {"name": "의자", "x": -0.85, "z": -1.2000000000000002, "w": 0.42, "d": 0.42, "h": 0.85, "color": "#2f3136", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "출입문", "x": 0.5, "z": 4.28, "w": 0.95, "d": 0.04, "h": 2.1, "color": "#9fb8cc", "y": 0, "rotY": 0, "kind": "glass", "noCollide": true}, {"name": "유리창", "x": -1.0, "z": 4.28, "w": 2.3, "d": 0.04, "h": 2.4, "color": "#dbe8f2", "y": 0.3, "rotY": 0, "kind": "glass", "noCollide": true}, {"name": "유리창2", "x": 1.6, "z": 4.28, "w": 1.1, "d": 0.04, "h": 2.4, "color": "#dbe8f2", "y": 0.3, "rotY": 0, "kind": "glass", "noCollide": true}, {"name": "벽걸이 모니터", "x": 2.17, "z": -0.6, "w": 0.04, "d": 0.5, "h": 0.3, "color": "#1c1d20", "y": 1.5, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "라인조명", "x": -0.3, "z": 0.4, "w": 0.1, "d": 7.4, "h": 0.02, "color": "#d6d3cd", "y": 2.73, "rotY": 0, "kind": "light", "noCollide": true}, {"name": "라인조명", "x": 0.6, "z": 0.4, "w": 0.1, "d": 7.4, "h": 0.02, "color": "#d6d3cd", "y": 2.73, "rotY": 0, "kind": "light", "noCollide": true}, {"name": "에어컨", "x": 0.15, "z": -0.8, "w": 0.85, "d": 0.85, "h": 0.04, "color": "#f0f0ee", "y": 2.71, "rotY": 0, "kind": "box", "noCollide": true}], "interviewSide": 1, "subject": {"x": -1.2, "z": -0.3, "facing": 120, "height": 165, "pose": "working"}, "lights": {"back": {"on": true, "x": -1.9, "y": 2.3, "z": -2.0, "intensity": 120, "kelvin": 4300}, "key": {"on": true, "x": 0.9, "y": 1.9, "z": 1.0, "intensity": 22, "kelvin": 5200}, "practical": {"intensity": 0.9, "kelvin": 4000}}, "cams": {"A": {"x": 0.6, "y": 1.2, "z": 2.0, "pan": 0, "tilt": 0, "roll": 0, "focal": 35, "aspect": "16:9"}, "B": {"x": -0.6, "y": 1.5, "z": 1.4, "pan": 0, "tilt": 0, "roll": 0, "focal": 85, "aspect": "16:9"}}, "photos": [{"file": "tex/kimbap_03.jpg", "hfov": 55, "on": true, "weight": 1.0, "pose": {"x": 1.3, "y": 1.25, "z": -2.6, "pan": 188, "tilt": -2, "roll": 0}, "aspect": 0.75}]}, "beauty": {"name": "뷰티더영", "kind": "beauty", "room": {"w": 3.6, "d": 7.2, "h": 2.6}, "colors": {"floor": "#c3c6ca", "ceil": "#f6f6f4", "wall": "#f0ede6"}, "items": [{"name": "파티션", "x": -0.5, "z": -0.6, "w": 2.6, "d": 0.14, "h": 2.6, "color": "#ebe4d4", "y": 0, "rotY": 0, "kind": "box"}, {"name": "파티션 상단", "x": 1.45, "z": -0.6, "w": 1.1, "d": 0.14, "h": 0.5, "color": "#ebe4d4", "y": 2.1, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "자격증 선반", "x": -0.9, "z": -0.5, "w": 1.6, "d": 0.06, "h": 0.22, "color": "#f3eee2", "y": 1.45, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "자격증 선반2", "x": -0.9, "z": -0.5, "w": 1.6, "d": 0.06, "h": 0.22, "color": "#f3eee2", "y": 1.05, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "선반 간접조명", "x": -0.9, "z": -0.5, "w": 1.5, "d": 0.03, "h": 0.02, "color": "#d6d3cd", "y": 1.68, "rotY": 0, "kind": "light", "noCollide": true}, {"name": "리셉션 데스크", "x": 0.85, "z": 0.5, "w": 1.1, "d": 0.6, "h": 0.75, "color": "#f7f7f5", "y": 0, "rotY": 0, "kind": "box"}, {"name": "모니터", "x": 0.85, "z": 0.4, "w": 0.5, "d": 0.06, "h": 0.32, "color": "#1e1f22", "y": 0.75, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "데스크 의자", "x": 0.85, "z": 1.15, "w": 0.5, "d": 0.5, "h": 0.9, "color": "#d9c7b8", "y": 0, "rotY": 180, "kind": "chair"}, {"name": "대기 벤치", "x": -1.15, "z": 2.35, "w": 1.2, "d": 0.5, "h": 0.45, "color": "#b8bcc2", "y": 0, "rotY": 0, "kind": "box"}, {"name": "제품 선반", "x": -1.6, "z": 0.7, "w": 0.35, "d": 1.3, "h": 1.6, "color": "#fbfbfa", "y": 0, "rotY": 0, "kind": "box"}, {"name": "수납장 상부", "x": 1.6, "z": 0.0, "w": 0.4, "d": 1.0, "h": 0.8, "color": "#f5f5f3", "y": 1.6, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "시술 베드", "x": -0.55, "z": -2.9, "w": 0.75, "d": 1.95, "h": 0.62, "color": "#fbfbfb", "y": 0, "rotY": 0, "kind": "box"}, {"name": "베드 베개", "x": -0.55, "z": -3.7, "w": 0.5, "d": 0.3, "h": 0.1, "color": "#f4f4f4", "y": 0.62, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "돋보기 램프", "x": -1.25, "z": -2.2, "w": 0.45, "d": 0.45, "h": 0.03, "color": "#f2f2f2", "y": 0, "rotY": 0, "kind": "cyl"}, {"name": "램프 기둥", "x": -1.25, "z": -2.2, "w": 0.04, "d": 0.04, "h": 1.5, "color": "#e8e8e8", "y": 0, "rotY": 0, "kind": "cyl"}, {"name": "램프 헤드", "x": -1.0, "z": -2.45, "w": 0.28, "d": 0.28, "h": 0.05, "color": "#ffffff", "y": 1.45, "rotY": 0, "kind": "cyl", "noCollide": true}, {"name": "원장 스툴", "x": -0.55, "z": -4.25, "w": 0.4, "d": 0.4, "h": 0.5, "color": "#2a2b2e", "y": 0, "rotY": 0, "kind": "cyl"}, {"name": "트롤리", "x": 0.55, "z": -2.4, "w": 0.45, "d": 0.45, "h": 0.85, "color": "#f4f4f4", "y": 0, "rotY": 0, "kind": "box"}, {"name": "수납장", "x": 1.55, "z": -2.6, "w": 0.45, "d": 1.2, "h": 1.9, "color": "#f8f8f6", "y": 0, "rotY": 0, "kind": "box"}, {"name": "벽 거울", "x": 1.79, "z": -4.0, "w": 0.02, "d": 0.9, "h": 1.1, "color": "#aab3bb", "y": 0.95, "rotY": 0, "kind": "box", "noCollide": true}, {"name": "웨이브 조명", "x": -1.79, "z": -2.4, "w": 0.02, "d": 0.5, "h": 1.6, "color": "#d6d3cd", "y": 0.9, "rotY": 0, "kind": "light", "noCollide": true}, {"name": "출입문", "x": 0.9, "z": 3.58, "w": 0.9, "d": 0.04, "h": 2.1, "color": "#9fb8cc", "y": 0, "rotY": 0, "kind": "glass", "noCollide": true}, {"name": "유리창", "x": -0.9, "z": 3.58, "w": 1.6, "d": 0.04, "h": 1.9, "color": "#e7f0f8", "y": 0.3, "rotY": 0, "kind": "glass", "noCollide": true}, {"name": "다운라이트", "x": 0, "z": 0, "w": 0.1, "d": 0.1, "h": 0.02, "color": "#d6d3cd", "y": 2.58, "rotY": 0, "kind": "light", "noCollide": true}], "interviewSide": -1, "subject": {"x": 0.0, "z": 0.4, "facing": 165, "height": 162, "pose": "standing"}, "lights": {"back": {"on": true, "x": -1.1, "y": 2.25, "z": -0.35, "intensity": 110, "kelvin": 4300}, "key": {"on": true, "x": 1.0, "y": 1.9, "z": 1.9, "intensity": 20, "kelvin": 5200}, "practical": {"intensity": 0.9, "kelvin": 3600}}, "cams": {"A": {"x": -0.5, "y": 1.2, "z": 2.6, "pan": 0, "tilt": 0, "roll": 0, "focal": 24, "aspect": "16:9"}, "B": {"x": 1.1, "y": 1.5, "z": 2.0, "pan": 0, "tilt": 0, "roll": 0, "focal": 85, "aspect": "16:9"}}, "photos": [{"file": "tex/beauty_08.jpg", "hfov": 54, "on": true, "weight": 1.0, "pose": {"x": 0.9, "y": 1.4, "z": 1.7, "pan": -22, "tilt": -2, "roll": 0}, "aspect": 0.75}, {"file": "tex/beauty_06.jpg", "hfov": 54, "on": true, "weight": 1.0, "pose": {"x": 1.0, "y": 1.5, "z": -0.9, "pan": -24, "tilt": -8, "roll": 0}, "aspect": 0.75}, {"file": "tex/beauty_07.jpg", "hfov": 60, "on": false, "weight": 1.0, "pose": null, "aspect": 0.716}]}};      // 매장별 정적 지오메트리·기본값 (build.py 주입)
+const MANIFEST = [{"store": "kimbap", "file": "tex/kimbap_01.jpg", "w": 1600, "h": 1600}, {"store": "kimbap", "file": "tex/kimbap_02.jpg", "w": 1600, "h": 1600}, {"store": "kimbap", "file": "tex/kimbap_03.jpg", "w": 900, "h": 1200}, {"store": "kimbap", "file": "tex/kimbap_04.jpg", "w": 1280, "h": 1600}, {"store": "kimbap", "file": "tex/kimbap_05.jpg", "w": 1600, "h": 1600}, {"store": "kimbap", "file": "tex/kimbap_06.jpg", "w": 1600, "h": 1600}, {"store": "kimbap", "file": "tex/kimbap_07.jpg", "w": 1600, "h": 1600}, {"store": "kimbap", "file": "tex/kimbap_08.jpg", "w": 1279, "h": 1600}, {"store": "kimbap", "file": "tex/kimbap_09.jpg", "w": 1600, "h": 1600}, {"store": "beauty", "file": "tex/beauty_01.jpg", "w": 1254, "h": 1254}, {"store": "beauty", "file": "tex/beauty_02.jpg", "w": 1254, "h": 1254}, {"store": "beauty", "file": "tex/beauty_03.jpg", "w": 1600, "h": 1067}, {"store": "beauty", "file": "tex/beauty_04.jpg", "w": 1600, "h": 1067}, {"store": "beauty", "file": "tex/beauty_05.jpg", "w": 1279, "h": 1600}, {"store": "beauty", "file": "tex/beauty_06.jpg", "w": 900, "h": 1200}, {"store": "beauty", "file": "tex/beauty_07.jpg", "w": 900, "h": 1257}, {"store": "beauty", "file": "tex/beauty_08.jpg", "w": 900, "h": 1200}];    // 레퍼런스 사진 목록
+const MAXP = 8;                   // 동시 투영 사진 수 상한
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const d2r = d => d * Math.PI / 180, r2d = r => r * 180 / Math.PI;
+const deep = o => JSON.parse(JSON.stringify(o));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+
+/* ───── 상태 ───── */
+const LS_KEY = 'ivp:v2';
+const clientId = Math.random().toString(36).slice(2, 10);
+function defaultStore(k) { const L = LAYOUTS[k]; return { subject: deep(L.subject), lights: deep(L.lights), cams: deep(L.cams), photos: deep(L.photos), shots: [], updatedAt: 0 }; }
+let state = { activeStore: Object.keys(LAYOUTS)[0], activeCam: 'A', view: 'cam', ui: { grid: true, cross: false, vcrop: true, pip: true, overlay: 0.5, overlayOn: false, side: true, strip: true, top: false, arcs: true }, stores: {} };
+for (const k of Object.keys(LAYOUTS)) state.stores[k] = defaultStore(k);
+let thumbs = {}, loadedFromStorage = false;
+try {
+  const raw = localStorage.getItem(LS_KEY);
+  if (raw) { const s = JSON.parse(raw); if (s && s.stores) { for (const k of Object.keys(LAYOUTS)) { if (!s.stores[k]) s.stores[k] = defaultStore(k); else { const d = defaultStore(k); for (const f of ['subject', 'lights', 'cams', 'photos', 'shots']) if (s.stores[k][f] == null) s.stores[k][f] = d[f]; /* 새 사진이 추가됐으면 병합 */ const have = new Set(s.stores[k].photos.map(p => p.file)); for (const p of d.photos) if (!have.has(p.file)) s.stores[k].photos.push(p); } } state = Object.assign(state, s, { ui: Object.assign(state.ui, s.ui || {}) }); loadedFromStorage = true; } thumbs = JSON.parse(localStorage.getItem(LS_KEY + ':thumbs') || '{}'); }
+} catch (e) { console.warn('local load', e); }
+if (!LAYOUTS[state.activeStore]) state.activeStore = Object.keys(LAYOUTS)[0];
+state.view = 'cam';
+const S = () => state.stores[state.activeStore];
+const L = () => LAYOUTS[state.activeStore];
+const CAM = (id = state.activeCam) => S().cams[id];
+let saveTimer = 0;
+function saveLocal() { clearTimeout(saveTimer); saveTimer = setTimeout(() => { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); localStorage.setItem(LS_KEY + ':thumbs', JSON.stringify(thumbs)); } catch (e) { try { localStorage.removeItem(LS_KEY + ':thumbs'); localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (_) {} } }, 400); }
+
+/* ───── 히스토리 ───── */
+const hist = { stack: [], idx: -1, max: 60 };
+const docSnap = () => JSON.stringify({ subject: S().subject, lights: S().lights, photos: S().photos, shots: S().shots });
+function commit(label = '', kind = 'doc') { S().updatedAt = Date.now(); hist.stack = hist.stack.slice(0, hist.idx + 1); hist.stack.push({ store: state.activeStore, doc: docSnap(), cams: JSON.stringify(S().cams), kind, label }); if (hist.stack.length > hist.max) hist.stack.shift(); hist.idx = hist.stack.length - 1; saveLocal(); queueCloud(); updateUndoBtns(); }
+function restore(snap, withCams) { state.activeStore = snap.store; const s = S(); Object.assign(s, JSON.parse(snap.doc)); if (withCams) s.cams = JSON.parse(snap.cams); s.updatedAt = Date.now(); rebuildDynamic(); renderShots(); refreshPanel(); saveLocal(); queueCloud(true); updateUndoBtns(); }
+function undo() { if (hist.idx <= 0) return toast('되돌릴 것이 없음'); const cur = hist.stack[hist.idx]; hist.idx--; restore(hist.stack[hist.idx], cur.kind === 'cam'); toast('되돌림 · ' + cur.label); }
+function redo() { if (hist.idx >= hist.stack.length - 1) return toast('다시 실행할 것이 없음'); hist.idx++; const nx = hist.stack[hist.idx]; restore(nx, nx.kind === 'cam'); toast('다시 실행 · ' + nx.label); }
+function resetHistory() { hist.stack = []; hist.idx = -1; commit('시작'); }
+function updateUndoBtns() { $('#undo').disabled = hist.idx <= 0; $('#redo').disabled = hist.idx >= hist.stack.length - 1; }
+
+/* ───── 카메라 수학 ───── */
+function frameDims(a) { const fw = a >= 1 ? Math.min(SENSOR.w, SENSOR.h * a) : Math.min(SENSOR.h, SENSOR.w * a); return { fw, fh: fw / a }; }
+function fovOf(focal, aspectKey) { const a = ASPECTS[aspectKey] || 16/9; const { fw, fh } = frameDims(a); return { h: r2d(2 * Math.atan(fw / (2 * focal))), v: r2d(2 * Math.atan(fh / (2 * focal))) }; }
+function fwdOf(c) { return new THREE.Vector3(Math.sin(d2r(c.pan)) * Math.cos(d2r(c.tilt)), Math.sin(d2r(c.tilt)), -Math.cos(d2r(c.pan)) * Math.cos(d2r(c.tilt))); }
+const flatFwd = pan => new THREE.Vector3(Math.sin(d2r(pan)), 0, -Math.cos(d2r(pan)));
+const rightOf = pan => new THREE.Vector3(Math.cos(d2r(pan)), 0, Math.sin(d2r(pan)));
+const panTo = (from, to) => r2d(Math.atan2(to.x - from.x, -(to.z - from.z)));
+const tiltTo = (from, to) => r2d(Math.atan2(to.y - from.y, Math.hypot(to.x - from.x, to.z - from.z)));
+
+/* ───── 피사체 랜드마크 ───── */
+function landmarks(sub) {
+  const H = sub.height / 100;
+  if (sub.pose === 'sitting') { const seat = 0.46, k = H / 1.65; return { feet: 0, knees: seat, hips: seat, waist: seat + .12 * k, chest: seat + .30 * k, shoulders: seat + .43 * k, chin: seat + .50 * k, eyes: seat + .58 * k, top: seat + .69 * k }; }
+  const lean = sub.pose === 'working' ? 0.975 : 1;
+  return { feet: 0, knees: .285 * H, hips: .52 * H, waist: .62 * H, chest: .72 * H * lean, shoulders: .82 * H * lean, chin: .87 * H * lean, eyes: .935 * H * lean, top: H * lean };
+}
+const eyeY = () => landmarks(S().subject).eyes;
+const subjectPoint = (lv = 'chest') => { const s = S().subject; return new THREE.Vector3(s.x, landmarks(s)[lv], s.z); };
+const subjectFacingVec = () => { const s = S().subject; return new THREE.Vector3(Math.sin(d2r(s.facing)), 0, -Math.cos(d2r(s.facing))); };
+const subjectRightVec = () => { const s = S().subject; return new THREE.Vector3(Math.cos(d2r(s.facing)), 0, Math.sin(d2r(s.facing))); };
+
+/* ───── Three 기본 ───── */
+const stage = $('#stage'), canvas = $('#gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.NoToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();
+const BG_CAM = new THREE.Color(0x0b0c0f), BG_EDIT = new THREE.Color(0xe4e7eb);
+const threeCams = { A: new THREE.PerspectiveCamera(40, 16/9, 0.05, 80), B: new THREE.PerspectiveCamera(40, 16/9, 0.05, 80) };
+const editCam = new THREE.PerspectiveCamera(50, 1, 0.05, 200), topCam = new THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 100);
+const orbit = { theta: d2r(35), phi: d2r(55), r: 9, target: new THREE.Vector3(0, 1, 0), topZoom: 5 };
+const staticGroup = new THREE.Group(), gizmoGroup = new THREE.Group(), lightGroup = new THREE.Group();
+scene.add(staticGroup, gizmoGroup, lightGroup);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x8a8068, 0.6); scene.add(hemi);
+const gridHelper = new THREE.GridHelper(30, 30, 0xb8bec8, 0xd3d8df); gridHelper.position.y = -0.003; gizmoGroup.add(gridHelper);
+const texLoader = new THREE.TextureLoader(); const texCache = {};
+function getTex(src, cb) { if (!texCache[src]) { const t = texLoader.load(src, () => { t.needsUpdate = true; cb && cb(t); projDirty = true; }); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); texCache[src] = t; } else if (cb && texCache[src].image) cb(texCache[src]); return texCache[src]; }
+const nullTex = new THREE.DataTexture(new Uint8Array([128, 128, 128, 255]), 1, 1); nullTex.needsUpdate = true;
+let subjectGroup = null, subjectPick = null, staticMeshes = [], spotBack, spotKey, practicals = [], camGizmos = {}, lightGizmos = {}, arcMeshes = [], axisLine = null, selHelper = null;
+
+/* ───── 투영 텍스처 재질 (사진을 매칭된 카메라 시점에서 공간 위에 투영) ───── */
+const projUniforms = { uCount: { value: 0 }, uTex: { value: Array(MAXP).fill(nullTex) }, uDepth: { value: Array(MAXP).fill(nullTex) }, uMat: { value: Array.from({ length: MAXP }, () => new THREE.Matrix4()) }, uPos: { value: Array.from({ length: MAXP }, () => new THREE.Vector3()) }, uWeight: { value: new Float32Array(MAXP) }, uBase: { value: new THREE.Color(0xd6d3cd) }, uLit: { value: 1.0 } };
+function projMaterial(baseColor = 0xd6d3cd) {
+  let loop = '';
+  for (let i = 0; i < MAXP; i++) loop += `if (${i} < uCount) { vec4 p = uMat[${i}] * vec4(vW, 1.0); if (p.w > 0.0) { vec3 n = p.xyz / p.w; if (abs(n.x) < 1.0 && abs(n.y) < 1.0) { vec2 uv = n.xy * 0.5 + 0.5; float d = unpackRGBAToDepth(texture2D(uDepth[${i}], uv)); float z = n.z * 0.5 + 0.5; if (z - 0.0025 <= d) { vec3 toP = normalize(uPos[${i}] - vW); float f = max(dot(vN, toP), 0.0); if (f > 0.04) { float e = smoothstep(0.0, 0.15, 1.0 - abs(n.x)) * smoothstep(0.0, 0.15, 1.0 - abs(n.y)); float w = uWeight[${i}] * f * f * e + 1e-4; col += texture2D(uTex[${i}], uv).rgb * w; ws += w; } } } } }\n`;
+  const m = new THREE.ShaderMaterial({
+    uniforms: Object.assign({}, projUniforms, { uColor: { value: new THREE.Color(baseColor) } }),
+    vertexShader: `varying vec3 vW; varying vec3 vN; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; vN = normalize(mat3(modelMatrix) * normal); gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `precision highp float; uniform int uCount; uniform sampler2D uTex[${MAXP}]; uniform sampler2D uDepth[${MAXP}]; uniform mat4 uMat[${MAXP}]; uniform vec3 uPos[${MAXP}]; uniform float uWeight[${MAXP}]; uniform vec3 uColor; uniform float uLit; varying vec3 vW; varying vec3 vN;
+      ${THREE.ShaderChunk.packing}
+      void main(){ vec3 col = vec3(0.0); float ws = 0.0; ${loop}
+        vec3 shade = uColor * (0.62 + 0.38 * clamp(vN.y * 0.5 + 0.5, 0.0, 1.0));
+        vec3 c = ws > 0.0 ? mix(shade, col / ws, clamp(ws * 40.0, 0.0, 1.0)) : shade;
+        gl_FragColor = vec4(c * uLit, 1.0);
+        #include <colorspace_fragment> }`
+  });
+  m.uniforms.uTex = projUniforms.uTex; m.uniforms.uDepth = projUniforms.uDepth; m.uniforms.uMat = projUniforms.uMat; m.uniforms.uPos = projUniforms.uPos; m.uniforms.uWeight = projUniforms.uWeight; m.uniforms.uCount = projUniforms.uCount; m.uniforms.uLit = projUniforms.uLit;
+  return m;
+}
+let projDirty = true; const projRTs = []; const depthMat = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking });
+function photoCam(p) { const img = texCache[p.file] && texCache[p.file].image; const a = img ? img.width / img.height : (p.aspect || 4 / 3); const vf = r2d(2 * Math.atan(Math.tan(d2r((p.hfov || 68) / 2)) / a)); const c = new THREE.PerspectiveCamera(vf, a, 0.08, 40); c.position.set(p.pose.x, p.pose.y, p.pose.z); c.rotation.set(d2r(p.pose.tilt), d2r(-p.pose.pan), d2r(p.pose.roll || 0), 'YXZ'); c.updateMatrixWorld(true); c.updateProjectionMatrix(); return c; }
+function activeProjectors() { return S().photos.filter(p => p.on && p.pose).slice(0, MAXP); }
+function updateProjectors() {
+  projDirty = false;
+  const list = activeProjectors();
+  const prevVis = { s: subjectGroup && subjectGroup.visible, g: gizmoGroup.visible, l: lightGroup.visible };
+  if (subjectGroup) subjectGroup.visible = false; gizmoGroup.visible = false; lightGroup.visible = false;
+  scene.overrideMaterial = depthMat; const prevRT = renderer.getRenderTarget(); const prevBG = scene.background; scene.background = null;
+  list.forEach((p, i) => {
+    getTex(p.file); const cam = photoCam(p);
+    if (!projRTs[i]) projRTs[i] = new THREE.WebGLRenderTarget(1024, 1024, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter });
+    renderer.setRenderTarget(projRTs[i]); renderer.setClearColor(0xffffff, 1); renderer.clear(); renderer.render(scene, cam);
+    projUniforms.uMat.value[i].copy(cam.projectionMatrix).multiply(cam.matrixWorldInverse); projUniforms.uPos.value[i].copy(cam.position);
+    projUniforms.uTex.value[i] = texCache[p.file]; projUniforms.uDepth.value[i] = projRTs[i].texture; projUniforms.uWeight.value[i] = p.weight || 1;
+  });
+  for (let i = list.length; i < MAXP; i++) { projUniforms.uTex.value[i] = nullTex; projUniforms.uDepth.value[i] = nullTex; projUniforms.uWeight.value[i] = 0; }
+  projUniforms.uCount.value = list.length;
+  renderer.setRenderTarget(prevRT); scene.overrideMaterial = null; scene.background = prevBG;
+  if (subjectGroup) subjectGroup.visible = prevVis.s; gizmoGroup.visible = prevVis.g; lightGroup.visible = prevVis.l;
+  for (const m of staticMeshes) if (m.material.uniforms) m.material.needsUpdate = true;
+}
+
+/* ───── 정적 지오메트리(벽·바닥·집기) ───── */
+function box(o) { const g = new THREE.BoxGeometry(o.w, o.h, o.d); const m = new THREE.Mesh(g, projMaterial(o.color || 0xd6d3cd)); m.position.set(o.x, (o.y || 0) + o.h / 2, o.z); m.rotation.y = d2r(o.rotY || 0); return m; }
+function buildStatic() {
+  staticGroup.clear(); staticMeshes = [];
+  const Lo = L(), { w, d, h } = Lo.room;
+  const add = (mesh, data) => { mesh.userData.item = data || null; staticGroup.add(mesh); staticMeshes.push(mesh); return mesh; };
+  const plane = (pw, ph, pos, rot, color) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(pw, ph), projMaterial(color)); m.position.set(...pos); m.rotation.set(...rot); return m; };
+  const col = Lo.colors || {};
+  add(plane(w, d, [0, 0, 0], [-Math.PI / 2, 0, 0], col.floor || 0xcfcac2));
+  add(plane(w, d, [0, h, 0], [Math.PI / 2, 0, 0], col.ceil || 0xf2f2f0));
+  add(plane(w, h, [0, h / 2, -d / 2], [0, 0, 0], col.wall || 0xe9e7e2));
+  add(plane(w, h, [0, h / 2, d / 2], [0, Math.PI, 0], col.wall || 0xe9e7e2));
+  add(plane(d, h, [w / 2, h / 2, 0], [0, -Math.PI / 2, 0], col.wall || 0xe9e7e2));
+  add(plane(d, h, [-w / 2, h / 2, 0], [0, Math.PI / 2, 0], col.wall || 0xe9e7e2));
+  for (const it of Lo.items) {
+    if (it.kind === 'chair') { const g = new THREE.Group(); const seat = box({ x: 0, y: 0.42, z: 0, w: it.w, d: it.d, h: 0.05, color: it.color }); const back = box({ x: 0, y: 0.47, z: -it.d / 2 + 0.02, w: it.w, d: 0.04, h: (it.h || 0.85) - 0.47, color: it.color }); g.add(seat, back); for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) g.add(box({ x: sx * (it.w / 2 - 0.03), y: 0, z: sz * (it.d / 2 - 0.03), w: 0.03, d: 0.03, h: 0.42, color: it.color })); g.position.set(it.x, 0, it.z); g.rotation.y = d2r(it.rotY || 0); g.userData.aabb = it; staticGroup.add(g); g.traverse(o => { if (o.isMesh) staticMeshes.push(o); }); continue; }
+    if (it.kind === 'table') { const g = new THREE.Group(); g.add(box({ x: 0, y: it.h - 0.035, z: 0, w: it.w, d: it.d, h: 0.035, color: it.color })); const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, it.h - 0.035, 12), projMaterial(0x4a4a4a)); leg.position.y = (it.h - 0.035) / 2; g.add(leg); const base = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.02, 20), projMaterial(0x4a4a4a)); base.position.y = 0.01; g.add(base); g.position.set(it.x, 0, it.z); g.rotation.y = d2r(it.rotY || 0); g.userData.aabb = it; staticGroup.add(g); g.traverse(o => { if (o.isMesh) staticMeshes.push(o); }); continue; }
+    if (it.kind === 'cyl') { const m = new THREE.Mesh(new THREE.CylinderGeometry(it.w / 2, it.w / 2, it.h, 20), projMaterial(it.color)); m.position.set(it.x, (it.y || 0) + it.h / 2, it.z); add(m, it); continue; }
+    if (it.kind === 'glass') { const m = new THREE.Mesh(new THREE.BoxGeometry(it.w, it.h, it.d), new THREE.MeshPhysicalMaterial({ color: 0xdfe9f0, transparent: true, opacity: 0.22, roughness: 0.05, metalness: 0, transmission: 0 })); m.position.set(it.x, (it.y || 0) + it.h / 2, it.z); m.rotation.y = d2r(it.rotY || 0); staticGroup.add(m); continue; }
+    if (it.kind === 'light') { const m = new THREE.Mesh(new THREE.BoxGeometry(it.w, it.h, it.d), new THREE.MeshBasicMaterial({ color: 0xfff8ec })); m.position.set(it.x, it.y, it.z); m.rotation.y = d2r(it.rotY || 0); staticGroup.add(m); continue; }
+    add(box(it), it);
+  }
+  staticGroup.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
+  projDirty = true;
+}
+function itemAABB(it) { if (it.noCollide) return null; const r = d2r(it.rotY || 0), c = Math.abs(Math.cos(r)), s = Math.abs(Math.sin(r)); const hw = (it.w * c + it.d * s) / 2, hd = (it.w * s + it.d * c) / 2; return { x0: it.x - hw, x1: it.x + hw, z0: it.z - hd, z1: it.z + hd, y0: it.y || 0, y1: (it.y || 0) + (it.h || 1) }; }
+
+/* ───── 피사체(마네킹) ───── */
+function buildSubject() {
+  if (subjectGroup) { scene.remove(subjectGroup); subjectGroup.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+  const sub = S().subject, Lm = landmarks(sub), H = sub.height / 100, k = H / 1.70, kind = L().kind;
+  const g = new THREE.Group();
+  const skin = new THREE.MeshStandardMaterial({ color: 0xe6c3a5, roughness: 0.7 }), hair = new THREE.MeshStandardMaterial({ color: 0x2b2420, roughness: 0.85 });
+  const shirt = new THREE.MeshStandardMaterial({ color: kind === 'kimbap' ? 0xf1efe8 : 0x2d2d31, roughness: 0.9 }), pants = new THREE.MeshStandardMaterial({ color: 0x33363c, roughness: 0.9 });
+  const add = (geo, mat, x, y, z, rx = 0, rz = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.x = rx; m.rotation.z = rz; m.castShadow = true; m.receiveShadow = true; g.add(m); return m; };
+  const head = add(new THREE.SphereGeometry(0.105 * k, 24, 18), skin, 0, Lm.eyes + 0.035 * k, 0); head.scale.set(0.92, 1.08, 1);
+  add(new THREE.SphereGeometry(0.112 * k, 24, 18, 0, Math.PI * 2, 0, Math.PI * 0.5), hair, 0, Lm.eyes + 0.04 * k, -0.012); add(new THREE.SphereGeometry(0.108 * k, 24, 18, Math.PI * 1.1, Math.PI * 0.8, 0, Math.PI * 0.75), hair, 0, Lm.eyes + 0.03 * k, -0.02);
+  for (const sx of [-1, 1]) add(new THREE.SphereGeometry(0.013 * k, 10, 8), hair, sx * 0.035 * k, Lm.eyes, 0.093 * k);
+  add(new THREE.CylinderGeometry(0.045 * k, 0.05 * k, (Lm.chin - Lm.shoulders) + 0.04 * k, 12), skin, 0, (Lm.chin + Lm.shoulders) / 2, 0);
+  const torsoH = Lm.shoulders - Lm.hips;
+  if (sub.pose === 'sitting') { add(new THREE.CapsuleGeometry(0.17 * k, torsoH - 0.2 * k, 6, 16), shirt, 0, Lm.hips + torsoH / 2, 0); for (const sx of [-1, 1]) { add(new THREE.CapsuleGeometry(0.075 * k, 0.4 * k, 6, 12), pants, sx * 0.1 * k, Lm.hips - 0.02, 0.22 * k, Math.PI / 2); add(new THREE.CapsuleGeometry(0.065 * k, 0.4 * k, 6, 12), pants, sx * 0.1 * k, Lm.hips / 2 - 0.02, 0.42 * k); add(new THREE.CapsuleGeometry(0.05 * k, 0.45 * k, 6, 12), shirt, sx * 0.23 * k, Lm.shoulders - 0.28 * k, 0.12 * k, 0.5); } }
+  else { const lean = sub.pose === 'working' ? 0.18 : 0; add(new THREE.CapsuleGeometry(0.17 * k, torsoH - 0.2 * k, 6, 16), shirt, 0, Lm.hips + torsoH / 2, lean * 0.2, lean); if (kind === 'kimbap') add(new THREE.BoxGeometry(0.3 * k, torsoH * 0.95, 0.02), new THREE.MeshStandardMaterial({ color: 0x6b5a4a, roughness: 0.9 }), 0, Lm.hips + torsoH / 2 - 0.05, 0.16 * k + lean * 0.25, lean); for (const sx of [-1, 1]) add(new THREE.CapsuleGeometry(0.075 * k, Lm.hips - 0.2 * k, 6, 12), pants, sx * 0.1 * k, Lm.hips / 2, 0); const armZ = sub.pose === 'working' ? 0.2 * k : 0, armRx = sub.pose === 'working' ? -1.0 : 0; for (const sx of [-1, 1]) add(new THREE.CapsuleGeometry(0.05 * k, 0.5 * k, 6, 12), shirt, sx * 0.24 * k, Lm.shoulders - (sub.pose === 'working' ? 0.2 : 0.3) * k, armZ, armRx, sx * 0.12); if (sub.pose === 'working') for (const sx of [-1, 1]) add(new THREE.SphereGeometry(0.05 * k, 10, 8), skin, sx * 0.2 * k, Lm.hips + 0.15 * k, 0.42 * k); }
+  subjectPick = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, Lm.top, 12), new THREE.MeshBasicMaterial({ visible: false })); subjectPick.position.y = Lm.top / 2; subjectPick.userData.kind = 'subject'; g.add(subjectPick);
+  g.position.set(sub.x, 0, sub.z); g.rotation.y = Math.PI - d2r(sub.facing);
+  subjectGroup = g; scene.add(g);
+}
+
+/* ───── 조명 ───── */
+function kelvinToColor(k) { const t = k / 100; let r = t <= 66 ? 255 : 329.698727446 * Math.pow(t - 60, -0.1332047592); let g = t <= 66 ? 99.4708025861 * Math.log(t) - 161.1195681661 : 288.1221695283 * Math.pow(t - 60, -0.0755148492); let b = t >= 66 ? 255 : (t <= 19 ? 0 : 138.5177312231 * Math.log(t - 10) - 305.0447927307); return new THREE.Color(clamp(r, 0, 255) / 255, clamp(g, 0, 255) / 255, clamp(b, 0, 255) / 255); }
+function buildLights() {
+  lightGroup.clear(); practicals = [];
+  spotBack = new THREE.SpotLight(0xffffff, 1, 0, d2r(32), 0.55, 2); spotBack.castShadow = true; spotBack.shadow.mapSize.set(1024, 1024); spotBack.shadow.bias = -0.0005;
+  spotKey = new THREE.SpotLight(0xffffff, 1, 0, d2r(40), 0.7, 2); spotKey.castShadow = true; spotKey.shadow.mapSize.set(1024, 1024); spotKey.shadow.bias = -0.0005;
+  lightGroup.add(spotBack, spotBack.target, spotKey, spotKey.target);
+  const { w, d, h } = L().room; const nx = Math.max(1, Math.round(w / 2.4)), nz = Math.max(2, Math.round(d / 2.4));
+  for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) { const pl = new THREE.PointLight(0xffffff, 1, 0, 2); pl.position.set(-w / 2 + (i + 0.5) * w / nx, h - 0.1, -d / 2 + (j + 0.5) * d / nz); lightGroup.add(pl); practicals.push(pl); }
+  updateLights();
+}
+function updateLights() {
+  const Li = S().lights, tgt = subjectPoint('chin');
+  const setSpot = (sp, cfg) => { sp.visible = !!cfg.on; sp.position.set(cfg.x, cfg.y, cfg.z); sp.target.position.copy(tgt); sp.color.copy(kelvinToColor(cfg.kelvin || 4500)); sp.intensity = cfg.intensity; sp.target.updateMatrixWorld(); };
+  setSpot(spotBack, Li.back); setSpot(spotKey, Li.key);
+  const pr = Li.practical || { intensity: 1, kelvin: 4000 }; const pc = kelvinToColor(pr.kelvin);
+  for (const pl of practicals) { pl.color.copy(pc); pl.intensity = 10 * pr.intensity; }
+  hemi.intensity = 0.25 + 0.35 * pr.intensity;
+  updateLightGizmos();
+}
+function lightPolar(cfg, camId = 'A') { const sp = subjectPoint('chest'), cam = S().cams[camId]; const axis = new THREE.Vector3(cam.x - sp.x, 0, cam.z - sp.z).normalize(); const v = new THREE.Vector3(cfg.x - sp.x, 0, cfg.z - sp.z); const hd = Math.hypot(v.x, v.z); return { az: r2d(Math.atan2(axis.x * v.z - axis.z * v.x, axis.x * v.x + axis.z * v.z)), el: r2d(Math.atan2(cfg.y - sp.y, hd)), dist: Math.hypot(hd, cfg.y - sp.y) }; }
+function lightFromPolar(az, el, dist, camId = 'A') { const sp = subjectPoint('chest'), cam = S().cams[camId]; const axis = new THREE.Vector3(cam.x - sp.x, 0, cam.z - sp.z).normalize(); const a = d2r(az), c = Math.cos(a), s = Math.sin(a); const dir = new THREE.Vector3(axis.x * c - axis.z * s, 0, axis.x * s + axis.z * c); const hd = dist * Math.cos(d2r(el)); const { w, d, h } = L().room; return { x: clamp(sp.x + dir.x * hd, -w / 2 + 0.1, w / 2 - 0.1), y: clamp(sp.y + dist * Math.sin(d2r(el)), 0.3, h - 0.05), z: clamp(sp.z + dir.z * hd, -d / 2 + 0.1, d / 2 - 0.1) }; }
+
+/* ───── 기즈모 ───── */
+function labelSprite(text, bg) { const c = document.createElement('canvas'); c.width = 160; c.height = 56; const x = c.getContext('2d'); x.fillStyle = bg; x.beginPath(); x.roundRect(4, 4, 152, 48, 12); x.fill(); x.fillStyle = '#fff'; x.font = '600 26px IBM Plex Sans KR, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(text, 80, 30); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true })); sp.scale.set(0.6, 0.21, 1); sp.renderOrder = 10; return sp; }
+function buildGizmos() {
+  for (const k in camGizmos) gizmoGroup.remove(camGizmos[k]); for (const k in lightGizmos) gizmoGroup.remove(lightGizmos[k]); for (const a of arcMeshes) gizmoGroup.remove(a); if (axisLine) gizmoGroup.remove(axisLine);
+  camGizmos = {}; lightGizmos = {}; arcMeshes = [];
+  for (const id of ['A', 'B']) { const g = new THREE.Group(); const colr = id === 'A' ? 0xff6f0f : 0x3b6fd6; const body = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.13, 0.24), new THREE.MeshStandardMaterial({ color: colr, roughness: 0.5 })); body.userData.kind = 'cam'; body.userData.id = id; g.add(body); const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 0.12, 16), new THREE.MeshStandardMaterial({ color: 0x222222 })); lens.rotation.x = Math.PI / 2; lens.position.z = -0.18; lens.userData.kind = 'cam'; lens.userData.id = id; g.add(lens); const fr = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: colr })); g.add(fr); g.userData.frustum = fr; const lb = labelSprite(id + '캠', id === 'A' ? '#ff6f0f' : '#3b6fd6'); lb.position.set(0, 0.22, 0); g.add(lb); gizmoGroup.add(g); camGizmos[id] = g; }
+  for (const id of ['back', 'key']) { const g = new THREE.Group(); const s = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), new THREE.MeshStandardMaterial({ color: 0xffd36b, emissive: 0xffb347, emissiveIntensity: 0.8 })); s.userData.kind = 'light'; s.userData.id = id; g.add(s); const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineDashedMaterial({ color: 0xd98a06, dashSize: 0.08, gapSize: 0.05 })); g.add(line); g.userData.line = line; const lb = labelSprite(id === 'back' ? '백라이트' : '키라이트', '#b7791f'); lb.position.set(0, 0.2, 0); g.add(lb); const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 1, 8), new THREE.MeshStandardMaterial({ color: 0x555555 })); g.add(stand); g.userData.stand = stand; gizmoGroup.add(g); lightGizmos[id] = g; }
+  for (const side of [1, -1]) { const m = new THREE.Mesh(new THREE.RingGeometry(1.2, 2.4, 40, 1, 0, d2r(45)), new THREE.MeshBasicMaterial({ color: 0x1f9d55, transparent: true, opacity: 0.22, side: THREE.DoubleSide, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.y = 0.004; m.userData.side = side; gizmoGroup.add(m); arcMeshes.push(m); }
+  axisLine = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]), new THREE.LineBasicMaterial({ color: 0xff6f0f, transparent: true, opacity: 0.6 })); axisLine.position.y = 0.006; gizmoGroup.add(axisLine);
+  updateGizmos();
+}
+function updateGizmos() {
+  for (const id of ['A', 'B']) { const c = S().cams[id], g = camGizmos[id]; if (!g) continue; g.position.set(c.x, c.y, c.z); g.rotation.set(d2r(c.tilt), d2r(-c.pan), d2r(c.roll), 'YXZ'); const f = fovOf(c.focal, c.aspect), Ln = 0.7, hw = Math.tan(d2r(f.h / 2)) * Ln, hh = Math.tan(d2r(f.v / 2)) * Ln; const o = new THREE.Vector3(0, 0, -0.18), cs = [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].map(([x, y]) => new THREE.Vector3(x, y, -0.18 - Ln)); const pts = []; for (let i = 0; i < 4; i++) pts.push(o, cs[i], cs[i], cs[(i + 1) % 4]); g.userData.frustum.geometry.setFromPoints(pts); g.children[0].material.emissive = new THREE.Color(id === state.activeCam ? 0x331500 : 0x000000); }
+  updateLightGizmos(); updateArcs();
+}
+function updateLightGizmos() { const tgt = subjectPoint('chin'); for (const id of ['back', 'key']) { const cfg = S().lights[id], g = lightGizmos[id]; if (!g) continue; g.visible = !!cfg.on; g.position.set(cfg.x, cfg.y, cfg.z); g.userData.line.geometry.setFromPoints([new THREE.Vector3(), tgt.clone().sub(g.position)]); g.userData.line.computeLineDistances(); g.userData.stand.scale.y = cfg.y; g.userData.stand.position.y = -cfg.y / 2; } }
+function updateArcs() {
+  const sp = subjectPoint('feet'), cam = S().cams.A; const axisAng = Math.atan2(cam.z - sp.z, cam.x - sp.x); const keySide = Math.sign(lightPolar(S().lights.key, 'A').az) || 1;
+  for (const m of arcMeshes) { m.visible = state.ui.arcs && state.view === 'edit'; m.position.set(sp.x, 0.004, sp.z); const start = axisAng + m.userData.side * d2r(120); m.geometry.dispose(); m.geometry = new THREE.RingGeometry(1.2, 2.4, 40, 1, m.userData.side > 0 ? -start - d2r(45) : -start, d2r(45)); const pref = m.userData.side !== keySide; m.material.opacity = pref ? 0.3 : 0.12; m.material.color.set(pref ? 0x1f9d55 : 0x6b7380); }
+  if (axisLine) { axisLine.geometry.setFromPoints([new THREE.Vector3(sp.x, 0, sp.z), new THREE.Vector3(cam.x, 0, cam.z)]); axisLine.visible = state.view === 'edit'; }
+}
+function applyCamToThree(id) { const c = S().cams[id], tc = threeCams[id]; const f = fovOf(c.focal, c.aspect); tc.fov = f.v; tc.aspect = ASPECTS[c.aspect] || 16/9; tc.updateProjectionMatrix(); tc.position.set(c.x, c.y, c.z); tc.rotation.set(d2r(c.tilt), d2r(-c.pan), d2r(c.roll), 'YXZ'); }
+function rebuildDynamic() { buildSubject(); buildLights(); buildGizmos(); applyCamToThree('A'); applyCamToThree('B'); projDirty = true; clearSelection(); }
+function rebuildAll() { buildStatic(); for (const p of S().photos) getTex(p.file); rebuildDynamic(); }
+
+/* ───── 충돌 ───── */
+const CAM_R = 0.16; let blockedFlash = 0;
+function collideCam(c) {
+  const { w, d, h } = L().room; let hit = false;
+  const nx = clamp(c.x, -w / 2 + CAM_R, w / 2 - CAM_R), nz = clamp(c.z, -d / 2 + CAM_R, d / 2 - CAM_R), ny = clamp(c.y, 0.25, h - 0.08);
+  if (nx !== c.x || nz !== c.z || ny !== c.y) hit = true; c.x = nx; c.z = nz; c.y = ny;
+  for (const it of L().items) { const b = itemAABB(it); if (!b) continue; if (c.y < b.y0 || c.y > b.y1 + 0.35) continue; const ex0 = b.x0 - CAM_R, ex1 = b.x1 + CAM_R, ez0 = b.z0 - CAM_R, ez1 = b.z1 + CAM_R; if (c.x > ex0 && c.x < ex1 && c.z > ez0 && c.z < ez1) { const dl = c.x - ex0, dr = ex1 - c.x, dn = c.z - ez0, ds = ez1 - c.z, m = Math.min(dl, dr, dn, ds); if (m === dl) c.x = ex0; else if (m === dr) c.x = ex1; else if (m === dn) c.z = ez0; else c.z = ez1; hit = true; } }
+  const sp = S().subject, dsx = c.x - sp.x, dsz = c.z - sp.z, dist = Math.hypot(dsx, dsz), minD = 0.32 + CAM_R;
+  if (dist < minD && c.y < landmarks(sp).top + 0.1) { const k = dist < 1e-4 ? 1 : minD / dist; c.x = sp.x + (dist < 1e-4 ? minD : dsx * k); c.z = sp.z + (dist < 1e-4 ? 0 : dsz * k); hit = true; }
+  if (hit) blockedFlash = 0.5; return hit;
+}
+function clampInRoom(o, pad = 0.1) { const { w, d, h } = L().room; o.x = clamp(o.x, -w / 2 + pad, w / 2 - pad); o.z = clamp(o.z, -d / 2 + pad, d / 2 - pad); if (o.y != null) o.y = clamp(o.y, 0.2, h - 0.05); }
+function collideSubject(sub) { clampInRoom(sub, 0.3); for (const it of L().items) { const b = itemAABB(it); if (!b || b.y1 < 0.3) continue; const r = 0.28; if (sub.x > b.x0 - r && sub.x < b.x1 + r && sub.z > b.z0 - r && sub.z < b.z1 + r) { const dl = sub.x - (b.x0 - r), dr = (b.x1 + r) - sub.x, dn = sub.z - (b.z0 - r), ds = (b.z1 + r) - sub.z, m = Math.min(dl, dr, dn, ds); if (m === dl) sub.x = b.x0 - r; else if (m === dr) sub.x = b.x1 + r; else if (m === dn) sub.z = b.z0 - r; else sub.z = b.z1 + r; } } }
+
+/* ───── 레이아웃(뷰포트) ───── */
+let W = 1, H = 1, frameRect = { x: 0, y: 0, w: 1, h: 1 }, pipRect = null;
+function layout() {
+  const r = stage.getBoundingClientRect(); W = Math.max(1, Math.round(r.width)); H = Math.max(1, Math.round(r.height)); renderer.setSize(W, H, false);
+  const clean = document.getElementById('app').classList.contains('clean'); const c = CAM(), a = ASPECTS[c.aspect] || 16/9;
+  if (state.view === 'cam') { const padX = clean ? 0 : 20, padT = clean ? 0 : 14, padB = clean ? 0 : 66; const aw = W - padX * 2, ah = H - padT - padB; let fw = aw, fh = fw / a; if (fh > ah) { fh = ah; fw = fh * a; } frameRect = { x: Math.round((W - fw) / 2), y: Math.round(padT + (ah - fh) / 2), w: Math.round(fw), h: Math.round(fh) }; }
+  else frameRect = { x: 0, y: 0, w: W, h: H };
+  const fr = $('#frame'); fr.style.left = frameRect.x + 'px'; fr.style.top = frameRect.y + 'px'; fr.style.width = frameRect.w + 'px'; fr.style.height = frameRect.h + 'px'; fr.style.display = state.view === 'cam' ? 'block' : 'none';
+  // 9:16 세로 크롭 가이드 (16:9 안) — 피사체 가로 위치 중심
+  const vc = $('#frame .vcrop'); if (state.view === 'cam' && c.aspect === '16:9' && state.ui.vcrop) { const cw = frameRect.h * 9 / 16; let cx = frameRect.w / 2; try { threeCams[state.activeCam].updateMatrixWorld(); const p = subjectPoint('chest').project(threeCams[state.activeCam]); if (Math.abs(p.x) < 1.5) cx = (p.x * 0.5 + 0.5) * frameRect.w; } catch (_) {} cx = clamp(cx, cw / 2, frameRect.w - cw / 2); vc.style.display = 'block'; vc.style.left = (cx - cw / 2) + 'px'; vc.style.width = cw + 'px'; } else vc.style.display = 'none';
+  if (state.ui.pip && !clean) { const pa = pipContentAspect(); const pw = Math.round(clamp(W * 0.24, 150, 300)); const ph = Math.round(pw / pa); const lift = (state.view === 'cam' && W < 1000) ? 58 : 0; pipRect = { x: W - pw - 14, y: H - ph - 14 - lift, w: pw, h: ph }; const el = $('#pip'); el.style.display = 'block'; el.style.left = pipRect.x + 'px'; el.style.top = pipRect.y + 'px'; el.style.width = pw + 'px'; el.style.height = ph + 'px'; } else { pipRect = null; $('#pip').style.display = 'none'; }
+  editCam.aspect = W / H; editCam.updateProjectionMatrix();
+}
+function pipContent() { return state.view === 'cam' ? 'edit' : state.activeCam; }
+function pipContentAspect() { const c = pipContent(); return c === 'edit' ? 16 / 9 : (ASPECTS[S().cams[c].aspect] || 16 / 9); }
+new ResizeObserver(() => layout()).observe(stage);
+
+/* ───── 편집 카메라 ───── */
+function updateEditCam() { const t = orbit.target; if (state.ui.top) { const a = W / H, z = orbit.topZoom; topCam.left = -z * a; topCam.right = z * a; topCam.top = z; topCam.bottom = -z; topCam.updateProjectionMatrix(); topCam.position.set(t.x, 30, t.z); topCam.up.set(0, 0, -1); topCam.lookAt(t.x, 0, t.z); return topCam; } const sp = Math.sin(orbit.phi); editCam.position.set(t.x + orbit.r * sp * Math.sin(orbit.theta), t.y + orbit.r * Math.cos(orbit.phi), t.z + orbit.r * sp * Math.cos(orbit.theta)); editCam.up.set(0, 1, 0); editCam.lookAt(t); return editCam; }
+function fitEdit() { const { w, d } = L().room; orbit.target.set(0, 0.9, 0); orbit.r = Math.max(w, d) * 1.15; orbit.phi = d2r(52); orbit.theta = d2r(28); orbit.topZoom = Math.max(w, d) / 2 + 0.6; }
+
+/* ───── 렌더 루프 ───── */
+const keys = new Set(); let last = performance.now(), hudTick = 0;
+function setViewportRect(r) { const y = H - r.y - r.h; renderer.setViewport(r.x, y, r.w, r.h); renderer.setScissor(r.x, y, r.w, r.h); }
+function renderView(content, rect) { const isEdit = content === 'edit'; gizmoGroup.visible = isEdit; scene.background = isEdit ? BG_EDIT : BG_CAM; if (selHelper) selHelper.visible = isEdit; setViewportRect(rect); const cam = isEdit ? updateEditCam() : threeCams[content]; renderer.render(scene, cam); }
+function frame(now) {
+  requestAnimationFrame(frame); const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  stepKeys(dt);
+  if (projDirty) updateProjectors();
+  if (blockedFlash > 0) { blockedFlash -= dt; $('#warn').classList.add('on'); } else $('#warn').classList.remove('on');
+  renderer.setScissorTest(true); renderer.setClearColor(state.view === 'cam' ? BG_CAM : BG_EDIT, 1); renderer.setViewport(0, 0, W, H); renderer.setScissor(0, 0, W, H); renderer.clear();
+  renderView(state.view === 'cam' ? state.activeCam : 'edit', frameRect);
+  if (pipRect) renderView(pipContent(), pipRect);
+  renderer.setScissorTest(false);
+  if ((hudTick += dt) > 0.12) { hudTick = 0; updateHUD(); if (state.view === 'cam' && state.ui.vcrop) layoutVcropOnly(); }
+}
+function layoutVcropOnly() { const c = CAM(); const vc = $('#frame .vcrop'); if (c.aspect !== '16:9') { vc.style.display = 'none'; return; } const cw = frameRect.h * 9 / 16; let cx = frameRect.w / 2; threeCams[state.activeCam].updateMatrixWorld(); const p = subjectPoint('chest').project(threeCams[state.activeCam]); if (Math.abs(p.x) < 1.5) cx = (p.x * 0.5 + 0.5) * frameRect.w; cx = clamp(cx, cw / 2, frameRect.w - cw / 2); vc.style.display = 'block'; vc.style.left = (cx - cw / 2) + 'px'; vc.style.width = cw + 'px'; }
+function stepKeys(dt) {
+  if (!keys.size) return; const c = CAM(); const fast = keys.has('shift'); const v = (fast ? 2.4 : 1.1) * dt, vy = (fast ? 0.8 : 0.4) * dt; const f = flatFwd(c.pan), r = rightOf(c.pan); let moved = false;
+  if (keys.has('w')) { c.x += f.x * v; c.z += f.z * v; moved = true; } if (keys.has('s')) { c.x -= f.x * v; c.z -= f.z * v; moved = true; }
+  if (keys.has('a')) { c.x -= r.x * v; c.z -= r.z * v; moved = true; } if (keys.has('d')) { c.x += r.x * v; c.z += r.z * v; moved = true; }
+  if (keys.has('q')) { c.y -= vy; moved = true; } if (keys.has('e')) { c.y += vy; moved = true; }
+  if (keys.has('arrowleft')) { c.pan -= 40 * dt; moved = true; } if (keys.has('arrowright')) { c.pan += 40 * dt; moved = true; }
+  if (keys.has('arrowup')) { c.tilt = clamp(c.tilt + 30 * dt, -89, 89); moved = true; } if (keys.has('arrowdown')) { c.tilt = clamp(c.tilt - 30 * dt, -89, 89); moved = true; }
+  if (moved) { collideCam(c); camChanged(false); }
+}
+let camDirtyTimer = 0;
+function camChanged(commitNow = true, label = '카메라 이동') { applyCamToThree(state.activeCam); updateGizmos(); refreshCam(); if (commitNow) commit(label, 'cam'); else { clearTimeout(camDirtyTimer); camDirtyTimer = setTimeout(() => { S().updatedAt = Date.now(); saveLocal(); queueCloud(); }, 600); } }
+
+/* ───── 입력 ───── */
+const ptrs = new Map(); let drag = null, lastPinch = 0, tapTimes = [], wheelCommit = 0;
+function ndcIn(rect, cx, cy) { const r = stage.getBoundingClientRect(); const x = cx - r.left - rect.x, y = cy - r.top - rect.y; return { x: (x / rect.w) * 2 - 1, y: -(y / rect.h) * 2 + 1, inside: x >= 0 && y >= 0 && x <= rect.w && y <= rect.h }; }
+const ray = new THREE.Raycaster();
+function pickAt(cx, cy) { const n = ndcIn(frameRect, cx, cy); if (!n.inside) return null; ray.setFromCamera(new THREE.Vector2(n.x, n.y), updateEditCam()); const objs = []; for (const k in camGizmos) objs.push(...camGizmos[k].children.filter(o => o.isMesh)); for (const k in lightGizmos) if (lightGizmos[k].visible) objs.push(lightGizmos[k].children[0]); if (subjectPick) objs.push(subjectPick); const hits = ray.intersectObjects(objs, true); for (const h of hits) { let o = h.object; while (o && !o.userData.kind) o = o.parent; if (o) return { obj: o, point: h.point }; } return null; }
+let selection = null;
+function select(sel) { selection = sel; if (selHelper) { gizmoGroup.remove(selHelper); selHelper = null; } if (sel && sel.mesh) { selHelper = new THREE.BoxHelper(sel.mesh, 0xff6f0f); gizmoGroup.add(selHelper); } if (sel && sel.kind === 'cam') setActiveCam(sel.id, false); }
+function clearSelection() { select(null); }
+function targetOf(sel) { if (!sel) return null; if (sel.kind === 'cam') return S().cams[sel.id]; if (sel.kind === 'light') return S().lights[sel.id]; if (sel.kind === 'subject') return S().subject; return null; }
+function applySelMove() { const sel = selection; if (!sel) return; if (sel.kind === 'cam') { collideCam(S().cams[sel.id]); applyCamToThree(sel.id); refreshCam(); } else if (sel.kind === 'light') { clampInRoom(S().lights[sel.id]); updateLights(); refreshLights(); } else if (sel.kind === 'subject') { collideSubject(S().subject); subjectGroup.position.set(S().subject.x, 0, S().subject.z); updateLights(); refreshSubject(); } updateGizmos(); if (selHelper) selHelper.update(); }
+stage.addEventListener('pointerdown', e => {
+  if (e.target.closest('#toolbar,#editbar,#pip,#joy,#hud')) return;
+  stage.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY });
+  if (document.getElementById('app').classList.contains('clean')) { const t = performance.now(); tapTimes = tapTimes.filter(x => t - x < 1500); tapTimes.push(t); if (tapTimes.length >= 4) { exitClean(); tapTimes = []; return; } }
+  if (ptrs.size > 1) { drag = { mode: 'pinch' }; lastPinch = 0; return; }
+  if (state.view === 'cam') { drag = { mode: e.altKey ? 'orbit' : 'look', moved: false }; return; }
+  const hit = pickAt(e.clientX, e.clientY);
+  if (hit && e.button === 0) { const o = hit.obj, kind = o.userData.kind; const sel = kind === 'cam' ? { kind, id: o.userData.id, mesh: camGizmos[o.userData.id] } : kind === 'light' ? { kind, id: o.userData.id, mesh: lightGizmos[o.userData.id] } : { kind: 'subject', mesh: subjectGroup }; select(sel); const t = targetOf(sel); const planeY = (sel.kind === 'cam' || sel.kind === 'light') ? t.y : 0; const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -planeY); const p = new THREE.Vector3(); ray.ray.intersectPlane(plane, p); drag = { mode: 'move', sel, plane, off: p ? new THREE.Vector3(t.x - p.x, 0, t.z - p.z) : new THREE.Vector3(), startY: t.y, y0: e.clientY, moved: false }; return; }
+  drag = { mode: (e.button === 2 || e.shiftKey) ? 'pan' : 'rot', moved: false, deselect: !hit && e.button === 0 && !e.shiftKey };
+});
+stage.addEventListener('pointermove', e => {
+  const p = ptrs.get(e.pointerId); if (!p || !drag) return; const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; if (Math.abs(e.clientX - p.sx) + Math.abs(e.clientY - p.sy) > 3) drag.moved = true;
+  if (drag.mode === 'pinch' && ptrs.size >= 2) { const [a, b] = [...ptrs.values()]; const dist = Math.hypot(a.x - b.x, a.y - b.y); if (lastPinch) { const k = dist / lastPinch; if (state.view === 'cam') { const c = CAM(); c.focal = clamp(c.focal * k, 12, 200); camChanged(false); } else if (state.ui.top) orbit.topZoom = clamp(orbit.topZoom / k, 1.5, 20); else orbit.r = clamp(orbit.r / k, 0.8, 40); } lastPinch = dist; return; }
+  if (drag.mode === 'look') { const c = CAM(); c.pan += dx * 0.16; c.tilt = clamp(c.tilt - dy * 0.16, -89, 89); camChanged(false); return; }
+  if (drag.mode === 'orbit') { orbitCam(dx * 0.25, dy * 0.004); return; }
+  if (drag.mode === 'rot') { if (state.ui.top) { orbit.target.x -= dx * orbit.topZoom * 2 / H; orbit.target.z -= dy * orbit.topZoom * 2 / H; } else { orbit.theta -= dx * 0.006; orbit.phi = clamp(orbit.phi - dy * 0.006, 0.05, Math.PI / 2 - 0.02); } return; }
+  if (drag.mode === 'pan') { const cam = updateEditCam(); const right = new THREE.Vector3(1, 0, 0).applyQuaternion(cam.quaternion), up = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion); const k = (state.ui.top ? orbit.topZoom * 2 : orbit.r) / H; orbit.target.addScaledVector(right, -dx * k).addScaledVector(up, dy * k); return; }
+  if (drag.mode === 'move') { const t = targetOf(drag.sel); if (e.shiftKey && t.y != null) { t.y = drag.startY - (e.clientY - drag.y0) * 0.01; } else { const n = ndcIn(frameRect, e.clientX, e.clientY); ray.setFromCamera(new THREE.Vector2(n.x, n.y), updateEditCam()); const hp = new THREE.Vector3(); if (ray.ray.intersectPlane(drag.plane, hp)) { t.x = hp.x + drag.off.x; t.z = hp.z + drag.off.z; } } applySelMove(); }
+});
+function endPtr(e) { ptrs.delete(e.pointerId); try { stage.releasePointerCapture(e.pointerId); } catch (_) {} if (!drag) return; if (drag.mode === 'move' && drag.moved) { const k = drag.sel.kind; commit(k === 'cam' ? drag.sel.id + '캠 이동' : k === 'light' ? '조명 이동' : '피사체 이동', k === 'cam' ? 'cam' : 'doc'); } else if ((drag.mode === 'look' || drag.mode === 'orbit') && drag.moved) commit('카메라 회전', 'cam'); else if (drag.deselect && !drag.moved) clearSelection(); if (ptrs.size === 0) drag = null; else if (drag.mode === 'pinch' && ptrs.size < 2) drag = null; }
+stage.addEventListener('pointerup', endPtr); stage.addEventListener('pointercancel', endPtr); stage.addEventListener('contextmenu', e => e.preventDefault());
+stage.addEventListener('wheel', e => { e.preventDefault(); if (state.view === 'cam') { const c = CAM(); if (e.altKey) { c.y += (e.deltaY > 0 ? -0.02 : 0.02); collideCam(c); } else c.focal = clamp(c.focal * (e.deltaY > 0 ? 1.06 : 1 / 1.06), 12, 200); camChanged(false); clearTimeout(wheelCommit); wheelCommit = setTimeout(() => commit('화각', 'cam'), 700); } else { if (state.ui.top) orbit.topZoom = clamp(orbit.topZoom * (e.deltaY > 0 ? 1.1 : 1 / 1.1), 1.5, 20); else orbit.r = clamp(orbit.r * (e.deltaY > 0 ? 1.1 : 1 / 1.1), 0.8, 40); } }, { passive: false });
+function orbitCam(dAz, dEl) { const c = CAM(), sp = subjectPoint('eyes'); const v = new THREE.Vector3(c.x - sp.x, 0, c.z - sp.z); const r = v.length(); if (r < 0.05) return; const ang = Math.atan2(v.x, v.z) + d2r(dAz); c.x = sp.x + Math.sin(ang) * r; c.z = sp.z + Math.cos(ang) * r; c.pan += dAz; const y0 = c.y; c.y = clamp(c.y + dEl * r, 0.25, L().room.h - 0.08); c.tilt = clamp(c.tilt + (tiltTo(c, sp) - tiltTo({ x: c.x, y: y0, z: c.z }, sp)), -89, 89); collideCam(c); camChanged(false); }
+
+/* ───── 키보드 ───── */
+window.addEventListener('keydown', e => {
+  const tag = (e.target.tagName || '').toLowerCase(); if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return; const k = e.key.toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && k === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if ((e.ctrlKey || e.metaKey) && k === 'y') { e.preventDefault(); redo(); return; }
+  if ((e.ctrlKey || e.metaKey) && k === 's') { e.preventDefault(); e.shiftKey ? saveBoth() : saveShot(); return; }
+  if (e.ctrlKey || e.metaKey) return;
+  if (['w', 'a', 's', 'd', 'q', 'e', 'shift', 'arrowleft', 'arrowright', 'arrowup', 'arrowdown'].includes(k)) { keys.add(k); if (k.startsWith('arrow')) e.preventDefault(); return; }
+  if (k === 'g') toggleUI('grid'); else if (k === 'c') toggleUI('cross'); else if (k === 'o') toggleOverlay(); else if (k === 'tab') { e.preventDefault(); setView(state.view === 'cam' ? 'edit' : 'cam'); }
+  else if (k === '1') setActiveCam('A'); else if (k === '2') setActiveCam('B'); else if (k === 'f') enterClean(); else if (k === 'v') setAspect(CAM().aspect === '16:9' ? '9:16' : '16:9');
+  else if (k === 't' && state.view === 'edit') { state.ui.top = !state.ui.top; syncUI(); }
+  else if (k === 'escape') { if ($('#modal').classList.contains('on')) closeModal(); else if (document.getElementById('app').classList.contains('clean')) exitClean(); else clearSelection(); }
+  else if (k === 'delete' || k === 'backspace') { if (activeShotId) deleteShot(activeShotId); }
+  else if (k === '[' || k === ']') stepShot(k === '[' ? -1 : 1);
+});
+window.addEventListener('keyup', e => { const k = e.key.toLowerCase(); const had = keys.has(k); keys.delete(k); if (had && ['w', 'a', 's', 'd', 'q', 'e'].includes(k) && !['w', 'a', 's', 'd', 'q', 'e'].some(x => keys.has(x))) commit('카메라 이동', 'cam'); });
+window.addEventListener('blur', () => keys.clear());
+(function joystick() { const pad = $('#joy .pad'), knob = $('#joy .knob'); let jid = null, cx = 0, cy = 0; pad.addEventListener('pointerdown', e => { jid = e.pointerId; pad.setPointerCapture(jid); const r = pad.getBoundingClientRect(); cx = r.left + r.width / 2; cy = r.top + r.height / 2; }); pad.addEventListener('pointermove', e => { if (e.pointerId !== jid) return; const dx = clamp(e.clientX - cx, -45, 45), dy = clamp(e.clientY - cy, -45, 45); knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`; ['w', 's', 'a', 'd'].forEach(k => keys.delete(k)); if (dy < -12) keys.add('w'); if (dy > 12) keys.add('s'); if (dx < -12) keys.add('a'); if (dx > 12) keys.add('d'); }); const end = e => { if (e.pointerId !== jid) return; jid = null; knob.style.transform = 'translate(-50%,-50%)'; ['w', 's', 'a', 'd'].forEach(k => keys.delete(k)); commit('카메라 이동', 'cam'); }; pad.addEventListener('pointerup', end); pad.addEventListener('pointercancel', end); $$('#joy .ud button').forEach(b => { const k = b.dataset.d === '1' ? 'e' : 'q'; b.addEventListener('pointerdown', e => { e.preventDefault(); keys.add(k); }); const up = () => { keys.delete(k); commit('높이', 'cam'); }; b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('pointerleave', () => keys.delete(k)); }); })();
+
+/* ───── 샷사이즈 분석 · HUD ───── */
+function analyzeFrame(camId = state.activeCam) {
+  const c = S().cams[camId], tc = threeCams[camId]; tc.updateMatrixWorld(); const sub = S().subject, Lm = landmarks(sub);
+  const res = { size: '—', headroom: null, eyeline: null, cutWarn: null, inFrame: true, dist: Math.hypot(sub.x - c.x, sub.z - c.z) };
+  const names = ['feet', 'knees', 'hips', 'waist', 'chest', 'shoulders', 'chin', 'eyes', 'top']; const P = {}; const f = fwdOf(c), cp = new THREE.Vector3(c.x, c.y, c.z);
+  for (const n of names) { const v = new THREE.Vector3(sub.x, Lm[n], sub.z); P[n] = v.clone().sub(cp).dot(f) <= 0.05 ? null : v.project(tc); }
+  if (!P.eyes || Math.abs(P.eyes.x) > 1.4) { res.inFrame = false; res.size = '프레임 밖'; return res; }
+  const vis = n => P[n] && P[n].y >= -1 && P[n].y <= 1; const topVisible = P.top && P.top.y <= 1;
+  if (topVisible) res.headroom = (1 - P.top.y) / 2 * 100; res.eyeline = (1 - P.eyes.y) / 2 * 100;
+  let bottom = null; for (const n of names) if (vis(n)) { bottom = n; break; }
+  if (!bottom) { res.size = '프레임 밖'; res.inFrame = false; return res; }
+  if (bottom === 'feet') { const hFrac = P.top ? (P.top.y - P.feet.y) / 2 : 1; res.size = hFrac >= 0.5 ? 'FS' : hFrac >= 0.25 ? 'LS' : 'WS'; } else if (bottom === 'knees') res.size = 'MLS'; else if (bottom === 'hips' || bottom === 'waist') res.size = 'MS'; else if (bottom === 'chest' || bottom === 'shoulders') res.size = 'MCU'; else if (bottom === 'chin') res.size = 'CU'; else res.size = 'ECU';
+  if (!topVisible && (res.size === 'MCU' || res.size === 'MS')) res.size = 'CU'; if (!topVisible && res.size === 'CU') res.cutWarn = '정수리 잘림';
+  for (const [n, ko] of [['knees', '무릎'], ['chin', '턱']]) if (P[n] && Math.abs(P[n].y + 1) < 0.06) res.cutWarn = ko + ' 절단';
+  return res;
+}
+function updateHUD() { const hud = $('#hud'); if (state.view === 'edit') { hud.innerHTML = `<span class="h">편집뷰 · 드래그 회전 · 휠 줌 · Shift+드래그 이동 · 객체 드래그 배치${state.ui.top ? ' · 탑뷰' : ''}</span>`; return; } const c = CAM(), f = fovOf(c.focal, c.aspect), an = analyzeFrame(); hud.innerHTML = `<span class="h"><b>${state.activeCam}</b> ${an.size}${SIZE_KO[an.size] ? ' ' + SIZE_KO[an.size] : ''} · ${f.h.toFixed(0)}°×${f.v.toFixed(0)}° · ${(c.y * 100).toFixed(0)}cm · ${an.dist.toFixed(1)}m${an.headroom != null ? ' · 헤드룸 ' + an.headroom.toFixed(0) + '%' : ''}</span>${an.cutWarn ? `<span class="h warnc">${an.cutWarn}</span>` : ''}`; }
+
+/* ───── 자동 구도 ───── */
+const CUT_LEVEL = { ECU: 'chin', CU: 'shoulders', MCU: 'chest', MS: 'waist', MLS: 'knees', FS: 'feet' };
+function aimAt(c, p) { c.pan = panTo(c, p); c.tilt = clamp(tiltTo(c, p), -89, 89); }
+function placeOnThirds(camId, side) { const c = S().cams[camId], eyes = subjectPoint('eyes'); const tx = side === 'left' ? -1 / 3 : side === 'right' ? 1 / 3 : 0, ty = 1 / 3; aimAt(c, eyes); const f = fovOf(c.focal, c.aspect); c.pan += -tx * f.h / 2 * 0.98; c.tilt = clamp(c.tilt - ty * f.v / 2 * 0.98, -89, 89); applyCamToThree(camId); for (let i = 0; i < 3; i++) { threeCams[camId].updateMatrixWorld(); const p = eyes.clone().project(threeCams[camId]); c.pan += (p.x - tx) * f.h / 2 * 0.9; c.tilt = clamp(c.tilt - (p.y - ty) * f.v / 2 * 0.9, -89, 89); applyCamToThree(camId); } }
+function autoLeadSide(camId) { const c = S().cams[camId]; return subjectFacingVec().dot(rightOf(c.pan)) > 0 ? 'left' : 'right'; }
+function frameSize(camId, size, opts = {}) {
+  const c = S().cams[camId], Lm = landmarks(S().subject), f = fovOf(c.focal, c.aspect);
+  const bottomY = Lm[CUT_LEVEL[size]] ?? 0, headroom = size === 'FS' ? 0.1 : size === 'ECU' ? 0 : 0.08;
+  const frameH = (Lm.top - bottomY) / (1 - headroom - (size === 'FS' ? 0.05 : 0)); const dist = (frameH / 2) / Math.tan(d2r(f.v / 2));
+  const sp = subjectPoint('eyes'); let v;
+  if (opts.azimuthDeg != null) { const az = d2r(opts.azimuthDeg); v = subjectFacingVec().multiplyScalar(Math.cos(az)).add(subjectRightVec().multiplyScalar(Math.sin(az))); } else { v = new THREE.Vector3(c.x - sp.x, 0, c.z - sp.z); if (v.length() < 0.05) v.set(0, 0, 1); v.normalize(); }
+  if (opts.heightVsEyeCm != null) c.y = clamp(Lm.eyes + opts.heightVsEyeCm / 100, 0.3, L().room.h - 0.1);
+  const hd = Math.sqrt(Math.max(0.01, dist * dist - Math.pow(c.y - (bottomY + frameH / 2), 2))); c.x = sp.x + v.x * hd; c.z = sp.z + v.z * hd;
+  aimAt(c, new THREE.Vector3(sp.x, bottomY + frameH / 2, sp.z)); const blocked = collideCam(c); applyCamToThree(camId);
+  if (size !== 'ECU') placeOnThirds(camId, opts.side || autoLeadSide(camId)); applyCamToThree(camId); updateGizmos(); refreshCam();
+  return { blocked, dist };
+}
+function autoFrame(size, camId = state.activeCam) { const r = frameSize(camId, size); commit(size + ' 자동 프레이밍', 'cam'); toast(r.blocked ? `${size} · 벽/집기에 막혀 가까운 위치로` : `${size} · 거리 ${r.dist.toFixed(2)}m`); }
+// 인터뷰 2구도: A 정면 풀샷, B 사이드 타이트 (같은 쪽 180도선 유지)
+function interviewPreset(which) {
+  const sub = S().subject; const side = L().interviewSide || 1;   // +1: 피사체 오른쪽에서
+  if (which === 'A' || which === 'AB') { const c = S().cams.A; c.focal = L().room.d > 6 ? 35 : 24; c.roll = 0; c.aspect = c.aspect || '16:9'; const r = frameSize('A', 'FS', { azimuthDeg: side * 15, heightVsEyeCm: -25 }); if (r.blocked) { c.focal = 24; frameSize('A', 'FS', { azimuthDeg: side * 15, heightVsEyeCm: -25 }); } setLightsForInterview('A'); }
+  if (which === 'B' || which === 'AB') { const c = S().cams.B; c.focal = 85; c.roll = 0; const r = frameSize('B', 'CU', { azimuthDeg: side * 55, heightVsEyeCm: 0 }); if (r.blocked) { c.focal = 50; frameSize('B', 'CU', { azimuthDeg: side * 55, heightVsEyeCm: 0 }); } }
+  setActiveCam(which === 'B' ? 'B' : 'A', false); setView('cam'); updateGizmos(); refreshPanel(); commit('인터뷰 구도 ' + which, 'cam');
+  toast(which === 'A' ? '정면 풀샷 · 사장님 보는 쪽에 여백' : which === 'B' ? '사이드 타이트 · 85mm · 같은 쪽 55°' : '정면 풀샷(A) + 사이드 타이트(B)');
+}
+function setLightsForInterview(camId) { const Li = S().lights; const kp = L().interviewSide || 1; Object.assign(Li.key, lightFromPolar(kp * 40, 28, 1.6, camId)); Li.key.on = true; Object.assign(Li.back, lightFromPolar(-kp * 140, 45, 1.8, camId)); Li.back.on = true; updateLights(); }
+
+/* ───── 전체화면 클린 ───── */
+function enterClean() { const app = document.getElementById('app'); app.classList.add('clean'); layout(); const el = document.documentElement; if (el.requestFullscreen) el.requestFullscreen().catch(() => {}); toast('클린 모드 · Esc 또는 빠르게 4번 탭', 3000); }
+function exitClean() { document.getElementById('app').classList.remove('clean'); if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); layout(); }
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) { document.getElementById('app').classList.remove('clean'); layout(); } });
+
+/* ───── 공용 UI ───── */
+function toast(msg, ms = 2200, action) { const t = document.createElement('div'); t.className = 't'; t.innerHTML = `<span>${msg}</span>`; if (action) { const b = document.createElement('button'); b.textContent = action.label; b.onclick = () => { action.fn(); t.remove(); }; t.appendChild(b); } $('#toast').appendChild(t); setTimeout(() => t.remove(), ms); }
+function openModal(title, bodyEl, footBtns = [], wide = false) { $('#mtitle').textContent = title; const mb = $('#mbody'); mb.innerHTML = ''; mb.appendChild(bodyEl); const mf = $('#mfoot'); mf.innerHTML = ''; for (const b of footBtns) { const el2 = document.createElement('button'); el2.textContent = b.label; if (b.primary) el2.className = 'primary'; el2.onclick = b.fn; mf.appendChild(el2); } $('#modal .box').classList.toggle('wide', wide); $('#modal').classList.add('on'); }
+function closeModal() { $('#modal').classList.remove('on'); }
+$('#mclose').onclick = closeModal; $('#modal').addEventListener('pointerdown', e => { if (e.target === $('#modal')) closeModal(); });
+function el(html) { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+function makeScrub(label, opt) {
+  const node = el(`<div class="scrub" title="드래그로 조절 · 클릭해 입력"><span class="l">${label}</span><span class="v"></span></div>`); const v = node.querySelector('.v'); const fmt = opt.fmt || (x => x.toFixed(opt.dec ?? 0) + (opt.unit || ''));
+  node.update = () => { v.textContent = fmt(opt.get()); }; let sx = null, sv = 0, moved = false, pid = null;
+  node.addEventListener('pointerdown', e => { if (e.button !== 0 || node.querySelector('input')) return; pid = e.pointerId; node.setPointerCapture(pid); sx = e.clientX; sv = opt.get(); moved = false; });
+  node.addEventListener('pointermove', e => { if (sx == null) return; const dx = e.clientX - sx; if (Math.abs(dx) > 3) moved = true; if (!moved) return; opt.set(clamp(sv + dx * (opt.step || 1) * (e.shiftKey ? 0.1 : 0.5), opt.min, opt.max)); node.update(); });
+  const up = () => { if (sx == null) return; try { node.releasePointerCapture(pid); } catch (_) {} sx = null; if (moved) opt.commit && opt.commit(); else inline(); };
+  node.addEventListener('pointerup', up); node.addEventListener('pointercancel', up);
+  node.addEventListener('wheel', e => { e.preventDefault(); opt.set(clamp(opt.get() + (e.deltaY < 0 ? 1 : -1) * (opt.step || 1), opt.min, opt.max)); node.update(); clearTimeout(node._wt); node._wt = setTimeout(() => opt.commit && opt.commit(), 500); }, { passive: false });
+  function inline() { const inp = document.createElement('input'); inp.type = 'text'; inp.value = String(+opt.get().toFixed(opt.dec ?? 0)); v.textContent = ''; v.appendChild(inp); inp.focus(); inp.select(); const done = ok => { if (ok) { const n = parseFloat(inp.value); if (!isNaN(n)) { opt.set(clamp(n, opt.min, opt.max)); opt.commit && opt.commit(); } } node.update(); }; inp.onblur = () => done(true); inp.onkeydown = ev => { if (ev.key === 'Enter') inp.blur(); if (ev.key === 'Escape') { inp.onblur = null; done(false); } ev.stopPropagation(); }; }
+  node.update(); return node;
+}
+function makeSwitch(label, get, set) { const n = el(`<label class="sw"><input type="checkbox"><span>${label}</span></label>`); const i = n.querySelector('input'); i.checked = !!get(); i.onchange = () => set(i.checked); n.update = () => { i.checked = !!get(); }; return n; }
+function sec(title, ...children) { const s = el(`<div class="sec">${title ? `<h4>${title}</h4>` : ''}</div>`); children.forEach(c => c && s.appendChild(c)); return s; }
+function row(...children) { const r = el('<div class="row"></div>'); children.forEach(c => c && r.appendChild(c)); return r; }
+function btn(label, fn, cls = '') { const b = el(`<button class="${cls}">${label}</button>`); b.onclick = fn; return b; }
+function chips(items, getOn, onPick) { const c = el('<div class="chips"></div>'); for (const it of items) { const b = el(`<button class="chip">${it.label}</button>`); b.onclick = () => onPick(it.value); c.appendChild(b); it._el = b; } c.update = () => items.forEach(it => { it._el.classList.toggle('on', getOn(it.value)); if (it.labelFn) it._el.textContent = it.labelFn(); }); c.update(); return c; }
+
+/* ───── 상단바·툴바 ───── */
+function setView(v) { state.view = v; $$('#viewseg button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); stage.classList.toggle('edit', v === 'edit'); $('#toolbar').style.display = v === 'cam' ? '' : 'none'; $('#editbar').style.display = v === 'edit' ? '' : 'none'; $('#pip .tag').textContent = pipContent() === 'edit' ? '3D' : pipContent() + '캠'; if (v === 'edit') clearSelection(); layout(); updateArcs(); saveLocal(); }
+function setActiveCam(id, doToast = true) { state.activeCam = id; $$('#camseg button').forEach(b => b.classList.toggle('on', b.dataset.c === id)); updateGizmos(); refreshCam(); layout(); $('#pip .tag').textContent = pipContent() === 'edit' ? '3D' : pipContent() + '캠'; saveLocal(); if (doToast) toast(id + '캠'); }
+function setAspect(a) { CAM().aspect = a; applyCamToThree(state.activeCam); layout(); refreshCam(); commit('화면비 ' + a, 'cam'); }
+function toggleUI(k) { state.ui[k] = !state.ui[k]; syncUI(); saveLocal(); }
+function toggleOverlay() { if (!state.ui.matchFile) { toast('패널의 사진 매칭에서 사진을 먼저 선택'); return; } state.ui.overlayOn = !state.ui.overlayOn; syncUI(); saveLocal(); }
+function syncUI() { const fr = $('#frame'); fr.classList.toggle('grid', state.ui.grid); fr.classList.toggle('cross', state.ui.cross); $('#gridbtn').classList.toggle('on', state.ui.grid); $('#crossbtn').classList.toggle('on', state.ui.cross); $('#vcropbtn').classList.toggle('on', state.ui.vcrop); $('#topbtn').classList.toggle('on', state.ui.top); const img = $('#frame img.match'); const on = state.ui.overlayOn && !!state.ui.matchFile; fr.classList.toggle('match', on); if (state.ui.matchFile) img.src = state.ui.matchFile; img.style.opacity = state.ui.overlay; $('#ovbtn').classList.toggle('on', on); $$('#aspseg button').forEach(b => b.classList.toggle('on', b.dataset.a === CAM().aspect)); layout(); updateArcs(); }
+$$('#viewseg button').forEach(b => b.onclick = () => setView(b.dataset.v)); $$('#camseg button').forEach(b => b.onclick = () => setActiveCam(b.dataset.c)); $$('#aspseg button').forEach(b => b.onclick = () => setAspect(b.dataset.a));
+$('#gridbtn').onclick = () => toggleUI('grid'); $('#crossbtn').onclick = () => toggleUI('cross'); $('#vcropbtn').onclick = () => toggleUI('vcrop'); $('#ovbtn').onclick = toggleOverlay;
+$('#topbtn').onclick = () => { state.ui.top = !state.ui.top; syncUI(); }; $('#fitbtn').onclick = () => fitEdit();
+$('#undo').onclick = undo; $('#redo').onclick = redo; $('#saveshot').onclick = () => saveShot(); $('#export').onclick = () => openExport(); $('#fs').onclick = enterClean;
+$('#sidebtn').onclick = () => { const app = document.getElementById('app'); if (innerWidth <= 820) app.classList.toggle('sideopen'); else { state.ui.side = !state.ui.side; app.classList.toggle('noside', !state.ui.side); } setTimeout(layout, 220); saveLocal(); };
+$('#stripbtn').onclick = () => { state.ui.strip = !state.ui.strip; document.getElementById('app').classList.toggle('nostrip', !state.ui.strip); $('#stripbtn').textContent = state.ui.strip ? '접기' : '펼치기'; setTimeout(layout, 220); saveLocal(); };
+$('#pip').addEventListener('click', () => setView(state.view === 'cam' ? 'edit' : 'cam'));
+function renderStoreTabs() { const n = $('#stores'); n.innerHTML = ''; for (const k of Object.keys(LAYOUTS)) { const b = el(`<button>${LAYOUTS[k].name}</button>`); b.classList.toggle('on', k === state.activeStore); b.onclick = () => switchStore(k); n.appendChild(b); } }
+function switchStore(k) { if (k === state.activeStore) return; state.activeStore = k; state.ui.matchFile = null; state.ui.overlayOn = false; renderStoreTabs(); rebuildAll(); fitEdit(); renderShots(); buildPanel(); resetHistory(); syncUI(); subscribeCloud(); toast(LAYOUTS[k].name); }
+
+/* ───── 패널 (카메라 · 피사체 · 사진 매칭 · 조명) ───── */
+let camW = [], subjW = [], lightW = [], photoW = null, fovChips = null;
+function refreshPanel() { refreshCam(); refreshSubject(); refreshLights(); renderPhotos(); }
+function refreshCam() { camW.forEach(w => w.update && w.update()); if (fovChips) fovChips.update(); $$('#aspseg button').forEach(b => b.classList.toggle('on', b.dataset.a === CAM().aspect)); }
+function refreshSubject() { subjW.forEach(w => w.update && w.update()); }
+function refreshLights() { lightW.forEach(w => w.update && w.update()); }
+function buildPanel() {
+  const p = $('#side'); p.innerHTML = ''; camW = []; subjW = []; lightW = [];
+  // 카메라
+  fovChips = chips(FOCALS.map(f => ({ label: f.ko, value: f.mm, labelFn: () => `${f.ko} ${fovOf(f.mm, CAM().aspect).h.toFixed(0)}°` })), v => Math.abs(CAM().focal - v) < 0.5, v => { CAM().focal = v; camChanged(true, '화각'); });
+  const fovS = makeScrub('가로 화각', { get: () => fovOf(CAM().focal, CAM().aspect).h, set: v => { const { fw } = frameDims(ASPECTS[CAM().aspect]); CAM().focal = clamp(fw / (2 * Math.tan(d2r(v / 2))), 12, 200); camChanged(false); }, commit: () => commit('화각', 'cam'), min: 8, max: 110, step: 1, unit: '°' });
+  const hS = makeScrub('높이', { get: () => CAM().y * 100, set: v => { CAM().y = v / 100; collideCam(CAM()); camChanged(false); }, commit: () => commit('높이', 'cam'), min: 25, max: 300, step: 1, unit: 'cm' });
+  const dS = makeScrub('거리', { get: () => { const c = CAM(), s = S().subject; return Math.hypot(c.x - s.x, c.z - s.z); }, set: v => { const c = CAM(), sp = subjectPoint('eyes'); const d = new THREE.Vector3(c.x - sp.x, 0, c.z - sp.z); if (d.length() < 0.01) d.set(0, 0, 1); d.normalize(); c.x = sp.x + d.x * v; c.z = sp.z + d.z * v; collideCam(c); camChanged(false); }, commit: () => commit('거리', 'cam'), min: 0.3, max: 15, step: 0.02, dec: 2, unit: 'm' });
+  const tS = makeScrub('틸트', { get: () => CAM().tilt, set: v => { CAM().tilt = v; camChanged(false); }, commit: () => commit('틸트', 'cam'), min: -89, max: 89, step: 1, unit: '°' });
+  camW.push(fovS, hS, dS, tS);
+  const g = el('<div class="grid2"></div>'); g.append(fovS, hS, dS, tS);
+  p.appendChild(sec('카메라 · FX3', fovChips, g, row(btn('정면 풀샷 A', () => interviewPreset('A'), 'primary'), btn('사이드 타이트 B', () => interviewPreset('B'), 'primary'), btn('A+B', () => interviewPreset('AB'))), row(btn('아이레벨', () => { CAM().y = eyeY(); collideCam(CAM()); camChanged(true, '아이레벨'); }), btn('피사체 조준', () => { aimAt(CAM(), subjectPoint('eyes')); camChanged(true, '조준'); }), btn('리드룸 1/3', () => { placeOnThirds(state.activeCam, autoLeadSide(state.activeCam)); camChanged(true, '리드룸'); }), ...['CU', 'MS', 'FS'].map(s => btn(s, () => autoFrame(s))))));
+  // 피사체
+  const sub = () => S().subject;
+  const poseC = chips([{ label: '서기', value: 'standing' }, { label: '앉기', value: 'sitting' }, { label: '일하기', value: 'working' }], v => sub().pose === v, v => { sub().pose = v; buildSubject(); updateLights(); poseC.update(); commit('자세'); });
+  const htS = makeScrub('신장', { get: () => sub().height, set: v => { sub().height = v; buildSubject(); updateLights(); }, commit: () => commit('신장'), min: 140, max: 200, step: 1, unit: 'cm' });
+  const fcS = makeScrub('방향', { get: () => ((sub().facing % 360) + 360) % 360, set: v => { sub().facing = v; subjectGroup.rotation.y = Math.PI - d2r(v); updateArcs(); }, commit: () => commit('피사체 방향'), min: -720, max: 720, step: 1, unit: '°' });
+  subjW.push(poseC, htS, fcS); const g2 = el('<div class="grid2"></div>'); g2.append(htS, fcS);
+  p.appendChild(sec('사장님', poseC, g2, row(btn('카메라 쪽 보기', () => { const c = CAM(), s = sub(); s.facing = panTo(s, c); subjectGroup.rotation.y = Math.PI - d2r(s.facing); refreshSubject(); updateArcs(); commit('피사체 방향'); }), el('<span class="note">위치는 편집뷰에서 드래그</span>'))));
+  // 사진 매칭
+  const ph = sec('사진 매칭 · 투영', el('<div class="photos" id="photos"></div>'), el('<div id="phtools"></div>'));
+  p.appendChild(ph);
+  // 조명
+  const Li = () => S().lights;
+  const bOn = makeSwitch('백라이트', () => Li().back.on, v => { Li().back.on = v; updateLights(); commit('백라이트 ' + (v ? '켬' : '끔')); });
+  const bI = makeScrub('세기', { get: () => Li().back.intensity, set: v => { Li().back.intensity = v; updateLights(); }, commit: () => commit('백라이트 세기'), min: 0, max: 300, step: 1 });
+  const kOn = makeSwitch('키(약한 전면)', () => Li().key.on, v => { Li().key.on = v; updateLights(); commit('키 ' + (v ? '켬' : '끔')); });
+  const kI = makeScrub('세기', { get: () => Li().key.intensity, set: v => { Li().key.intensity = v; updateLights(); }, commit: () => commit('키 세기'), min: 0, max: 150, step: 1 });
+  const pr = () => S().lights.practical || (S().lights.practical = { intensity: 1, kelvin: 4000 });
+  const pI = makeScrub('매장 조명', { get: () => pr().intensity * 100, set: v => { pr().intensity = v / 100; updateLights(); }, commit: () => commit('매장 조명'), min: 0, max: 250, step: 1, unit: '%' });
+  lightW.push(bOn, bI, kOn, kI, pI);
+  p.appendChild(sec('조명', row(bOn, bI), row(kOn, kI), row(pI, btn('추천 위치', () => { setLightsForInterview('A'); refreshLights(); commit('조명 추천 위치'); toast('키: A캠 축 40° · 백라이트: 반대편 뒤 140° 45° 1.8m (편집뷰 초록 호)'); })), el('<span class="note">위치는 편집뷰에서 드래그 · 초록 호 = 백라이트 권장 구역</span>')));
+  // 푸터
+  const foot = el('<div class="foot"><span id="cloudst"><span class="dot"></span> 연결 중…</span><span></span></div>');
+  foot.lastChild.append(btn('JSON ⇩', exportJSON, 'ghost'), btn('⇧', importJSON, 'ghost'), btn('?', showHelp, 'ghost'));
+  p.appendChild(foot); setCloudStatus(cloudState); renderPhotos();
+}
+function photoFocalFor(p, camAspectKey) { // 사진이 프레임에 contain 될 때 화각이 맞도록 초점거리 계산
+  const a = ASPECTS[camAspectKey] || 16/9; const img = texCache[p.file] && texCache[p.file].image; const pa = img ? img.width / img.height : (p.aspect || 4/3); const { fw, fh } = frameDims(a);
+  const hf = p.hfov || 68; const vf = r2d(2 * Math.atan(Math.tan(d2r(hf / 2)) / pa));
+  return pa > a ? fw / (2 * Math.tan(d2r(hf / 2))) : fh / (2 * Math.tan(d2r(vf / 2)));
+}
+function photoHfovFromCam(p, c) { const a = ASPECTS[c.aspect] || 16/9; const img = texCache[p.file] && texCache[p.file].image; const pa = img ? img.width / img.height : (p.aspect || 4/3); const f = fovOf(c.focal, c.aspect); if (pa > a) return f.h; return r2d(2 * Math.atan(Math.tan(d2r(f.v / 2)) * pa)); }
+function renderPhotos() {
+  const wrap = $('#photos'); if (!wrap) return; wrap.innerHTML = ''; const list = S().photos;
+  list.forEach((p, i) => { const d = el(`<div class="ph" title="${p.file.replace('tex/', '')}"><img src="${p.file}" loading="lazy" alt=""><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="st ${p.on && p.pose ? 'on' : ''}"></span></div>`); d.classList.toggle('sel', state.ui.matchFile === p.file); d.onclick = () => { state.ui.matchFile = p.file; state.ui.overlayOn = true; if (p.pose) gotoPhoto(p); else toast('아직 시점이 없음 · 카메라를 맞춘 뒤 "현재 시점 저장"'); syncUI(); renderPhotos(); saveLocal(); }; wrap.appendChild(d); });
+  const tools = $('#phtools'); tools.innerHTML = ''; const p = list.find(x => x.file === state.ui.matchFile);
+  if (!p) { tools.appendChild(el('<div class="note">사진을 누르면 그 시점으로 이동하고 반투명으로 겹쳐 보입니다. 안 맞으면 카메라를 움직여 맞춘 뒤 "현재 시점 저장".</div>')); return; }
+  const ov = makeScrub('겹침', { get: () => state.ui.overlay * 100, set: v => { state.ui.overlay = v / 100; syncUI(); }, commit: saveLocal, min: 5, max: 95, step: 1, unit: '%' });
+  const onSw = makeSwitch('공간에 투영', () => !!p.on, v => { p.on = v; projDirty = true; renderPhotos(); commit('투영 ' + (v ? '켬' : '끔')); });
+  const wS = makeScrub('가중치', { get: () => p.weight || 1, set: v => { p.weight = v; projDirty = true; }, commit: () => commit('투영 가중치'), min: 0.1, max: 5, step: 0.05, dec: 2 });
+  tools.appendChild(row(btn('이 시점으로', () => gotoPhoto(p)), btn('현재 시점 저장', () => { const c = CAM(); p.pose = { x: c.x, y: c.y, z: c.z, pan: c.pan, tilt: c.tilt, roll: c.roll }; p.hfov = photoHfovFromCam(p, c); p.on = true; projDirty = true; renderPhotos(); commit('사진 시점 저장'); toast('시점 저장 · 투영 갱신'); }, 'primary')));
+  tools.appendChild(row(onSw, ov, wS));
+  tools.appendChild(row(makeSwitch('겹쳐 보기 (O)', () => state.ui.overlayOn, v => { state.ui.overlayOn = v; syncUI(); saveLocal(); }), btn('시점 지우기', () => { p.pose = null; p.on = false; projDirty = true; renderPhotos(); commit('사진 시점 삭제'); }, 'ghost')));
+}
+function gotoPhoto(p) { if (!p.pose) return; const c = CAM(); Object.assign(c, { x: p.pose.x, y: p.pose.y, z: p.pose.z, pan: p.pose.pan, tilt: p.pose.tilt, roll: p.pose.roll || 0 }); c.focal = clamp(photoFocalFor(p, c.aspect), 8, 300); setView('cam'); camChanged(true, '사진 시점'); }
+function showHelp() { openModal('단축키', el(`<div class="keys"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>Q</kbd><kbd>E</kbd></span><span>이동 / 높이 · <kbd>Shift</kbd> 빠르게</span><span>드래그 · 휠</span><span>팬틸트 · 화각 (<kbd>Alt</kbd>+휠 높이, <kbd>Alt</kbd>+드래그 궤도)</span><span><kbd>Ctrl</kbd>+<kbd>S</kbd></span><span>샷 저장 (<kbd>Shift</kbd> 추가 시 A+B)</span><span><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Y</kbd></span><span>되돌리기 / 다시 실행</span><span><kbd>Tab</kbd></span><span>카메라뷰 ↔ 편집뷰 (PiP 클릭)</span><span><kbd>1</kbd> <kbd>2</kbd></span><span>A / B</span><span><kbd>G</kbd> <kbd>C</kbd> <kbd>V</kbd> <kbd>O</kbd></span><span>그리드 / 십자 / 16:9↔9:16 / 사진 겹침</span><span><kbd>T</kbd></span><span>탑뷰(편집뷰)</span><span><kbd>F</kbd></span><span>클린 전체화면 · <kbd>Esc</kbd> 또는 4번 탭</span><span><kbd>[</kbd> <kbd>]</kbd> <kbd>Del</kbd></span><span>이전/다음 샷 · 삭제</span><span>편집뷰</span><span>카메라·조명·사장님 드래그 배치 · <kbd>Shift</kbd>+드래그 높이</span></div>`), [{ label: '닫기', fn: closeModal, primary: true }]); }
+let cloudState = 'connecting';
+function setCloudStatus(s) { cloudState = s; const n = $('#cloudst'); if (!n) return; n.innerHTML = s === 'ok' ? '<span class="dot ok"></span> 클라우드 동기화' : s === 'off' ? '<span class="dot"></span> 이 브라우저에 저장' : s === 'err' ? '<span class="dot bad"></span> 클라우드 저장 실패' : '<span class="dot warn"></span> 연결 중…'; }
+
+/* ───── 스틸 렌더 ───── */
+function renderStill(camId, longSide = 1920, opts = {}) {
+  const c = S().cams[camId], a = ASPECTS[c.aspect] || 16/9; const Wp = a >= 1 ? longSide : Math.round(longSide * a), Hp = a >= 1 ? Math.round(longSide / a) : longSide;
+  const prevPR = renderer.getPixelRatio(); const prevSize = new THREE.Vector2(); renderer.getSize(prevSize);
+  renderer.setPixelRatio(1); renderer.setSize(Wp, Hp, false); renderer.setScissorTest(false); renderer.setViewport(0, 0, Wp, Hp);
+  gizmoGroup.visible = false; if (selHelper) selHelper.visible = false; scene.background = BG_CAM;
+  const tc = threeCams[camId]; tc.aspect = a; tc.updateProjectionMatrix(); renderer.setClearColor(BG_CAM, 1); renderer.clear(); renderer.render(scene, tc);
+  const out = document.createElement('canvas'); out.width = Wp; out.height = Hp; const x = out.getContext('2d'); x.drawImage(renderer.domElement, 0, 0, Wp, Hp);
+  if (opts.guides) { x.save(); x.globalCompositeOperation = 'difference'; x.strokeStyle = 'rgba(255,255,255,.6)'; x.lineWidth = Math.max(1, Wp / 1200); if (state.ui.grid) for (let i = 1; i < 3; i++) { x.beginPath(); x.moveTo(Wp * i / 3, 0); x.lineTo(Wp * i / 3, Hp); x.stroke(); x.beginPath(); x.moveTo(0, Hp * i / 3); x.lineTo(Wp, Hp * i / 3); x.stroke(); } if (state.ui.cross) { const s = Wp * 0.02; x.beginPath(); x.moveTo(Wp / 2 - s, Hp / 2); x.lineTo(Wp / 2 + s, Hp / 2); x.moveTo(Wp / 2, Hp / 2 - s); x.lineTo(Wp / 2, Hp / 2 + s); x.stroke(); } x.restore(); }
+  if (opts.hud) { const an = analyzeFrame(camId), f = fovOf(c.focal, c.aspect); const lines = [`${opts.label || ''}`.trim(), `${L().name} · ${camId}캠 · ${c.aspect} · ${an.size}`, `화각 ${f.h.toFixed(0)}°×${f.v.toFixed(0)}° · 높이 ${(c.y * 100).toFixed(0)}cm · 틸트 ${c.tilt.toFixed(0)}° · 거리 ${an.dist.toFixed(2)}m`].filter(Boolean); const fs = Math.round(Wp / 60); x.font = `500 ${fs}px IBM Plex Mono, monospace`; x.textBaseline = 'top'; let y = fs; for (const ln of lines) { const w = x.measureText(ln).width; x.fillStyle = 'rgba(12,13,16,.72)'; x.fillRect(fs * 0.8, y - fs * 0.3, w + fs, fs * 1.6); x.fillStyle = '#fff'; x.fillText(ln, fs * 1.3, y); y += fs * 1.9; } }
+  renderer.setPixelRatio(prevPR); renderer.setSize(prevSize.x, prevSize.y, false); gizmoGroup.visible = state.view === 'edit';
+  return out;
+}
+function vcropOf(canvas, camId) { // 16:9 렌더에서 피사체 중심 9:16 크롭
+  const Wp = canvas.width, Hp = canvas.height; const cw = Math.round(Hp * 9 / 16); threeCams[camId].updateMatrixWorld(); let cx = Wp / 2; const p = subjectPoint('chest').project(threeCams[camId]); if (Math.abs(p.x) < 1.5) cx = (p.x * 0.5 + 0.5) * Wp; cx = clamp(cx, cw / 2, Wp - cw / 2);
+  const out = document.createElement('canvas'); out.width = cw; out.height = Hp; out.getContext('2d').drawImage(canvas, Math.round(cx - cw / 2), 0, cw, Hp, 0, 0, cw, Hp); return out;
+}
+function thumbOf(camId) { try { return renderStill(camId, 360).toDataURL('image/jpeg', 0.72); } catch (e) { return null; } }
+
+/* ───── 샷 CRUD ───── */
+let activeShotId = null;
+function nextLabel(camId) { return `${camId}-${String(S().shots.filter(s => s.cam === camId).length + 1).padStart(2, '0')}`; }
+function shotFromCam(camId, pairId = null) { const an = analyzeFrame(camId); return { id: uid(), label: nextLabel(camId) + ' ' + an.size, cam: camId, pose: deep(S().cams[camId]), shotSize: an.size, confirmed: false, notes: '', pairId, createdAt: Date.now(), updatedAt: Date.now() }; }
+function saveShot(camId = state.activeCam, pairId = null, quiet = false) { const sh = shotFromCam(camId, pairId); thumbs[sh.id] = thumbOf(camId); S().shots.push(sh); activeShotId = sh.id; renderShots(); cloudShotWrite(sh); commit('샷 저장 ' + sh.label); if (!quiet) toast(`저장 · ${sh.label}`); scrollToCard(sh.id); return sh; }
+function saveBoth() { const pid = uid(); saveShot('A', pid, true); saveShot('B', pid, true); toast('A+B 한 쌍 저장'); }
+const findShot = id => S().shots.find(s => s.id === id);
+function recallShot(id) { const sh = findShot(id); if (!sh) return; Object.assign(S().cams[sh.cam], deep(sh.pose)); applyCamToThree(sh.cam); activeShotId = id; setActiveCam(sh.cam, false); if (state.view !== 'cam') setView('cam'); updateGizmos(); refreshCam(); layout(); renderShots(); commit('샷 불러오기 ' + sh.label, 'cam'); }
+function updateShotFromCam(id) { const sh = findShot(id); if (!sh) return; sh.pose = deep(S().cams[sh.cam]); sh.shotSize = analyzeFrame(sh.cam).size; sh.updatedAt = Date.now(); thumbs[id] = thumbOf(sh.cam); renderShots(); cloudShotWrite(sh); commit('샷 갱신 ' + sh.label); toast('현재 카메라로 갱신'); }
+function deleteShot(id) { const i = S().shots.findIndex(s => s.id === id); if (i < 0) return; const sh = S().shots[i]; S().shots.splice(i, 1); if (activeShotId === id) activeShotId = null; renderShots(); cloudShotDelete(id); commit('샷 삭제 ' + sh.label); toast(`${sh.label} 삭제`, 5000, { label: '되돌리기', fn: undo }); }
+function duplicateShot(id) { const sh = findShot(id); if (!sh) return; const c = deep(sh); c.id = uid(); c.label = sh.label + ' 복사'; c.createdAt = c.updatedAt = Date.now(); c.pairId = null; thumbs[c.id] = thumbs[id]; S().shots.splice(S().shots.indexOf(sh) + 1, 0, c); renderShots(); cloudShotWrite(c); commit('샷 복제'); }
+function toggleConfirm(id) { const sh = findShot(id); if (!sh) return; sh.confirmed = !sh.confirmed; sh.updatedAt = Date.now(); renderShots(); cloudShotWrite(sh); commit((sh.confirmed ? '확정 ' : '확정 해제 ') + sh.label); }
+function editShot(id) { const sh = findShot(id); if (!sh) return; const box = el('<div style="display:flex;flex-direction:column;gap:10px"></div>'); const lb = el(`<input type="text" value="${sh.label.replace(/"/g, '&quot;')}">`), nt = el('<textarea placeholder="연출 메모"></textarea>'); nt.value = sh.notes || ''; box.append(el('<div class="note">라벨</div>'), lb, el('<div class="note">메모</div>'), nt); openModal('샷 편집', box, [{ label: '삭제', fn: () => { closeModal(); deleteShot(id); } }, { label: '저장', primary: true, fn: () => { sh.label = lb.value.trim() || sh.label; sh.notes = nt.value; sh.updatedAt = Date.now(); closeModal(); renderShots(); cloudShotWrite(sh); commit('샷 편집'); } }]); }
+function moveShot(id, to) { const arr = S().shots; const i = arr.findIndex(s => s.id === id); if (i < 0) return; const [sh] = arr.splice(i, 1); arr.splice(clamp(to, 0, arr.length), 0, sh); renderShots(); commit('샷 순서'); }
+function stepShot(dir) { const arr = S().shots; if (!arr.length) return; let i = arr.findIndex(s => s.id === activeShotId); i = (i + dir + arr.length) % arr.length; recallShot(arr[i].id); }
+function scrollToCard(id) { const c = $(`.card[data-id="${id}"]`); if (c) c.scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' }); }
+function renderShots() {
+  const wrap = $('#cards'); wrap.innerHTML = ''; const arr = S().shots; $('#shotcount').textContent = `${arr.length} · 확정 ${arr.filter(s => s.confirmed).length}`;
+  if (!arr.length) { wrap.appendChild(el('<div class="empty">구도를 잡고 <b>샷 저장</b>(Ctrl+S) · 카드를 누르면 그 구도로 돌아갑니다</div>')); return; }
+  arr.forEach((sh, i) => {
+    const f = fovOf(sh.pose.focal, sh.pose.aspect);
+    const c = el(`<div class="card" data-id="${sh.id}" draggable="true"><div class="th"><img alt=""><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="cam ${sh.cam}">${sh.cam}</span><button class="star ${sh.confirmed ? 'on' : ''}">${sh.confirmed ? '★ 확정' : '☆'}</button></div><div class="bd"><div class="lb">${sh.label}</div><div class="mt">${sh.shotSize} · ${f.h.toFixed(0)}° · ${(sh.pose.y * 100).toFixed(0)}cm · ${sh.pose.aspect}${sh.notes ? ' · 메모' : ''}</div></div><button class="menu">⋯</button></div>`);
+    c.classList.toggle('on', sh.id === activeShotId); const img = c.querySelector('img'); if (thumbs[sh.id]) img.src = thumbs[sh.id]; else img.style.display = 'none';
+    c.querySelector('.star').onclick = e => { e.stopPropagation(); toggleConfirm(sh.id); };
+    c.querySelector('.menu').onclick = e => { e.stopPropagation(); openCardMenu(e.currentTarget, sh.id); };
+    c.onclick = () => recallShot(sh.id); c.ondblclick = () => editShot(sh.id);
+    c.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', sh.id); c.classList.add('drag'); }); c.addEventListener('dragend', () => c.classList.remove('drag')); c.addEventListener('dragover', e => { e.preventDefault(); c.classList.add('over'); }); c.addEventListener('dragleave', () => c.classList.remove('over')); c.addEventListener('drop', e => { e.preventDefault(); c.classList.remove('over'); const id = e.dataTransfer.getData('text/plain'); if (id && id !== sh.id) moveShot(id, i); });
+    wrap.appendChild(c);
+  });
+}
+function openCardMenu(anchor, id) { const m = $('#cmenu'); m.innerHTML = ''; const items = [['불러오기', () => recallShot(id)], ['현재 카메라로 갱신', () => updateShotFromCam(id)], ['라벨·메모', () => editShot(id)], ['복제', () => duplicateShot(id)], ['PNG 내보내기', () => { const sh = findShot(id); if (sh) exportShots([sh], { longSide: 1920, mode: 'single' }); }], ['삭제', () => deleteShot(id), 'danger']]; for (const [lb, fn, cls] of items) { const b = el(`<button class="${cls || ''}">${lb}</button>`); b.onclick = () => { m.classList.remove('on'); fn(); }; m.appendChild(b); } const r = anchor.getBoundingClientRect(); m.classList.add('on'); const mw = m.offsetWidth, mh = m.offsetHeight; m.style.left = clamp(r.right - mw, 8, innerWidth - mw - 8) + 'px'; m.style.top = clamp(r.top - mh - 6, 8, innerHeight - mh - 8) + 'px'; }
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#cmenu') && !e.target.closest('.card .menu')) $('#cmenu').classList.remove('on'); });
+
+/* ───── 내보내기 ───── */
+let dlCap;
+async function getDownloads() { if (dlCap !== undefined) return dlCap; try { dlCap = (window.claude && claude.use) ? await claude.use('downloads') : null; } catch (e) { dlCap = null; } return dlCap; }
+async function saveFile(filename, data) { const dl = await getDownloads(); if (dl) { try { await dl.save({ filename, data }); toast(`저장: ${filename}`); return true; } catch (e) { if (e && e.code === 'declined') { toast('저장 취소'); return 'declined'; } console.warn(e); toast('다운로드 실패 · 미리보기로 표시'); } } return false; }
+const slug = s => String(s).replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, '_').slice(0, 40);
+const shotFileName = (sh, i, suffix = '', ext = 'png') => { const f = fovOf(sh.pose.focal, sh.pose.aspect); return `${slug(L().name)}_${String(i + 1).padStart(2, '0')}_${sh.cam}_${sh.shotSize}_${f.h.toFixed(0)}deg_${sh.pose.aspect.replace(':', 'x')}${suffix}.${ext}`; };
+const canvasToBlob = (c, type = 'image/png', q) => new Promise(r => c.toBlob(r, type, q));
+function csvOf(list) { const head = ['번호', '매장', '캠', '라벨', '샷사이즈', '화각H', '화각V', '높이cm', '팬', '틸트', '롤', '화면비', '거리m', '확정', '메모']; const s = S().subject; const rows = list.map((sh, i) => { const f = fovOf(sh.pose.focal, sh.pose.aspect); return [i + 1, L().name, sh.cam, sh.label, sh.shotSize, f.h.toFixed(1), f.v.toFixed(1), (sh.pose.y * 100).toFixed(0), sh.pose.pan.toFixed(1), sh.pose.tilt.toFixed(1), sh.pose.roll.toFixed(1), sh.pose.aspect, Math.hypot(sh.pose.x - s.x, sh.pose.z - s.z).toFixed(2), sh.confirmed ? 'Y' : '', (sh.notes || '').replace(/\n/g, ' ')]; }); return '﻿' + [head, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n'); }
+function contactSheet(items) { const cols = Math.min(3, items.length), cw = 640, pad = 24, lab = 44, rows = Math.ceil(items.length / cols); const ch = Math.max(...items.map(it => Math.round(cw * it.canvas.height / it.canvas.width))); const c = document.createElement('canvas'); c.width = cols * (cw + pad) + pad; c.height = rows * (ch + lab + pad) + pad + 60; const x = c.getContext('2d'); x.fillStyle = '#f4f5f7'; x.fillRect(0, 0, c.width, c.height); x.fillStyle = '#171a1f'; x.font = '600 28px IBM Plex Sans KR, sans-serif'; x.fillText(`${L().name} · 인터뷰 샷리스트 · ${new Date().toLocaleDateString('ko-KR')}`, pad, 44); items.forEach((it, i) => { const col = i % cols, rw = Math.floor(i / cols); const ox = pad + col * (cw + pad), oy = 70 + rw * (ch + lab + pad); const h = Math.round(cw * it.canvas.height / it.canvas.width); x.fillStyle = '#000'; x.fillRect(ox, oy, cw, ch); x.drawImage(it.canvas, ox, oy + (ch - h) / 2, cw, h); x.fillStyle = '#171a1f'; x.font = '500 20px IBM Plex Mono, monospace'; x.fillText(it.label, ox, oy + ch + 30); }); return c; }
+async function exportShots(list, opt) {
+  if (!list.length) return toast('내보낼 샷이 없음');
+  const saved = { A: deep(S().cams.A), B: deep(S().cams.B) }; const items = [];
+  for (let i = 0; i < list.length; i++) { const sh = list[i]; Object.assign(S().cams[sh.cam], deep(sh.pose)); applyCamToThree(sh.cam); const c = renderStill(sh.cam, opt.longSide || 1920, { guides: opt.guides, hud: opt.hud, label: `${String(i + 1).padStart(2, '0')} ${sh.label}` }); items.push({ canvas: c, label: `${String(i + 1).padStart(2, '0')} ${sh.label}${sh.confirmed ? ' ★' : ''}`, name: shotFileName(sh, i) }); if (opt.vcrop && sh.pose.aspect === '16:9') items.push({ canvas: vcropOf(c, sh.cam), label: `${String(i + 1).padStart(2, '0')} ${sh.label} 9:16`, name: shotFileName(sh, i, '_9x16') }); }
+  S().cams.A = saved.A; S().cams.B = saved.B; applyCamToThree('A'); applyCamToThree('B'); layout();
+  let done = false;
+  if (opt.mode === 'single' && items.length === 1) done = await saveFile(items[0].name, await canvasToBlob(items[0].canvas));
+  else if (opt.mode === 'sheet') { const sheet = contactSheet(items); done = await saveFile(`${slug(L().name)}_contact_sheet.png`, await canvasToBlob(sheet)); items.length = 0; items.push({ canvas: sheet, label: '컨택트시트', name: 'contact_sheet.png' }); }
+  else { const zip = new JSZip(); for (const it of items) zip.file(it.name, await canvasToBlob(it.canvas)); zip.file('contact_sheet.png', await canvasToBlob(contactSheet(items))); zip.file('shotlist.csv', csvOf(list)); zip.file('shotlist.json', JSON.stringify({ store: L().name, exportedAt: new Date().toISOString(), subject: S().subject, shots: list }, null, 2)); done = await saveFile(`${slug(L().name)}_shots_${list.length}.zip`, await zip.generateAsync({ type: 'blob' })); }
+  if (done === false) showPreview(items);
+}
+function showPreview(items) { const box = el('<div class="prev"></div>'); for (const it of items) { const fg = el(`<figure><img alt=""><figcaption>${it.label}</figcaption></figure>`); fg.querySelector('img').src = it.canvas.toDataURL('image/png'); box.appendChild(fg); } const wrap = el('<div style="display:flex;flex-direction:column;gap:10px"></div>'); wrap.appendChild(el('<div class="note">이 환경에서는 바로 다운로드가 안 됩니다 — 이미지를 우클릭/길게 눌러 저장</div>')); wrap.appendChild(box); openModal('스틸 미리보기', wrap, [{ label: '닫기', fn: closeModal, primary: true }], true); }
+function openExport() {
+  const arr = S().shots, conf = arr.filter(s => s.confirmed); const box = el('<div style="display:flex;flex-direction:column;gap:12px"></div>');
+  let scope = conf.length ? 'confirmed' : 'all', res = 1920, hud = false, guides = false, vcrop = true, mode = 'zip';
+  const scopeC = chips([{ label: `확정 샷 ${conf.length}`, value: 'confirmed' }, { label: `모든 샷 ${arr.length}`, value: 'all' }, { label: '현재 화면 1장', value: 'current' }], v => scope === v, v => { scope = v; scopeC.update(); });
+  const resC = chips([{ label: 'HD 1920', value: 1920 }, { label: '4K 3840', value: 3840 }], v => res === v, v => { res = v; resC.update(); });
+  const modeC = chips([{ label: 'PNG 묶음 ZIP (+컨택트시트·CSV)', value: 'zip' }, { label: '컨택트시트 1장', value: 'sheet' }], v => mode === v, v => { mode = v; modeC.update(); });
+  box.append(el('<div class="note">범위</div>'), scopeC, el('<div class="note">해상도 (긴 변)</div>'), resC, el('<div class="note">형식</div>'), modeC, row(makeSwitch('9:16 세로 크롭 함께', () => vcrop, v => vcrop = v), makeSwitch('HUD 번인', () => hud, v => hud = v), makeSwitch('그리드·십자 포함', () => guides, v => guides = v)));
+  openModal('내보내기', box, [{ label: '취소', fn: closeModal }, { label: '내보내기', primary: true, fn: async () => { closeModal(); if (scope === 'current') { const sh = shotFromCam(state.activeCam); sh.label = '현재 화면'; await exportShots([sh], { hud, guides, vcrop, longSide: res, mode: vcrop && sh.pose.aspect === '16:9' ? 'zip' : 'single' }); return; } await exportShots(scope === 'confirmed' ? conf : arr, { hud, guides, vcrop, longSide: res, mode }); } }]);
+}
+async function exportJSON() { const data = JSON.stringify({ app: 'interview-previs', version: 2, exportedAt: new Date().toISOString(), state, thumbs }, null, 1); if (!(await saveFile('interview_previs_project.json', data))) { const ta = el('<textarea style="width:100%;min-height:220px;font-family:var(--mono);font-size:11px"></textarea>'); ta.value = data; openModal('프로젝트 JSON', ta, [{ label: '복사', fn: () => { ta.select(); try { navigator.clipboard.writeText(data).then(() => toast('복사됨')); } catch (e) { document.execCommand('copy'); } } }, { label: '닫기', fn: closeModal, primary: true }]); } }
+function importJSON() { const inp = el('<input type="file" accept="application/json">'); inp.onchange = async () => { const f = inp.files[0]; if (!f) return; try { const j = JSON.parse(await f.text()); if (!j.state || !j.state.stores) throw new Error('형식'); state = Object.assign(state, j.state); thumbs = j.thumbs || {}; state.view = 'cam'; if (!LAYOUTS[state.activeStore]) state.activeStore = Object.keys(LAYOUTS)[0]; renderStoreTabs(); rebuildAll(); fitEdit(); buildPanel(); renderShots(); syncUI(); resetHistory(); for (const sh of S().shots) cloudShotWrite(sh); toast('프로젝트 가져오기 완료'); } catch (e) { toast('가져오기 실패 · JSON 형식 확인'); } }; inp.click(); }
+
+/* ───── 클라우드(db) ───── */
+let db = null, unsubStore = null, unsubShots = null, cloudTimer = 0, writeChain = Promise.resolve(), cloudEnabled = false;
+function storeDocData() { const s = S(); return { subject: s.subject, lights: s.lights, cams: s.cams, photos: s.photos, shotOrder: s.shots.map(x => x.id), updatedAt: s.updatedAt || Date.now(), clientId }; }
+function queueCloud(force = false) { if (!cloudEnabled) return; clearTimeout(cloudTimer); cloudTimer = setTimeout(() => cloudStoreWrite(), force ? 50 : 900); }
+function cloudStoreWrite() { if (!db) return; const k = state.activeStore; const data = storeDocData(); writeChain = writeChain.then(() => db.doc('v2stores/' + k).set(data)).then(() => setCloudStatus('ok')).catch(e => { console.warn('db set', e); if (e && e.code === 'invalid_argument') { cloudEnabled = false; setCloudStatus('off'); } else setCloudStatus('err'); }); }
+function cloudShotWrite(sh) { if (!db || !cloudEnabled) return; const k = state.activeStore; const data = Object.assign({}, sh, { thumb: thumbs[sh.id] || null, clientId }); writeChain = writeChain.then(() => db.doc(`v2stores/${k}/shots/${sh.id}`).set(data)).catch(e => { console.warn('shot set', e); setCloudStatus('err'); if (e && e.code === 'quota_exceeded') toast('클라우드 용량 초과 · 오래된 샷을 삭제하세요', 4000); }); }
+function cloudShotDelete(id) { if (!db || !cloudEnabled) return; const k = state.activeStore; writeChain = writeChain.then(() => db.doc(`v2stores/${k}/shots/${id}`).delete()).catch(e => console.warn('shot del', e)); }
+async function initCloud() { if (!(window.claude && claude.use)) { setCloudStatus('off'); return; } try { db = await claude.use('db'); } catch (e) { db = null; } if (!db) { setCloudStatus('off'); return; } cloudEnabled = true; subscribeCloud(); }
+function subscribeCloud() {
+  if (!db || !cloudEnabled) return; if (unsubStore) unsubStore(); if (unsubShots) unsubShots(); const k = state.activeStore; let firstStore = true, firstShots = true;
+  const timer = setTimeout(() => { if (cloudState === 'connecting') setCloudStatus('off'); }, 10000);
+  unsubStore = db.doc('v2stores/' + k).onSnapshot(snap => {
+    if (snap.metadata && snap.metadata.fromCache && !snap.exists) return; clearTimeout(timer); setCloudStatus('ok');
+    if (!snap.exists) { if (firstStore) { firstStore = false; cloudStoreWrite(); } return; } const d = snap.data(); firstStore = false;
+    if (d.clientId === clientId) return;
+    if ((d.updatedAt || 0) > (S().updatedAt || 0)) { const s = S(); for (const f of ['subject', 'lights', 'cams', 'photos']) if (d[f]) s[f] = d[f]; s.updatedAt = d.updatedAt; if (Array.isArray(d.shotOrder) && d.shotOrder.length) { const map = new Map(s.shots.map(x => [x.id, x])); s.shots = [...d.shotOrder.map(id => map.get(id)).filter(Boolean), ...s.shots.filter(x => !d.shotOrder.includes(x.id))]; } if (state.activeStore === k) { rebuildDynamic(); refreshPanel(); renderShots(); layout(); } saveLocal(); }
+    else if ((S().updatedAt || 0) > (d.updatedAt || 0)) queueCloud();
+  }, err => { console.warn('db store sub', err); setCloudStatus(err && err.code === 'invalid_argument' ? 'off' : 'err'); });
+  unsubShots = db.collection(`v2stores/${k}/shots`).onSnapshot(qs => {
+    const s = state.stores[k]; let changed = false;
+    if (firstShots) { firstShots = false; const remoteIds = new Set(qs.docs.map(d => d.id)); for (const sh of s.shots) if (!remoteIds.has(sh.id)) cloudShotWrite(sh); }
+    for (const ch of qs.docChanges()) { const d = ch.doc.data(), id = ch.doc.id; if (ch.type === 'removed') { const i = s.shots.findIndex(x => x.id === id); if (i >= 0 && d && d.clientId !== clientId) { s.shots.splice(i, 1); changed = true; } continue; } if (!d || d.clientId === clientId) { if (d && d.thumb && !thumbs[id]) thumbs[id] = d.thumb; continue; } const local = s.shots.find(x => x.id === id); const inc = Object.assign({}, d); const th = inc.thumb; delete inc.thumb; delete inc.clientId; if (th) thumbs[id] = th; if (!local) { s.shots.push(inc); changed = true; } else if ((d.updatedAt || 0) > (local.updatedAt || 0)) { Object.assign(local, inc); changed = true; } }
+    if (changed && state.activeStore === k) { renderShots(); saveLocal(); }
+  }, err => console.warn('db shots sub', err));
+}
+
+/* ───── 부팅 ───── */
+function boot() {
+  renderStoreTabs(); rebuildAll(); fitEdit();
+  if (!loadedFromStorage) { for (const k of Object.keys(state.stores)) { const st = state.stores[k], Lo = LAYOUTS[k]; const sp = landmarks(st.subject); const eyes = new THREE.Vector3(st.subject.x, sp.eyes, st.subject.z); for (const id of ['A', 'B']) { const c = st.cams[id]; c.pan = panTo(c, eyes); c.tilt = tiltTo(c, eyes); } } }
+  for (const id of ['A', 'B']) { collideCam(S().cams[id]); applyCamToThree(id); }
+  if (!loadedFromStorage) { interviewPreset('AB'); }
+  buildPanel(); renderShots(); setView('cam'); setActiveCam('A', false); syncUI();
+  document.getElementById('app').classList.toggle('noside', !state.ui.side); document.getElementById('app').classList.toggle('nostrip', !state.ui.strip); $('#stripbtn').textContent = state.ui.strip ? '접기' : '펼치기';
+  resetHistory(); layout(); requestAnimationFrame(frame); initCloud();
+  toast('WASD 이동 · QE 높이 · 드래그 팬틸트 · 휠 화각 · Tab 편집뷰', 4000);
+}
+boot();
+window.__ivp = { state: () => state, S, L: () => L(), analyzeFrame, autoFrame, interviewPreset, saveShot, undo, redo, collideCam, renderStill, gotoPhoto, updateProjectors: () => { projDirty = true; }, photoFocalFor, setView, setActiveCam, THREE };
+</script>
+</body>
+</html>
