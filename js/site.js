@@ -21,18 +21,31 @@
   const hasMedia = w => !!posterOf(w);
   const aspectOf = w => { const f = (w.formats || [])[0] || '16:9'; const m = /^(\d+):(\d+)$/.exec(f); return m ? [+m[1], +m[2]] : [16, 9]; };
 
-  /* ---------- dev 스위치 ---------- */
-  const PREF = { bb: 'full', hover: 'play', pip: 'right' };
+  /* ---------- 시안 스위치 (확정 후 PREF 기본값만 바꾸면 됨) ---------- */
+  const PREF = { theme: 'light', bb: 'full', card: 'sq', hover: 'play', stage: 'panel', tempo: 'base', pip: 'right' };
+  const VARIANTS = [
+    ['theme', '테마', [['light', '라이트', '애플 TV 앱(iOS/web) · 현재'], ['home-dark', '홈만 다크', '홈은 상영관처럼, 서브페이지는 라이트'], ['dark', '전체 다크', '넷플릭스 · 왓챠 · 웨이브']]],
+    ['bb', '빌보드', [['full', '풀블리드', '넷플릭스 · 프라임 — 화면 전체'], ['card', '카드형', '애플 TV · 쿠팡플레이 — 둥근 카드']]],
+    ['card', '카드 비율', [['sq', '정방 1:1', '유튜브 뮤직 · 애플뮤직 · 현재'], ['wide', '와이드 16:9', '넷플릭스 · 유튜브 · 프라임'], ['tall', '세로 2:3', '왓챠 · 쿠팡플레이 · 애플 TV']]],
+    ['hover', '카드 호버', [['play', '제자리 프리뷰', '유튜브 — 자리에서 무음 재생'], ['expand', '확대 + 한 줄', '애플 TV — 살짝 확대, 정보 한 줄'], ['pop', '확장 카드', '넷플릭스 — 0.5초 뒤 1.5배 팝오버 + 프리뷰']]],
+    ['stage', '상영관', [['panel', '스테이지 + 패널', '유튜브 — 설명 패널 항상 표시 · 현재'], ['wide', '시네마', '넷플릭스 · 애플 TV — 영상 최대, 정보는 ⓘ 서랍']]],
+    ['tempo', '모션 템포', [['base', '400ms', '애플 기본 · 현재'], ['fast', '280ms', '넷플릭스 — 빠릿'], ['slow', '520ms', '애플 TV+ — 여유']]],
+  ];
   try { Object.assign(PREF, JSON.parse(localStorage.getItem('pf.dev') || '{}')); } catch (e) { }
-  const applyPref = () => { document.body.dataset.bb = PREF.bb; document.body.dataset.hover = PREF.hover; document.body.dataset.pip = PREF.pip; };
+  const applyPref = () => { for (const k in PREF) document.body.dataset[k] = PREF[k]; };
   applyPref();
-  if (location.search.includes('dev')) {
-    const d = document.createElement('div'); d.className = 'dev on';
-    d.innerHTML = `<label>빌보드 <select data-k="bb"><option value="full">A 풀블리드</option><option value="card">B 카드형</option></select></label>
-<label>카드 hover <select data-k="hover"><option value="play">A 제자리 프리뷰</option><option value="expand">B 확대+정보</option></select></label>
-<label>PiP 위치 <select data-k="pip"><option value="right">우하단</option><option value="left">좌하단</option></select></label>`;
-    document.body.appendChild(d);
-    $$('select', d).forEach(s => { s.value = PREF[s.dataset.k]; s.onchange = () => { PREF[s.dataset.k] = s.value; try { localStorage.setItem('pf.dev', JSON.stringify(PREF)); } catch (e) { } applyPref(); }; });
+  if (location.search.includes('dev') || window.PF_PANEL) {
+    const d = document.createElement('div'); d.className = 'vp';
+    const code = () => VARIANTS.map(([k, , os]) => `${k}:${(os.find(o => o[0] === PREF[k]) || os[0])[1]}`).join(' · ');
+    d.innerHTML = `<button class="vpb" aria-expanded="false">시안 비교</button><div class="vpp" role="dialog" aria-label="시안 선택">` +
+      VARIANTS.map(([k, t, os]) => `<div><h5>${t}</h5>${os.map(([v, l, why]) => `<label class="opt"><input type="radio" name="vp-${k}" value="${v}"${PREF[k] === v ? ' checked' : ''}><span><b>${l}</b><small>${why}</small></span></label>`).join('')}</div>`).join('') +
+      `<div class="sum"><code></code><button type="button">조합 복사</button></div></div>`;
+    document.body.appendChild(d); if (window.PF_PANEL_OPEN) { d.classList.add('on'); }
+    const sum = $('.sum code', d); const upd = () => { sum.textContent = code(); };
+    upd();
+    $('.vpb', d).setAttribute('aria-expanded', d.classList.contains('on')); $('.vpb', d).addEventListener('click', () => { d.classList.toggle('on'); $('.vpb', d).setAttribute('aria-expanded', d.classList.contains('on')); });
+    $$('input', d).forEach(i => i.addEventListener('change', () => { PREF[i.name.slice(3)] = i.value; try { localStorage.setItem('pf.dev', JSON.stringify(PREF)); } catch (e) { } applyPref(); upd(); }));
+    $('.sum button', d).addEventListener('click', async e => { try { await navigator.clipboard.writeText(code()); e.target.textContent = '복사됨 ✓'; setTimeout(() => e.target.textContent = '조합 복사', 1400); } catch (err) { } });
   }
 
   /* ---------- 내비 ---------- */
@@ -42,14 +55,41 @@
   let hovTimer = null, hovVid = null;
   const stopHov = () => { if (hovVid) { hovVid.pause(); hovVid.classList.remove('on'); hovVid.removeAttribute('src'); hovVid.load(); hovVid = null; } clearTimeout(hovTimer); };
   const queueOf = (card) => { const c = card.closest('[data-queue]'); return c ? $$('.card[data-id],.li[data-id],.shot[data-id]', c).map(x => x.dataset.id).filter((v, i, a) => v && a.indexOf(v) === i) : [card.dataset.id]; };
+  const Pop = (() => {
+    const P = document.createElement('div'); P.className = 'pop'; P.innerHTML = `<div class="art"><img alt=""><video muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="bd"><div class="t"></div><div class="s"></div><div class="o"></div><div class="bt"><button class="btn acc">${ico('play', 'sm')} 재생</button><button class="btn ghost">상세</button></div></div>`;
+    document.body.appendChild(P);
+    const V = $('video', P); let cur = null, card = null, hideT = null;
+    const show = (c, w) => {
+      clearTimeout(hideT); cur = w; card = c; const r = c.getBoundingClientRect(); const scale = 1.5; const pw = Math.min(r.width * scale, innerWidth - 32);
+      P.style.setProperty('--pw', pw + 'px'); const [aw, ah] = (w.formats || [])[0] === '9:16' ? [16, 9] : [16, 9]; P.style.setProperty('--pa', `${aw}/${ah}`);
+      const im = $('img', P); im.src = url(posterOf(w)); $('.t', P).textContent = w.title; $('.s', P).textContent = w.subtitle || ''; $('.o', P).textContent = (w.copy && w.copy.one) || '';
+      let left = r.left + r.width / 2 - pw / 2; left = Math.max(16, Math.min(left, innerWidth - pw - 16));
+      const ph = pw * ah / aw + 132; let top = r.top + r.height / 2 - ph / 2; top = Math.max(72, Math.min(top, innerHeight - ph - 16));
+      P.style.left = left + 'px'; P.style.top = top + 'px'; P.style.transformOrigin = `${r.left + r.width / 2 - left}px ${r.top + r.height / 2 - top}px`;
+      P.classList.add('on'); V.classList.remove('on'); const src = w.media && w.media.preview; if (src && !RM && !SAVE) { V.src = url(src); V.play().then(() => V.classList.add('on')).catch(() => { }); } else { V.removeAttribute('src'); }
+    };
+    const hide = (now) => { clearTimeout(hideT); hideT = setTimeout(() => { P.classList.remove('on'); V.pause(); V.classList.remove('on'); cur = null; }, now ? 0 : 160); };
+    P.addEventListener('pointerenter', () => clearTimeout(hideT)); P.addEventListener('pointerleave', () => hide());
+    $('.btn.acc', P).addEventListener('click', () => { if (cur) { hide(true); Theater.open(cur.id, { queue: card ? queueOf(card) : [cur.id], autoplay: true }); } });
+    $('.btn.ghost', P).addEventListener('click', () => { if (cur) { hide(true); Theater.open(cur.id, { queue: card ? queueOf(card) : [cur.id], autoplay: false }); } });
+    $('.art', P).addEventListener('click', () => $('.btn.acc', P).click());
+    addEventListener('scroll', () => { if (P.classList.contains('on')) hide(true); }, { passive: true });
+    return { show, hide };
+  })();
   const bindCard = (card) => {
     const w = BY[card.dataset.id]; if (!w) return;
-    card.addEventListener('click', e => { e.preventDefault(); Theater.open(w.id, { queue: queueOf(card) }); });
+    card.addEventListener('click', e => { e.preventDefault(); Pop.hide(true); Theater.open(w.id, { queue: queueOf(card) }); });
     if (!HOVER || RM || SAVE) return;
-    const src = w.media && w.media.preview; if (!src) return;
-    const start = () => { stopHov(); hovTimer = setTimeout(() => { let v = $('video', card); if (!v) { v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none'; v.setAttribute('aria-hidden', 'true'); $('.art', card).appendChild(v); } v.src = url(src); v.play().then(() => v.classList.add('on')).catch(() => { }); hovVid = v; }, 380); };
+    const src = w.media && w.media.preview;
+    const start = () => {
+      stopHov();
+      if (PREF.hover === 'pop') { hovTimer = setTimeout(() => Pop.show(card, w), 500); return; }
+      if (!src) return;
+      hovTimer = setTimeout(() => { let v = $('video', card); if (!v) { v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'none'; v.setAttribute('aria-hidden', 'true'); $('.art', card).appendChild(v); } v.src = url(src); v.play().then(() => v.classList.add('on')).catch(() => { }); hovVid = v; }, 380);
+    };
+    const leave = () => { stopHov(); if (PREF.hover === 'pop') Pop.hide(); };
     card.addEventListener('pointerenter', start); card.addEventListener('focus', start);
-    card.addEventListener('pointerleave', stopHov); card.addEventListener('blur', stopHov);
+    card.addEventListener('pointerleave', leave); card.addEventListener('blur', leave);
   };
   $$('.card[data-id]').forEach(bindCard);
 
@@ -94,7 +134,7 @@
   const Theater = (() => {
     const T = document.createElement('div'); T.className = 'theater'; T.setAttribute('role', 'dialog'); T.setAttribute('aria-modal', 'true'); T.setAttribute('aria-label', '작품 재생');
     T.innerHTML = `<div class="bgart"></div><div class="veil"></div>
-<div class="top"><span class="crumb"></span><span class="pos num"></span><span class="r"><button class="ib pipb" title="작게 보기 (P)" aria-label="작게 보기">${ico('pip')}</button><button class="ib full" title="전체화면 (F)" aria-label="전체화면">${ico('expand')}</button><button class="ib close" title="닫기 (Esc)" aria-label="닫기">${ico('close')}</button></span></div>
+<div class="top"><span class="crumb"></span><span class="pos num"></span><span class="r"><button class="ib infob" title="정보 (I)" aria-label="정보 패널">i</button><button class="ib pipb" title="작게 보기 (P)" aria-label="작게 보기">${ico('pip')}</button><button class="ib full" title="전체화면 (F)" aria-label="전체화면">${ico('expand')}</button><button class="ib close" title="닫기 (Esc)" aria-label="닫기">${ico('close')}</button></span></div>
 <div class="lay"><div class="stage">
  <div class="vw"><div class="big" aria-hidden="true">${ico('play', 'lg')}</div><div class="next" role="button" tabindex="0"><img alt=""><span><small>다음 작품</small><b></b></span><span class="cd num"></span><button class="ib cancel" aria-label="다음 작품 제안 닫기">${ico('close', 'sm')}</button></div></div>
  <div class="meta"><div><h1></h1><div class="s"></div></div><div class="y num"></div></div>
@@ -160,7 +200,7 @@
       const w = BY[id]; if (!w) return; lastFocus = document.activeElement;
       queue = (opt.queue && opt.queue.length ? opt.queue : [id]).filter(x => BY[x]); idx = Math.max(0, queue.indexOf(id)); autoplay = opt.autoplay !== false; reel = !!opt.reel;
       if (P.classList.contains('on')) hidePip(false);
-      cur = w; T.classList.add('on'); document.body.style.overflow = 'hidden'; render(w); wake(); $('.close', T).focus(); window.__bbPause && window.__bbPause();
+      cur = w; T.classList.add('on'); document.body.style.overflow = 'hidden'; render(w); wake(); T.tabIndex = -1; T.focus({ preventScroll: true }); window.__bbPause && window.__bbPause();
       const u = `${location.pathname}?w=${encodeURIComponent(id)}`; if (opt.replace || (hist.st() && hist.st().t)) hist.replace({ t: 1 }, u); else hist.push({ t: 1 }, u);
     };
     const close = (toPip = true, fromPop = false) => {
@@ -181,6 +221,7 @@
     P.addEventListener('click', e => { if (e.target === V) $('.exp', P).click(); });
     const toggle = () => { if (!cur || kindOf(cur) !== 'video') return; V.paused ? V.play().catch(() => { }) : V.pause(); };
     $('.close', T).addEventListener('click', () => close(true));
+    $('.infob', T).addEventListener('click', () => T.classList.toggle('info'));
     el.pp.addEventListener('click', toggle); el.vw.addEventListener('click', e => { if (e.target === V || e.target.closest('.big')) toggle(); });
     $('.prev', T).addEventListener('click', () => jump(idx - 1)); $('.nxt', T).addEventListener('click', () => jump(idx + 1));
     el.mute.addEventListener('click', () => { V.muted = !V.muted; });
@@ -220,7 +261,7 @@
       else if (k === 'ArrowLeft') { e.shiftKey ? jump(idx - 1) : (V.currentTime -= 5); }
       else if (k === 'ArrowRight') { e.shiftKey ? jump(idx + 1) : (V.currentTime += 5); }
       else if (k === 'j') V.currentTime -= 10; else if (k === 'l') V.currentTime += 10;
-      else if (k === 'm') V.muted = !V.muted; else if (k === 'f') $('.full', T).click(); else if (k === 'p') $('.pipb', T).click(); else if (k === 'n' || (k === 'N' && e.shiftKey)) jump(idx + 1);
+      else if (k === 'm') V.muted = !V.muted; else if (k === 'f') $('.full', T).click(); else if (k === 'p') $('.pipb', T).click(); else if (k === 'n' || (k === 'N' && e.shiftKey)) jump(idx + 1); else if (k === 'i') T.classList.toggle('info');
     });
     return { open, close };
   })();

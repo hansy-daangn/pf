@@ -90,7 +90,7 @@ navm = navm.replace(' aria-current="page"', '').replace('href="index.html?reel"'
 footm = re.search(r'(<footer>.*?</footer>)', base, re.S).group(1).replace('© ', '미리보기 빌드 · 영상·데모 일부만 포함 · © ')
 tail = re.search(r'(<svg xmlns="http://www.w3.org/2000/svg" style="display:none".*)$', base, re.S).group(1)
 js = (OUT / 'site/js/site.js').read_text(encoding='utf-8')
-tail = tail.replace('<script src="js/site.js" defer></script>', '<script>' + js.replace('</script>', '<\\/script>') + '</script>')
+tail = tail.replace('<script src="js/site.js" defer></script>', '<script>window.PF_PANEL=true;window.PF_PANEL_OPEN=true;</script><script>' + js.replace('</script>', '<\\/script>') + '</script>')
 views = ''.join(f'<main class="view" data-view="{v}"{"" if v=="home" else " hidden"}>{mains[v]}</main>' for _, v, _ in pages)
 # 내부 링크(works.html, tools.html, resume.html …) → 해시
 for f, v, _ in pages: views = views.replace(f'href="{f}"', f'href="#{v}"')
