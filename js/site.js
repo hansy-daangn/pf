@@ -15,6 +15,7 @@
   const nb = s => esc(s).split(' ').map(x => `<span class="nb">${x}</span>`).join(' ');
   const ico = (n, cls = '') => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"></use></svg>`;
   const BASE = document.body.dataset.base || './';
+  const hist = { st: () => { try { return history.state; } catch (e) { return null; } }, push: (s, u) => { try { history.pushState(s, '', u); } catch (e) { } }, replace: (s, u) => { try { history.replaceState(s, '', u); } catch (e) { } } };
   const url = p => (!p ? '' : /^https?:/.test(p) ? p : BASE + p);
   const posterOf = w => (w.media && (w.media.poster || w.media.shot)) || '';
   const hasMedia = w => !!posterOf(w);
@@ -160,7 +161,7 @@
       queue = (opt.queue && opt.queue.length ? opt.queue : [id]).filter(x => BY[x]); idx = Math.max(0, queue.indexOf(id)); autoplay = opt.autoplay !== false; reel = !!opt.reel;
       if (P.classList.contains('on')) hidePip(false);
       cur = w; T.classList.add('on'); document.body.style.overflow = 'hidden'; render(w); wake(); $('.close', T).focus(); window.__bbPause && window.__bbPause();
-      const u = `${location.pathname}?w=${encodeURIComponent(id)}`; if (opt.replace || (history.state && history.state.t)) history.replaceState({ t: 1 }, '', u); else history.pushState({ t: 1 }, '', u);
+      const u = `${location.pathname}?w=${encodeURIComponent(id)}`; if (opt.replace || (hist.st() && hist.st().t)) hist.replace({ t: 1 }, u); else hist.push({ t: 1 }, u);
     };
     const close = (toPip = true, fromPop = false) => {
       if (!T.classList.contains('on')) return;
@@ -168,7 +169,7 @@
       T.classList.remove('on'); document.body.style.overflow = ''; clearInterval(cdT); el.next.classList.remove('on');
       if (frame) { frame.remove(); frame = null; }
       if (playing && toPip) showPip(); else V.pause();
-      if (!fromPop) { if (history.state && history.state.t) history.back(); else history.replaceState(null, '', location.pathname); }
+      if (!fromPop) { if (hist.st() && hist.st().t) { try { history.back(); } catch (e) { } } else hist.replace(null, location.pathname); }
       document.title = document.body.dataset.title || document.title;
       lastFocus && lastFocus.focus && lastFocus.focus(); window.__bbResume && window.__bbResume();
     };

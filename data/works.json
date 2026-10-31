@@ -53,8 +53,8 @@
    "billboard": {
     "kind": "video",
     "src": "assets/bb/td_review2605.mp4",
-    "w": 1920,
-    "h": 1080,
+    "w": 1600,
+    "h": 646,
     "poster": "assets/poster/td_review2605_h.jpg",
     "loop": [
      0,
