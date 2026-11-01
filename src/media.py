@@ -41,11 +41,13 @@ def stale(out, src): return FORCE or not out.exists() or out.stat().st_mtime < s
 def make_hd(src, out, info):
     if not stale(out, src): return 'skip'
     out.parent.mkdir(parents=True, exist_ok=True)
-    light = info['codec'] == 'h264' and info['pix'] == 'yuv420p' and max(info['w'], info['h']) <= 1920 and 0 < info['br'] <= 8_000_000
+    cap = int(48 * 8 * 1000 / max(info['dur'], 1)) - 170  # kbps — 파일 48MB 이하(GitHub 50MB 경고선)
+    mr = max(2500, min(8000, cap))
+    light = info['codec'] == 'h264' and info['pix'] == 'yuv420p' and max(info['w'], info['h']) <= 1920 and 0 < info['br'] <= mr * 1000
     if light:
         run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-map', '0:v:0', '-map', '0:a:0?', '-c', 'copy', '-movflags', '+faststart', str(out)]); return 'copy'
     a = ['-c:a', 'aac', '-b:a', '160k'] if info['audio'] else ['-an']
-    run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-map', '0:v:0', '-map', '0:a:0?', '-vf', scale(1920, info['w'], info['h']), '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', '8M', '-bufsize', '16M', '-pix_fmt', 'yuv420p', '-profile:v', 'high', *a, '-movflags', '+faststart', str(out)])
+    run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-map', '0:v:0', '-map', '0:a:0?', '-vf', scale(1920, info['w'], info['h']), '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-maxrate', f'{mr}k', '-bufsize', f'{mr*2}k', '-pix_fmt', 'yuv420p', '-profile:v', 'high', *a, '-movflags', '+faststart', str(out)])
     return 'enc'
 
 def make_sd(src, out, info):

@@ -309,7 +309,7 @@
   "id": "creativereporter",
   "grade": 1,
   "group": "tools",
-  "title": "CreativeReporter — 3매체 소재 성과 주간 자동 집계",
+  "title": "CreativeReporter — 3매체 소재 성과 대시보드",
   "subtitle": "기획 · 개발 · 운영 · 2026-06~",
   "year": 2026,
   "period": "2026-06 ~",
@@ -330,48 +330,52 @@
   ],
   "formats": [],
   "media": {
-   "poster": "assets/shots/cr-detail-v3.jpg",
+   "poster": "assets/shots/cr-live.jpg",
    "preview": null,
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/cr-detail-v3.jpg",
-   "note": "실화면은 사내 데이터 — 캡처 시 수치 마스킹 필요. GitHub Pages 404(비공개), 뷰어는 사내 도토리",
+   "shot": "assets/shots/cr-live.jpg",
+   "note": "체험판 = 원본 HTML + 예시 응답(demos/cr-live). 원본 사이트·실데이터 미변경",
    "diagram": "assets/lab/cr_flow.png",
    "pw": 1280,
    "ph": 720,
-   "srcset": "assets/thumb/c54da4ae1a-640.webp 640w, assets/thumb/c54da4ae1a-1280.webp 1280w"
+   "srcset": "assets/thumb/288435d86c-640.webp 640w, assets/thumb/288435d86c-1280.webp 1280w"
   },
   "links": {
    "live": null,
    "artifact": null,
-   "embed": "demos/cr-detail-v3/index.html",
+   "embed": "demos/cr-live/index.html",
    "internal": "https://dotori.karrot.work/artifacts/nhatgbo1yy",
    "embeds": [
     {
-     "label": "소재 상세 UI 확정안",
+     "label": "체험판",
+     "src": "demos/cr-live/index.html"
+    },
+    {
+     "label": "소재 상세 확정안",
      "src": "demos/cr-detail-v3/index.html"
     }
    ]
   },
   "copy": {
-   "one": "Google · Moloco · Meta 소재 성과를 매주 자동으로 모아 등급까지 매기는 대시보드",
+   "one": "구글·몰로코·메타 소재 성과를 매주 자동으로 모아 썸네일·등급·추세로 보여주는 소재 분석 대시보드",
    "problem": "소재는 빨리 만드는데 성과 분석은 매체별 표를 수작업으로 뒤져야 해서, 어떤 소재가 왜 좋았는지 아무도 빨리 답하지 못했다.",
    "decision": "몰로코·구글·메타 주간 리포트를 Supabase에 쌓고 소재 단위로 채점·시각화하는 사이트를 혼자 만들었다. 적재는 Apps Script와 클라우드 예약 작업으로 자동화해 사람 손을 뺐다.",
    "result": "매주 3매체 소재 성과가 사람 손 없이 모인다(구글 애셋 6주 연속). 구글이 매기는 실적 등급을 자체 규칙으로 맞춰 본 정확도 91.2%. 2026-08 팀미팅에서 발표.",
    "what": [
-    "매체별 주간 리포트 → Supabase 자동 적재(Apps Script 매시간 + 클라우드 예약 + 감시 + Slack DM)",
-    "효율 지도(산점도) · 주차별 추이 · 시청 유지 곡선 · A/B 감지 · 실적 등급",
-    "채점 5차 개편: 효율·규모 50:50 등수 백분위, 과집계 6종 제외",
-    "데이터 교정: 구글 유저 지표 과대집계 바로잡기(55주 7,499행), 한글 NFD 정규화 트리거"
+    "분석 — 효율 지도(산점도)·주차별 추세로 잘 되는 소재를 한눈에",
+    "전체 목록 — 등급·뱃지·필터, 표/갤러리 전환",
+    "소재 상세 — 성과 추이·시청 유지 곡선·다른 매체의 같은 소재",
+    "소재 비교 — 여러 소재를 겹쳐 보고 우세 순 정렬"
    ],
    "proof": [
-    "6주 연속 무개입 자동 적재(2026-08-24~09-28)",
-    "구글 실적 등급 추정 교차검증 91.2%",
-    "팀 발표 2026-08-14",
+    "매주 구글애즈 → 드라이브 → BigQuery → Supabase 자동 적재, 이상 시 Slack 알림",
+    "6주 연속 사람 손 없이 적재",
+    "구글 실적 등급 추정 교차검증 91.2% → 몰로코·메타에도 같은 기준 적용",
     "비개발자 1인 설계·개발·운영"
    ],
-   "try": "실제 앱은 사내 로그인 전용 — 공개본은 소재 상세 화면 확정안(목업 수치)"
+   "try": "원본 화면 그대로 · 예시 데이터로 체험 (실제 수치 아님)"
   },
   "metrics": [
    {
@@ -1164,7 +1168,7 @@
   "id": "karrotfield",
   "grade": 1,
   "group": "tools",
-  "title": "KarrotField — 사내 이미지·영상 생성 서비스",
+  "title": "KarrotField — 힉스필드 기반 사내 AI 생성 서비스",
   "subtitle": "기획 · 개발 · 운영 · 2026-10",
   "year": 2026,
   "period": "2026-10",
@@ -1204,21 +1208,23 @@
    ]
   },
   "copy": {
-   "one": "힉스필드 API 공용 키 하나로 팀 전체가 쓰는 사내 이미지·영상 생성 서비스",
+   "one": "힉스필드 API 공용 키 하나로 팀 누구나 이미지·영상을 만드는 사내 서비스 — 힉스필드 UI 기반 + AI Cast + 관리자 화면",
    "problem": "생성 모델 구독을 각자 사면 비용이 겹치고, 공용 API 키는 공유할 수 없었다.",
    "decision": "API 키를 서버에 두고 개인 키를 발급하는 사내 사이트를 만들었다. 같은 조건이면 힉스필드·Kie 중 최저가 API로 자동 배정하고, Slack 봇과 Claude 커넥터로도 쓸 수 있게 했다.",
    "result": "이미지·영상 생성, 캐릭터 프리셋, 관리자 화면까지 한 사이트에 담아 2026-10 시범 운영 시작. 전신인 Figma 플러그인 이미지 파이프라인(2026-03~04)을 사내 서비스로 발전시킨 것.",
    "what": [
-    "힉스필드 생성 UI를 69개 화면으로 재현한 단일 HTML(1.7MB) 콘솔",
-    "Supabase Edge Function 라우터 — 힉스필드·Kie 중 최저가 경로",
-    "슬랙봇 /karrotfield + MCP 커넥터로 채팅에서 생성",
-    "한도 관리: 팀 월 $300 · 1인 하루 $30"
+    "생성 스튜디오 — 힉스필드 화면 구성 그대로: 이미지·영상·마케팅·시네마",
+    "AI Cast — 캐릭터 프리셋 36종·워크플로 84개로 같은 인물 반복 생성",
+    "개인 키 + 최저가 자동 배정 — 같은 조건이면 힉스필드·Kie 중 싼 쪽으로",
+    "관리자 — 사람별 사용량·한도, 모델 고정, 공지·문의함, 로그",
+    "Slack 봇 /karrotfield · Claude 커넥터(MCP)로도 생성"
    ],
    "proof": [
-    "2026-10-12부터 시범 운영",
-    "Claude 에이전트 여러 개를 병렬로 돌려 1인 개발"
+    "2026-10 사내 시범 운영",
+    "한도 관리: 팀 월 $300 · 1인 하루 $30",
+    "원본 키는 서버에만 — 개인 키는 해시로 저장"
    ],
-   "try": "실제 서비스는 사내 전용 — 공개본은 Admin Overview 시안"
+   "try": "원본 화면 그대로 · 생성 요청엔 예시 결과로 응답"
   },
   "metrics": [
    {
@@ -1248,7 +1254,7 @@
    "tools"
   ],
   "type": "사내 AI 생성 서비스",
-  "contrib": "1인 제작 · Claude 에이전트 여러 개를 동시에 돌려 개발)"
+  "contrib": "1인 제작 (Claude 에이전트 병렬 개발)"
  },
  {
   "id": "local-runners-boosting",
