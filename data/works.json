@@ -199,7 +199,7 @@
      "hd": "assets/v/td_review2605.mp4",
      "w": 1920,
      "h": 1080,
-     "dur": 35.0,
+     "dur": 35,
      "sd": "assets/v/td_review2605.sd.mp4"
     },
     {
@@ -207,7 +207,7 @@
      "hd": "assets/v/td_review2605-2.mp4",
      "w": 1080,
      "h": 1920,
-     "dur": 35.0,
+     "dur": 35,
      "sd": "assets/v/td_review2605-2.sd.mp4"
     },
     {
@@ -215,13 +215,13 @@
      "hd": "assets/v/td_review2605-3.mp4",
      "w": 1080,
      "h": 1080,
-     "dur": 35.0,
+     "dur": 35,
      "sd": "assets/v/td_review2605-3.sd.mp4"
     }
    ],
    "start": 0,
    "billboard": [
-    0.0,
+    0,
     5.5
    ],
    "poster_w": "assets/poster/td_review2605_h.jpg"
@@ -478,8 +478,8 @@
    ],
    "start": 2,
    "billboard": [
-    0.0,
-    8.0
+    0,
+    8
    ]
   },
   "links": {
@@ -689,8 +689,8 @@
    ],
    "start": 2,
    "billboard": [
-    0.0,
-    8.0
+    0,
+    8
    ]
   },
   "links": {
@@ -1282,7 +1282,7 @@
      "hd": "assets/v/mg_keyword_spring-3.mp4",
      "w": 720,
      "h": 960,
-     "dur": 15.0
+     "dur": 15
     }
    ],
    "start": 0,
@@ -1573,8 +1573,8 @@
    ],
    "start": 0,
    "billboard": [
-    0.0,
-    6.0
+    0,
+    6
    ]
   },
   "links": {
@@ -1876,13 +1876,13 @@
      "hd": "assets/v/sf_bizjul.mp4",
      "w": 680,
      "h": 1208,
-     "dur": 14.0
+     "dur": 14
     }
    ],
    "start": 0,
    "billboard": [
-    0.0,
-    6.0
+    0,
+    6
    ]
   },
   "links": {
@@ -2076,7 +2076,7 @@
      "hd": "assets/v/mg_rent1.mp4",
      "w": 720,
      "h": 1280,
-     "dur": 30.0
+     "dur": 30
     }
    ],
    "images": [
@@ -2590,14 +2590,14 @@
      "hd": "assets/v/eff_ae_c4d.mp4",
      "w": 1280,
      "h": 720,
-     "dur": 2.0
+     "dur": 2
     },
     {
      "label": "XPresso 군중 뷰포트 · 영상",
      "hd": "assets/v/eff_ae_c4d-2.mp4",
      "w": 1280,
      "h": 720,
-     "dur": 2.0
+     "dur": 2
     }
    ],
    "images": [
@@ -2740,7 +2740,7 @@
      "hd": "assets/v/mg_charge.mp4",
      "w": 1280,
      "h": 720,
-     "dur": 30.0
+     "dur": 30
     }
    ],
    "start": 0

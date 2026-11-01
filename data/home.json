@@ -12,29 +12,33 @@
   "local-runners-teaser",
   "top3_subliminal",
   "nayeon-campaign",
-  "mg_keyword_spring",
-  "cr_10y"
+  "mg_keyword_spring"
  ],
  "rows": [
   {
    "title": "3D 영상",
-   "kind": "3d"
+   "kind": "3d",
+   "id": "r-3d"
   },
   {
    "title": "AI 영상",
-   "kind": "ai"
+   "kind": "ai",
+   "id": "r-ai"
   },
   {
    "title": "모션 영상",
-   "kind": "motion"
+   "kind": "motion",
+   "id": "r-motion"
   },
   {
    "title": "온드 콘텐츠",
-   "kind": "owned"
+   "kind": "owned",
+   "id": "r-owned"
   },
   {
    "title": "개인 작업",
-   "kind": "personal"
+   "kind": "personal",
+   "id": "r-personal"
   }
  ],
  "_help": "billboard=피처드 순서, rep=대표 작업 순서(repTitle=줄 이름, repHidden=숨김), rows=홈 재생목록(title·ids 또는 kind, hidden=숨김). 도구(group tools)는 홈·작업 탭에 안 나옴. 편집은 /edit/에서."
