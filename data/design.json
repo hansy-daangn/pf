@@ -1,13 +1,13 @@
 {
  "_help": "디자인 모듈 선택. pick의 값만 바꾸면 사이트 전체에 적용(빌드 필요). 미리보기: 사이트 주소 뒤에 ?design → 오른쪽 아래 「디자인」 패널. 각 모듈 CSS는 src/css/<번호>-<모듈>.css 안의 body[data-<모듈>=\"번호\"] 블록, featw는 --featw 변수(px).",
  "pick": {
-  "feat": 1,
-  "featw": 1120,
+  "feat": 2,
+  "featw": 1000,
   "hover": 1,
   "card": 1,
-  "size": 2,
-  "arrow": 1,
-  "theater": 1,
+  "size": 3,
+  "arrow": 2,
+  "theater": 2,
   "theme": 1,
   "motion": 2
  },
