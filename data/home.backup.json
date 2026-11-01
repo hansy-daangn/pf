@@ -1,0 +1,50 @@
+{
+ "billboard": [
+  "td_declutter",
+  "td_review2605",
+  "bakery-vlog",
+  "local-runners-teaser",
+  "mg_keyword_spring",
+  "cr_10y"
+ ],
+ "rep": [
+  "td_declutter",
+  "td_review2605",
+  "bakery-vlog",
+  "local-runners-teaser",
+  "top3_subliminal",
+  "nayeon-campaign",
+  "mg_keyword_spring",
+  "cr_10y",
+  "creativereporter",
+  "previz-studio"
+ ],
+ "rows": [
+  {
+   "title": "3D 영상",
+   "kind": "3d"
+  },
+  {
+   "title": "AI 영상",
+   "kind": "ai"
+  },
+  {
+   "title": "모션 영상",
+   "kind": "motion"
+  },
+  {
+   "title": "온드 콘텐츠",
+   "kind": "owned"
+  },
+  {
+   "title": "개인 작업",
+   "kind": "personal"
+  },
+  {
+   "title": "도구 · 자동화",
+   "kind": "tools",
+   "more": "tools.html"
+  }
+ ],
+ "_help": "billboard=홈 상단 슬라이드 순서, rep=대표 작업 순서, rows=홈 행(제목·kind). kind: 3d·ai·motion·owned·image·personal·tools. 특정 행 순서를 고정하려면 행에 \"ids\":[...] 추가. 썸네일 교체: assets/poster/<id>.jpg 파일을 바꾸면 끝(1080px 이상, 원본 비율)."
+}

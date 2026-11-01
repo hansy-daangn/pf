@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"><meta name="robots" content="noindex">
+<title>편집 — Hansy 포트폴리오</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="css/site.css">
+<style>
+.ed{display:grid;grid-template-columns:320px minmax(0,1fr);gap:var(--s5);align-items:start}
+.ed .list{position:sticky;top:calc(var(--nav-h) + var(--s2));max-height:calc(100dvh - var(--nav-h) - var(--s5));overflow:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:2px}
+.ed .list button{display:grid;grid-template-columns:var(--s5) 64px 1fr;gap:var(--s1);align-items:center;text-align:left;padding:var(--s05) var(--s1);border-radius:var(--r);color:var(--ink)}
+.ed .list button img{width:64px;height:36px;object-fit:cover;border-radius:4px;background:var(--ink-4)}
+.ed .list button b{font-weight:600;font-size:var(--t-sm);display:block;line-height:1.3}.ed .list button small{color:var(--ink-2);font-size:var(--t-micro)}
+.ed .list button .n{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:var(--t-micro)}
+.ed .list button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.ed .list button[aria-pressed="true"] small,.ed .list button[aria-pressed="true"] .n{color:color-mix(in oklab,var(--bg) 70%,transparent)}
+.ed .list button.hid{opacity:.45}
+.ed .form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s3) var(--s5)}
+.ed label{display:grid;gap:var(--s05);font-size:var(--t-sm);color:var(--ink-2)}
+.ed input[type=text],.ed textarea,.ed input[type=number],.ed select{font:inherit;font-size:var(--t-body);color:var(--ink);padding:var(--s1);border:1px solid var(--ink-3);border-radius:var(--r);background:var(--bg);width:100%}
+.ed textarea{min-height:72px;resize:vertical}
+.ed .kinds{display:flex;flex-wrap:wrap;gap:var(--s05)}.ed .kinds label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--ink-3);border-radius:999px;padding:4px var(--s1);font-size:var(--t-sm);color:var(--ink);cursor:pointer}.ed .kinds input{accent-color:var(--acc)}
+.ed .thumb{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--s3);padding-top:var(--s3);border-top:1px solid var(--ink-3)}
+.ed .vwrap{position:relative;background:#0b0b0d;border-radius:var(--r2);overflow:hidden;aspect-ratio:16/9}
+.ed .vwrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.ed .scrub{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s1);align-items:center;margin-top:var(--s1);font-size:var(--t-sm);font-variant-numeric:tabular-nums}
+.ed .scrub input[type=range]{width:100%;accent-color:var(--acc)}
+.ed .steps{display:flex;gap:var(--s05);margin-top:var(--s1);flex-wrap:wrap}
+.ed .cur img{width:100%;aspect-ratio:16/9;object-fit:contain;background:var(--ink-4);border-radius:var(--r)}
+.ed .bar{position:sticky;bottom:0;background:var(--bg-glass);backdrop-filter:blur(16px);border-top:1px solid var(--ink-3);padding:var(--s2) 0;margin-top:var(--s5);display:flex;gap:var(--s1);align-items:center;flex-wrap:wrap}
+.ed .bar .st{margin-left:auto;font-size:var(--t-sm);color:var(--ink-2)}
+.ed .pill{font-size:var(--t-micro);border:1px solid var(--ink-3);border-radius:999px;padding:2px var(--s1);color:var(--ink-2)}
+.ed .home{grid-column:1 / -1;padding-top:var(--s3);border-top:1px solid var(--ink-3)}
+.ed .home textarea{font-family:ui-monospace,Menlo,monospace;font-size:var(--t-sm);min-height:160px}
+@media (max-width:980px){.ed{grid-template-columns:1fr}.ed .list{position:static;max-height:240px}.ed .form,.ed .thumb{grid-template-columns:1fr}}
+</style></head>
+<body data-base="./"><header class="nav"><div class="wrap in"><a class="lg" href="index.html">Hansy<small>Kim Hangyeol</small></a><nav class="tabs"><a href="index.html">홈</a><a href="works.html">작업</a><a href="tools.html">도구 · 자동화</a><a href="resume.html">이력서</a><a href="edit.html" aria-current="page">편집</a></nav><div class="cta"><span class="pill" id="mode">확인 중</span></div></div></header>
+<main><div class="wrap sec"><h1 class="pg-h">편집</h1>
+<div class="ed"><aside class="list" id="list"></aside>
+<section>
+ <div class="form" id="form"></div>
+ <div class="thumb" id="thumb"></div>
+ <div class="home"><h3>홈 구성 (data/home.json)</h3><textarea id="homejson" spellcheck="false"></textarea></div>
+ <div class="bar"><button class="btn" id="save">저장</button><button class="btn ghost" id="build">빌드</button><button class="btn ghost" id="export">works.json 내려받기</button><button class="btn ghost" id="exporthome">home.json 내려받기</button><label class="pill"><input type="checkbox" id="showhid"> 숨김 포함</label><span class="st" id="st"></span></div>
+</section></div></div></main>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s); const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const KINDS = { '3d': '3D 영상', ai: 'AI 영상', motion: '모션 영상', owned: '온드 콘텐츠', image: '이미지 소재', personal: '개인 작업', tools: '도구 · 자동화' };
+  let W = [], H = {}, cur = null, server = false, dirty = false;
+  const st = m => { $('#st').textContent = m; };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const poster = w => (w.media && (w.media.poster16 || w.media.poster || w.media.shot)) || '';
+  const pr = w => (typeof w.priority === 'number' ? w.priority : 999);
+  async function load() {
+    try { const r = await fetch('api/ping', { cache: 'no-store' }); server = r.ok; } catch (e) { server = false; }
+    $('#mode').textContent = server ? '로컬 저장 모드' : '내려받기 모드';
+    W = await (await fetch('data/works.json?' + Date.now())).json();
+    try { H = await (await fetch('data/home.json?' + Date.now())).json(); } catch (e) { H = {}; }
+    $('#homejson').value = JSON.stringify(H, null, 1);
+    list(); pick((location.hash || '').slice(1) || W.find(w => w.grade <= 2).id);
+  }
+  function list() {
+    const show = $('#showhid').checked; const items = W.filter(w => show || w.grade <= 2).sort((a, b) => pr(a) - pr(b) || a.grade - b.grade || (a.sort || 99) - (b.sort || 99));
+    $('#list').innerHTML = items.map(w => `<button data-id="${esc(w.id)}" aria-pressed="${cur && cur.id === w.id}" class="${w.grade > 2 ? 'hid' : ''}"><span class="n">${typeof w.priority === 'number' ? w.priority : '–'}</span><img src="${esc(poster(w))}" alt=""><span><b>${esc(w.title)}</b><small>${esc(w.type || '')}</small></span></button>`).join('');
+    $$('#list button').forEach(b => b.addEventListener('click', () => pick(b.dataset.id)));
+  }
+  function field(label, key, val, type = 'text') { return `<label>${label}${type === 'textarea' ? `<textarea data-k="${key}">${esc(val)}</textarea>` : `<input type="${type}" data-k="${key}" value="${esc(val)}">`}</label>`; }
+  function pick(id) {
+    const w = W.find(x => x.id === id); if (!w) return; cur = w; location.hash = id;
+    $$('#list button').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === id));
+    const c = w.copy || (w.copy = {});
+    $('#form').innerHTML = [
+      field('제목', 'title', w.title), field('부제', 'subtitle', w.subtitle || ''),
+      field('종류 (카드 부제·상영관 「종류」)', 'type', w.type || ''), field('우선 순서 (작을수록 앞)', 'priority', typeof w.priority === 'number' ? w.priority : '', 'number'),
+      field('한 줄 소개', 'copy.one', c.one || '', 'textarea'), field('특별 성과 한 줄 (있을 때만 표시)', 'highlight', w.highlight || '', 'textarea'),
+      field('기여도', 'contrib', w.contrib || ''), field('길이', 'dur', w.dur || ''),
+      field('툴 (· 로 구분)', 'tools', (w.tools || []).join(' · ')), field('매체 (· 로 구분)', 'channels', (w.channels || []).join(' · ')),
+      field('시기', 'period', w.period || ''), `<label>노출<select data-k="grade"><option value="1"${w.grade === 1 ? ' selected' : ''}>대표(1)</option><option value="2"${w.grade === 2 ? ' selected' : ''}>일반(2)</option><option value="3"${w.grade >= 3 ? ' selected' : ''}>숨김</option></select></label>`,
+      `<label style="grid-column:1/-1">분류<span class="kinds">${Object.entries(KINDS).map(([k, v]) => `<label><input type="checkbox" data-kind="${k}"${(w.kinds || []).includes(k) ? ' checked' : ''}>${v}</label>`).join('')}</span></label>`,
+    ].join('');
+    $$('#form [data-k]').forEach(el => el.addEventListener('input', () => { apply(w, el.dataset.k, el.value); dirty = true; }));
+    $$('#form [data-kind]').forEach(el => el.addEventListener('change', () => { w.kinds = Object.keys(KINDS).filter(k => $(`#form [data-kind="${k}"]`).checked); dirty = true; }));
+    thumb(w);
+  }
+  function apply(w, k, v) {
+    if (k === 'copy.one') { w.copy.one = v; return; }
+    if (k === 'priority') { w.priority = v === '' ? undefined : +v; list(); return; }
+    if (k === 'grade') { w.grade = +v; list(); return; }
+    if (k === 'tools' || k === 'channels') { w[k] = v.split('·').map(s => s.trim()).filter(Boolean); return; }
+    w[k] = v; if (k === 'title') list();
+  }
+  function thumb(w) {
+    const m = w.media || {}; const srcs = [];
+    if (m.full) srcs.push({ label: '본편', src: m.full });
+    (m.variants || []).forEach(v => { if (/\.(mp4|webm|mov)$/i.test(v.src || '')) srcs.push({ label: v.label, src: v.src }); });
+    if (m.preview && !srcs.length) srcs.push({ label: '프리뷰', src: m.preview });
+    const T = $('#thumb');
+    if (!srcs.length) { T.innerHTML = `<div><h3>썸네일</h3><p class="sub">영상 파일이 없어 프레임 캡처는 불가 — <code>assets/poster/${esc(w.id)}.jpg</code> 파일을 직접 바꾸세요.</p></div><div class="cur"><img src="${esc(m.poster || m.shot || '')}" alt=""></div>`; return; }
+    T.innerHTML = `<div><h3>썸네일 — 프레임 고르기</h3><div class="vwrap"><video preload="metadata" muted playsinline crossorigin="anonymous"></video></div>
+<div class="scrub"><span class="t">0:00.0</span><input type="range" min="0" max="1000" value="0"><span class="d">0:00.0</span></div>
+<div class="steps"><select class="src">${srcs.map((s, i) => `<option value="${esc(s.src)}">${esc(s.label)}</option>`).join('')}</select><button class="btn ghost sm" data-step="-1">−1초</button><button class="btn ghost sm" data-step="-0.04">−1프레임</button><button class="btn ghost sm" data-step="0.04">+1프레임</button><button class="btn ghost sm" data-step="1">+1초</button><button class="btn sm cap">이 프레임을 썸네일로</button></div></div>
+<div class="cur"><h3>현재 썸네일</h3><img src="${esc((m.poster || m.shot || '') + '?' + Date.now())}" alt=""><p class="sub">저장 위치 <code>assets/poster/${esc(w.id)}.jpg</code> — 16:9 카드용 블러 합성본은 빌드 때 자동 생성</p></div>`;
+    const V = $('video', T), R = $('input[type=range]', T), tEl = $('.t', T), dEl = $('.d', T);
+    const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
+    const setSrc = s => { V.src = s; V.pause(); V.currentTime = 0; };
+    setSrc(srcs[0].src); $('.src', T).addEventListener('change', e => setSrc(e.target.value));
+    V.addEventListener('loadedmetadata', () => { dEl.textContent = fmt(V.duration || 0); V.pause(); });
+    V.addEventListener('timeupdate', () => { if (V.duration) { R.value = Math.round(V.currentTime / V.duration * 1000); tEl.textContent = fmt(V.currentTime); } });
+    R.addEventListener('input', () => { if (V.duration) { V.pause(); V.currentTime = R.value / 1000 * V.duration; } });
+    $$('[data-step]', T).forEach(b => b.addEventListener('click', () => { V.pause(); V.currentTime = Math.max(0, Math.min((V.duration || 0) - .01, V.currentTime + +b.dataset.step)); }));
+    V.addEventListener('click', () => { V.paused ? V.play() : V.pause(); });
+    $('.cap', T).addEventListener('click', async () => {
+      if (!V.videoWidth) return st('영상이 아직 준비되지 않았습니다');
+      const c = document.createElement('canvas'); c.width = V.videoWidth; c.height = V.videoHeight; c.getContext('2d').drawImage(V, 0, 0);
+      let data; try { data = c.toDataURL('image/jpeg', .92); } catch (e) { return st('캡처 실패 — 교차 출처 영상은 로컬 서버에서만 가능'); }
+      if (server) { const r = await (await fetch('api/poster', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: w.id, data }) })).json(); if (r.ok) { w.media.poster = r.path; delete w.media.poster16; $('.cur img', T).src = r.path + '?' + Date.now(); st(`썸네일 저장: ${r.path} — 「저장」 후 「빌드」`); dirty = true; } else st('저장 실패 ' + (r.err || '')); }
+      else { const a = document.createElement('a'); a.download = `${w.id}.jpg`; a.href = data; a.click(); st(`내려받은 ${w.id}.jpg 를 assets/poster/ 에 넣고 빌드하세요`); }
+    });
+  }
+  const dl = (name, obj) => { const a = document.createElement('a'); a.download = name; a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 1)], { type: 'application/json' })); a.click(); };
+  const readHome = () => { try { H = JSON.parse($('#homejson').value); return true; } catch (e) { st('home.json 문법 오류: ' + e.message); return false; } };
+  $('#save').addEventListener('click', async () => {
+    if (!readHome()) return;
+    if (!server) { dl('works.json', W); dl('home.json', H); st('두 파일을 data/ 에 덮어쓰고 빌드하세요'); return; }
+    const r = await (await fetch('api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ works: W, home: H }) })).json();
+    st(r.ok ? '저장됨 — 「빌드」를 누르면 사이트에 반영' : '저장 실패 ' + (r.err || '')); dirty = !r.ok;
+  });
+  $('#build').addEventListener('click', async () => { if (!server) return st('빌드는 로컬 서버 모드에서만 (python src/edit_server.py)'); st('빌드 중…'); const r = await (await fetch('api/build', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })).json(); st(r.ok ? '빌드 완료 — git commit · push 하면 배포' : '빌드 실패: ' + r.out); });
+  $('#export').addEventListener('click', () => dl('works.json', W)); $('#exporthome').addEventListener('click', () => { if (readHome()) dl('home.json', H); });
+  $('#showhid').addEventListener('change', list);
+  addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+  load();
+})();
+</script></body></html>

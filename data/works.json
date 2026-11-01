@@ -1,5 +1,178 @@
 [
  {
+  "id": "td_declutter",
+  "grade": 1,
+  "group": "performance",
+  "title": "안 쓰는 짐 정리 — 아이소메트릭 3D",
+  "subtitle": "3D · 모션 · 2025-10",
+  "year": 2025,
+  "period": "2025-10",
+  "role": "3D 공간 · 모션 · 영상 3규격 + 배너 8규격 세트 제작",
+  "tools": [
+   "Cinema 4D",
+   "Redshift",
+   "After Effects",
+   "Photoshop"
+  ],
+  "channels": [
+   "Google",
+   "Moloco"
+  ],
+  "formats": [
+   "16:9",
+   "9:16",
+   "1:1",
+   "1.91:1",
+   "360×540",
+   "3:4",
+   "320×250",
+   "480×320",
+   "320×100"
+  ],
+  "media": {
+   "poster": "assets/poster/td_declutter.jpg",
+   "preview": "assets/video/td_declutter.mp4",
+   "full": "assets/full/td_declutter.mp4",
+   "youtube": null,
+   "variants": [
+    {
+     "label": "16:9 — 가로 · 영상",
+     "src": "assets/cdn/declutter_Fin_H_1920x1080.mp4",
+     "w": 1920,
+     "h": 1080
+    },
+    {
+     "label": "9:16 — 세로 · 영상",
+     "src": "assets/cdn/declutter_Fin_V_1080x1920.mp4",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "1:1 — 정방 · 영상",
+     "src": "assets/cdn/declutter_Fin_F_1080x1080.mp4",
+     "w": 1080,
+     "h": 1080
+    },
+    {
+     "label": "1.91:1 — 배너 · 이미지",
+     "src": "assets/cdn/mgkfixty_dkgspiw_pnkfojv0geptbrle.png",
+     "w": 1200,
+     "h": 628
+    },
+    {
+     "label": "1:1 — 정방 · 이미지",
+     "src": "assets/cdn/mgkfixpt_d9k4knk_ye2ef3oxzygzalmo.png",
+     "w": 720,
+     "h": 720
+    },
+    {
+     "label": "360×540 — 배너 · 이미지",
+     "src": "assets/cdn/mgkfecqi_ecko2ws_fojbjbbaqypbtfjz.png",
+     "w": 360,
+     "h": 540
+    },
+    {
+     "label": "3:4 — 세로 · 이미지",
+     "src": "assets/cdn/mgkfixsa_p7x3pp0_jnicx570ukl21mwo.png",
+     "w": 720,
+     "h": 960
+    },
+    {
+     "label": "3:4 — 세로 · 이미지",
+     "src": "assets/cdn/mgkf9bvm_n8vtgxy_v1bz0zdkyejdmjaz.png",
+     "w": 768,
+     "h": 1024
+    },
+    {
+     "label": "320×250 — 배너 · 이미지",
+     "src": "assets/cdn/mgkfecqs_regli7o_bzsdzczsomzichwg.png",
+     "w": 320,
+     "h": 250
+    },
+    {
+     "label": "480×320 — 배너 · 이미지",
+     "src": "assets/cdn/mgkf9bww_rzch1zh_ldfq21yc8zztkdrt.png",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "label": "320×100 — 배너 · 이미지",
+     "src": "assets/cdn/mgkf9bq3_tqeuqmj_d0blz2lope3tcq1y.png",
+     "w": 320,
+     "h": 100
+    }
+   ],
+   "shot": null,
+   "note": "video/·full/ 파일이 30MB(원본 동일) — 프리뷰 재인코딩 필요",
+   "full16": "assets/cdn/declutter_Fin_H_1920x1080.mp4",
+   "billboard": {
+    "kind": "video",
+    "src": "assets/bb/td_declutter.mp4",
+    "w": 1920,
+    "h": 1080,
+    "poster": "assets/poster/td_declutter.jpg",
+    "loop": [
+     0.3,
+     4.8
+    ]
+   },
+   "pw": 1280,
+   "ph": 720
+  },
+  "links": {
+   "live": null,
+   "github": null,
+   "artifact": null,
+   "embed": null
+  },
+  "copy": {
+   "one": "방 하나가 비워지는 순간을 한 컷 변화로",
+   "problem": "'안 쓰는 물건을 팔자'는 메시지는 흔해서 장면 하나로 기억에 남아야 했다.",
+   "decision": "집 안을 아이소메트릭 3D 공간으로 만들고, 물건이 빠져나가며 방이 비는 변화를 한 컷에 담았다. 가로·세로·정방 영상과 배너 8규격 세트.",
+   "result": "시즌 한정이 아니라 상시 집행 소재로 채택됐다. 영상 3규격 + 배너 8규격을 전부 내가 제작."
+  },
+  "metrics": [
+   {
+    "label": "광고비",
+    "unit": "₩",
+    "digits": 7,
+    "visible": false
+   },
+   {
+    "label": "노출",
+    "unit": "만 회",
+    "digits": 3,
+    "visible": false
+   },
+   {
+    "label": "전환",
+    "unit": "건",
+    "digits": 4,
+    "visible": false
+   },
+   {
+    "label": "전환당 비용 (eCPA)",
+    "unit": "₩",
+    "digits": 4,
+    "visible": false
+   }
+  ],
+  "tags": [
+   "3D",
+   "아이소메트릭",
+   "중고거래"
+  ],
+  "featured": true,
+  "sort": 2,
+  "feat_order": 1,
+  "kinds": [
+   "3d"
+  ],
+  "type": "3D 모션 광고 + 배너 세트",
+  "contrib": "1인 제작",
+  "priority": 1
+ },
+ {
   "id": "td_review2605",
   "grade": 1,
   "group": "performance",
@@ -341,7 +514,8 @@
      0,
      7
     ]
-   }
+   },
+   "poster16": "assets/poster16/local-runners-teaser.jpg"
   },
   "links": {
    "live": null,
@@ -371,178 +545,6 @@
   ],
   "type": "AI 생성 티저 필름",
   "contrib": "1인 제작 · BGM 프롬프트 포함"
- },
- {
-  "id": "td_declutter",
-  "grade": 1,
-  "group": "performance",
-  "title": "안 쓰는 짐 정리 — 아이소메트릭 3D",
-  "subtitle": "3D · 모션 · 2025-10",
-  "year": 2025,
-  "period": "2025-10",
-  "role": "3D 공간 · 모션 · 영상 3규격 + 배너 8규격 세트 제작",
-  "tools": [
-   "Cinema 4D",
-   "Redshift",
-   "After Effects",
-   "Photoshop"
-  ],
-  "channels": [
-   "Google",
-   "Moloco"
-  ],
-  "formats": [
-   "16:9",
-   "9:16",
-   "1:1",
-   "1.91:1",
-   "360×540",
-   "3:4",
-   "320×250",
-   "480×320",
-   "320×100"
-  ],
-  "media": {
-   "poster": "assets/poster/td_declutter.jpg",
-   "preview": "assets/video/td_declutter.mp4",
-   "full": "assets/full/td_declutter.mp4",
-   "youtube": null,
-   "variants": [
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/declutter_Fin_H_1920x1080.mp4",
-     "w": 1920,
-     "h": 1080
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/declutter_Fin_V_1080x1920.mp4",
-     "w": 1080,
-     "h": 1920
-    },
-    {
-     "label": "1:1 — 정방 · 영상",
-     "src": "assets/cdn/declutter_Fin_F_1080x1080.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "1.91:1 — 배너 · 이미지",
-     "src": "assets/cdn/mgkfixty_dkgspiw_pnkfojv0geptbrle.png",
-     "w": 1200,
-     "h": 628
-    },
-    {
-     "label": "1:1 — 정방 · 이미지",
-     "src": "assets/cdn/mgkfixpt_d9k4knk_ye2ef3oxzygzalmo.png",
-     "w": 720,
-     "h": 720
-    },
-    {
-     "label": "360×540 — 배너 · 이미지",
-     "src": "assets/cdn/mgkfecqi_ecko2ws_fojbjbbaqypbtfjz.png",
-     "w": 360,
-     "h": 540
-    },
-    {
-     "label": "3:4 — 세로 · 이미지",
-     "src": "assets/cdn/mgkfixsa_p7x3pp0_jnicx570ukl21mwo.png",
-     "w": 720,
-     "h": 960
-    },
-    {
-     "label": "3:4 — 세로 · 이미지",
-     "src": "assets/cdn/mgkf9bvm_n8vtgxy_v1bz0zdkyejdmjaz.png",
-     "w": 768,
-     "h": 1024
-    },
-    {
-     "label": "320×250 — 배너 · 이미지",
-     "src": "assets/cdn/mgkfecqs_regli7o_bzsdzczsomzichwg.png",
-     "w": 320,
-     "h": 250
-    },
-    {
-     "label": "480×320 — 배너 · 이미지",
-     "src": "assets/cdn/mgkf9bww_rzch1zh_ldfq21yc8zztkdrt.png",
-     "w": 480,
-     "h": 320
-    },
-    {
-     "label": "320×100 — 배너 · 이미지",
-     "src": "assets/cdn/mgkf9bq3_tqeuqmj_d0blz2lope3tcq1y.png",
-     "w": 320,
-     "h": 100
-    }
-   ],
-   "shot": null,
-   "note": "video/·full/ 파일이 30MB(원본 동일) — 프리뷰 재인코딩 필요",
-   "full16": "assets/cdn/declutter_Fin_H_1920x1080.mp4",
-   "billboard": {
-    "kind": "video",
-    "src": "assets/bb/td_declutter.mp4",
-    "w": 1920,
-    "h": 1080,
-    "poster": "assets/poster/td_declutter.jpg",
-    "loop": [
-     0.3,
-     4.8
-    ]
-   },
-   "pw": 1920,
-   "ph": 1080
-  },
-  "links": {
-   "live": null,
-   "github": null,
-   "artifact": null,
-   "embed": null
-  },
-  "copy": {
-   "one": "방 하나가 비워지는 순간을 한 컷 변화로",
-   "problem": "'안 쓰는 물건을 팔자'는 메시지는 흔해서 장면 하나로 기억에 남아야 했다.",
-   "decision": "집 안을 아이소메트릭 3D 공간으로 만들고, 물건이 빠져나가며 방이 비는 변화를 한 컷에 담았다. 가로·세로·정방 영상과 배너 8규격 세트.",
-   "result": "시즌 한정이 아니라 상시 집행 소재로 채택됐다. 영상 3규격 + 배너 8규격을 전부 내가 제작."
-  },
-  "metrics": [
-   {
-    "label": "광고비",
-    "unit": "₩",
-    "digits": 7,
-    "visible": false
-   },
-   {
-    "label": "노출",
-    "unit": "만 회",
-    "digits": 3,
-    "visible": false
-   },
-   {
-    "label": "전환",
-    "unit": "건",
-    "digits": 4,
-    "visible": false
-   },
-   {
-    "label": "전환당 비용 (eCPA)",
-    "unit": "₩",
-    "digits": 4,
-    "visible": false
-   }
-  ],
-  "tags": [
-   "3D",
-   "아이소메트릭",
-   "중고거래"
-  ],
-  "featured": true,
-  "sort": 2,
-  "feat_order": 1,
-  "kinds": [
-   "3d"
-  ],
-  "type": "3D 모션 광고 + 배너 세트",
-  "contrib": "1인 제작"
  },
  {
   "id": "previz-studio",
@@ -739,7 +741,8 @@
      0,
      7
     ]
-   }
+   },
+   "poster16": "assets/poster16/bakery-vlog.jpg"
   },
   "links": {
    "live": "https://hansy-daangn.github.io/bakery-gallery/",
@@ -864,7 +867,8 @@
    ],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/td_godaangn.jpg"
   },
   "links": {
    "live": null,
@@ -1089,7 +1093,8 @@
    ],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/td_raffle_v.jpg"
   },
   "links": {
    "live": null,
@@ -1268,7 +1273,8 @@
    "variants": [],
    "shot": null,
    "pw": 1080,
-   "ph": 1920
+   "ph": 1920,
+   "poster16": "assets/poster16/local-runners-boosting.jpg"
   },
   "links": {
    "live": null,
@@ -1398,7 +1404,8 @@
     ]
    },
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/mg_keyword_spring.jpg"
   },
   "links": {
    "live": null,
@@ -1522,7 +1529,8 @@
     }
    ],
    "pw": 1080,
-   "ph": 1920
+   "ph": 1920,
+   "poster16": "assets/poster16/nayeon-campaign.jpg"
   },
   "links": {
    "live": null,
@@ -1759,7 +1767,8 @@
     ]
    },
    "pw": 640,
-   "ph": 640
+   "ph": 640,
+   "poster16": "assets/poster16/cr_10y.jpg"
   },
   "links": {
    "live": null,
@@ -1978,7 +1987,8 @@
    ],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/td_pickup.jpg"
   },
   "links": {
    "live": null,
@@ -2071,7 +2081,8 @@
     "poster": "assets/poster/sf_bizjul.jpg"
    },
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/sf_bizjul.jpg"
   },
   "links": {
    "live": null,
@@ -2169,7 +2180,8 @@
    ],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/td_nintendo.jpg"
   },
   "links": {
    "live": null,
@@ -2316,7 +2328,8 @@
     "full": "assets/full/mg_rent2.mp4"
    },
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/mg_rent1.jpg"
   },
   "links": {
    "live": null,
@@ -2395,7 +2408,8 @@
     "full": "assets/full/ai_closet2.mp4"
    },
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/ai_closet1.jpg"
   },
   "links": {
    "live": null,
@@ -2528,7 +2542,8 @@
    ],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/sf_10000walk.jpg"
   },
   "links": {
    "live": null,
@@ -2634,7 +2649,8 @@
     }
    ],
    "pw": 1080,
-   "ph": 1920
+   "ph": 1920,
+   "poster16": "assets/poster16/mg_keyword_chuseok.jpg"
   },
   "links": {
    "live": null,
@@ -2747,7 +2763,8 @@
    "variants": [],
    "shot": null,
    "pw": 1400,
-   "ph": 1050
+   "ph": 1050,
+   "poster16": "assets/poster16/fusion_paper.jpg"
   },
   "links": {
    "live": null,
@@ -2914,7 +2931,8 @@
    ],
    "shot": null,
    "pw": 1600,
-   "ph": 1200
+   "ph": 1200,
+   "poster16": "assets/poster16/fusion_datagarden.jpg"
   },
   "links": {
    "live": null,
@@ -3316,7 +3334,8 @@
    "variants": [],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/mg_ahnabada.jpg"
   },
   "links": {
    "live": null,
@@ -3372,7 +3391,8 @@
    "variants": [],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/mg_simbatdan.jpg"
   },
   "links": {
    "live": null,
@@ -3457,7 +3477,8 @@
    "variants": [],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/td_mapwalk.jpg"
   },
   "links": {
    "live": null,
@@ -3508,7 +3529,8 @@
    "variants": [],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/ai_article.jpg"
   },
   "links": {
    "live": null,
@@ -3559,7 +3581,8 @@
    "variants": [],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/mg_ars.jpg"
   },
   "links": {
    "live": null,
@@ -3633,7 +3656,8 @@
    ],
    "shot": null,
    "pw": 600,
-   "ph": 1066
+   "ph": 1066,
+   "poster16": "assets/poster16/mg_jobs_spring.jpg"
   },
   "links": {
    "live": null,

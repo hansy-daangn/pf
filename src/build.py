@@ -7,7 +7,6 @@ SRC = pathlib.Path(os.environ.get('PF_SRC', REPO / 'src')); DATA = pathlib.Path(
 W = json.load(open(DATA/'works.json')); R = json.load(open(DATA/'resume.json'))
 H = json.load(open(DATA/'home.json')) if (DATA/'home.json').exists() else {}
 W = [w for w in W if w.get('grade', 3) <= 2]
-W.sort(key=lambda w: (w.get('grade', 2), w.get('sort', 99)))
 BY = {w['id']: w for w in W}
 def e(s): return html.escape(str(s if s is not None else ''))
 def nb(s): return ' '.join(f'<span class="nb">{e(x)}</span>' for x in str(s).split(' '))
@@ -34,8 +33,31 @@ def pdim(path):
     return _DIM[path]
 def orient(w):
     d = pdim(poster(w)); return 'tall' if d and d[1] / d[0] > 1.2 else 'wide'
+from PIL import ImageFilter, ImageEnhance
+def make_poster16(w):
+    """세로·정방 포스터 → 16:9 카드용 블러 배경 합성(assets/poster16/<id>.jpg). 원본보다 오래되면 재생성."""
+    m = w.get('media') or {}; src = poster(w)
+    if not src or m.get('poster16'): return m.get('poster16')
+    d = pdim(src)
+    if not d or d[0] / d[1] >= 1.6: return None  # 이미 가로면 그대로 cover
+    out = pathlib.Path('assets/poster16') / f"{w['id']}.jpg"; sp = REPO / src; op = REPO / out
+    if op.exists() and op.stat().st_mtime >= sp.stat().st_mtime: return str(out)
+    try:
+        im = Image.open(sp).convert('RGB'); Wd, Hd = 1280, 720
+        bg = im.copy(); r = max(Wd / bg.width, Hd / bg.height); bg = bg.resize((int(bg.width * r) + 1, int(bg.height * r) + 1), Image.LANCZOS)
+        bg = bg.crop(((bg.width - Wd) // 2, (bg.height - Hd) // 2, (bg.width - Wd) // 2 + Wd, (bg.height - Hd) // 2 + Hd)).filter(ImageFilter.GaussianBlur(36))
+        bg = ImageEnhance.Brightness(bg).enhance(0.72)
+        fg = im.copy(); r2 = Hd / fg.height; fg = fg.resize((max(1, int(fg.width * r2)), Hd), Image.LANCZOS)
+        bg.paste(fg, ((Wd - fg.width) // 2, 0)); op.parent.mkdir(parents=True, exist_ok=True); bg.save(op, quality=86)
+        return str(out)
+    except Exception as ex:
+        print('poster16 fail', w['id'], ex); return None
+def prio(w): return (w.get('priority') if isinstance(w.get('priority'), (int, float)) else 999, w.get('grade', 2), w.get('sort', 99))
 for _w in W:
     _d = pdim(poster(_w)); _m = _w.setdefault('media', {}); _m['pw'], _m['ph'] = (_d or (0, 0))
+    _p16 = make_poster16(_w)
+    if _p16: _m['poster16'] = _p16
+W.sort(key=prio)
 def is_video(p): return bool(p) and str(p).lower().endswith(('.mp4', '.webm', '.mov'))
 
 ICONS = '''<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
@@ -68,21 +90,23 @@ def foot():
 def tail():
     return f'{ICONS}<script type="application/json" id="works-data">{json.dumps(W, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script><script src="js/site.js" defer></script></body></html>'
 
-def card(w, cls=None):
-    cls = cls or orient(w)
+def card(w, cls='wide'):
+    cls = cls or 'wide'
     m = w.get('media') or {}
     p = small((m.get('poster16') if cls == 'wide' and m.get('poster16') else poster(w))); ui = ' ui' if w['group'] in ('tools', 'research') else ''
     hgt = {'sq': 600, 'wide': 338, 'tall': 1067}.get(cls, 338)
-    d = pdim(p) or pdim(poster(w)); ar = (d[0] / d[1]) if d else (16 / 9)
-    if cls == 'mix': ar = max(0.5, min(ar, 2.0))
+    d = pdim(poster(w)); ar = (d[0] / d[1]) if d else (16 / 9)
     img = f'<img src="{e(p)}" alt="" loading="lazy" width="600" height="{hgt}">' if p else f'<span class="pt">{e(w.get("year",""))}</span>'
     live = ' ↗' if (w.get('links') or {}).get('live') else ''
     return f'<a class="card {cls}{ui}" style="--ar:{ar:.4f}" href="?w={e(w["id"])}" data-id="{e(w["id"])}"><div class="art{"" if p else " ph"}" data-info="{e((w.get("copy") or {}).get("one",""))}">{img}<span class="pl" aria-hidden="true">{ico("play","sm")}</span></div><div class="t">{e(w["title"])}</div><div class="s">{e(w.get("type") or w.get("subtitle",""))}{live}</div></a>'
 def row(title, items, cls=None, more='works.html'):
     items = [w for w in items if has_media(w)]
     if not items: return ''
-    cls = cls or 'mix'
-    return f'''<section class="row{' mix' if cls == 'mix' else ''}" data-queue><div class="wrap hd"><h2>{e(title)}</h2>{f'<a href="{more}">전체 보기 ›</a>' if more else ''}</div>
+    items = sorted(items, key=prio)
+    if cls is None:
+        # 세로 소재만 모인 행은 9:16, 그 외는 전부 16:9(세로·정방은 블러 배경 합성 썸네일)
+        cls = 'tall' if all(orient(w) == 'tall' for w in items) else 'wide'
+    return f'''<section class="row" data-queue><div class="wrap hd"><h2>{e(title)}</h2>{f'<a href="{more}">전체 보기 ›</a>' if more else ''}</div>
 <div class="wrap"><div class="trk"><div class="ar l"><button aria-label="왼쪽으로">{ico("chev-l")}</button></div><div class="sc">{''.join(card(w, cls) for w in items)}</div><div class="ar r"><button aria-label="오른쪽으로">{ico("chev-r")}</button></div></div></div></section>'''
 
 WHO = '김한결 — 모션·3D로 광고 영상을 만들고, 성과를 읽는 도구까지 직접 만드는 디자이너'
@@ -107,7 +131,7 @@ def home():
 <div class="bt"><button class="btn" data-open="{e(w["id"])}">{ico("play","sm")} 재생</button><button class="btn ghost" data-open="{e(w["id"])}">상세</button></div></div>
 <div class="dots" role="tablist" aria-label="피처드 전환">{''.join(f'<button data-i="{j}" class="{"on" if j==i else ""}" aria-label="{j+1}번째 작품"></button>' for j in range(len(feat)))}<button class="pp" aria-label="미리보기 일시정지">{ico("pause","sm")}</button><button class="snd" aria-label="소리 켜기" hidden>{ico("mute","sm")}</button></div></div></div></div>''')
     rep = [BY[i] for i in (H.get('rep') or []) if i in BY]
-    rows = [row('대표 작업', rep)] if rep else []
+    rows = [row('대표 작업', rep, 'wide')] if rep else []
     for r in H.get('rows') or []:
         items = [BY[i] for i in r.get('ids', []) if i in BY] if r.get('ids') else by_kind(r.get('kind', ''))
         rows.append(row(r.get('title') or KINDS.get(r.get('kind'), ''), items, None, r.get('more', 'works.html')))
@@ -121,7 +145,7 @@ def works():
     items = W
     kc = {k: len(by_kind(k)) for k in KINDS}
     rail = '<aside class="rail" aria-label="분류"><button data-f="kind" aria-pressed="true">전체 <small>' + str(len(items)) + '</small></button>' + ''.join(f'<button data-f="kind" data-v="{k}">{KINDS[k]} <small>{kc[k]}</small></button>' for k in KINDS if kc[k]) + '</aside>'
-    grid = ''.join(card(w) for w in items if has_media(w))
+    grid = ''.join(card(w, 'wide') for w in sorted(items, key=prio) if has_media(w))
     body = f'''<body data-base="./">{nav('works.html')}<main><div class="wrap sec"><h1 class="pg-h">작업</h1>
 <div class="lib">{rail}<div data-queue><div class="tb"><span class="cnt">{sum(1 for w in items if has_media(w))}건</span></div>
 <div class="grid">{grid}</div></div></div></div></main>{foot()}{tail()}'''
@@ -143,8 +167,8 @@ def tools():
     chips = ''.join(f'<button class="chip" data-src="{e(x["src"])}" aria-pressed="{"true" if i == 0 else "false"}">{e(x["label"])}</button>' for i, x in enumerate(embs))
     body = f'''<body data-base="./">{nav('tools.html')}<main><div class="wrap sec"><h1 class="pg-h">도구 · 자동화</h1>
 <div class="tl" data-queue><aside class="trail" aria-label="도구 목록">{rail}</aside>
-<div class="tmain"><div class="tbar"><span class="chips">{chips}</span><a class="btn ghost sm open" href="{e((first.get('links') or {}).get('embed') or '#')}" target="_blank" rel="noopener">새 창 ↗</a></div>
-<div class="tstage" data-id="{e(first['id'])}"><iframe title="{e(first['title'])}" src="{e((first.get('links') or {}).get('embed') or 'about:blank')}" allow="fullscreen; clipboard-write" loading="eager"></iframe><div class="tmob"><img src="{e(poster(first))}" alt="" width="1280" height="800"></div></div>
+<div class="tmain"><div class="tbar"><span class="chips">{chips}</span><span class="r"><button class="btn ghost sm big" type="button">크게 보기</button><a class="btn ghost sm open" href="{e((first.get('links') or {}).get('embed') or '#')}" target="_blank" rel="noopener">새 창 ↗</a></span></div>
+<div class="tstage" data-id="{e(first['id'])}"><iframe title="{e(first['title'])}" src="{e((first.get('links') or {}).get('embed') or 'about:blank')}" allow="fullscreen; clipboard-write" loading="eager"></iframe></div>
 {''.join(tdesc(w) for w in ts)}</div></div></div></main>{foot()}{tail()}'''
     return head('도구 · 자동화 — Hansy', '김한결이 직접 만든 업무 도구: CreativeReporter, CreativeNamer, KarrotField, 3D 구도실, HF Unlimited Runner 등 — 바로 써볼 수 있는 체험판.', 'tools.html') + body
 
