@@ -6,6 +6,8 @@ REPO = pathlib.Path(__file__).resolve().parent.parent
 SRC = pathlib.Path(os.environ.get('PF_SRC', REPO / 'src')); DATA = pathlib.Path(os.environ.get('PF_DATA', REPO / 'data')); OUT = pathlib.Path(os.environ.get('PF_OUT', REPO))
 W = json.load(open(DATA/'works.json')); R = json.load(open(DATA/'resume.json'))
 H = json.load(open(DATA/'home.json')) if (DATA/'home.json').exists() else {}
+D = json.load(open(DATA/'design.json'))
+BODY_ATTR = ''.join(f' data-{k}="{v}"' for k, v in D['pick'].items())
 W = [w for w in W if w.get('grade', 3) <= 2]
 BY = {w['id']: w for w in W}
 def e(s): return html.escape(str(s if s is not None else ''))
@@ -129,7 +131,8 @@ def nav(cur):
 def foot():
     return f'''<footer><div class="wrap in"><span>© {datetime.date.today().year} 김한결 Hansy</span><span><a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a> · <a href="https://github.com/hansy-daangn" target="_blank" rel="noopener">GitHub ↗</a></span></div></footer>'''
 def tail():
-    return f'{ICONS}<script type="application/json" id="works-data">{json.dumps(W, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script><script src="js/site.js" defer></script></body></html>'
+    dz = json.dumps({'pick': D['pick'], 'modules': {k: {'name': m['name'], 'options': m['options']} for k, m in D['modules'].items()}}, ensure_ascii=False, separators=(',', ':'))
+    return f'{ICONS}<script type="application/json" id="design-data">{dz}</script><script type="application/json" id="works-data">{json.dumps(W, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script><script src="js/site.js" defer></script></body></html>'
 
 def card(w, cls='wide'):
     cls = cls or 'wide'
@@ -148,8 +151,8 @@ def row(title, items, cls=None, more='works.html'):
     if cls is None:
         # 세로 소재만 모인 행은 9:16, 그 외는 전부 16:9(세로·정방은 블러 배경 합성 썸네일)
         cls = 'tall' if all(orient(w) == 'tall' for w in items) else 'wide'
-    return f'''<section class="row" data-queue><div class="wrap"><div class="hd"><h2>{e(title)}</h2>{f'<a class="more" href="{more}">더보기</a>' if more else ''}<span class="arr"><button class="ar l" aria-label="이전" disabled>{ico("chev-l")}</button><button class="ar r" aria-label="다음">{ico("chev-r")}</button></span></div>
-<div class="sc">{''.join(card(w, cls) for w in items)}</div></div></section>'''
+    return f'''<section class="row" data-queue><div class="wrap"><div class="hd"><h2>{e(title)}</h2>{f'<a class="more" href="{more}">더보기</a>' if more else ''}</div>
+<div class="trk"><span class="arr"><button class="ar l" aria-label="이전" disabled>{ico("chev-l")}</button><button class="ar r" aria-label="다음">{ico("chev-r")}</button></span><div class="sc">{''.join(card(w, cls) for w in items)}</div></div></div></section>'''
 
 WHO = '김한결 — 모션·3D로 광고 영상을 만들고, 성과를 읽는 도구까지 직접 만드는 디자이너'
 def by_kind(k):
@@ -163,11 +166,11 @@ def home():
         img = f'<img src="{e(p)}" alt=""' + (' fetchpriority="high"' if i == 0 else ' loading="lazy"') + ' width="1920" height="1080">'
         frames.append(f'<div class="fs{" on" if i == 0 else ""}" data-hd="{e(v["hd"])}" data-sd="{e(v.get("sd") or v["hd"])}" data-a="{a}" data-b="{b}"><div class="blur" style="background-image:url({e(p)})"></div>{img}</div>')
         c = w.get('copy') or {}
-        texts.append(f'''<div class="fx{" on" if i == 0 else ""}"{"" if i == 0 else " hidden"} data-id="{e(w["id"])}"><div class="k">{e(w.get("type") or "")}{(" · " + e(w.get("year"))) if w.get("year") else ""}</div><h2>{nb(w["title"])}</h2><p class="one">{e(c.get("one",""))}</p>
+        texts.append(f'''<div class="fx{" on" if i == 0 else ""}"{"" if i == 0 else " hidden"} data-id="{e(w["id"])}"><div class="k">{e(w.get("type") or "")}{(" · " + e(w.get("year"))) if w.get("year") else ""}</div><h2>{nb(w["title"])}</h2>{f'<p class="one">{e(c.get("one"))}</p>' if c.get("one") else ''}
 <div class="bt"><button class="btn" data-open="{e(w["id"])}">{ico("play","sm")} 재생</button><button class="btn ghost" data-info="{e(w["id"])}">상세 정보</button></div></div>''')
     dots = ''.join(f'<button data-i="{j}" class="{"on" if j == 0 else ""}" aria-label="{j + 1}번째 작품"><i></i></button>' for j in range(len(feat)))
-    featured = f'''<section class="feat wrap" aria-label="피처드 작업"><div class="fv">{''.join(frames)}<button class="snd" aria-label="소리 켜기">{ico("mute","sm")}</button></div>
-<div class="ft"><p class="who">{e(WHO)}</p><div class="fxs">{''.join(texts)}</div><div class="dots" role="tablist" aria-label="피처드 전환">{dots}<button class="pp" aria-label="일시정지">{ico("pause","sm")}</button></div></div></section>''' if feat else ''
+    featured = f'''<section class="feat" aria-label="피처드 작업"><div class="fv">{''.join(frames)}<div class="veil"></div></div>
+<div class="ft"><div class="wrap in"><div class="fxs">{''.join(texts)}</div><div class="fctl" role="tablist" aria-label="피처드 전환">{dots}<button class="pp" aria-label="일시정지">{ico("pause","sm")}</button><button class="snd" aria-label="소리 켜기">{ico("mute","sm")}</button></div></div></div></section>''' if feat else ''
     rep = [BY[i] for i in (H.get('rep') or []) if i in BY]
     rows = [row('대표 작업', rep, 'wide')] if rep else []
     for r in H.get('rows') or []:
@@ -198,7 +201,7 @@ def tools():
         proof = ''.join(f'<span class="chip">{e(x)}</span>' for x in c.get('proof') or [])
         links = ''.join(f'<a class="btn ghost sm" href="{e(u)}" target="_blank" rel="noopener">{t} ↗</a>' for t, u in [('라이브', l.get('live')), ('GitHub', l.get('github')), ('원본', l.get('artifact'))] if u)
         meta = ''.join(f'<span>{k}</span><b>{e(v)}</b>' for k, v in [('종류', w.get('type')), ('기술', ' · '.join(w.get('tools') or [])), ('시기', w.get('period') or w.get('year')), ('기여도', w.get('contrib'))] if v)
-        return f'''<div class="tdesc" data-for="{e(w["id"])}"{"" if w is first else " hidden"}><div><h2>{e(w["title"])}</h2><p class="one">{e(c.get("one",""))}</p>{f'<ul class="what">{what}</ul>' if what else ''}{f'<p class="try">{e(c["try"])}</p>' if c.get('try') else ''}</div>
+        return f'''<div class="tdesc" data-for="{e(w["id"])}"{"" if w is first else " hidden"}><div><h2>{e(w["title"])}</h2><p class="one">{e(c.get("one",""))}</p>{f'<ul class="what">{what}</ul>' if what else ''}</div>
 <div><div class="proof">{proof}</div><div class="meta-tbl">{meta}</div><div class="lk">{links}</div></div></div>'''
     rail = ''.join(f'<button class="ti" data-id="{e(w["id"])}" aria-pressed="{"true" if w is first else "false"}"><img src="{e(small(poster(w)))}" alt="" loading="lazy" width="128" height="80"><span><b>{e(w["title"].split(" — ")[0])}</b><small>{e(w.get("type",""))}</small></span></button>' for w in ts)
     embs = (first.get('links') or {}).get('embeds') or []
@@ -242,9 +245,9 @@ def resume():
     return head('이력서 — 김한결 Hansy', '김한결(Hansy) 이력서 — 경력, 학력, 기술, 수상, 논문.', 'resume.html') + body
 
 (OUT/'css').mkdir(exist_ok=True); (OUT/'js').mkdir(exist_ok=True)
-shutil.copy(SRC/'site.css', OUT/'css/site.css'); shutil.copy(SRC/'site.js', OUT/'js/site.js')
+(OUT/'css/site.css').write_text('\n'.join(f'/* ===== {f.name} ===== */\n' + f.read_text(encoding='utf-8') for f in sorted((SRC/'css').glob('*.css'))), encoding='utf-8'); shutil.copy(SRC/'site.js', OUT/'js/site.js')
 for name, fn in [('index.html', home), ('works.html', works), ('tools.html', tools), ('resume.html', resume)]:
-    (OUT/name).write_text(fn(), encoding='utf-8')
+    (OUT/name).write_text(fn().replace('<body', '<body' + BODY_ATTR, 1), encoding='utf-8')
 if (OUT/'about.html').exists(): (OUT/'about.html').write_text('<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=resume.html"><title>이력서로 이동</title>', encoding='utf-8')
 (OUT/'.nojekyll').write_text('')
 # 작품별 공유 페이지(카톡·슬랙 미리보기용) — 열면 상영관으로 이동
@@ -260,11 +263,12 @@ for w in W:
 urls = ['', 'works.html', 'tools.html', 'resume.html'] + [f"w/{w['id']}.html" for w in W if has_media(w)]
 (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>{SITE}{u}</loc></url>' for u in urls) + '</urlset>\n', encoding='utf-8')
 (OUT/'robots.txt').write_text(f'User-agent: *\nDisallow: /pf/edit.html\nSitemap: {SITE}sitemap.xml\n', encoding='utf-8')
-(OUT/'404.html').write_text(head('페이지를 찾을 수 없음 — Hansy', '김한결 포트폴리오', '404.html').replace('href="css/site.css"', 'href="/pf/css/site.css"') + f'''<body><main><div class="wrap sec"><h1 class="pg-h">페이지를 찾을 수 없습니다</h1><p><a class="btn" href="/pf/">홈으로</a></p></div></main></body></html>''', encoding='utf-8')
+(OUT/'404.html').write_text(head('페이지를 찾을 수 없음 — Hansy', '김한결 포트폴리오', '404.html').replace('href="css/site.css"', 'href="/pf/css/site.css"') + f'''<body{BODY_ATTR}><main><div class="wrap sec"><h1 class="pg-h">페이지를 찾을 수 없습니다</h1><p><a class="btn" href="/pf/">홈으로</a></p></div></main></body></html>''', encoding='utf-8')
 def files(w):
     m = w.get('media') or {}
     yield poster(w)
     for v in m.get('videos') or []: yield v.get('hd'); yield v.get('sd')
     for i in m.get('images') or []: yield i.get('src')
+    yield m.get('demo')
 missing = [(w['id'], p) for w in W for p in files(w) if p and not str(p).startswith('http') and not (OUT/p).exists()]
 print('built', len(W), 'works; media-less:', [w['id'] for w in W if not has_media(w)], '; missing files:', missing[:10])

@@ -38,6 +38,33 @@
   };
   const killVideo = v => { if (!v) return; try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) { } v.remove(); };
 
+  /* ---------- 디자인 모듈: data/design.json의 pick이 기본, ?design 이면 오른쪽 아래 패널에서 바꿔 보기 ---------- */
+  (() => {
+    let DZ = null; try { DZ = JSON.parse($('#design-data').textContent); } catch (e) { return; }
+    const keys = Object.keys(DZ.modules); let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem('pf.design') || 'null'); } catch (e) { }
+    const apply = p => keys.forEach(k => { if (p[k] != null) document.body.dataset[k] = p[k]; });
+    if (saved) apply(saved);
+    if (!new URLSearchParams(location.search).has('design') && !saved) return;
+    const cur = Object.fromEntries(keys.map(k => [k, String(document.body.dataset[k] || DZ.pick[k])]));
+    const code = () => keys.map(k => `${DZ.modules[k].name} ${cur[k]}`).join(' · ');
+    const d = document.createElement('div'); d.className = 'dz';
+    d.innerHTML = `<button class="dzb" type="button">디자인</button><div class="dzp" role="dialog" aria-label="디자인 모듈 선택">` +
+      keys.map(k => `<div><h5>${esc(DZ.modules[k].name)}<small>${k}</small></h5>${Object.entries(DZ.modules[k].options).map(([v, t]) => `<label><input type="radio" name="dz-${k}" value="${v}"${cur[k] === v ? ' checked' : ''}><span><b>${v}</b>${esc(t)}</span></label>`).join('')}</div>`).join('') +
+      `<div class="sum"><code></code><span><button type="button" data-a="copy">코드 복사</button><button type="button" data-a="save">사이트 기본값으로 저장</button><button type="button" data-a="reset">원래대로</button></span></div></div>`;
+    document.body.appendChild(d);
+    const sum = $('.sum code', d); const upd = () => { sum.textContent = code(); };
+    upd(); if (innerWidth > 900 && new URLSearchParams(location.search).has('design')) d.classList.add('on');
+    $('.dzb', d).addEventListener('click', () => d.classList.toggle('on'));
+    $$('input', d).forEach(i => i.addEventListener('change', () => { cur[i.name.slice(3)] = i.value; apply(cur); try { sessionStorage.setItem('pf.design', JSON.stringify(cur)); } catch (e) { } upd(); dispatchEvent(new Event('resize')); }));
+    $('[data-a="copy"]', d).addEventListener('click', async e => { try { await navigator.clipboard.writeText(code()); e.target.textContent = '복사됨'; setTimeout(() => e.target.textContent = '코드 복사', 1400); } catch (err) { } });
+    $('[data-a="reset"]', d).addEventListener('click', () => { try { sessionStorage.removeItem('pf.design'); } catch (e) { } location.href = location.pathname + '?design'; });
+    $('[data-a="save"]', d).addEventListener('click', async e => {
+      try { const r = await (await fetch('api/design', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pick: cur }) })).json(); e.target.textContent = r.ok ? '저장됨 — 빌드하면 반영' : '저장 실패'; }
+      catch (err) { e.target.textContent = '로컬 편집 서버에서만 저장 — 코드를 보내 주세요'; }
+    });
+  })();
+
   /* ---------- 내비 ---------- */
   const NAV = $('.nav'); const onSc = () => NAV && NAV.classList.toggle('sc', scrollY > 8); addEventListener('scroll', onSc, { passive: true }); onSc();
 
@@ -64,8 +91,13 @@
       P.style.left = left + 'px'; P.style.top = top + 'px'; P.style.transformOrigin = `${r.left + r.width / 2 - left}px ${r.top + r.height / 2 - top}px`;
       P.classList.add('on');
       if (RM || SAVE) return;
-      const v0 = vidsOf(w)[0];
-      if (v0) { V = freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); ART.appendChild(V); V.play().catch(() => { }); }
+      const v0 = vidsOf(w)[0], demo = w.media && w.media.demo;   // demo = 도구 시연 녹화
+      if (v0 || demo) {
+        V = demo ? freshVideo(demo, 0, { loopTo: 0 }) : freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); ART.appendChild(V);
+        const bar = document.createElement('i'); bar.className = 'pb'; ART.appendChild(bar); const v = V;
+        v.addEventListener('timeupdate', () => { if (v.duration) bar.style.transform = `scaleX(${v.currentTime / v.duration})`; });
+        V.play().catch(() => { });
+      }
       else if (w.media && w.media.youtube) {
         const f = document.createElement('iframe'); f.className = 'yt'; f.tabIndex = -1; f.allow = 'autoplay';
         f.src = `https://www.youtube-nocookie.com/embed/${w.media.youtube}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1&loop=1&playlist=${w.media.youtube}`;
@@ -79,13 +111,28 @@
     addEventListener('scroll', () => { if (P.classList.contains('on')) hide(true); }, { passive: true });
     return { show, hide };
   })();
+  /* 호버 2·3: 카드 칸 안에서 재생 */
+  const Inplace = (() => {
+    let V = null, cur = null;
+    const hide = c => { if (c && c !== cur) return; if (cur) { cur.classList.remove('playing'); $$('.pb', cur).forEach(x => x.remove()); } killVideo(V); V = null; cur = null; };
+    const show = (c, w) => {
+      hide(); if (RM || SAVE) return; const v0 = vidsOf(w)[0], demo = w.media && w.media.demo; if (!v0 && !demo) return;
+      cur = c; c.classList.add('playing'); const art = $('.art', c);
+      V = demo ? freshVideo(demo, 0, { loopTo: 0 }) : freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); art.appendChild(V);
+      const bar = document.createElement('i'); bar.className = 'pb'; art.appendChild(bar); const v = V;
+      v.addEventListener('timeupdate', () => { if (v.duration) bar.style.transform = `scaleX(${v.currentTime / v.duration})`; });
+      V.play().catch(() => { });
+    };
+    return { show, hide };
+  })();
   let hovT = null;
   const bindCard = card => {
     const w = BY[card.dataset.id]; if (!w) return;
     card.addEventListener('click', e => { e.preventDefault(); clearTimeout(hovT); Pop.hide(true); Theater.open(w.id, { queue: queueOf(card) }); });
     if (!HOVER) return;
-    card.addEventListener('pointerenter', () => { clearTimeout(hovT); hovT = setTimeout(() => Pop.show(card, w), 500); });
-    card.addEventListener('pointerleave', () => { clearTimeout(hovT); Pop.hide(); });
+    const mode = () => document.body.dataset.hover || '1';
+    card.addEventListener('pointerenter', () => { clearTimeout(hovT); hovT = setTimeout(() => mode() === '1' ? Pop.show(card, w) : Inplace.show(card, w), mode() === '1' ? 500 : 350); });
+    card.addEventListener('pointerleave', () => { clearTimeout(hovT); Pop.hide(); Inplace.hide(card); });
   };
   $$('.card[data-id]').forEach(bindCard);
 
@@ -98,25 +145,23 @@
     sc.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
   });
 
-  /* ---------- 피처드: 정해진 구간 재생 → 끝나면 다음 작품 ---------- */
+  /* ---------- 피처드: 항상 재생 — 정해진 구간이 끝나면 다음 작품, 진행 바는 영상 시간 그대로 ---------- */
   const FEAT = $('.feat');
   if (FEAT) {
-    const frames = $$('.fs', FEAT), texts = $$('.fx', FEAT), dots = $$('.dots button[data-i]', FEAT), pp = $('.pp', FEAT), snd = $('.snd', FEAT);
-    let i = 0, V = null, user = RM, muted = true, total = 0, remain = 0, t0 = 0, timer = null, fb = null, running = false;
+    const frames = $$('.fs', FEAT), texts = $$('.fx', FEAT), dots = $$('.fctl button[data-i]', FEAT), pp = $('.pp', FEAT), snd = $('.snd', FEAT);
+    let i = 0, V = null, user = false, muted = true, raf = 0, fb = null;
     const holds = new Set(); const blocked = () => user || holds.size > 0;
-    const seg = f => { const a = +f.dataset.a || 0, b = +f.dataset.b || a + 8; return { a, b, ms: Math.max(4, b - a) * 1000 }; };
-    const fill = (pct, ms) => { dots.forEach((d, k) => d.classList.toggle('on', k === i)); const f = dots[i] && $('i', dots[i]); if (!f) return; f.style.transition = 'none'; f.style.width = (pct * 100) + '%'; if (ms) { void f.offsetWidth; f.style.transition = `width ${ms}ms linear`; f.style.width = '100%'; } };
-    const run = () => { clearTimeout(fb); if (running || blocked() || remain <= 0) return; running = true; t0 = performance.now(); fill(1 - remain / total, remain); timer = setTimeout(() => go(i + 1), remain); };
-    const halt = () => { if (!running) return; running = false; clearTimeout(timer); remain = Math.max(0, remain - (performance.now() - t0)); fill(1 - remain / total, 0); };
+    const seg = f => { const a = +f.dataset.a || 0, b = +f.dataset.b || a + 8; return { a, b: Math.max(b, a + 3) }; };
+    const fill = p => dots.forEach((d, k) => { d.classList.toggle('on', k === i); const x = $('i', d); if (x) x.style.width = (k === i ? Math.max(0, Math.min(1, p)) * 100 : 0) + '%'; });
+    const tick = () => { cancelAnimationFrame(raf); const v = V, s = seg(frames[i]); if (!v) return; const p = (v.currentTime - s.a) / (s.b - s.a); fill(p); if (v.currentTime >= s.b - .04 || v.ended) { go(i + 1); return; } raf = requestAnimationFrame(tick); };
     const load = () => {
-      killVideo(V); V = null; clearTimeout(timer); clearTimeout(fb); running = false;
-      const f = frames[i], s = seg(f); total = remain = s.ms;
-      dots.forEach(d => { const x = $('i', d); x.style.transition = 'none'; x.style.width = '0'; }); fill(0, 0);
-      if (SAVE) { run(); return; }
+      killVideo(V); V = null; cancelAnimationFrame(raf); clearTimeout(fb); fill(0);
+      const f = frames[i], s = seg(f);
+      if (SAVE) { fb = setTimeout(() => go(i + 1), (s.b - s.a) * 1000); return; }
       V = freshVideo(f.dataset[big() ? 'hd' : 'sd'], s.a, { muted }); f.appendChild(V);
-      const v = V; v.addEventListener('timeupdate', () => { if (v.currentTime >= s.b) v.pause(); });
-      v.addEventListener('playing', run, { once: true }); fb = setTimeout(run, 3000);
-      if (!blocked()) v.play().catch(() => { });
+      const v = V; v.addEventListener('playing', () => { clearTimeout(fb); tick(); });
+      v.addEventListener('error', () => { fb = setTimeout(() => go(i + 1), 4000); }, { once: true });
+      if (!blocked()) v.play().catch(() => { v.muted = true; v.play().catch(() => { }); });
     };
     const go = n => {
       frames[i].classList.remove('on'); texts[i].classList.remove('on'); texts[i].hidden = true;
@@ -124,21 +169,18 @@
       frames[i].classList.add('on'); texts[i].hidden = false; requestAnimationFrame(() => texts[i].classList.add('on'));
       load();
     };
-    const hold = r => { holds.add(r); halt(); V && V.pause(); };
-    const release = r => { holds.delete(r); if (blocked()) return; if (V && V.currentTime < seg(frames[i]).b - .05) V.play().catch(() => { }); run(); };
+    const hold = r => { holds.add(r); cancelAnimationFrame(raf); V && V.pause(); };
+    const release = r => { holds.delete(r); if (!blocked() && V) V.play().catch(() => { }); };
     dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.i)));
     pp && pp.addEventListener('click', () => {
       user = !user; pp.innerHTML = ico(user ? 'play' : 'pause', 'sm'); pp.setAttribute('aria-label', user ? '재생' : '일시정지');
-      if (user) { halt(); V && V.pause(); } else release('user');
+      if (user) hold('user'); else release('user');
     });
     snd && snd.addEventListener('click', () => { muted = !muted; if (V) V.muted = muted; snd.innerHTML = ico(muted ? 'mute' : 'vol', 'sm'); snd.setAttribute('aria-label', muted ? '소리 켜기' : '소리 끄기'); });
     const ids = texts.map(t => t.dataset.id);
     $$('[data-open]', FEAT).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.open, { queue: ids, autoplay: true })));
     $$('[data-info]', FEAT).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.info, { queue: ids, autoplay: false, info: true })));
     window.__featPause = () => hold('theater'); window.__featResume = () => release('theater');
-    document.addEventListener('visibilitychange', () => document.hidden ? hold('tab') : release('tab'));
-    new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? release('off') : hold('off')), { threshold: .3 }).observe($('.fv', FEAT));
-    if (user) { pp.innerHTML = ico('play', 'sm'); pp.setAttribute('aria-label', '재생'); }
     load();
   }
 
@@ -203,7 +245,7 @@
       // 정보: 영상 제작자가 보는 항목
       const c = w.copy || {}, L = w.links || {};
       const spec = [['종류', w.type || (w.kinds || []).map(k => KINDS[k]).filter(Boolean).join(' · ')], ['툴', (w.tools || []).join(' · ')], ['매체', (w.channels || []).join(' · ')], ['길이', w.dur], ['규격', (w.formats || []).join(' · ')], ['시기', w.period || w.year], ['기여도', w.contrib || w.role]].filter(x => x[1]);
-      el.desc.innerHTML = `<h2>${nb(w.title)}</h2>` + (c.one ? `<p class="lead">${esc(c.one)}</p>` : '') + (w.highlight ? `<div class="hl">${esc(w.highlight)}</div>` : '') +
+      el.desc.innerHTML = (c.one ? `<p class="lead">${esc(c.one)}</p>` : '') + (w.highlight ? `<div class="hl">${esc(w.highlight)}</div>` : '') +
         `<div class="spec">${spec.map(x => `<span>${x[0]}</span><b>${esc(x[1])}</b>`).join('')}</div>` +
         (w.group === 'tools' && c.what ? `<ul class="what">${c.what.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '') +
         `<div class="ext">${L.live ? `<a class="btn ghost sm" href="${esc(L.live)}" target="_blank" rel="noopener">라이브 ↗</a>` : ''}${L.github ? `<a class="btn ghost sm" href="${esc(L.github)}" target="_blank" rel="noopener">GitHub ↗</a>` : ''}${L.artifact ? `<a class="btn ghost sm" href="${esc(L.artifact)}" target="_blank" rel="noopener">원본 ↗</a>` : ''}</div>`;

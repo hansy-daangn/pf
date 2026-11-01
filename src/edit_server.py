@@ -31,6 +31,11 @@ class H(http.server.SimpleHTTPRequestHandler):
             return self._json(200, {'ok': True, 'name': name})
         body = json.loads(self.rfile.read(n) or b'{}')
         try:
+            if p == '/api/design':
+                f = REPO / 'data' / 'design.json'; D = json.loads(f.read_text(encoding='utf-8'))
+                D['pick'] = {k: int(body['pick'][k]) for k in D['pick'] if k in body.get('pick', {})} | {k: v for k, v in D['pick'].items() if k not in body.get('pick', {})}
+                f.write_text(json.dumps(D, ensure_ascii=False, indent=1), encoding='utf-8')
+                return self._json(200, {'ok': True})
             if p == '/api/save':
                 for name in ('works', 'home'):
                     if name in body:

@@ -1,0 +1,48 @@
+/* ==========================================================================
+   HANSY portfolio — 토큰 7개: bg · ink · acc · font · ratio · u · motion(dur+ease)
+   그 외 모든 값은 파생(color-mix · 비율 거듭제곱 · unit 배수). 하드코딩 금지.
+   ========================================================================== */
+:root{
+  --bg:#ffffff;
+  --ink:#0e0e10;
+  --acc:#cc1433;
+  --font:"Pretendard Variable",Pretendard,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ratio:1.3;
+  --u:8px;
+  --dur:400ms; --ease:cubic-bezier(.32,.72,0,1);
+}
+:root,body,.theater,.pip{
+  /* 색 파생 */
+  --ink-2:color-mix(in oklab,var(--ink) 60%,transparent);
+  --ink-3:color-mix(in oklab,var(--ink) 12%,transparent);
+  --ink-4:color-mix(in oklab,var(--ink) 5%,transparent);
+  --bg-glass:color-mix(in oklab,var(--bg) 82%,transparent);
+  --shadow:0 2px 12px color-mix(in oklab,var(--ink) 14%,transparent);
+  --shadow-lg:0 18px 50px color-mix(in oklab,var(--ink) 28%,transparent);
+  --ring:inset 0 0 0 1px color-mix(in oklab,var(--ink) 6%,transparent);
+  /* 글자 파생 (body 16 고정) */
+  --t-micro:calc(1rem / var(--ratio));
+  --t-body:1rem;
+  --t-h:calc(1rem * var(--ratio));
+  --t-title:calc(1rem * var(--ratio) * var(--ratio));
+  --t-disp:calc(1rem * var(--ratio) * var(--ratio) * var(--ratio));
+  --t-hero:clamp(calc(1rem * var(--ratio) * var(--ratio) * var(--ratio)),4.2vw,calc(1rem * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio)));
+  /* 간격 파생 (unit × 피보나치, 반 단위 1개) */
+  --s05:calc(var(--u)/2);--s1:var(--u);--s2:calc(var(--u)*2);--s3:calc(var(--u)*3);--s5:calc(var(--u)*5);--s8:calc(var(--u)*8);--s13:calc(var(--u)*13);
+  --r:var(--u);--r2:calc(var(--u)*1.5);
+  --d-micro:calc(var(--dur)/4);--d-half:calc(var(--dur)/2);
+  --t-sm:calc((var(--t-body) + var(--t-micro)) / 2);
+  --tap:calc(var(--u)*5.5);
+  --nav-h:calc(var(--u)*7);
+  /* 레이아웃: 최대 폭 1440 + 좌우 여백(화면의 4%, 16~64px) — 넓은 화면에서도 내용이 가운데 모임 */
+  --maxw:calc(var(--u)*180);
+  --gut:clamp(var(--s2),4vw,var(--s8));
+}
+@media (prefers-reduced-motion:reduce){:root,body{--dur:0ms}}
+.theater,.pip{--bg:#0b0b0d;--ink:#f2f0ea;--shadow:0 2px 12px color-mix(in oklab,var(--bg) 60%,transparent);--shadow-lg:0 18px 50px color-mix(in oklab,var(--bg) 80%,transparent)}
+
+/* ---- 모듈: 색 (theme) ---- 1 라이트 · 2 홈만 다크 · 3 전체 다크 */
+body[data-theme="2"].home,body[data-theme="3"]{--bg:#0b0b0d;--ink:#f2f0ea;--shadow:0 2px 12px color-mix(in oklab,#000 60%,transparent);--shadow-lg:0 18px 50px color-mix(in oklab,#000 80%,transparent)}
+/* ---- 모듈: 움직임 속도 (motion) ---- 1 280ms · 2 400ms · 3 520ms */
+body[data-motion="1"]{--dur:280ms}
+body[data-motion="3"]{--dur:520ms}

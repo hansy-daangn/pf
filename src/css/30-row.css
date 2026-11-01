@@ -1,0 +1,29 @@
+/* ==========================================================================
+   모듈: 줄 화살표 (arrow) — 장르 줄(선반). 넘칠 때만 화살표, 항상 보임, 끝이면 흐리게
+   1 제목 오른쪽 · 2 줄 양 끝(카드 옆 여백)
+   ========================================================================== */
+.row{padding-top:var(--s8)}
+.feat + .row{padding-top:var(--s5)}
+.row .wrap{position:relative}
+.row .hd{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s2);min-height:var(--s5)}
+.row .hd h2{font-size:var(--t-h);font-weight:700;letter-spacing:-.02em}
+.row .hd .more{font-size:var(--t-sm);color:var(--ink-2);font-weight:600}
+.row .hd .more:hover{color:var(--ink)}
+.row .trk{position:relative}
+.row .arr{display:flex;gap:var(--s1)}
+.row .ar{width:var(--s5);height:var(--s5);border-radius:50%;display:grid;place-items:center;background:var(--ink-4);color:var(--ink);transition:background var(--d-micro) var(--ease),opacity var(--d-micro) var(--ease)}
+.row .ar:hover:not(:disabled){background:var(--ink-3)}
+.row .ar:disabled{opacity:.3;cursor:default}
+.row .sc{display:flex;gap:var(--gap,var(--s2));overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gut);padding:var(--s05) var(--gut) var(--s1);margin-inline:calc(var(--gut) * -1);scrollbar-width:none;overscroll-behavior-x:contain}
+.row .sc::-webkit-scrollbar{display:none}
+.row:last-of-type{padding-bottom:var(--s5)}
+
+/* 1 제목 오른쪽 */
+body[data-arrow="1"] .row .arr{position:absolute;right:0;top:calc((var(--s5) + var(--s2)) * -1);height:var(--s5);align-items:center}
+/* 2 줄 양 끝: 카드 옆 여백에 떠 있는 둥근 버튼 */
+body[data-arrow="2"] .row .ar{position:absolute;top:38%;transform:translateY(-50%);z-index:3;background:var(--bg);box-shadow:var(--shadow),var(--ring)}
+body[data-arrow="2"] .row .ar:hover:not(:disabled){background:var(--bg);transform:translateY(-50%) scale(1.06)}
+body[data-arrow="2"] .row .ar.l{left:calc(var(--gut) * -1 + var(--s1))}
+body[data-arrow="2"] .row .ar.r{right:calc(var(--gut) * -1 + var(--s1))}
+body[data-arrow="2"] .row .ar:disabled{opacity:0;pointer-events:none}
+@media (max-width:760px){body[data-arrow="2"] .row .arr{display:none}}

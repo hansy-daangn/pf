@@ -1,0 +1,63 @@
+/* ==========================================================================
+   모듈: 피처드 (feat) — 홈 맨 위. 마크업 하나로 3가지 모양
+   1 풀블리드(그라데이션 위 제목) · 2 카드 + 옆 설명 · 3 풀블리드 + 아래 설명
+   공통: 영상은 16:9 틀 안에 원비율(자르지 않음), 세로 영상은 양옆 블러, 최대 폭 1440
+   ========================================================================== */
+.feat{position:relative;max-width:var(--maxw);margin:0 auto}
+.fv{position:relative;aspect-ratio:16/9;overflow:hidden;background:#0b0b0d}
+.fs{position:absolute;inset:0;opacity:0;transition:opacity calc(var(--dur)*2) var(--ease)}
+.fs.on{opacity:1}
+.fs .blur{position:absolute;inset:-10%;background-size:cover;background-position:center;filter:blur(40px) saturate(1.2) brightness(.7);transform:scale(1.1)}
+.fs img,.fs video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.fs video{opacity:0;transition:opacity var(--d-half) var(--ease)}.fs video.on{opacity:1}
+.fv .veil{position:absolute;inset:0;pointer-events:none;z-index:1}
+.ft .in{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s3)}
+.fxs{display:grid;min-width:0;max-width:720px}
+.fx{grid-area:1/1;opacity:0;transform:translateY(var(--s1));transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.fx.on{opacity:1;transform:none}
+.fx .k{font-size:var(--t-micro);color:var(--ink-2);font-weight:600;margin-bottom:var(--s05)}
+.fx h2{font-size:var(--t-hero);line-height:1.06;letter-spacing:-.03em;font-weight:700;text-wrap:balance}
+.fx .one{font-size:var(--t-h);color:var(--ink-2);margin-top:var(--s1);line-height:1.45;max-width:40ch}
+.fx .bt{display:flex;gap:var(--s1);margin-top:var(--s3);flex-wrap:wrap}
+.fx .bt .btn{min-height:calc(var(--u)*6);padding:var(--s1) var(--s3)}
+.fx .bt .btn:not(.ghost){background:var(--ink);color:var(--bg)}
+.fx .bt .btn.ghost{background:color-mix(in oklab,var(--ink) 8%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.fctl{display:flex;gap:var(--s05);align-items:center;flex:none}
+.fctl button[data-i]{position:relative;width:var(--s2);height:var(--s05);border-radius:var(--s05);background:var(--ink-3);overflow:hidden;transition:width var(--d-micro) var(--ease)}
+.fctl button[data-i].on{width:var(--s5)}
+.fctl button[data-i] i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}
+.fctl .pp{width:var(--s3);height:var(--s3);border-radius:50%;color:var(--ink-2);margin-left:var(--s1);display:grid;place-items:center}
+.fctl .snd{width:var(--s5);height:var(--s5);border-radius:50%;display:grid;place-items:center;margin-left:var(--s05);background:var(--bg-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--ring)}
+
+/* ---- 1 풀블리드: 상단 가득 + 아래·왼쪽 그라데이션 위 제목 (내비는 투명했다가 스크롤하면 유리) ---- */
+body[data-feat="1"].home main,body[data-feat="3"].home main{padding-top:0}
+body[data-feat="1"].home .nav:not(.sc),body[data-feat="3"].home .nav:not(.sc){background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+body[data-feat="1"] .fv:after,body[data-feat="3"] .fv:after{content:'';position:absolute;left:0;right:0;top:0;height:calc(var(--nav-h)*2);background:linear-gradient(to bottom,color-mix(in oklab,var(--bg) 75%,transparent),transparent);pointer-events:none;z-index:1}
+body[data-feat="1"] .fv .veil{background:linear-gradient(to right,color-mix(in oklab,var(--bg) 62%,transparent) 0%,color-mix(in oklab,var(--bg) 30%,transparent) 28%,transparent 46%),linear-gradient(to top,var(--bg) 0%,color-mix(in oklab,var(--bg) 92%,transparent) 12%,color-mix(in oklab,var(--bg) 55%,transparent) 30%,transparent 55%)}
+body[data-feat="1"] .ft{position:absolute;left:0;right:0;z-index:2;bottom:max(var(--s5),calc(min(56.25vw,var(--maxw) * .5625) - 100svh + var(--s5)))}
+
+/* ---- 3 풀블리드 + 아래 설명: 영상 위에는 아무것도 없음 ---- */
+body[data-feat="3"] .ft{padding-top:var(--s3)}
+body[data-feat="3"] .fx h2{font-size:var(--t-disp)}
+body[data-feat="3"] .fx .one{font-size:var(--t-body)}
+
+/* ---- 2 카드 + 옆 설명: 영상 둥근 카드, 오른쪽에 짧은 설명 ---- */
+body[data-feat="2"] .feat{--fw:max(min(calc(100% - 300px - var(--s5)),calc((100svh - var(--nav-h) - 260px) * 16 / 9)),420px);display:grid;grid-template-columns:var(--fw) minmax(0,1fr);gap:var(--s5);padding:var(--s3) var(--gut) 0}
+body[data-feat="2"] .fv{border-radius:var(--r2);box-shadow:var(--shadow-lg),var(--ring)}
+body[data-feat="2"] .ft .in{padding:0;max-width:none;height:100%;flex-direction:column;align-items:flex-start;justify-content:flex-end}
+body[data-feat="2"] .fx h2{font-size:clamp(var(--t-title),2.4vw,var(--t-disp))}
+body[data-feat="2"] .fx .one{font-size:var(--t-body)}
+
+/* ---- 좁은 화면: 모든 모양을 영상 → 설명 순서로 ---- */
+@media (max-width:900px){
+  body[data-feat="2"] .feat{grid-template-columns:minmax(0,1fr);gap:var(--s2);padding-top:var(--s2)}
+}
+@media (max-width:760px){
+  body[data-feat="1"].home main,body[data-feat="3"].home main{padding-top:var(--nav-h)}
+  body[data-feat="1"].home .nav:not(.sc),body[data-feat="3"].home .nav:not(.sc){background:var(--bg-glass)}
+  body[data-feat="1"] .fv .veil,body[data-feat="1"] .fv:after,body[data-feat="3"] .fv:after{display:none}
+  body[data-feat="1"] .ft{position:static;padding-top:var(--s2)}
+  .ft .in{flex-direction:column;align-items:flex-start}
+  .fx h2{font-size:var(--t-title)}.fx .one{font-size:var(--t-body)}
+  .fx .bt .btn{min-height:var(--tap);padding:var(--s1) var(--s2)}
+}
