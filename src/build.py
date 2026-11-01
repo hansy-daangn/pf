@@ -269,6 +269,5 @@ def files(w):
     yield poster(w)
     for v in m.get('videos') or []: yield v.get('hd'); yield v.get('sd')
     for i in m.get('images') or []: yield i.get('src')
-    yield m.get('demo')
 missing = [(w['id'], p) for w in W for p in files(w) if p and not str(p).startswith('http') and not (OUT/p).exists()]
 print('built', len(W), 'works; media-less:', [w['id'] for w in W if not has_media(w)], '; missing files:', missing[:10])

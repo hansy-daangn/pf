@@ -91,9 +91,9 @@
       P.style.left = left + 'px'; P.style.top = top + 'px'; P.style.transformOrigin = `${r.left + r.width / 2 - left}px ${r.top + r.height / 2 - top}px`;
       P.classList.add('on');
       if (RM || SAVE) return;
-      const v0 = vidsOf(w)[0], demo = w.media && w.media.demo;   // demo = 도구 시연 녹화
-      if (v0 || demo) {
-        V = demo ? freshVideo(demo, 0, { loopTo: 0 }) : freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); ART.appendChild(V);
+      const v0 = vidsOf(w)[0];
+      if (v0) {
+        V = freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); ART.appendChild(V);
         const bar = document.createElement('i'); bar.className = 'pb'; ART.appendChild(bar); const v = V;
         v.addEventListener('timeupdate', () => { if (v.duration) bar.style.transform = `scaleX(${v.currentTime / v.duration})`; });
         V.play().catch(() => { });
@@ -116,9 +116,9 @@
     let V = null, cur = null;
     const hide = c => { if (c && c !== cur) return; if (cur) { cur.classList.remove('playing'); $$('.pb', cur).forEach(x => x.remove()); } killVideo(V); V = null; cur = null; };
     const show = (c, w) => {
-      hide(); if (RM || SAVE) return; const v0 = vidsOf(w)[0], demo = w.media && w.media.demo; if (!v0 && !demo) return;
+      hide(); if (RM || SAVE) return; const v0 = vidsOf(w)[0]; if (!v0) return;
       cur = c; c.classList.add('playing'); const art = $('.art', c);
-      V = demo ? freshVideo(demo, 0, { loopTo: 0 }) : freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); art.appendChild(V);
+      V = freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); art.appendChild(V);
       const bar = document.createElement('i'); bar.className = 'pb'; art.appendChild(bar); const v = V;
       v.addEventListener('timeupdate', () => { if (v.duration) bar.style.transform = `scaleX(${v.currentTime / v.duration})`; });
       V.play().catch(() => { });
