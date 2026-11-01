@@ -223,7 +223,8 @@
    "billboard": [
     0.0,
     5.5
-   ]
+   ],
+   "poster_w": "assets/poster/td_review2605_h.jpg"
   },
   "links": {
    "live": null,
@@ -2984,7 +2985,8 @@
      "sd": "assets/v/mg_bizreview-3.sd.mp4"
     }
    ],
-   "start": 0
+   "start": 0,
+   "poster_w": "assets/poster/mg_bizreview_h.jpg"
   },
   "links": {
    "live": null,

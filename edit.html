@@ -3,128 +3,128 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="css/site.css">
 <style>
-.ed{display:grid;grid-template-columns:320px minmax(0,1fr);gap:var(--s5);align-items:start}
-.ed .list{position:sticky;top:calc(var(--nav-h) + var(--s2));max-height:calc(100dvh - var(--nav-h) - var(--s5));overflow:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:2px}
-.ed .list button{display:grid;grid-template-columns:var(--s5) 64px 1fr;gap:var(--s1);align-items:center;text-align:left;padding:var(--s05) var(--s1);border-radius:var(--r);color:var(--ink)}
-.ed .list button img{width:64px;height:36px;object-fit:cover;border-radius:4px;background:var(--ink-4)}
-.ed .list button b{font-weight:600;font-size:var(--t-sm);display:block;line-height:1.3}.ed .list button small{color:var(--ink-2);font-size:var(--t-micro)}
-.ed .list button .n{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:var(--t-micro)}
-.ed .list button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.ed .list button[aria-pressed="true"] small,.ed .list button[aria-pressed="true"] .n{color:color-mix(in oklab,var(--bg) 70%,transparent)}
-.ed .list button.hid{opacity:.45}
-.ed .form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s3) var(--s5)}
-.ed label{display:grid;gap:var(--s05);font-size:var(--t-sm);color:var(--ink-2)}
+/* 편집기: 바꾸고 싶은 걸 고른 뒤 「변경 내용 복사」 → 채팅에 붙여넣기 → Claude가 반영·배포 */
+.ed{display:grid;grid-template-columns:300px minmax(0,1fr);gap:var(--s5);align-items:start}
+.ed .bar{position:sticky;top:var(--nav-h);z-index:5;grid-column:1/-1;display:flex;gap:var(--s1);align-items:center;flex-wrap:wrap;padding:var(--s1) 0;background:var(--bg-glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--ink-3)}
+.ed .bar .st{margin-left:auto;font-size:var(--t-sm);color:var(--ink-2)}
+.ed .ls{position:sticky;top:calc(var(--nav-h) + var(--s8));max-height:calc(100dvh - var(--nav-h) - var(--s13));overflow:auto;scrollbar-width:thin;display:flex;flex-direction:column;gap:2px}
+.ed .ls button{display:grid;grid-template-columns:28px 64px 1fr;gap:var(--s1);align-items:center;text-align:left;padding:4px var(--s1);border-radius:var(--r);color:var(--ink)}
+.ed .ls img{width:64px;height:36px;object-fit:cover;border-radius:4px;background:var(--ink-4)}
+.ed .ls b{font-weight:600;font-size:var(--t-sm);display:block;line-height:1.3}.ed .ls small{color:var(--ink-2);font-size:var(--t-micro)}
+.ed .ls .n{color:var(--ink-2);font-size:var(--t-micro);font-variant-numeric:tabular-nums}
+.ed .ls button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}.ed .ls button[aria-pressed="true"] small,.ed .ls button[aria-pressed="true"] .n{color:color-mix(in oklab,var(--bg) 70%,transparent)}
+.ed .ls button.hid{opacity:.45}.ed .ls button.ch b:after{content:' •';color:var(--acc)}
+.ed .ls .tg{font-size:var(--t-micro);color:var(--ink-2);padding:var(--s1);display:flex;gap:4px;align-items:center}
+.ed .form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s2) var(--s3)}
+.ed label{display:grid;gap:4px;font-size:var(--t-sm);color:var(--ink-2)}
 .ed input[type=text],.ed textarea,.ed input[type=number],.ed select{font:inherit;font-size:var(--t-body);color:var(--ink);padding:var(--s1);border:1px solid var(--ink-3);border-radius:var(--r);background:var(--bg);width:100%}
-.ed textarea{min-height:72px;resize:vertical}
-.ed .kinds{display:flex;flex-wrap:wrap;gap:var(--s05)}.ed .kinds label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--ink-3);border-radius:999px;padding:4px var(--s1);font-size:var(--t-sm);color:var(--ink);cursor:pointer}.ed .kinds input{accent-color:var(--acc)}
-.ed .thumb{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:var(--s3);padding-top:var(--s3);border-top:1px solid var(--ink-3)}
+.ed textarea{min-height:64px;resize:vertical}
+.ed .kinds{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:var(--s05)}.ed .kinds label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--ink-3);border-radius:999px;padding:4px var(--s1);color:var(--ink);cursor:pointer}
+.ed .vid{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--ink-3);display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:var(--s3)}
 .ed .vwrap{position:relative;background:#0b0b0d;border-radius:var(--r2);overflow:hidden;aspect-ratio:16/9}
 .ed .vwrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .ed .scrub{display:grid;grid-template-columns:auto 1fr auto;gap:var(--s1);align-items:center;margin-top:var(--s1);font-size:var(--t-sm);font-variant-numeric:tabular-nums}
-.ed .scrub input[type=range]{width:100%;accent-color:var(--acc)}
+.ed .scrub input{width:100%;accent-color:var(--acc)}
 .ed .steps{display:flex;gap:var(--s05);margin-top:var(--s1);flex-wrap:wrap}
-.ed .cur img{width:100%;aspect-ratio:16/9;object-fit:contain;background:var(--ink-4);border-radius:var(--r)}
-.ed .bar{position:sticky;bottom:0;background:var(--bg-glass);backdrop-filter:blur(16px);border-top:1px solid var(--ink-3);padding:var(--s2) 0;margin-top:var(--s5);display:flex;gap:var(--s1);align-items:center;flex-wrap:wrap}
-.ed .bar .st{margin-left:auto;font-size:var(--t-sm);color:var(--ink-2)}
-.ed .pill{font-size:var(--t-micro);border:1px solid var(--ink-3);border-radius:999px;padding:2px var(--s1);color:var(--ink-2)}
-.ed .home{grid-column:1 / -1;padding-top:var(--s3);border-top:1px solid var(--ink-3)}
-.ed .home textarea{font-family:ui-monospace,Menlo,monospace;font-size:var(--t-sm);min-height:160px;width:100%}
-.ed .hl3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}.ed h4{font-size:var(--t-sm);color:var(--ink-2);margin-bottom:var(--s05)}
+.ed .now{display:grid;grid-template-columns:auto 1fr;gap:var(--s05) var(--s2);font-size:var(--t-sm);align-content:start}.ed .now span{color:var(--ink-2)}
+.ed .now img{grid-column:1/-1;width:100%;border-radius:var(--r);background:var(--ink-4)}
+.ed .home{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--ink-3)}
+.ed .h3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}.ed h4{font-size:var(--t-sm);color:var(--ink-2);margin-bottom:var(--s05)}
 .ed .ord{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:var(--s1)}
 .ed .ord li{display:grid;grid-template-columns:auto 48px 1fr auto;gap:var(--s1);align-items:center;padding:4px var(--s1);border:1px solid var(--ink-3);border-radius:var(--r);background:var(--bg);cursor:grab;font-size:var(--t-sm)}
 .ed .ord li img{width:48px;height:27px;object-fit:cover;border-radius:3px;background:var(--ink-4)}.ed .ord li .h{color:var(--ink-2)}.ed .ord li button{color:var(--ink-2);padding:0 4px}
 .ed .ord li.drag{opacity:.4}.ed .ord.rows li{grid-template-columns:auto 1fr auto}
-.ed .nw{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:var(--s1);align-items:center}
-@media (max-width:980px){.ed .hl3,.ed .nw{grid-template-columns:1fr}}
-@media (max-width:980px){.ed{grid-template-columns:1fr}.ed .list{position:static;max-height:240px}.ed .form,.ed .thumb{grid-template-columns:1fr}}
+@media (max-width:980px){.ed,.ed .form,.ed .vid,.ed .h3{grid-template-columns:minmax(0,1fr)}.ed .ls{position:static;max-height:240px}}
 </style></head>
-<body data-base="./"><header class="nav"><div class="wrap in"><a class="lg" href="index.html">Hansy<small>Kim Hangyeol</small></a><nav class="tabs"><a href="index.html">홈</a><a href="works.html">작업</a><a href="tools.html">도구 · 자동화</a><a href="resume.html">이력서</a><a href="edit.html" aria-current="page">편집</a></nav><div class="cta"><span class="pill" id="mode">확인 중</span></div></div></header>
+<body data-base="./"><header class="nav"><div class="wrap in"><a class="lg" href="index.html">Hansy<small>Kim Hangyeol</small></a><nav class="tabs"><a href="index.html">홈</a><a href="works.html">작업</a><a href="tools.html">도구 · 자동화</a><a href="resume.html">이력서</a></nav><div class="cta"></div></div></header>
 <main><div class="wrap sec"><h1 class="pg-h">편집</h1>
-<div class="ed"><aside class="list" id="list"></aside>
-<section>
- <div class="form" id="form"></div>
- <div class="thumb" id="thumb"></div>
- <div class="home"><h3>홈 구성</h3><div class="hl3"><div><h4>상단 빌보드 순서</h4><ol class="ord" data-k="billboard"></ol><select class="add" data-k="billboard"></select></div><div><h4>대표 작업 순서</h4><ol class="ord" data-k="rep"></ol><select class="add" data-k="rep"></select></div><div><h4>행 순서</h4><ol class="ord rows" data-k="rows"></ol></div></div>
-<details><summary>home.json 직접 편집</summary><textarea id="homejson" spellcheck="false"></textarea></details>
-<h3>새 작업 추가</h3><div class="nw"><input type="text" id="nw-id" placeholder="ID (영문, 예: td_newyear)"><input type="text" id="nw-title" placeholder="제목"><input type="file" id="nw-file" accept="video/*"><button class="btn ghost sm" id="nw-go">원본 올리고 추가</button></div></div>
- <div class="bar"><button class="btn" id="save">저장</button><button class="btn ghost" id="build">빌드</button><button class="btn ghost" id="export">works.json 내려받기</button><button class="btn ghost" id="exporthome">home.json 내려받기</button><label class="pill"><input type="checkbox" id="showhid"> 숨김 포함</label><span class="st" id="st"></span></div>
-</section></div></div></main>
+<div class="ed">
+ <div class="bar"><button class="btn" id="copy">변경 내용 복사</button><button class="btn ghost" id="undo">처음으로</button><span class="st" id="st">바꾼 것 없음</span></div>
+ <aside><div class="ls" id="ls"></div><label class="tg"><input type="checkbox" id="showhid"> 숨김 포함</label></aside>
+ <section>
+  <div class="form" id="form"></div>
+  <div class="vid" id="vid"></div>
+  <div class="home"><h3>홈 순서</h3><div class="h3"><div><h4>피처드</h4><ol class="ord" data-k="billboard"></ol><select class="add" data-k="billboard"></select></div><div><h4>대표 작업</h4><ol class="ord" data-k="rep"></ol><select class="add" data-k="rep"></select></div><div><h4>줄</h4><ol class="ord rows" data-k="rows"></ol></div></div></div>
+ </section>
+</div></div></main>
 <script>
 (() => {
+  'use strict';
   const $ = (s, r = document) => r.querySelector(s); const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const KINDS = { '3d': '3D 영상', ai: 'AI 영상', motion: '모션 영상', owned: '온드 콘텐츠', image: '이미지 소재', personal: '개인 작업', tools: '도구 · 자동화' };
-  let W = [], H = {}, cur = null, server = false, dirty = false;
-  const st = m => { $('#st').textContent = m; };
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const poster = w => (w.media && (w.media.poster || w.media.shot)) || '';
+  const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
   const pr = w => (typeof w.priority === 'number' ? w.priority : 999);
-  async function load() {
-    try { const r = await fetch('api/ping', { cache: 'no-store' }); server = r.ok; } catch (e) { server = false; }
-    $('#mode').textContent = server ? '로컬 저장 모드' : '내려받기 모드';
-    W = await (await fetch('data/works.json?' + Date.now())).json();
-    try { H = await (await fetch('data/home.json?' + Date.now())).json(); } catch (e) { H = {}; }
-    $('#homejson').value = JSON.stringify(H, null, 1);
-    homeUI(); list(); pick((location.hash || '').slice(1) || W.find(w => w.grade <= 2).id);
-  }
+  const poster = w => (w.media && (w.media.poster_w || w.media.poster || w.media.shot)) || '';
+  let W0, H0, W, H, cur = null; const thumbs = {};   // thumbs[id] = {video, t}
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const FIELDS = [['title', '제목'], ['type', '종류'], ['priority', '우선 순서 (작을수록 앞)', 'number'], ['grade', '노출', 'grade'], ['copy.one', '한 줄 소개', 'area'], ['highlight', '특별 성과 한 줄', 'area'], ['contrib', '기여도'], ['dur', '길이'], ['tools', '툴 (· 로 구분)', 'list'], ['channels', '매체 (· 로 구분)', 'list'], ['period', '시기']];
+  const get = (w, k) => k.split('.').reduce((o, x) => (o == null ? undefined : o[x]), w);
+  const set = (w, k, v) => { const ks = k.split('.'); let o = w; ks.slice(0, -1).forEach(x => { o = o[x] || (o[x] = {}); }); if (v === undefined || v === '') delete o[ks.at(-1)]; else o[ks.at(-1)] = v; };
+  const same = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+  const KEYS = [...FIELDS.map(f => f[0]), 'kinds', 'media.billboard', 'media.start'];
+  const diff = () => {
+    const out = { works: {}, home: {} };
+    W.forEach(w => { const o = W0.find(x => x.id === w.id); const d = {}; KEYS.forEach(k => { if (!same(get(w, k), get(o, k))) d[k] = get(w, k) ?? null; }); if (thumbs[w.id]) d.thumb = thumbs[w.id]; if (Object.keys(d).length) out.works[w.id] = d; });
+    ['billboard', 'rep', 'rows'].forEach(k => { if (!same(H[k], H0[k])) out.home[k] = H[k]; });
+    if (!Object.keys(out.home).length) delete out.home; if (!Object.keys(out.works).length) delete out.works;
+    return out;
+  };
+  const LBL = Object.fromEntries([...FIELDS.map(f => [f[0], f[1].split(' (')[0]]), ['kinds', '분류'], ['media.billboard', '피처드 구간'], ['media.start', '호버 시작']]);
+  const human = d => {
+    const L = [];
+    Object.entries(d.works || {}).forEach(([id, c]) => { const w = W.find(x => x.id === id); L.push(`- ${w.title} (${id}): ` + Object.entries(c).map(([k, v]) => k === 'thumb' ? `썸네일 = ${(w.media.videos[v.video] || {}).label || '영상'} ${v.t}초` : k === 'media.billboard' ? `피처드 구간 ${v[0]}~${v[1]}초` : k === 'media.start' ? `호버 시작 ${v}초` : `${LBL[k] || k} → ${Array.isArray(v) ? v.join(' · ') : v}`).join(' / ')); });
+    Object.keys(d.home || {}).forEach(k => L.push(`- 홈 ${({ billboard: '피처드', rep: '대표 작업', rows: '줄' })[k]} 순서 변경`));
+    return L.join('\n');
+  };
+  const st = () => { const d = diff(); const n = Object.keys(d.works || {}).length + Object.keys(d.home || {}).length; $('#st').textContent = n ? `바꾼 것 ${n}건` : '바꾼 것 없음'; list(); };
   function list() {
-    const show = $('#showhid').checked; const items = W.filter(w => show || w.grade <= 2).sort((a, b) => pr(a) - pr(b) || a.grade - b.grade || (a.sort || 99) - (b.sort || 99));
-    $('#list').innerHTML = items.map(w => `<button data-id="${esc(w.id)}" aria-pressed="${cur && cur.id === w.id}" class="${w.grade > 2 ? 'hid' : ''}"><span class="n">${typeof w.priority === 'number' ? w.priority : '–'}</span><img src="${esc(poster(w))}" alt=""><span><b>${esc(w.title)}</b><small>${esc(w.type || '')}</small></span></button>`).join('');
-    $$('#list button').forEach(b => b.addEventListener('click', () => pick(b.dataset.id)));
+    const show = $('#showhid').checked; const d = diff().works || {};
+    const items = W.filter(w => show || w.grade <= 2).sort((a, b) => pr(a) - pr(b) || a.grade - b.grade);
+    $('#ls').innerHTML = items.map(w => `<button data-id="${esc(w.id)}" aria-pressed="${!!cur && cur.id === w.id}" class="${w.grade > 2 ? 'hid' : ''} ${d[w.id] ? 'ch' : ''}"><span class="n">${typeof w.priority === 'number' ? w.priority : '–'}</span><img src="${esc(poster(w))}" alt=""><span><b>${esc(w.title)}</b><small>${esc(w.type || '')}</small></span></button>`).join('');
+    $$('#ls button').forEach(b => b.addEventListener('click', () => pick(b.dataset.id)));
   }
-  function field(label, key, val, type = 'text') { return `<label>${label}${type === 'textarea' ? `<textarea data-k="${key}">${esc(val)}</textarea>` : `<input type="${type}" data-k="${key}" value="${esc(val)}">`}</label>`; }
   function pick(id) {
-    const w = W.find(x => x.id === id); if (!w) return; cur = w; location.hash = id;
-    $$('#list button').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === id));
-    const c = w.copy || (w.copy = {});
-    $('#form').innerHTML = [
-      field('제목', 'title', w.title), field('부제', 'subtitle', w.subtitle || ''),
-      field('종류 (카드 부제·상영관 「종류」)', 'type', w.type || ''), field('우선 순서 (작을수록 앞)', 'priority', typeof w.priority === 'number' ? w.priority : '', 'number'),
-      field('한 줄 소개', 'copy.one', c.one || '', 'textarea'), field('특별 성과 한 줄 (있을 때만 표시)', 'highlight', w.highlight || '', 'textarea'),
-      field('기여도', 'contrib', w.contrib || ''), field('길이', 'dur', w.dur || ''),
-      field('툴 (· 로 구분)', 'tools', (w.tools || []).join(' · ')), field('매체 (· 로 구분)', 'channels', (w.channels || []).join(' · ')),
-      field('시기', 'period', w.period || ''), `<label>노출<select data-k="grade"><option value="1"${w.grade === 1 ? ' selected' : ''}>대표(1)</option><option value="2"${w.grade === 2 ? ' selected' : ''}>일반(2)</option><option value="3"${w.grade >= 3 ? ' selected' : ''}>숨김</option></select></label>`,
-      field('홈 피처드 구간 시작(초)', 'bb.a', (w.media && w.media.billboard ? w.media.billboard[0] : ''), 'number'), field('홈 피처드 구간 끝(초)', 'bb.b', (w.media && w.media.billboard ? w.media.billboard[1] : ''), 'number'),
-      field('호버 미리보기 시작(초)', 'start', (w.media && w.media.start) || 0, 'number'),
-      `<label style="grid-column:1/-1">분류<span class="kinds">${Object.entries(KINDS).map(([k, v]) => `<label><input type="checkbox" data-kind="${k}"${(w.kinds || []).includes(k) ? ' checked' : ''}>${v}</label>`).join('')}</span></label>`,
-    ].join('');
-    $$('#form [data-k]').forEach(el => el.addEventListener('input', () => { apply(w, el.dataset.k, el.value); dirty = true; }));
-    $$('#form [data-kind]').forEach(el => el.addEventListener('change', () => { w.kinds = Object.keys(KINDS).filter(k => $(`#form [data-kind="${k}"]`).checked); dirty = true; }));
-    thumb(w);
+    const w = W.find(x => x.id === id); if (!w) return; cur = w; history.replaceState(null, '', '#' + id);
+    $('#form').innerHTML = FIELDS.map(([k, l, t]) => {
+      const v = get(w, k);
+      if (t === 'grade') return `<label>${l}<select data-k="${k}"><option value="1"${v === 1 ? ' selected' : ''}>대표</option><option value="2"${v === 2 ? ' selected' : ''}>일반</option><option value="3"${v >= 3 ? ' selected' : ''}>숨김</option></select></label>`;
+      if (t === 'area') return `<label>${l}<textarea data-k="${k}">${esc(v || '')}</textarea></label>`;
+      return `<label>${l}<input type="${t === 'number' ? 'number' : 'text'}" data-k="${k}" data-t="${t || ''}" value="${esc(t === 'list' ? (v || []).join(' · ') : (v ?? ''))}"></label>`;
+    }).join('') + `<div class="kinds">${Object.entries(KINDS).map(([k, v]) => `<label><input type="checkbox" data-kind="${k}"${(w.kinds || []).includes(k) ? ' checked' : ''}>${v}</label>`).join('')}</div>`;
+    $$('#form [data-k]').forEach(el => el.addEventListener('input', () => {
+      const k = el.dataset.k, t = el.dataset.t; let v = el.value;
+      if (k === 'priority') v = v === '' ? undefined : +v; else if (k === 'grade') v = +v; else if (t === 'list') v = v.split('·').map(s => s.trim()).filter(Boolean);
+      set(w, k, v); st();
+    }));
+    $$('#form [data-kind]').forEach(el => el.addEventListener('change', () => { w.kinds = Object.keys(KINDS).filter(k => $(`#form [data-kind="${k}"]`).checked); st(); }));
+    video(w); st();
   }
-  function apply(w, k, v) {
-    if (k === 'copy.one') { w.copy.one = v; return; }
-    if (k.startsWith('bb.')) { const m = w.media || (w.media = {}); const bb = m.billboard || (m.billboard = [0, 8]); if (k === 'bb.a') bb[0] = +v || 0; if (k === 'bb.b') bb[1] = +v || 8; return; }
-    if (k === 'start') { (w.media || (w.media = {})).start = +v || 0; return; }
-    if (k === 'priority') { w.priority = v === '' ? undefined : +v; list(); return; }
-    if (k === 'grade') { w.grade = +v; list(); return; }
-    if (k === 'tools' || k === 'channels') { w[k] = v.split('·').map(s => s.trim()).filter(Boolean); return; }
-    w[k] = v; if (k === 'title') list();
-  }
-  function thumb(w) {
-    const m = w.media || {}; const srcs = (m.videos || []).map(v => ({ label: v.label || '영상', src: v.hd }));
-    const T = $('#thumb');
-    if (!srcs.length) { T.innerHTML = `<div><h3>썸네일</h3><p class="sub">영상 파일이 없어 프레임 캡처는 불가 — <code>assets/poster/${esc(w.id)}.jpg</code> 파일을 직접 바꾸세요.</p></div><div class="cur"><img src="${esc(m.poster || m.shot || '')}" alt=""></div>`; return; }
-    T.innerHTML = `<div><h3>썸네일 — 프레임 고르기</h3><div class="vwrap"><video preload="metadata" muted playsinline crossorigin="anonymous"></video></div>
+  function video(w) {
+    const vs = (w.media && w.media.videos) || []; const V0 = $('#vid');
+    if (!vs.length) { V0.innerHTML = `<p class="sub">영상이 없는 작품 — 썸네일은 이미지 파일을 채팅으로 보내 주세요</p>`; return; }
+    const m = w.media; const bb = m.billboard || [];
+    V0.innerHTML = `<div><div class="vwrap"><video preload="metadata" muted playsinline></video></div>
 <div class="scrub"><span class="t">0:00.0</span><input type="range" min="0" max="1000" value="0"><span class="d">0:00.0</span></div>
-<div class="steps"><select class="src">${srcs.map((s, i) => `<option value="${esc(s.src)}">${esc(s.label)}</option>`).join('')}</select><button class="btn ghost sm" data-step="-1">−1초</button><button class="btn ghost sm" data-step="-0.04">−1프레임</button><button class="btn ghost sm" data-step="0.04">+1프레임</button><button class="btn ghost sm" data-step="1">+1초</button><button class="btn sm cap">이 프레임을 썸네일로</button><button class="btn ghost sm bba">피처드 시작 = 여기</button><button class="btn ghost sm bbb">피처드 끝 = 여기</button><button class="btn ghost sm hst">호버 시작 = 여기</button></div></div>
-<div class="cur"><h3>현재 썸네일</h3><img src="${esc((m.poster || m.shot || '') + '?' + Date.now())}" alt=""><p class="sub">저장 위치 <code>assets/poster/${esc(w.id)}.jpg</code> — 16:9 카드용 합성본은 빌드 때 자동 생성</p></div>`;
-    const V = $('video', T), R = $('input[type=range]', T), tEl = $('.t', T), dEl = $('.d', T);
-    const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
-    const setSrc = s => { V.src = s; V.pause(); V.currentTime = 0; };
-    setSrc(srcs[0].src); $('.src', T).addEventListener('change', e => setSrc(e.target.value));
-    V.addEventListener('loadedmetadata', () => { dEl.textContent = fmt(V.duration || 0); V.pause(); });
-    V.addEventListener('timeupdate', () => { if (V.duration) { R.value = Math.round(V.currentTime / V.duration * 1000); tEl.textContent = fmt(V.currentTime); } });
+<div class="steps"><select class="src">${vs.map((v, i) => `<option value="${i}">${esc(v.label || '영상')} (${v.w}×${v.h})</option>`).join('')}</select><button class="btn ghost sm" data-s="-1">−1초</button><button class="btn ghost sm" data-s="-0.04">−1프레임</button><button class="btn ghost sm" data-s="0.04">+1프레임</button><button class="btn ghost sm" data-s="1">+1초</button></div>
+<div class="steps"><button class="btn sm" data-a="thumb">썸네일 = 이 프레임</button><button class="btn ghost sm" data-a="a">피처드 시작 = 여기</button><button class="btn ghost sm" data-a="b">피처드 끝 = 여기</button><button class="btn ghost sm" data-a="start">호버 시작 = 여기</button></div></div>
+<div class="now"><span>피처드 구간</span><b class="vb">${bb.length ? `${bb[0]} ~ ${bb[1]}초` : '—'}</b><span>호버 시작</span><b class="vs">${m.start ?? 0}초</b><span>썸네일</span><b class="vt">${thumbs[w.id] ? `${thumbs[w.id].t}초 (새로 고름)` : '지금 것'}</b><img class="cap" src="${esc(poster(w))}" alt=""></div>`;
+    const V = $('video', V0), R = $('input[type=range]', V0), sel = $('.src', V0); let vi = thumbs[w.id] ? thumbs[w.id].video : 0; sel.value = vi;
+    const load = i => { vi = +i; V.src = vs[vi].hd; V.pause(); };
+    load(vi); sel.addEventListener('change', () => load(sel.value));
+    V.addEventListener('loadedmetadata', () => { $('.d', V0).textContent = fmt(V.duration || 0); });
+    V.addEventListener('timeupdate', () => { if (V.duration) { R.value = Math.round(V.currentTime / V.duration * 1000); $('.t', V0).textContent = fmt(V.currentTime); } });
     R.addEventListener('input', () => { if (V.duration) { V.pause(); V.currentTime = R.value / 1000 * V.duration; } });
-    $$('[data-step]', T).forEach(b => b.addEventListener('click', () => { V.pause(); V.currentTime = Math.max(0, Math.min((V.duration || 0) - .01, V.currentTime + +b.dataset.step)); }));
+    $$('[data-s]', V0).forEach(b => b.addEventListener('click', () => { V.pause(); V.currentTime = Math.max(0, Math.min((V.duration || 0) - .01, V.currentTime + +b.dataset.s)); }));
     V.addEventListener('click', () => { V.paused ? V.play() : V.pause(); });
-    const setT = (k, name) => { const t = +V.currentTime.toFixed(1); apply(w, k, t); const inp = $(`#form [data-k="${k}"]`); if (inp) inp.value = t; dirty = true; st(`${name} ${t}초 — 저장 후 빌드`); };
-    $('.bba', T).addEventListener('click', () => setT('bb.a', '피처드 시작')); $('.bbb', T).addEventListener('click', () => setT('bb.b', '피처드 끝')); $('.hst', T).addEventListener('click', () => setT('start', '호버 시작'));
-    $('.cap', T).addEventListener('click', async () => {
-      if (!V.videoWidth) return st('영상이 아직 준비되지 않았습니다');
-      const c = document.createElement('canvas'); c.width = V.videoWidth; c.height = V.videoHeight; c.getContext('2d').drawImage(V, 0, 0);
-      let data; try { data = c.toDataURL('image/jpeg', .92); } catch (e) { return st('캡처 실패 — 교차 출처 영상은 로컬 서버에서만 가능'); }
-      if (server) { const r = await (await fetch('api/poster', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: w.id, data }) })).json(); if (r.ok) { w.media.poster = r.path; $('.cur img', T).src = r.path + '?' + Date.now(); st(`썸네일 저장: ${r.path} — 「저장」 후 「빌드」`); dirty = true; } else st('저장 실패 ' + (r.err || '')); }
-      else { const a = document.createElement('a'); a.download = `${w.id}.jpg`; a.href = data; a.click(); st(`내려받은 ${w.id}.jpg 를 assets/poster/ 에 넣고 빌드하세요`); }
-    });
+    const t = () => +V.currentTime.toFixed(2);
+    $$('[data-a]', V0).forEach(b => b.addEventListener('click', () => {
+      const a = b.dataset.a;
+      if (a === 'thumb') { thumbs[w.id] = { video: vi, t: t() }; try { const c = document.createElement('canvas'); c.width = V.videoWidth; c.height = V.videoHeight; c.getContext('2d').drawImage(V, 0, 0); $('.cap', V0).src = c.toDataURL('image/jpeg', .8); } catch (e) { } $('.vt', V0).textContent = `${t()}초 (새로 고름)`; }
+      if (a === 'a' || a === 'b') { const r = (m.billboard || [m.start || 0, (m.start || 0) + 8]).slice(); r[a === 'a' ? 0 : 1] = t(); if (r[1] <= r[0]) r[1] = +(r[0] + 6).toFixed(2); m.billboard = r; $('.vb', V0).textContent = `${r[0]} ~ ${r[1]}초`; }
+      if (a === 'start') { m.start = t(); $('.vs', V0).textContent = `${m.start}초`; }
+      st();
+    }));
   }
   function homeUI() {
     const name = id => { const w = W.find(x => x.id === id); return w ? w.title : id; };
@@ -137,36 +137,23 @@
         li.addEventListener('dragstart', () => { from = +li.dataset.i; li.classList.add('drag'); });
         li.addEventListener('dragend', () => li.classList.remove('drag'));
         li.addEventListener('dragover', ev => ev.preventDefault());
-        li.addEventListener('drop', ev => { ev.preventDefault(); const to = +li.dataset.i; if (from == null || from === to) return; const [x] = arr.splice(from, 1); arr.splice(to, 0, x); dirty = true; sync(); });
+        li.addEventListener('drop', ev => { ev.preventDefault(); const to = +li.dataset.i; if (from == null || from === to) return; const [x] = arr.splice(from, 1); arr.splice(to, 0, x); homeUI(); st(); });
       });
-      $$('[data-x]', ol).forEach(b => b.addEventListener('click', () => { arr.splice(+b.dataset.x, 1); dirty = true; sync(); }));
+      $$('[data-x]', ol).forEach(b => b.addEventListener('click', () => { arr.splice(+b.dataset.x, 1); homeUI(); st(); }));
     });
-    $$('select.add').forEach(sel => { const k = sel.dataset.k; sel.innerHTML = '<option value="">+ 추가</option>' + W.filter(w => w.grade <= 2 && !(H[k] || []).includes(w.id)).map(w => `<option value="${esc(w.id)}">${esc(w.title)}</option>`).join(''); sel.onchange = () => { if (sel.value) { (H[k] || (H[k] = [])).push(sel.value); dirty = true; sync(); } }; });
+    $$('select.add').forEach(sel => { const k = sel.dataset.k; sel.innerHTML = '<option value="">+ 추가</option>' + W.filter(w => w.grade <= 2 && !(H[k] || []).includes(w.id)).map(w => `<option value="${esc(w.id)}">${esc(w.title)}</option>`).join(''); sel.onchange = () => { if (sel.value) { H[k].push(sel.value); homeUI(); st(); } }; });
   }
-  function sync() { $('#homejson').value = JSON.stringify(H, null, 1); homeUI(); }
-  $('#homejson').addEventListener('change', () => { if (readHome()) homeUI(); });
-  $('#nw-go').addEventListener('click', async () => {
-    if (!server) return st('새 작업 추가는 로컬 서버 모드에서만 (python src/edit_server.py)');
-    const id = $('#nw-id').value.trim(), title = $('#nw-title').value.trim(), f = $('#nw-file').files[0];
-    if (!id) return st('ID를 입력하세요');
-    let master = '';
-    if (f) { st(`원본 올리는 중… ${(f.size / 1e6).toFixed(0)}MB`); const r = await (await fetch('api/upload?name=' + encodeURIComponent(f.name), { method: 'POST', body: f })).json(); if (!r.ok) return st('업로드 실패'); master = r.name; }
-    st('화질별 사본 만드는 중… (영상 길이에 따라 1~3분)');
-    const r = await (await fetch('api/addwork', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, title, master }) })).json();
-    if (!r.ok) return st('추가 실패: ' + (r.err || '')); st('추가됨 — 분류·썸네일을 정하고 저장 → 빌드'); W = await (await fetch('data/works.json?' + Date.now())).json(); list(); pick(id);
+  $('#copy').addEventListener('click', async e => {
+    const d = diff(); if (!d.works && !d.home) return;
+    const text = `포폴 수정 요청\n${human(d)}\n\n\`\`\`pf-edit\n${JSON.stringify(d)}\n\`\`\``;
+    try { await navigator.clipboard.writeText(text); e.target.textContent = '복사됨 — 채팅에 붙여넣기'; setTimeout(() => e.target.textContent = '변경 내용 복사', 2400); }
+    catch (err) { prompt('아래 내용을 복사해 채팅에 붙여넣기', text); }
   });
-  const dl = (name, obj) => { const a = document.createElement('a'); a.download = name; a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 1)], { type: 'application/json' })); a.click(); };
-  const readHome = () => { try { H = JSON.parse($('#homejson').value); return true; } catch (e) { st('home.json 문법 오류: ' + e.message); return false; } };
-  $('#save').addEventListener('click', async () => {
-    if (!readHome()) return;
-    if (!server) { dl('works.json', W); dl('home.json', H); st('두 파일을 data/ 에 덮어쓰고 빌드하세요'); return; }
-    const r = await (await fetch('api/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ works: W, home: H }) })).json();
-    st(r.ok ? '저장됨 — 「빌드」를 누르면 사이트에 반영' : '저장 실패 ' + (r.err || '')); dirty = !r.ok;
-  });
-  $('#build').addEventListener('click', async () => { if (!server) return st('빌드는 로컬 서버 모드에서만 (python src/edit_server.py)'); st('빌드 중…'); const r = await (await fetch('api/build', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })).json(); st(r.ok ? '빌드 완료 — git commit · push 하면 배포' : '빌드 실패: ' + r.out); });
-  $('#export').addEventListener('click', () => dl('works.json', W)); $('#exporthome').addEventListener('click', () => { if (readHome()) dl('home.json', H); });
+  $('#undo').addEventListener('click', () => { W = clone(W0); H = clone(H0); Object.keys(thumbs).forEach(k => delete thumbs[k]); homeUI(); pick(cur ? cur.id : W[0].id); });
   $('#showhid').addEventListener('change', list);
-  addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
-  load();
+  (async () => {
+    W0 = await (await fetch('data/works.json?' + Date.now())).json(); H0 = await (await fetch('data/home.json?' + Date.now())).json();
+    W = clone(W0); H = clone(H0); homeUI(); pick(location.hash.slice(1) || W.filter(w => w.grade <= 2).sort((a, b) => pr(a) - pr(b))[0].id);
+  })();
 })();
 </script></body></html>

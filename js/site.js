@@ -41,28 +41,29 @@
   /* ---------- 디자인 모듈: data/design.json의 pick이 기본, ?design 이면 오른쪽 아래 패널에서 바꿔 보기 ---------- */
   (() => {
     let DZ = null; try { DZ = JSON.parse($('#design-data').textContent); } catch (e) { return; }
-    const keys = Object.keys(DZ.modules); let saved = null;
+    const keys = Object.keys(DZ.modules); const M = DZ.modules; let saved = null;
     try { saved = JSON.parse(sessionStorage.getItem('pf.design') || 'null'); } catch (e) { }
-    const apply = p => keys.forEach(k => { if (p[k] != null) document.body.dataset[k] = p[k]; });
+    const apply = p => keys.forEach(k => { if (p[k] == null) return; if (M[k].type === 'range') document.body.style.setProperty(`--${k}`, p[k] + (M[k].unit || '')); else document.body.dataset[k] = p[k]; });
     if (saved) apply(saved);
-    if (!new URLSearchParams(location.search).has('design') && !saved) return;
-    const cur = Object.fromEntries(keys.map(k => [k, String(document.body.dataset[k] || DZ.pick[k])]));
-    const code = () => keys.map(k => `${DZ.modules[k].name} ${cur[k]}`).join(' · ');
+    const open = new URLSearchParams(location.search).has('design');
+    if (!open && !saved) return;
+    const cur = Object.assign({}, DZ.pick, saved || {}); keys.forEach(k => cur[k] = String(cur[k]));
+    const code = () => keys.map(k => `${M[k].name} ${cur[k]}`).join(' · ');
+    const row = k => M[k].type === 'range'
+      ? `<div><h5>${esc(M[k].name)}<small>${k}</small></h5><label class="rg"><input type="range" name="dz-${k}" min="${M[k].min}" max="${M[k].max}" step="${M[k].step}" value="${cur[k]}"><b>${cur[k]}${esc(M[k].unit || '')}</b></label></div>`
+      : `<div><h5>${esc(M[k].name)}<small>${k}</small></h5>${Object.entries(M[k].options).map(([v, t]) => `<label><input type="radio" name="dz-${k}" value="${v}"${cur[k] === v ? ' checked' : ''}><span><b>${v}</b>${esc(t)}</span></label>`).join('')}</div>`;
     const d = document.createElement('div'); d.className = 'dz';
-    d.innerHTML = `<button class="dzb" type="button">디자인</button><div class="dzp" role="dialog" aria-label="디자인 모듈 선택">` +
-      keys.map(k => `<div><h5>${esc(DZ.modules[k].name)}<small>${k}</small></h5>${Object.entries(DZ.modules[k].options).map(([v, t]) => `<label><input type="radio" name="dz-${k}" value="${v}"${cur[k] === v ? ' checked' : ''}><span><b>${v}</b>${esc(t)}</span></label>`).join('')}</div>`).join('') +
-      `<div class="sum"><code></code><span><button type="button" data-a="copy">코드 복사</button><button type="button" data-a="save">사이트 기본값으로 저장</button><button type="button" data-a="reset">원래대로</button></span></div></div>`;
+    d.innerHTML = `<button class="dzb" type="button">디자인</button><div class="dzp" role="dialog" aria-label="디자인 모듈 선택">${keys.map(row).join('')}<div class="sum"><code></code><span><button type="button" data-a="copy">코드 복사</button><button type="button" data-a="reset">원래대로</button></span></div></div>`;
     document.body.appendChild(d);
     const sum = $('.sum code', d); const upd = () => { sum.textContent = code(); };
-    upd(); if (innerWidth > 900 && new URLSearchParams(location.search).has('design')) d.classList.add('on');
+    upd(); if (open && innerWidth > 900) d.classList.add('on');
     $('.dzb', d).addEventListener('click', () => d.classList.toggle('on'));
-    $$('input', d).forEach(i => i.addEventListener('change', () => { cur[i.name.slice(3)] = i.value; apply(cur); try { sessionStorage.setItem('pf.design', JSON.stringify(cur)); } catch (e) { } upd(); dispatchEvent(new Event('resize')); }));
+    $$('input', d).forEach(i => i.addEventListener('input', () => {
+      const k = i.name.slice(3); cur[k] = i.value; if (i.type === 'range') i.nextElementSibling.textContent = i.value + (M[k].unit || '');
+      apply(cur); try { sessionStorage.setItem('pf.design', JSON.stringify(cur)); } catch (e) { } upd(); dispatchEvent(new Event('resize'));
+    }));
     $('[data-a="copy"]', d).addEventListener('click', async e => { try { await navigator.clipboard.writeText(code()); e.target.textContent = '복사됨'; setTimeout(() => e.target.textContent = '코드 복사', 1400); } catch (err) { } });
     $('[data-a="reset"]', d).addEventListener('click', () => { try { sessionStorage.removeItem('pf.design'); } catch (e) { } location.href = location.pathname + '?design'; });
-    $('[data-a="save"]', d).addEventListener('click', async e => {
-      try { const r = await (await fetch('api/design', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pick: cur }) })).json(); e.target.textContent = r.ok ? '저장됨 — 빌드하면 반영' : '저장 실패'; }
-      catch (err) { e.target.textContent = '로컬 편집 서버에서만 저장 — 코드를 보내 주세요'; }
-    });
   })();
 
   /* ---------- 내비 ---------- */
@@ -176,6 +177,8 @@
       if (user) hold('user'); else release('user');
     });
     snd && snd.addEventListener('click', () => { muted = !muted; if (V) V.muted = muted; snd.innerHTML = ico(muted ? 'mute' : 'vol', 'sm'); snd.setAttribute('aria-label', muted ? '소리 켜기' : '소리 끄기'); });
+    const fvEl = $('.fv', FEAT); const inset = () => fvEl.classList.toggle('inset', fvEl.getBoundingClientRect().width < innerWidth - 2);
+    addEventListener('resize', inset); inset();
     const ids = texts.map(t => t.dataset.id);
     $$('[data-open]', FEAT).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.open, { queue: ids, autoplay: true })));
     $$('[data-info]', FEAT).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.info, { queue: ids, autoplay: false, info: true })));
@@ -190,7 +193,7 @@
   const Theater = (() => {
     const T = document.createElement('div'); T.className = 'theater'; T.setAttribute('role', 'dialog'); T.setAttribute('aria-modal', 'true'); T.setAttribute('aria-label', '작품 재생');
     T.innerHTML = `<div class="bgart"></div><div class="veil"></div>
-<div class="top"><span class="crumb"></span><span class="pos num"></span><span class="r"><button class="ib infob" title="정보 (I)" aria-label="정보로 이동">i</button><button class="ib pipb" title="작게 보기 (P)" aria-label="작게 보기">${ico('pip')}</button><button class="ib full" title="전체화면 (F)" aria-label="전체화면">${ico('expand')}</button><button class="ib close" title="닫기 (Esc)" aria-label="닫기">${ico('close')}</button></span></div>
+<div class="top"><span class="crumb"></span><span class="pos num"></span><span class="r"><button class="ib pipb" title="작게 보기 (P)" aria-label="작게 보기">${ico('pip')}</button><button class="ib full" title="전체화면 (F)" aria-label="전체화면">${ico('expand')}</button><button class="ib close" title="닫기 (Esc)" aria-label="닫기">${ico('close')}</button></span></div>
 <div class="lay"><div class="stage">
  <div class="vw"><div class="big" aria-hidden="true">${ico('play', 'lg')}</div><div class="next" role="button" tabindex="0"><img alt=""><span><small>다음 작품</small><b></b></span><span class="cd num"></span><button class="ib cancel" aria-label="다음 작품 취소">${ico('close', 'sm')}</button></div></div>
  <div class="meta"><div><h1></h1><div class="s"></div></div></div>
@@ -199,15 +202,13 @@
 </div>
 <section class="panel" aria-label="작품 정보"><div class="desc"></div><div class="gal"></div><div class="sim"></div></section></div>`;
     document.body.appendChild(T);
-    const P = document.createElement('div'); P.className = 'pip'; P.innerHTML = `<div class="bar"><b></b><span><button class="ib exp" aria-label="크게 보기">${ico('expand', 'sm')}</button><button class="ib x" aria-label="닫기">${ico('close', 'sm')}</button></span></div><div class="pg"><i></i></div>`;
-    document.body.appendChild(P);
     const V = document.createElement('video'); V.playsInline = true; V.preload = 'metadata'; V.setAttribute('controlslist', 'nodownload');
     const el = { lay: $('.lay', T), vw: $('.vw', T), next: $('.next', T), h1: $('.meta h1', T), s: $('.meta .s', T), crumb: $('.crumb', T), pos: $('.pos', T), pg: $('.pg', T), pgi: $('.pg i', T), cur: $('.cur', T), durE: $('.dur', T), pp: $('.pp', T), mute: $('.mute', T), fmts: $('.fmts', T), desc: $('.desc', T), gal: $('.gal', T), sim: $('.sim', T), bg: $('.bgart', T), ctl: $('.ctl', T), panel: $('.panel', T) };
     let cur = null, queue = [], idx = 0, idleT = null, cdT = null, lastFocus = null, autoplay = true, frame = null, vi = 0, pushed = false;
     let MUTED = (() => { try { return sessionStorage.getItem('pf.muted') === '1'; } catch (e) { return false; } })();
     const kindOf = w => vidsOf(w).length ? 'video' : (w.media && w.media.youtube) ? 'youtube' : (w.links && w.links.embed) ? 'iframe' : 'image';
     const clearStage = () => { [...el.vw.children].forEach(n => { if (!n.classList.contains('big') && !n.classList.contains('next')) n.remove(); }); frame = null; V.pause(); };
-    const setAspect = (w, h) => { el.vw.style.setProperty('--va', `${w}/${h}`); el.vw.style.setProperty('--vr', (w / h).toFixed(4)); P.style.setProperty('--va', `${w}/${h}`); };
+    const setAspect = (w, h) => { el.vw.style.setProperty('--va', `${w}/${h}`); el.vw.style.setProperty('--vr', (w / h).toFixed(4)); };
     const chip = s => String(s).split(' — ')[0];
     const loadVideo = (v, keepTime) => {
       const t = keepTime ? V.currentTime : 0, playing = !V.paused;
@@ -259,33 +260,25 @@
     const open = (id, opt = {}) => {
       const w = BY[id]; if (!w) return; lastFocus = document.activeElement;
       queue = (opt.queue && opt.queue.length ? opt.queue : [id]).filter(x => BY[x]); idx = Math.max(0, queue.indexOf(id)); autoplay = opt.autoplay !== false;
-      if (P.classList.contains('on')) hidePip(false);
       cur = w; T.dataset.cur = w.id; T.classList.add('on'); document.body.style.overflow = 'hidden'; render(w); wake(); el.lay.scrollTop = 0; T.tabIndex = -1; T.focus({ preventScroll: true });
       T.scrollTop = 0; if (opt.info) setTimeout(toInfo, 350);
       window.__featPause && window.__featPause();
       const u = `${location.pathname}?w=${encodeURIComponent(id)}`;
       if (opt.replace) { pushed = false; hist.replace(null, u); } else if (pushed) hist.replace({ t: 1 }, u); else { pushed = true; hist.push({ t: 1 }, u); }
     };
-    const close = (toPip = true, fromPop = false) => {
+    const close = (fromPop = false) => {
       if (!T.classList.contains('on')) return;
-      const playing = cur && kindOf(cur) === 'video' && !V.paused && !V.ended;
       T.classList.remove('on'); document.body.style.overflow = ''; clearInterval(cdT); el.next.classList.remove('on');
       if (frame) { frame.remove(); frame = null; }
-      if (playing && toPip) showPip(); else V.pause();
+      V.pause(); if (document.pictureInPictureElement) document.exitPictureInPicture().catch(() => { });
       if (!fromPop) { if (pushed) { pushed = false; try { history.back(); } catch (e) { } } else hist.replace(null, location.pathname); } else pushed = false;
       document.title = document.body.dataset.title || document.title;
-      lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); if (!P.classList.contains('on')) window.__featResume && window.__featResume();
+      lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); window.__featResume && window.__featResume();
     };
-    addEventListener('popstate', () => { if (T.classList.contains('on')) close(true, true); });
-    const showPip = () => { P.prepend(V); $('.bar b', P).textContent = cur.title; P.classList.add('on'); };
-    const hidePip = (stop = true) => { P.classList.remove('on'); if (stop) { V.pause(); window.__featResume && window.__featResume(); } };
-    $('.exp', P).addEventListener('click', () => { P.classList.remove('on'); T.classList.add('on'); document.body.style.overflow = 'hidden'; el.vw.prepend(V); wake(); });
-    $('.x', P).addEventListener('click', () => hidePip(true));
-    P.addEventListener('click', e => { if (e.target === V) $('.exp', P).click(); });
+    addEventListener('popstate', () => { if (T.classList.contains('on')) close(true); });
     const toggle = () => { if (!cur || kindOf(cur) !== 'video') return; V.paused ? V.play().catch(() => { }) : V.pause(); };
     const toInfo = () => { T.scrollTop = 0; el.lay.scrollTo({ top: Math.max(0, el.panel.offsetTop - 16), behavior: RM ? 'auto' : 'smooth' }); };
-    $('.close', T).addEventListener('click', () => close(true));
-    $('.infob', T).addEventListener('click', toInfo);
+    $('.close', T).addEventListener('click', () => close());
     el.pp.addEventListener('click', toggle); el.vw.addEventListener('click', e => { if (e.target === V || e.target.closest('.big')) toggle(); });
     $('.prev', T).addEventListener('click', () => jump(idx - 1)); $('.nxt', T).addEventListener('click', () => jump(idx + 1));
     el.mute.addEventListener('click', () => { V.muted = !V.muted; });
@@ -294,18 +287,18 @@
     ['playing', 'canplay', 'pause', 'emptied'].forEach(ev => V.addEventListener(ev, () => { clearTimeout(bufT); el.vw.classList.remove('buffering'); }));
     document.addEventListener('fullscreenchange', () => { if (document.fullscreenElement && V.dataset.hd && !V.currentSrc.endsWith(V.dataset.hd.replace(/^\.\//, ''))) { const t = V.currentTime, pl = !V.paused; V.src = V.dataset.hd; V.addEventListener('loadedmetadata', () => { V.currentTime = t; if (pl) V.play().catch(() => { }); }, { once: true }); } });
     $('.full', T).addEventListener('click', () => { document.fullscreenElement ? document.exitFullscreen() : (el.vw.requestFullscreen && el.vw.requestFullscreen()); });
-    $('.pipb', T).addEventListener('click', async () => { if (!cur || kindOf(cur) !== 'video') { close(false); return; } if (document.pictureInPictureEnabled) { try { await V.requestPictureInPicture(); return; } catch (e) { } } close(true); });
+    const pipB = $('.pipb', T); if (!document.pictureInPictureEnabled) pipB.remove();
+    else pipB.addEventListener('click', () => { if (cur && kindOf(cur) === 'video') (document.pictureInPictureElement ? document.exitPictureInPicture() : V.requestPictureInPicture()).catch(() => { }); });
     $('.cancel', el.next).addEventListener('click', e => { e.stopPropagation(); clearInterval(cdT); el.next.classList.remove('on'); el.next.dataset.dismissed = '1'; });
     el.next.addEventListener('click', () => jump(idx + 1)); el.next.addEventListener('keydown', e => { if (e.key === 'Enter') jump(idx + 1); });
     V.addEventListener('loadedmetadata', () => { if (V.videoWidth && V.videoHeight && el.vw.contains(V)) setAspect(V.videoWidth, V.videoHeight); });
     V.addEventListener('play', () => { el.pp.innerHTML = ico('pause'); el.pp.setAttribute('aria-label', '일시정지'); el.vw.classList.remove('paused'); });
     V.addEventListener('pause', () => { el.pp.innerHTML = ico('play'); el.pp.setAttribute('aria-label', '재생'); el.vw.classList.add('paused'); });
     V.addEventListener('timeupdate', () => {
-      const p = V.duration ? V.currentTime / V.duration : 0; el.pgi.style.width = (p * 100) + '%'; $('.pg i', P).style.width = (p * 100) + '%';
+      const p = V.duration ? V.currentTime / V.duration : 0; el.pgi.style.width = (p * 100) + '%';
       el.cur.textContent = fmtT(V.currentTime); el.durE.textContent = V.duration ? '-' + fmtT(V.duration - V.currentTime) : '0:00'; el.pg.setAttribute('aria-valuenow', Math.round(p * 100));
     });
     V.addEventListener('ended', () => {
-      if (P.classList.contains('on')) { hidePip(true); return; }
       const n = BY[queue[idx + 1]]; if (!n || el.next.dataset.dismissed) { el.vw.classList.add('paused'); return; }
       $('img', el.next).src = url((n.media && n.media.poster16) || posterOf(n)); $('b', el.next).textContent = n.title; el.next.classList.add('on');
       let left = 5; const cd = $('.cd', el.next); cd.textContent = left; cd.style.setProperty('--p', 0);
@@ -320,13 +313,13 @@
       if (!T.classList.contains('on') || ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
       const k = e.key;
       if (k === 'Tab') { const f = $$('button,a[href],[tabindex="0"]', T).filter(x => !x.hidden && x.offsetParent !== null); if (f.length) { const a = f[0], z = f[f.length - 1]; if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); } } return; }
-      if (k === 'Escape') close(true);
+      if (k === 'Escape') close();
       else if (k === ' ' || k === 'k') { e.preventDefault(); toggle(); }
       else if (k === 'ArrowLeft') { e.shiftKey ? jump(idx - 1) : (V.currentTime -= 5); }
       else if (k === 'ArrowRight') { e.shiftKey ? jump(idx + 1) : (V.currentTime += 5); }
       else if (k === 'j') V.currentTime -= 10; else if (k === 'l') V.currentTime += 10;
       else if (/^[0-9]$/.test(k) && V.duration) V.currentTime = V.duration * (+k / 10);
-      else if (k === 'm') V.muted = !V.muted; else if (k === 'f') $('.full', T).click(); else if (k === 'p') $('.pipb', T).click(); else if (k === 'i') toInfo();
+      else if (k === 'm') V.muted = !V.muted; else if (k === 'f') $('.full', T).click(); else if (k === 'p' && T.contains(pipB)) pipB.click();
     });
     return { open, close };
   })();

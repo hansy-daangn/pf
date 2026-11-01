@@ -12,3 +12,5 @@
 .dz .sum code{font:inherit;color:#f2f0ea;word-break:keep-all}
 .dz .sum span{display:flex;gap:var(--s1);flex-wrap:wrap}
 .dz .sum button{padding:var(--s05) var(--s1);border-radius:999px;background:#f2f0ea;color:#0e0e10;font-weight:600}
+.dz label.rg{grid-template-columns:1fr auto;align-items:center}
+.dz label.rg input{width:100%;margin:0}

@@ -9,8 +9,6 @@
 .card:hover .art,.card:focus-visible .art{box-shadow:var(--shadow),var(--ring)}
 .card .t{font-size:var(--t-sm);font-weight:600;margin-top:var(--s1);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card .s{font-size:var(--t-micro);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .art.ph{display:grid;place-items:end start;padding:var(--s2)}
-.card .art.ph .pt{font-size:var(--t-micro);font-weight:600;color:var(--ink-2)}
 
 
 /* ==========================================================================

@@ -7,7 +7,7 @@ SRC = pathlib.Path(os.environ.get('PF_SRC', REPO / 'src')); DATA = pathlib.Path(
 W = json.load(open(DATA/'works.json')); R = json.load(open(DATA/'resume.json'))
 H = json.load(open(DATA/'home.json')) if (DATA/'home.json').exists() else {}
 D = json.load(open(DATA/'design.json'))
-BODY_ATTR = ''.join(f' data-{k}="{v}"' for k, v in D['pick'].items())
+BODY_ATTR = ''.join(f' data-{k}="{v}"' for k, v in D['pick'].items() if D['modules'][k].get('type') != 'range') + ' style="' + ''.join(f"--{k}:{v}{D['modules'][k].get('unit', '')};" for k, v in D['pick'].items() if D['modules'][k].get('type') == 'range') + '"'
 W = [w for w in W if w.get('grade', 3) <= 2]
 BY = {w['id']: w for w in W}
 def e(s): return html.escape(str(s if s is not None else ''))
@@ -36,24 +36,37 @@ def pdim(path):
 def orient(w):
     d = pdim(poster(w)); return 'tall' if d and d[1] / d[0] > 1.2 else 'wide'
 from PIL import ImageFilter, ImageEnhance
-def make_poster16(w):
-    """세로·정방 포스터 → 16:9 카드용 블러 배경 합성(assets/poster16/<id>.jpg). 원본보다 오래되면 재생성."""
-    m = w.get('media') or {}; src = poster(w)
-    if not src or m.get('poster16'): return m.get('poster16')
-    d = pdim(src)
-    if not d or d[0] / d[1] >= 1.6: return None  # 이미 가로면 그대로 cover
-    out = pathlib.Path('assets/poster16') / f"{w['id']}.jpg"; sp = REPO / src; op = REPO / out
+def is169(d): return bool(d) and abs(d[0] / d[1] - 16 / 9) < .04
+def blurfill(src, out):
+    """16:9가 아닌 이미지 → 1280×720 안에 원비율로 두고 빈 곳은 같은 이미지 블러로 채움"""
+    sp = REPO / src; op = REPO / out
     if op.exists() and op.stat().st_mtime >= sp.stat().st_mtime: return str(out)
-    try:
-        im = Image.open(sp).convert('RGB'); Wd, Hd = 1280, 720
-        bg = im.copy(); r = max(Wd / bg.width, Hd / bg.height); bg = bg.resize((int(bg.width * r) + 1, int(bg.height * r) + 1), Image.LANCZOS)
-        bg = bg.crop(((bg.width - Wd) // 2, (bg.height - Hd) // 2, (bg.width - Wd) // 2 + Wd, (bg.height - Hd) // 2 + Hd)).filter(ImageFilter.GaussianBlur(36))
-        bg = ImageEnhance.Brightness(bg).enhance(0.72)
-        fg = im.copy(); r2 = Hd / fg.height; fg = fg.resize((max(1, int(fg.width * r2)), Hd), Image.LANCZOS)
-        bg.paste(fg, ((Wd - fg.width) // 2, 0)); op.parent.mkdir(parents=True, exist_ok=True); bg.save(op, quality=86)
+    im = Image.open(sp).convert('RGB'); Wd, Hd = 1280, 720
+    bg = im.copy(); r = max(Wd / bg.width, Hd / bg.height); bg = bg.resize((int(bg.width * r) + 1, int(bg.height * r) + 1), Image.LANCZOS)
+    bg = bg.crop(((bg.width - Wd) // 2, (bg.height - Hd) // 2, (bg.width - Wd) // 2 + Wd, (bg.height - Hd) // 2 + Hd)).filter(ImageFilter.GaussianBlur(36))
+    bg = ImageEnhance.Brightness(bg).enhance(0.72)
+    fg = im.copy(); r2 = min(Wd / fg.width, Hd / fg.height); fg = fg.resize((max(1, int(fg.width * r2)), max(1, int(fg.height * r2))), Image.LANCZOS)
+    bg.paste(fg, ((Wd - fg.width) // 2, (Hd - fg.height) // 2)); op.parent.mkdir(parents=True, exist_ok=True); bg.save(op, quality=86)
+    return str(out)
+def make_poster16(w):
+    """16:9 카드 썸네일 — ① poster_w(직접 지정한 16:9) ② 포스터가 16:9면 그대로 ③ 16:9 영상이 있으면 그 영상의 프레임
+    ④ 없으면 포스터를 블러 배경 위에 원비율로(assets/poster16/<id>.jpg)"""
+    m = w.get('media') or {}; src = poster(w)
+    if m.get('poster_w') and (REPO / m['poster_w']).exists(): return m['poster_w']
+    if not src: return None
+    if is169(pdim(src)): return None
+    v = next((v for v in videos(w) if v.get('w') and is169((v['w'], v['h']))), None)
+    if v:
+        t = float(m.get('poster_w_t', m.get('start') or 0) or 0) + (0 if 'poster_w_t' in m else 1.0)
+        out = pathlib.Path('assets/poster16') / (f"{w['id']}_{t:g}".replace('.', 'p') + '.jpg'); op = REPO / out
+        if not op.exists() or op.stat().st_mtime < (REPO / v['hd']).stat().st_mtime:
+            op.parent.mkdir(parents=True, exist_ok=True)
+            for old in op.parent.glob(f"{w['id']}_*.jpg"): old.unlink()
+            r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{t}', '-i', str(REPO / v['hd']), '-frames:v', '1', '-vf', "scale='min(1280,iw)':-2", '-q:v', '3', str(op)], capture_output=True, text=True)
+            if r.returncode or not op.exists(): print('16:9 frame fail', w['id']); return None
         return str(out)
-    except Exception as ex:
-        print('poster16 fail', w['id'], ex); return None
+    try: return blurfill(src, pathlib.Path('assets/poster16') / f"{w['id']}.jpg")
+    except Exception as ex: print('poster16 fail', w['id'], ex); return None
 def thumbs(path):
     """카드용 WebP 640·1280 (원본보다 오래되면 재생성). 반환: srcset 문자열"""
     if not path or path.startswith('http'): return ''
@@ -146,7 +159,7 @@ def nav(cur):
 def foot():
     return f'''<footer><div class="wrap in"><span>© {datetime.date.today().year} 김한결 Hansy</span><span><a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a> · <a href="https://github.com/hansy-daangn" target="_blank" rel="noopener">GitHub ↗</a></span></div></footer>'''
 def tail():
-    dz = json.dumps({'pick': D['pick'], 'modules': {k: {'name': m['name'], 'options': m['options']} for k, m in D['modules'].items()}}, ensure_ascii=False, separators=(',', ':'))
+    dz = json.dumps({'pick': D['pick'], 'modules': {k: {x: m[x] for x in ('name', 'options', 'type', 'min', 'max', 'step', 'unit') if x in m} for k, m in D['modules'].items()}}, ensure_ascii=False, separators=(',', ':'))
     return f'{ICONS}<script type="application/json" id="design-data">{dz}</script><script type="application/json" id="works-data">{json.dumps(W, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")}</script><script src="js/site.js" defer></script></body></html>'
 
 def card(w, cls='wide'):
@@ -184,8 +197,8 @@ def home():
         texts.append(f'''<div class="fx{" on" if i == 0 else ""}"{"" if i == 0 else " hidden"} data-id="{e(w["id"])}"><div class="k">{e(w.get("type") or "")}{(" · " + e(w.get("year"))) if w.get("year") else ""}</div><h2>{nb(w["title"])}</h2>{f'<p class="one">{e(c.get("one"))}</p>' if c.get("one") else ''}
 <div class="bt"><button class="btn" data-open="{e(w["id"])}">{ico("play","sm")} 재생</button><button class="btn ghost" data-info="{e(w["id"])}">상세 정보</button></div></div>''')
     dots = ''.join(f'<button data-i="{j}" class="{"on" if j == 0 else ""}" aria-label="{j + 1}번째 작품"><i></i></button>' for j in range(len(feat)))
-    featured = f'''<section class="feat" aria-label="피처드 작업"><div class="fv">{''.join(frames)}<div class="veil"></div></div>
-<div class="ft"><div class="wrap in"><div class="fxs">{''.join(texts)}</div><div class="fctl" role="tablist" aria-label="피처드 전환">{dots}<button class="pp" aria-label="일시정지">{ico("pause","sm")}</button><button class="snd" aria-label="소리 켜기">{ico("mute","sm")}</button></div></div></div></section>''' if feat else ''
+    featured = f'''<section class="feat" aria-label="피처드 작업"><div class="fbox"><div class="fv">{''.join(frames)}<div class="veil"></div></div>
+<div class="ft"><div class="fxs">{''.join(texts)}</div><div class="fctl" role="tablist" aria-label="피처드 전환">{dots}<button class="pp" aria-label="일시정지">{ico("pause","sm")}</button><button class="snd" aria-label="소리 켜기">{ico("mute","sm")}</button></div></div></div></section>''' if feat else ''
     rep = [BY[i] for i in (H.get('rep') or []) if i in BY]
     rows = [row('대표 작업', rep, 'wide')] if rep else []
     for r in H.get('rows') or []:

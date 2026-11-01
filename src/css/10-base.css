@@ -7,7 +7,6 @@ a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 [hidden]{display:none!important}
 :focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:var(--s05)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .num{font-variant-numeric:tabular-nums}
 .nb{white-space:nowrap}
 .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
@@ -41,11 +40,7 @@ main{padding-top:var(--nav-h);animation:pagein calc(var(--dur)*1.5) var(--ease) 
 /* ---- 섹션 공통 ---- */
 .sec{padding-block:var(--s8)}
 .pg-h{font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:var(--s5)}
-.sub{color:var(--ink-2);font-size:var(--t-micro)}
 footer{padding:var(--s5) 0 var(--s13);color:var(--ink-2);font-size:var(--t-micro);border-top:1px solid var(--ink-3);margin-top:var(--s8)}
 footer .in{display:flex;justify-content:space-between;gap:var(--s3);flex-wrap:wrap}
 footer a:hover{color:var(--ink)}
-.rd{display:inline-block;width:calc(var(--n)*1ch);height:.78em;background:#0e0e10;box-shadow:inset 0 0 0 1px color-mix(in oklab,#f2f0ea 22%,transparent);vertical-align:-.08em;border-radius:1px}
-.theater .rd{animation:rdfill var(--dur) var(--ease) both;animation-delay:calc(var(--dur)/2)}
-@keyframes rdfill{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
 

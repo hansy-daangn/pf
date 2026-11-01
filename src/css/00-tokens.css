@@ -11,7 +11,7 @@
   --u:8px;
   --dur:400ms; --ease:cubic-bezier(.32,.72,0,1);
 }
-:root,body,.theater,.pip{
+:root,body,.theater{
   /* 색 파생 */
   --ink-2:color-mix(in oklab,var(--ink) 60%,transparent);
   --ink-3:color-mix(in oklab,var(--ink) 12%,transparent);
@@ -39,7 +39,7 @@
   --gut:clamp(var(--s2),4vw,var(--s8));
 }
 @media (prefers-reduced-motion:reduce){:root,body{--dur:0ms}}
-.theater,.pip{--bg:#0b0b0d;--ink:#f2f0ea;--shadow:0 2px 12px color-mix(in oklab,var(--bg) 60%,transparent);--shadow-lg:0 18px 50px color-mix(in oklab,var(--bg) 80%,transparent)}
+.theater{--bg:#0b0b0d;--ink:#f2f0ea;--shadow:0 2px 12px color-mix(in oklab,var(--bg) 60%,transparent);--shadow-lg:0 18px 50px color-mix(in oklab,var(--bg) 80%,transparent)}
 
 /* ---- 모듈: 색 (theme) ---- 1 라이트 · 2 홈만 다크 · 3 전체 다크 */
 body[data-theme="2"].home,body[data-theme="3"]{--bg:#0b0b0d;--ink:#f2f0ea;--shadow:0 2px 12px color-mix(in oklab,#000 60%,transparent);--shadow-lg:0 18px 50px color-mix(in oklab,#000 80%,transparent)}
