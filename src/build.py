@@ -93,12 +93,27 @@ def bb_poster(w):
         r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{a}', '-i', str(src), '-frames:v', '1', '-q:v', '3', str(op)], capture_output=True, text=True)
         if r.returncode or not op.exists(): print('bb poster fail', w['id'], r.stderr[-200:]); return poster(w)
     return str(out)
+def hv_frame(w):
+    """확장 카드 첫 화면 = 호버 시작 초의 프레임(포스터와 장면이 달라 보이는 문제 방지). assets/poster/hv/<id>_<초>.jpg"""
+    vs = videos(w)
+    if not vs: return None
+    v = vs[0]; src = REPO / (v.get('sd') or v['hd']); t = float((w.get('media') or {}).get('start') or 0)
+    if not src.exists(): return None
+    out = pathlib.Path('assets/poster/hv') / (f"{w['id']}_{t:g}".replace('.', 'p') + '.jpg'); op = REPO / out
+    if not op.exists() or op.stat().st_mtime < src.stat().st_mtime:
+        op.parent.mkdir(parents=True, exist_ok=True)
+        for old in op.parent.glob(f"{w['id']}_*.jpg"): old.unlink()
+        r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{t}', '-i', str(src), '-frames:v', '1', '-vf', "scale='min(960,iw)':-2", '-q:v', '4', str(op)], capture_output=True, text=True)
+        if r.returncode or not op.exists(): return None
+    return str(out)
 def prio(w): return (w.get('priority') if isinstance(w.get('priority'), (int, float)) else 999, w.get('grade', 2), w.get('sort', 99))
 for _w in W:
     _d = pdim(poster(_w)); _m = _w.setdefault('media', {}); _m['pw'], _m['ph'] = (_d or (0, 0))
     _p16 = make_poster16(_w)
     if _p16: _m['poster16'] = _p16
     _m['srcset'] = thumbs(_m.get('poster16') or poster(_w))
+    _hv = hv_frame(_w)
+    if _hv: _m['hv'] = _hv
 W.sort(key=prio)
 def is_video(p): return bool(p) and str(p).lower().endswith(('.mp4', '.webm', '.mov'))
 

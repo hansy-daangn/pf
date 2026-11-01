@@ -69,7 +69,7 @@
   const NAV = $('.nav'); const onSc = () => NAV && NAV.classList.toggle('sc', scrollY > 8); addEventListener('scroll', onSc, { passive: true }); onSc();
 
   /* ---------- 확장 카드(호버 0.5초 → 원비율 영상) ---------- */
-  const queueOf = card => { const c = card.closest('[data-queue]'); return c ? $$('.card[data-id]', c).map(x => x.dataset.id).filter((v, i, a) => a.indexOf(v) === i) : [card.dataset.id]; };
+  const queueOf = card => { const c = card.closest('[data-queue]'); return c ? $$('.card[data-id]:not([hidden])', c).map(x => x.dataset.id).filter((v, i, a) => a.indexOf(v) === i) : [card.dataset.id]; };
   const Pop = (() => {
     const P = document.createElement('div'); P.className = 'pop'; P.setAttribute('aria-hidden', 'true');
     P.innerHTML = `<div class="art"></div><div class="bd"><div class="t"></div><div class="s"></div><div class="bt"><button class="btn acc">${ico('play', 'sm')} 재생</button><button class="btn ghost">상세 정보</button></div></div>`;
@@ -78,12 +78,12 @@
     const clear = () => { killVideo(V); V = null; ART.innerHTML = ''; };
     const show = (c, w) => {
       clearTimeout(hideT); clear(); cur = w; card = c;
-      const r = ($('.art', c) || c).getBoundingClientRect(); const tall = c.classList.contains('tall');
-      const [aw, ah] = tall ? [9, 16] : [16, 9];
+      const r = ($('.art', c) || c).getBoundingClientRect(); const v0 = vidsOf(w)[0];
+      const [aw, ah] = (v0 && v0.w && v0.h) ? [v0.w, v0.h] : c.classList.contains('tall') ? [9, 16] : [16, 9]; const tall = ah / aw > 1.2;
       const capH = innerHeight * (tall ? .5 : .46);
-      let pw = Math.min(r.width * (tall ? 1.3 : 1.45), innerWidth - 32); if (pw * ah / aw > capH) pw = Math.max(r.width, capH * aw / ah);
+      let pw = Math.min(Math.max(r.width * 1.45, tall ? 0 : 320), innerWidth - 32); if (pw * ah / aw > capH) pw = capH * aw / ah; pw = Math.max(pw, tall ? 200 : 280);
       P.style.setProperty('--pw', pw + 'px'); P.style.setProperty('--pa', `${aw}/${ah}`);
-      const p = posterOf(w);
+      const p = (w.media && w.media.hv) || posterOf(w);   // hv = 호버 시작 초의 프레임 → 영상이 시작돼도 장면이 안 바뀜
       ART.innerHTML = `<div class="bgb" style="background-image:url('${esc(url(p))}')"></div><img alt="" src="${esc(url(p))}">`;
       $('.t', P).textContent = w.title; $('.s', P).textContent = [w.type, w.dur].filter(Boolean).join(' · ');
       const bodyH = 120; let left = r.left + r.width / 2 - pw / 2; left = Math.max(16, Math.min(left, innerWidth - pw - 16));
@@ -91,7 +91,6 @@
       P.style.left = left + 'px'; P.style.top = top + 'px'; P.style.transformOrigin = `${r.left + r.width / 2 - left}px ${r.top + r.height / 2 - top}px`;
       P.classList.add('on');
       if (RM || SAVE) return;
-      const v0 = vidsOf(w)[0];
       if (v0) {
         V = freshVideo(pickSmall(v0), startOf(w), { loopTo: startOf(w) }); ART.appendChild(V);
         const bar = document.createElement('i'); bar.className = 'pb'; ART.appendChild(bar); const v = V;
@@ -139,7 +138,7 @@
   /* ---------- 행 화살표: 넘칠 때 항상 표시, 끝이면 비활성 ---------- */
   $$('.row').forEach(row => {
     const sc = $('.sc', row), L = $('.ar.l', row), R = $('.ar.r', row), A = $('.arr', row); if (!sc || !L) return;
-    const upd = () => { const over = sc.scrollWidth > sc.clientWidth + 4; A.hidden = !over; L.disabled = sc.scrollLeft < 8; R.disabled = sc.scrollLeft + sc.clientWidth > sc.scrollWidth - 8; };
+    const upd = () => { const over = sc.scrollWidth > sc.clientWidth + 4; A.hidden = !over; L.disabled = sc.scrollLeft < 8; R.disabled = sc.scrollLeft + sc.clientWidth > sc.scrollWidth - 8; sc.classList.toggle('more', over && !R.disabled); };
     const step = d => sc.scrollBy({ left: d * sc.clientWidth * .85, behavior: RM ? 'auto' : 'smooth' });
     L.addEventListener('click', () => step(-1)); R.addEventListener('click', () => step(1));
     sc.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
@@ -155,7 +154,7 @@
     const fill = p => dots.forEach((d, k) => { d.classList.toggle('on', k === i); const x = $('i', d); if (x) x.style.width = (k === i ? Math.max(0, Math.min(1, p)) * 100 : 0) + '%'; });
     const tick = () => { cancelAnimationFrame(raf); const v = V, s = seg(frames[i]); if (!v) return; const p = (v.currentTime - s.a) / (s.b - s.a); fill(p); if (v.currentTime >= s.b - .04 || v.ended) { go(i + 1); return; } raf = requestAnimationFrame(tick); };
     const load = () => {
-      killVideo(V); V = null; cancelAnimationFrame(raf); clearTimeout(fb); fill(0);
+      if (V) { const old = V; old.pause(); setTimeout(() => killVideo(old), 1000); } V = null; cancelAnimationFrame(raf); clearTimeout(fb); fill(0);
       const f = frames[i], s = seg(f);
       if (SAVE) { fb = setTimeout(() => go(i + 1), (s.b - s.a) * 1000); return; }
       V = freshVideo(f.dataset[big() ? 'hd' : 'sd'], s.a, { muted }); f.appendChild(V);
@@ -204,7 +203,7 @@
     document.body.appendChild(P);
     const V = document.createElement('video'); V.playsInline = true; V.preload = 'metadata'; V.setAttribute('controlslist', 'nodownload');
     const el = { lay: $('.lay', T), vw: $('.vw', T), next: $('.next', T), h1: $('.meta h1', T), s: $('.meta .s', T), crumb: $('.crumb', T), pos: $('.pos', T), pg: $('.pg', T), pgi: $('.pg i', T), cur: $('.cur', T), durE: $('.dur', T), pp: $('.pp', T), mute: $('.mute', T), fmts: $('.fmts', T), desc: $('.desc', T), gal: $('.gal', T), sim: $('.sim', T), bg: $('.bgart', T), ctl: $('.ctl', T), panel: $('.panel', T) };
-    let cur = null, queue = [], idx = 0, idleT = null, cdT = null, lastFocus = null, autoplay = true, frame = null, vi = 0;
+    let cur = null, queue = [], idx = 0, idleT = null, cdT = null, lastFocus = null, autoplay = true, frame = null, vi = 0, pushed = false;
     let MUTED = (() => { try { return sessionStorage.getItem('pf.muted') === '1'; } catch (e) { return false; } })();
     const kindOf = w => vidsOf(w).length ? 'video' : (w.media && w.media.youtube) ? 'youtube' : (w.links && w.links.embed) ? 'iframe' : 'image';
     const clearStage = () => { [...el.vw.children].forEach(n => { if (!n.classList.contains('big') && !n.classList.contains('next')) n.remove(); }); frame = null; V.pause(); };
@@ -256,15 +255,16 @@
       $$('.sg button', el.sim).forEach(b => b.addEventListener('click', () => { const q = sim.map(x => x.id); queue = q; jump(q.indexOf(b.dataset.id)); }));
       document.title = `${w.title} — HANSY`;
     };
-    const jump = n => { if (n < 0 || n >= queue.length) return; idx = n; cur = BY[queue[idx]]; T.dataset.cur = cur.id; autoplay = true; render(cur); wake(); el.lay.scrollTop = 0; };
+    const jump = n => { if (n < 0 || n >= queue.length) return; idx = n; cur = BY[queue[idx]]; T.dataset.cur = cur.id; autoplay = true; render(cur); wake(); el.lay.scrollTop = 0; hist.replace(hist.st(), `${location.pathname}?w=${encodeURIComponent(cur.id)}`); };
     const open = (id, opt = {}) => {
       const w = BY[id]; if (!w) return; lastFocus = document.activeElement;
       queue = (opt.queue && opt.queue.length ? opt.queue : [id]).filter(x => BY[x]); idx = Math.max(0, queue.indexOf(id)); autoplay = opt.autoplay !== false;
       if (P.classList.contains('on')) hidePip(false);
       cur = w; T.dataset.cur = w.id; T.classList.add('on'); document.body.style.overflow = 'hidden'; render(w); wake(); el.lay.scrollTop = 0; T.tabIndex = -1; T.focus({ preventScroll: true });
-      if (opt.info) setTimeout(() => el.panel.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' }), 350);
+      T.scrollTop = 0; if (opt.info) setTimeout(toInfo, 350);
       window.__featPause && window.__featPause();
-      const u = `${location.pathname}?w=${encodeURIComponent(id)}`; if (opt.replace || (hist.st() && hist.st().t)) hist.replace({ t: 1 }, u); else hist.push({ t: 1 }, u);
+      const u = `${location.pathname}?w=${encodeURIComponent(id)}`;
+      if (opt.replace) { pushed = false; hist.replace(null, u); } else if (pushed) hist.replace({ t: 1 }, u); else { pushed = true; hist.push({ t: 1 }, u); }
     };
     const close = (toPip = true, fromPop = false) => {
       if (!T.classList.contains('on')) return;
@@ -272,18 +272,18 @@
       T.classList.remove('on'); document.body.style.overflow = ''; clearInterval(cdT); el.next.classList.remove('on');
       if (frame) { frame.remove(); frame = null; }
       if (playing && toPip) showPip(); else V.pause();
-      if (!fromPop) { if (hist.st() && hist.st().t) { try { history.back(); } catch (e) { } } else hist.replace(null, location.pathname); }
+      if (!fromPop) { if (pushed) { pushed = false; try { history.back(); } catch (e) { } } else hist.replace(null, location.pathname); } else pushed = false;
       document.title = document.body.dataset.title || document.title;
-      lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); window.__featResume && window.__featResume();
+      lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); if (!P.classList.contains('on')) window.__featResume && window.__featResume();
     };
     addEventListener('popstate', () => { if (T.classList.contains('on')) close(true, true); });
     const showPip = () => { P.prepend(V); $('.bar b', P).textContent = cur.title; P.classList.add('on'); };
-    const hidePip = (stop = true) => { P.classList.remove('on'); if (stop) V.pause(); };
+    const hidePip = (stop = true) => { P.classList.remove('on'); if (stop) { V.pause(); window.__featResume && window.__featResume(); } };
     $('.exp', P).addEventListener('click', () => { P.classList.remove('on'); T.classList.add('on'); document.body.style.overflow = 'hidden'; el.vw.prepend(V); wake(); });
     $('.x', P).addEventListener('click', () => hidePip(true));
     P.addEventListener('click', e => { if (e.target === V) $('.exp', P).click(); });
     const toggle = () => { if (!cur || kindOf(cur) !== 'video') return; V.paused ? V.play().catch(() => { }) : V.pause(); };
-    const toInfo = () => el.panel.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'start' });
+    const toInfo = () => { T.scrollTop = 0; el.lay.scrollTo({ top: Math.max(0, el.panel.offsetTop - 16), behavior: RM ? 'auto' : 'smooth' }); };
     $('.close', T).addEventListener('click', () => close(true));
     $('.infob', T).addEventListener('click', toInfo);
     el.pp.addEventListener('click', toggle); el.vw.addEventListener('click', e => { if (e.target === V || e.target.closest('.big')) toggle(); });
@@ -305,7 +305,7 @@
       el.cur.textContent = fmtT(V.currentTime); el.durE.textContent = V.duration ? '-' + fmtT(V.duration - V.currentTime) : '0:00'; el.pg.setAttribute('aria-valuenow', Math.round(p * 100));
     });
     V.addEventListener('ended', () => {
-      if (P.classList.contains('on')) { if (idx + 1 < queue.length && kindOf(BY[queue[idx + 1]]) === 'video') { idx++; cur = BY[queue[idx]]; V.src = url(pickBig(vidsOf(cur)[0])); V.play().catch(() => { }); $('.bar b', P).textContent = cur.title; } else hidePip(true); return; }
+      if (P.classList.contains('on')) { hidePip(true); return; }
       const n = BY[queue[idx + 1]]; if (!n || el.next.dataset.dismissed) { el.vw.classList.add('paused'); return; }
       $('img', el.next).src = url((n.media && n.media.poster16) || posterOf(n)); $('b', el.next).textContent = n.title; el.next.classList.add('on');
       let left = 5; const cd = $('.cd', el.next); cd.textContent = left; cd.style.setProperty('--p', 0);
@@ -338,7 +338,8 @@
     const grid = $('.grid', LIB), cnt = $('.cnt', LIB), q = $('.q', LIB);
     const st = { kind: KINDS[location.hash.slice(1)] ? location.hash.slice(1) : null, q: '' };
     const cards = $$('.card[data-id]', grid);
-    const hay = w => [w.title, w.type, w.subtitle, (w.tools || []).join(' '), (w.channels || []).join(' '), (w.kinds || []).map(k => KINDS[k]).join(' ')].join(' ').toLowerCase();
+    const KO = { google: '구글', moloco: '몰로코', meta: '메타', localads: '로컬광고', youtube: '유튜브', instagram: '인스타그램' };
+    const hay = w => [w.title, w.type, w.subtitle, (w.tools || []).join(' '), (w.channels || []).map(c => `${c} ${KO[String(c).toLowerCase()] || ''}`).join(' '), (w.kinds || []).map(k => KINDS[k]).join(' ')].join(' ').toLowerCase();
     const draw = () => {
       let n = 0; const words = st.q.toLowerCase().split(/\s+/).filter(Boolean);
       cards.forEach(c => { const w = BY[c.dataset.id]; const ok = w && (!st.kind || (w.kinds || []).includes(st.kind)) && words.every(x => hay(w).includes(x)); c.hidden = !ok; if (ok) n++; });
@@ -375,6 +376,6 @@
   /* ---------- 딥링크 ---------- */
   document.body.dataset.title = document.title;
   const qs = new URLSearchParams(location.search); const q = qs.get('w');
-  if (q && BY[q]) Theater.open(q, { autoplay: false, replace: true });
+  if (q && BY[q]) Theater.open(q, { autoplay: false, replace: true, queue: DATA.filter(w => posterOf(w)).map(w => w.id) });
   if (qs.has('reel')) { const b = $('[data-reel]'); b && b.click(); }
 })();

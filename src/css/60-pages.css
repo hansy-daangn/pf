@@ -49,10 +49,10 @@
 .tdesc .one{font-size:var(--t-h);font-weight:500;line-height:1.45;margin-top:var(--s1);letter-spacing:-.01em}
 .tdesc .what{margin-top:var(--s2);padding-left:1.1em;display:grid;gap:var(--s05);font-size:var(--t-body);line-height:1.5}
 .tdesc .try{margin-top:var(--s2);font-size:var(--t-sm);color:var(--ink-2)}
-.tdesc .proof{display:flex;flex-wrap:wrap;gap:var(--s05)}.tdesc .proof .chip{color:var(--ink);border-color:var(--ink-2);font-weight:600}
+.tdesc .proof{display:flex;flex-wrap:wrap;gap:var(--s05)}.tdesc .proof .chip{color:var(--ink);border-color:var(--ink-2);font-weight:600;white-space:normal;line-height:1.35;padding-block:var(--s05)}
 .tdesc .meta-tbl{font-size:var(--t-sm);display:grid;grid-template-columns:auto 1fr;gap:var(--s05) var(--s2);margin-top:var(--s2);padding-top:var(--s2);border-top:1px solid var(--ink-3)}.tdesc .meta-tbl span{color:var(--ink-2)}.tdesc .meta-tbl b{font-weight:500}
 .tdesc .lk{display:flex;gap:var(--s1);flex-wrap:wrap;margin-top:var(--s2)}
-@media (max-width:980px){.tl{grid-template-columns:1fr}.trail{position:static;flex-direction:row;overflow-x:auto;scrollbar-width:none;padding-bottom:var(--s1)}.trail .ti{grid-template-columns:1fr;width:calc(var(--u)*20);flex:none}.trail .ti img{display:none}.tdesc{grid-template-columns:1fr}}
+@media (max-width:980px){.tl{grid-template-columns:minmax(0,1fr)}.trail{position:static;flex-direction:row;overflow-x:auto;scrollbar-width:none;padding-bottom:var(--s1)}.trail .ti{grid-template-columns:1fr;width:calc(var(--u)*20);flex:none}.trail .ti img{display:none}.tdesc{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:760px){.tstage{aspect-ratio:auto;height:70dvh}}
 
 /* ---- 이력서 ---- */

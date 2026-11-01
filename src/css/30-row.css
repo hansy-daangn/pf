@@ -27,3 +27,4 @@ body[data-arrow="2"] .row .ar.l{left:calc(var(--gut) * -1 + var(--s1))}
 body[data-arrow="2"] .row .ar.r{right:calc(var(--gut) * -1 + var(--s1))}
 body[data-arrow="2"] .row .ar:disabled{opacity:0;pointer-events:none}
 @media (max-width:760px){body[data-arrow="2"] .row .arr{display:none}}
+@media (min-width:1500px){.row .sc.more{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - var(--s13)),transparent);mask-image:linear-gradient(to right,#000 calc(100% - var(--s13)),transparent)}}

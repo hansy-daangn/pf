@@ -2,7 +2,7 @@
 """영상 파일 만들기 — 원본(masters/) 1개 → 2개.
 
   <id>.mp4     1080p   긴 변 ≤1920 · H.264 CRF 20 · 파일당 48MB 이하   (가벼운 1080p 원본은 그대로 복사)
-  <id>.sd.mp4  720p    긴 변 ≤1280 · CRF 24 · 최대 3Mbps               (원본이 720p 이하면 만들지 않음)
+  <id>.sd.mp4  720p    가로 1280×720 · 세로 720×1280 · 정방 720×720 안 · CRF 24 · 최대 3Mbps (원본이 720p 이하면 없음)
 
   호버 미리보기·빌보드는 별도 파일 없이 이 두 파일을 정해진 초부터 재생한다.
 
@@ -29,6 +29,11 @@ def scale(long_side, w, h):
     if max(w, h) <= long_side: return 'scale=trunc(iw/2)*2:trunc(ih/2)*2'
     return f'scale={long_side}:-2' if w >= h else f'scale=-2:{long_side}'
 
+def box(w, h):
+    """720p 상자 안에 맞추기: 가로 1280×720 · 세로 720×1280 · 정방 720×720"""
+    bw, bh = (1280, 720) if w >= h else (720, 1280)
+    return f"scale=w='min(iw,{bw})':h='min(ih,{bh})':force_original_aspect_ratio=decrease,scale=trunc(iw/2)*2:trunc(ih/2)*2"
+
 def run(args):
     r = subprocess.run(args, capture_output=True, text=True)
     if r.returncode: raise RuntimeError(r.stderr[-800:])
@@ -42,7 +47,8 @@ def make(src, out, info, long_side, crf, max_kbps, abr):
     if long_side >= 1920 and info['codec'] == 'h264' and info['pix'] == 'yuv420p' and max(info['w'], info['h']) <= 1920 and 0 < info['br'] <= mr * 1000:
         run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-map', '0:v:0', '-map', '0:a:0?', '-c', 'copy', '-movflags', '+faststart', str(out)]); return 'copy'
     a = ['-c:a', 'aac', '-b:a', f'{abr}k'] if info['audio'] else ['-an']
-    run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-map', '0:v:0', '-map', '0:a:0?', '-vf', scale(long_side, info['w'], info['h']),
+    vf = scale(long_side, info['w'], info['h']) if long_side >= 1920 else box(info['w'], info['h'])
+    run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-map', '0:v:0', '-map', '0:a:0?', '-vf', vf,
          '-c:v', 'libx264', '-preset', 'medium', '-crf', str(crf), '-maxrate', f'{mr}k', '-bufsize', f'{mr * 2}k', '-pix_fmt', 'yuv420p', '-profile:v', 'high',
          *a, '-movflags', '+faststart', str(out)])
     return 'enc'
