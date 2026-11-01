@@ -48,9 +48,10 @@
   document.body.prepend(bar);
   const stEl = $('.st', bar), saEl = $('.sa', bar), cnB = $('.cn', bar), uB = $('.u', bar), rB = $('.r', bar);
   const status = (s, t, act = '') => { bar.dataset.s = s; stEl.textContent = t; saEl.innerHTML = act; };
+  const josa = w => { const c = String(w).trim().slice(-1).charCodeAt(0) - 0xAC00; return c >= 0 && c < 11172 ? (c % 28 ? '은' : '는') : '은(는)'; };
   let autoNote = null;   // 자동 분류 목록이 직접 관리로 바뀐 순간(알림에 덧붙임)
   const toast = (msg, canUndo = true) => {
-    if (autoNote) { msg += ` · '${autoNote}'은 이제 직접 고른 목록(새 작품 자동 추가 안 됨)`; autoNote = null; }
+    if (autoNote) { msg += ` · '${autoNote}'${josa(autoNote)} 이제 직접 고른 목록(새 작품 자동 추가 안 됨)`; autoNote = null; }
     let t = $('.etoast'); if (!t) { t = document.createElement('div'); t.className = 'etoast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
     t.innerHTML = `<span>${esc(msg)}</span>${canUndo ? '<button>되돌리기</button>' : ''}`; t.classList.add('on');
     const b = $('button', t); if (b) b.onclick = () => { uB.click(); t.classList.remove('on'); };
@@ -168,11 +169,11 @@
     const known = knownRefs(), up = [...refs()].filter(p => pend[p] && !known.has(p));
     saving = true; const n = ++saveN; status('busy', '저장 중…');
     try {
-      let merged = null, sha = '';
+      let merged = null, sha = '', remote0 = null;
       for (let attempt = 0; !sha; attempt++) {
         const head = (await api(`${R}/git/ref/heads/${GH.branch}`)).object.sha;
         const commit = await api(`${R}/git/commits/${head}`);
-        merged = merge(await remoteState(head), d);
+        remote0 = await remoteState(head); ensureIds(remote0); merged = merge(remote0, d);
         const tree = [];
         const put = async (path, content, encoding) => { const b = await api(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content, encoding }) }); tree.push({ path, mode: '100644', type: 'blob', sha: b.sha }); };
         for (const p of up) await put(p, await b64(pend[p]), 'base64');
@@ -186,6 +187,8 @@
       up.forEach(p => uploaded.add(p));   // 보관함 이미지는 '사이트 반영됨' 확인 뒤에 지움(그 전에 새로고침해도 썸네일 유지)
       const keep = new Set([...refs(), ...histRefs()]); Object.keys(pend).forEach(p => { if (!keep.has(p) && !uploaded.has(p)) { delete pend[p]; IDB.del(p).catch(() => { }); } });
       const old = base; base = clone(merged);
+      const fix = x => JSON.stringify(merge(remote0, diff(old, JSON.parse(x))));   // 되돌리기·다시 실행이 다른 곳의 변경을 덮지 않게
+      for (let i = 0; i < undo.length; i++) undo[i] = fix(undo[i]); for (let i = 0; i < redo.length; i++) redo[i] = fix(redo[i]);
       const mine = merge(merged, diff(old, cur()));   // 저장하는 동안 고친 것 + 다른 곳에서 바뀐 것 모두 유지
       if (!same(mine, cur())) { PF.setData(mine); rerender(); refreshPanel(); }
       retryN = 0;
@@ -294,7 +297,7 @@
       if (page && far) { const top = 130, E = 90; let v = 0; if (py > innerHeight - E) v = Math.min(1, (py - (innerHeight - E)) / E); else if (py < top) v = -Math.min(1, (top - py) / E); if (v) { scrollBy(0, v * 20); moved = true; } }
       if (moved) place();
     };
-    const move = ev => { px = ev.clientX; py = ev.clientY; if (Math.abs(py - sy) > 40) far = true; if (!on) { if (Math.hypot(px - sx, py - sy) < 6) return; start(); } pos(); place(); };
+    const move = ev => { px = ev.clientX; py = ev.clientY; if (Math.abs(py - sy) > 40) far = true; if (!on) { if (Math.hypot(px - sx, py - sy) < 6) return; start(); } pos(); if (!page || far) place(); };
     const end = ev => {
       removeEventListener('pointermove', move); removeEventListener('pointerup', end); removeEventListener('pointercancel', end); cancelAnimationFrame(raf);
       if (!on) return; justDragged = Date.now();
@@ -317,8 +320,8 @@
     if (hd) {   // 줄 끌기: 끄는 동안 모든 줄을 제목만 남게 접음(노션·유튜브 스튜디오 방식)
       const row = hd.closest('.row'), rows = row.parentElement; e.preventDefault(); let rec = 0;
       return dragItems(e, row, { box: rows, sel: '.row:not([data-row="rep"])', axis: 'y', key: el => el.dataset.row, page: true, ghostHTML: esc($('h2', row).textContent),
-        onStart: (ph, py) => { rec = row.getBoundingClientRect().top; rows.classList.add('ecollapse'); scrollBy(0, ph.getBoundingClientRect().top - py); },
-        onEnd: ok => { rows.classList.remove('ecollapse'); if (!ok) scrollBy(0, row.getBoundingClientRect().top - rec); },
+        onStart: (ph, py) => { rec = row.getBoundingClientRect().top; document.body.style.minHeight = document.documentElement.scrollHeight + 'px'; rows.classList.add('ecollapse'); scrollBy(0, ph.getBoundingClientRect().top - py); },
+        onEnd: ok => { rows.classList.remove('ecollapse'); document.body.style.minHeight = ''; if (!ok) scrollBy(0, row.getBoundingClientRect().top - rec); },
         onDrop: (k, b) => moveRow(k, b) });
     }
     const ch = t.closest('.estrip .ech');
@@ -382,7 +385,9 @@
     const blur = () => fin(true);
     el.addEventListener('keydown', key); el.addEventListener('blur', blur);
   };
+  let selT = 0;
   document.addEventListener('dblclick', e => {
+    clearTimeout(selT);
     const t = e.target.closest('.rows .card .t, .feat .fx h2, .feat .fx .one, .rows .row .hd h2');
     if (!t || t.isContentEditable) return; e.preventDefault(); e.stopPropagation(); inlineEdit(t);
   }, true);
@@ -403,6 +408,7 @@
     const op = t.closest('.eopen'); if (op) { stop(e); return openList(op.dataset.k); }
     if (t.closest('.estrip .lb')) { stop(e); return openList('feat'); }
     const c = t.closest('.rows .card, .estrip .ech');
+    if (c && c.classList.contains('card') && document.body.classList.contains('ei-hide')) { stop(e); clearTimeout(selT); selT = setTimeout(() => select(c.dataset.id), 280); return; }
     if (c) { stop(e); if (c.classList.contains('ech')) { const k = $$('.feat .fs').findIndex(f => f.dataset.id === c.dataset.id); if (k >= 0 && k !== PF.Feat.i) PF.Feat.go(k); } return select(c.dataset.id); }
     const h2 = t.closest('.rows .row .hd h2'); if (h2) { stop(e); return openList(h2.closest('.row').dataset.row); }
     if (t.closest('.feat .fv, .feat .fx, .feat [data-open], .feat [data-info]') && !t.closest('.fctl')) { stop(e); const id = featId(); return id && select(id); }
@@ -687,6 +693,7 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
   });
   EI.addEventListener('change', e => {
     const c = e.target.closest('input[type=checkbox][data-k]');
+    if (c && mode && mode.t === 'work' && c.dataset.k === 'feat' && c.checked && featIds().length >= 8) { c.checked = false; return toast('피처드는 8개까지예요', false); }
     if (c && mode && mode.t === 'work') { const k = c.dataset.k, id = mode.id, on = c.checked; change(() => { const a = keyIds(k), i = a.indexOf(id); if (on && i < 0) { a.push(id); unhide([id]); } if (!on && i >= 0) a.splice(i, 1); }); return; }
     const up = e.target.closest('input[type=file][data-up]');
     if (up && mode && mode.t === 'work') { const f = up.files[0], id = mode.id; if (!f) return; const im = new Image(); im.onload = () => makeImg(id, up.dataset.up, im, im.naturalWidth, im.naturalHeight).then(() => URL.revokeObjectURL(im.src)); im.src = URL.createObjectURL(f); }
@@ -713,6 +720,6 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
     ensureIds(cur()); fixMissing();
     rerender(); openLists(); persist(); lock(false); if (token && nChanged()) queueSave(); else idle();
     // 이미 올린 이미지가 사이트에 있으면 보관함에서 지움
-    const known = knownRefs(); Object.keys(pend).forEach(p => { if (!known.has(p)) return; fetch(PF.url(p), { method: 'HEAD', cache: 'no-store' }).then(r => { if (r.ok) dropKept([p]); }).catch(() => { }); });
+    const known = knownRefs(); Object.keys(pend).forEach(p => { if (!known.has(p)) return; fetch(`${p}?t=${Date.now()}`, { method: 'HEAD', cache: 'no-store' }).then(r => { if (r.ok) dropKept([p]); }).catch(() => { }); });
   })();
 })();

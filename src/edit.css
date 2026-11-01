@@ -110,7 +110,7 @@ body.ei-on .ei{display:flex}
 .ei .lnk svg{width:14px;height:14px}
 .ei .lnk:hover{text-decoration:underline}
 /* 영상 타임라인 */
-.ei .vbox{background:#000;border-radius:10px;overflow:hidden;display:grid;place-items:center;height:208px}
+.ei .vbox{background:#000;border-radius:10px;overflow:hidden;display:block;height:208px}
 .ei .vbox video{width:100%;height:100%;object-fit:contain;display:block;cursor:pointer}
 .ei .vc{display:flex;align-items:center;gap:6px;margin:8px 0 34px}
 .ei .vc .pp{margin-left:-6px}
