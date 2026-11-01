@@ -1,0 +1,66 @@
+{
+ "_help": "작품ID → masters/ 안의 원본 파일명. full=상영관 본편, variants=규격 칩(라벨은 화면에 그대로 표시), preview_at=호버 미리보기 시작 초. 원본을 masters/에 넣고 python src/media.py",
+ "td_declutter": {
+  "full": "declutter_Fin_H_1920x1080.mp4",
+  "variants": {
+   "16:9 — 가로 · 영상": "declutter_Fin_H_1920x1080.mp4",
+   "9:16 — 세로 · 영상": "declutter_Fin_V_1080x1920.mp4",
+   "1:1 — 정방 · 영상": "declutter_Fin_F_1080x1080.mp4"
+  },
+  "preview_at": 0.3
+ },
+ "cr_instantbuy": {
+  "full": "maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607.mp4",
+  "variants": {
+   "16:9 — 가로 · 영상": "maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607.mp4",
+   "9:16 — 세로 · 영상": "maugrowth_fleamarket_instantbuyKeyword_1080x1920_2607.mp4",
+   "1:1 — 정방 · 영상": "maugrowth_fleamarket_instantbuyKeyword_1080x1080_2607.mp4"
+  }
+ },
+ "td_review2605": {
+  "full": "maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",
+  "variants": {
+   "16:9 — 가로 · 영상": "maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",
+   "9:16 — 세로 · 영상": "maugrowth_biz_promo_reviewReward_1080x1920_2605.mp4",
+   "1:1 — 정방 · 영상": "maugrowth_biz_promo_reviewReward_1080x1080_2605.mp4"
+  },
+  "preview_at": 0
+ },
+ "mg_bizreview": {
+  "full": "maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4",
+  "variants": {
+   "16:9 — 가로 · 영상": "maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4",
+   "9:16 — 세로 · 영상": "maugrowth_biz_promo_reviewReward_1080x1920_2606.mp4",
+   "1:1 — 정방 · 영상": "maugrowth_biz_promo_reviewReward_1080x1080_2606.mp4"
+  }
+ },
+ "bakery-vlog": {
+  "full": "1030_biz_alw_v3_.mp4",
+  "preview_at": 2
+ },
+ "local-runners-teaser": {
+  "full": "LOCAL_RUNNERS_v5_0_with_grain.mp4",
+  "preview_at": 2
+ },
+ "local-runners-boosting": {
+  "full": "b1d24513-localRunners_boosting_AFIN_v7.mp4",
+  "preview_at": 1
+ },
+ "nayeon-campaign": {
+  "full": "9a2e5ba2-VD02Fin_-_Capcha-v-detailed.mp4",
+  "variants": {
+   "티저 — 나연이의 당근 농장 · 7초": "4a775841-VD01_-_move_it_away_B_editedOn0904.mp4",
+   "응모 안내 — 캡차 · 20초": "9a2e5ba2-VD02Fin_-_Capcha-v-detailed.mp4",
+   "POV — 디자이너 · 12초": "bfbd59dc-pv102.mp4",
+   "현장 스케치 — 54초": "nayeon_offlineevent_v4_8.mp4"
+  }
+ },
+ "mg_keyword_chuseok": {
+  "full": "maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__1_.mp4",
+  "variants": {
+   "9:16 — A": "maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__1_.mp4",
+   "9:16 — B": "maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__2_.mp4",
+   "16:9": "maugrowth_fleamarket_keyword-chuseok_1920x1080_2609__1_.mp4"
+  }
+ }
+}

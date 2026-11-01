@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /pf/edit.html
+Sitemap: https://hansy-daangn.github.io/pf/sitemap.xml

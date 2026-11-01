@@ -27,7 +27,14 @@
 .ed .bar .st{margin-left:auto;font-size:var(--t-sm);color:var(--ink-2)}
 .ed .pill{font-size:var(--t-micro);border:1px solid var(--ink-3);border-radius:999px;padding:2px var(--s1);color:var(--ink-2)}
 .ed .home{grid-column:1 / -1;padding-top:var(--s3);border-top:1px solid var(--ink-3)}
-.ed .home textarea{font-family:ui-monospace,Menlo,monospace;font-size:var(--t-sm);min-height:160px}
+.ed .home textarea{font-family:ui-monospace,Menlo,monospace;font-size:var(--t-sm);min-height:160px;width:100%}
+.ed .hl3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s3)}.ed h4{font-size:var(--t-sm);color:var(--ink-2);margin-bottom:var(--s05)}
+.ed .ord{list-style:none;display:flex;flex-direction:column;gap:4px;margin-bottom:var(--s1)}
+.ed .ord li{display:grid;grid-template-columns:auto 48px 1fr auto;gap:var(--s1);align-items:center;padding:4px var(--s1);border:1px solid var(--ink-3);border-radius:var(--r);background:var(--bg);cursor:grab;font-size:var(--t-sm)}
+.ed .ord li img{width:48px;height:27px;object-fit:cover;border-radius:3px;background:var(--ink-4)}.ed .ord li .h{color:var(--ink-2)}.ed .ord li button{color:var(--ink-2);padding:0 4px}
+.ed .ord li.drag{opacity:.4}.ed .ord.rows li{grid-template-columns:auto 1fr auto}
+.ed .nw{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:var(--s1);align-items:center}
+@media (max-width:980px){.ed .hl3,.ed .nw{grid-template-columns:1fr}}
 @media (max-width:980px){.ed{grid-template-columns:1fr}.ed .list{position:static;max-height:240px}.ed .form,.ed .thumb{grid-template-columns:1fr}}
 </style></head>
 <body data-base="./"><header class="nav"><div class="wrap in"><a class="lg" href="index.html">Hansy<small>Kim Hangyeol</small></a><nav class="tabs"><a href="index.html">홈</a><a href="works.html">작업</a><a href="tools.html">도구 · 자동화</a><a href="resume.html">이력서</a><a href="edit.html" aria-current="page">편집</a></nav><div class="cta"><span class="pill" id="mode">확인 중</span></div></div></header>
@@ -36,7 +43,9 @@
 <section>
  <div class="form" id="form"></div>
  <div class="thumb" id="thumb"></div>
- <div class="home"><h3>홈 구성 (data/home.json)</h3><textarea id="homejson" spellcheck="false"></textarea></div>
+ <div class="home"><h3>홈 구성</h3><div class="hl3"><div><h4>상단 빌보드 순서</h4><ol class="ord" data-k="billboard"></ol><select class="add" data-k="billboard"></select></div><div><h4>대표 작업 순서</h4><ol class="ord" data-k="rep"></ol><select class="add" data-k="rep"></select></div><div><h4>행 순서</h4><ol class="ord rows" data-k="rows"></ol></div></div>
+<details><summary>home.json 직접 편집</summary><textarea id="homejson" spellcheck="false"></textarea></details>
+<h3>새 작업 추가</h3><div class="nw"><input type="text" id="nw-id" placeholder="ID (영문, 예: td_newyear)"><input type="text" id="nw-title" placeholder="제목"><input type="file" id="nw-file" accept="video/*"><button class="btn ghost sm" id="nw-go">원본 올리고 추가</button></div></div>
  <div class="bar"><button class="btn" id="save">저장</button><button class="btn ghost" id="build">빌드</button><button class="btn ghost" id="export">works.json 내려받기</button><button class="btn ghost" id="exporthome">home.json 내려받기</button><label class="pill"><input type="checkbox" id="showhid"> 숨김 포함</label><span class="st" id="st"></span></div>
 </section></div></div></main>
 <script>
@@ -54,7 +63,7 @@
     W = await (await fetch('data/works.json?' + Date.now())).json();
     try { H = await (await fetch('data/home.json?' + Date.now())).json(); } catch (e) { H = {}; }
     $('#homejson').value = JSON.stringify(H, null, 1);
-    list(); pick((location.hash || '').slice(1) || W.find(w => w.grade <= 2).id);
+    homeUI(); list(); pick((location.hash || '').slice(1) || W.find(w => w.grade <= 2).id);
   }
   function list() {
     const show = $('#showhid').checked; const items = W.filter(w => show || w.grade <= 2).sort((a, b) => pr(a) - pr(b) || a.grade - b.grade || (a.sort || 99) - (b.sort || 99));
@@ -98,7 +107,7 @@
     if (!srcs.length) { T.innerHTML = `<div><h3>썸네일</h3><p class="sub">영상 파일이 없어 프레임 캡처는 불가 — <code>assets/poster/${esc(w.id)}.jpg</code> 파일을 직접 바꾸세요.</p></div><div class="cur"><img src="${esc(m.poster || m.shot || '')}" alt=""></div>`; return; }
     T.innerHTML = `<div><h3>썸네일 — 프레임 고르기</h3><div class="vwrap"><video preload="metadata" muted playsinline crossorigin="anonymous"></video></div>
 <div class="scrub"><span class="t">0:00.0</span><input type="range" min="0" max="1000" value="0"><span class="d">0:00.0</span></div>
-<div class="steps"><select class="src">${srcs.map((s, i) => `<option value="${esc(s.src)}">${esc(s.label)}</option>`).join('')}</select><button class="btn ghost sm" data-step="-1">−1초</button><button class="btn ghost sm" data-step="-0.04">−1프레임</button><button class="btn ghost sm" data-step="0.04">+1프레임</button><button class="btn ghost sm" data-step="1">+1초</button><button class="btn sm cap">이 프레임을 썸네일로</button></div></div>
+<div class="steps"><select class="src">${srcs.map((s, i) => `<option value="${esc(s.src)}">${esc(s.label)}</option>`).join('')}</select><button class="btn ghost sm" data-step="-1">−1초</button><button class="btn ghost sm" data-step="-0.04">−1프레임</button><button class="btn ghost sm" data-step="0.04">+1프레임</button><button class="btn ghost sm" data-step="1">+1초</button><button class="btn sm cap">이 프레임을 썸네일로</button><button class="btn ghost sm bba">빌보드 시작 = 여기</button><button class="btn ghost sm bbb">빌보드 끝 = 여기</button></div></div>
 <div class="cur"><h3>현재 썸네일</h3><img src="${esc((m.poster || m.shot || '') + '?' + Date.now())}" alt=""><p class="sub">저장 위치 <code>assets/poster/${esc(w.id)}.jpg</code> — 16:9 카드용 블러 합성본은 빌드 때 자동 생성</p></div>`;
     const V = $('video', T), R = $('input[type=range]', T), tEl = $('.t', T), dEl = $('.d', T);
     const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
@@ -109,6 +118,8 @@
     R.addEventListener('input', () => { if (V.duration) { V.pause(); V.currentTime = R.value / 1000 * V.duration; } });
     $$('[data-step]', T).forEach(b => b.addEventListener('click', () => { V.pause(); V.currentTime = Math.max(0, Math.min((V.duration || 0) - .01, V.currentTime + +b.dataset.step)); }));
     V.addEventListener('click', () => { V.paused ? V.play() : V.pause(); });
+    const setBB = (k) => { const t = +V.currentTime.toFixed(1); apply(w, k, t); const inp = $(`#form [data-k="${k}"]`); if (inp) inp.value = t; dirty = true; st(`빌보드 ${k === 'bb.a' ? '시작' : '끝'} ${t}초 — 저장 후 빌드하면 구간이 다시 잘립니다`); };
+    $('.bba', T).addEventListener('click', () => setBB('bb.a')); $('.bbb', T).addEventListener('click', () => setBB('bb.b'));
     $('.cap', T).addEventListener('click', async () => {
       if (!V.videoWidth) return st('영상이 아직 준비되지 않았습니다');
       const c = document.createElement('canvas'); c.width = V.videoWidth; c.height = V.videoHeight; c.getContext('2d').drawImage(V, 0, 0);
@@ -117,6 +128,35 @@
       else { const a = document.createElement('a'); a.download = `${w.id}.jpg`; a.href = data; a.click(); st(`내려받은 ${w.id}.jpg 를 assets/poster/ 에 넣고 빌드하세요`); }
     });
   }
+  function homeUI() {
+    const name = id => { const w = W.find(x => x.id === id); return w ? w.title : id; };
+    const img = id => { const w = W.find(x => x.id === id); return w ? poster(w) : ''; };
+    $$('.ord[data-k]').forEach(ol => {
+      const k = ol.dataset.k; const arr = H[k] || (H[k] = []);
+      ol.innerHTML = arr.map((it, i) => k === 'rows' ? `<li draggable="true" data-i="${i}"><span class="h">≡</span><span>${esc(it.title || KINDS[it.kind] || it.kind)}</span><button data-x="${i}" aria-label="빼기">✕</button></li>` : `<li draggable="true" data-i="${i}"><span class="h">≡</span><img src="${esc(img(it))}" alt=""><span>${esc(name(it))}</span><button data-x="${i}" aria-label="빼기">✕</button></li>`).join('');
+      let from = null;
+      $$('li', ol).forEach(li => {
+        li.addEventListener('dragstart', () => { from = +li.dataset.i; li.classList.add('drag'); });
+        li.addEventListener('dragend', () => li.classList.remove('drag'));
+        li.addEventListener('dragover', ev => ev.preventDefault());
+        li.addEventListener('drop', ev => { ev.preventDefault(); const to = +li.dataset.i; if (from == null || from === to) return; const [x] = arr.splice(from, 1); arr.splice(to, 0, x); dirty = true; sync(); });
+      });
+      $$('[data-x]', ol).forEach(b => b.addEventListener('click', () => { arr.splice(+b.dataset.x, 1); dirty = true; sync(); }));
+    });
+    $$('select.add').forEach(sel => { const k = sel.dataset.k; sel.innerHTML = '<option value="">+ 추가</option>' + W.filter(w => w.grade <= 2 && !(H[k] || []).includes(w.id)).map(w => `<option value="${esc(w.id)}">${esc(w.title)}</option>`).join(''); sel.onchange = () => { if (sel.value) { (H[k] || (H[k] = [])).push(sel.value); dirty = true; sync(); } }; });
+  }
+  function sync() { $('#homejson').value = JSON.stringify(H, null, 1); homeUI(); }
+  $('#homejson').addEventListener('change', () => { if (readHome()) homeUI(); });
+  $('#nw-go').addEventListener('click', async () => {
+    if (!server) return st('새 작업 추가는 로컬 서버 모드에서만 (python src/edit_server.py)');
+    const id = $('#nw-id').value.trim(), title = $('#nw-title').value.trim(), f = $('#nw-file').files[0];
+    if (!id) return st('ID를 입력하세요');
+    let master = '';
+    if (f) { st(`원본 올리는 중… ${(f.size / 1e6).toFixed(0)}MB`); const r = await (await fetch('api/upload?name=' + encodeURIComponent(f.name), { method: 'POST', body: f })).json(); if (!r.ok) return st('업로드 실패'); master = r.name; }
+    st('화질별 사본 만드는 중… (영상 길이에 따라 1~3분)');
+    const r = await (await fetch('api/addwork', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, title, master }) })).json();
+    if (!r.ok) return st('추가 실패: ' + (r.err || '')); st('추가됨 — 분류·썸네일을 정하고 저장 → 빌드'); W = await (await fetch('data/works.json?' + Date.now())).json(); list(); pick(id);
+  });
   const dl = (name, obj) => { const a = document.createElement('a'); a.download = name; a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 1)], { type: 'application/json' })); a.click(); };
   const readHome = () => { try { H = JSON.parse($('#homejson').value); return true; } catch (e) { st('home.json 문법 오류: ' + e.message); return false; } };
   $('#save').addEventListener('click', async () => {

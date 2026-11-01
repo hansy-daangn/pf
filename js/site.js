@@ -58,13 +58,15 @@
   const stopHov = () => { if (hovVid) { if (hovVid.tagName === 'IFRAME') { hovVid.remove(); } else { hovVid.pause(); hovVid.classList.remove('on'); hovVid.removeAttribute('src'); hovVid.load(); } hovVid = null; } clearTimeout(hovTimer); };
   const queueOf = (card) => { const c = card.closest('[data-queue]'); return c ? $$('.card[data-id],.li[data-id],.shot[data-id]', c).map(x => x.dataset.id).filter((v, i, a) => v && a.indexOf(v) === i) : [card.dataset.id]; };
   const Pop = (() => {
-    const P = document.createElement('div'); P.className = 'pop'; P.innerHTML = `<div class="art"><img alt=""><video muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="bd"><div class="t"></div><div class="s"></div><div class="o"></div><div class="bt"><button class="btn acc">${ico('play', 'sm')} 재생</button><button class="btn ghost">상세</button></div></div>`;
+    const P = document.createElement('div'); P.className = 'pop'; P.innerHTML = `<div class="art"><div class="bgb"></div><img alt=""><video muted loop playsinline preload="none" aria-hidden="true"></video></div><div class="bd"><div class="t"></div><div class="s"></div><div class="o"></div><div class="bt"><button class="btn acc">${ico('play', 'sm')} 재생</button><button class="btn ghost">상세</button></div></div>`;
     document.body.appendChild(P);
     const V = $('video', P); let cur = null, card = null, hideT = null;
     const show = (c, w) => {
-      clearTimeout(hideT); cur = w; card = c; const r = c.getBoundingClientRect(); const scale = 1.5; const pw = Math.min(r.width * scale, innerWidth - 32);
-      const tall = orientOf(w) === 'tall'; const [aw, ah] = tall ? [9, 16] : [16, 9]; const pwv = tall ? Math.min(r.width * 1.35, innerWidth - 32) : pw; P.style.setProperty('--pw', pwv + 'px'); P.style.setProperty('--pa', `${aw}/${ah}`);
-      const im = $('img', P); im.src = url(posterOf(w)); $('.t', P).textContent = w.title; $('.s', P).textContent = w.subtitle || ''; $('.o', P).textContent = (w.copy && w.copy.one) || '';
+      clearTimeout(hideT); cur = w; card = c; const art = $('.art', c) || c; const r = art.getBoundingClientRect();
+      const tall = c.classList.contains('tall'); const [aw, ah] = tall ? [9, 16] : [16, 9];
+      const capH = innerHeight * (tall ? .56 : .5) - 132; let pwv = Math.min(r.width * (tall ? 1.25 : 1.5), innerWidth - 32); if (pwv * ah / aw > capH) pwv = Math.max(r.width, capH * aw / ah);
+      P.style.setProperty('--pw', pwv + 'px'); P.style.setProperty('--pa', `${aw}/${ah}`); P.classList.toggle('tall', tall);
+      const im = $('img', P); const pimg = tall ? posterOf(w) : ((w.media && w.media.poster16) || posterOf(w)); im.src = url(pimg); $('.bgb', P).style.backgroundImage = `url(${url(posterOf(w))})`; $('.t', P).textContent = w.title; $('.s', P).textContent = w.subtitle || ''; $('.o', P).textContent = (w.copy && w.copy.one) || '';
       let left = r.left + r.width / 2 - pwv / 2; left = Math.max(16, Math.min(left, innerWidth - pwv - 16));
       const ph = pwv * ah / aw + 132; let top = r.top + r.height / 2 - ph / 2; top = Math.max(72, Math.min(top, innerHeight - ph - 16));
       P.style.left = left + 'px'; P.style.top = top + 'px'; P.style.transformOrigin = `${r.left + r.width / 2 - left}px ${r.top + r.height / 2 - top}px`;
@@ -157,7 +159,10 @@
     const V = document.createElement('video'); V.playsInline = true; V.preload = 'metadata'; V.setAttribute('controlslist', 'nodownload');
     const el = { vw: $('.vw', T), next: $('.next', T), h1: $('.meta h1', T), s: $('.meta .s', T), y: $('.meta .y', T), crumb: $('.crumb', T), pos: $('.pos', T), pg: $('.pg', T), pgi: $('.pg i', T), cur: $('.cur', T), durE: $('.dur', T), pp: $('.pp', T), mute: $('.mute', T), fmts: $('.fmts', T), desc: $('.tab.desc', T), perf: $('.tab.perf', T), q: $('.tab.q', T), bg: $('.bgart', T), ctl: $('.ctl', T), tabs: $$('.seg button', T) };
     let cur = null, queue = [], idx = 0, idleT = null, cdT = null, lastFocus = null, autoplay = true, reel = false, frame = null;
-    const sources = w => { const m = w.media || {}; const vs = (m.variants || []).filter(v => v.src && /\.(mp4|webm|mov)(\?|$)/i.test(v.src)).map(v => ({ label: v.label, src: v.src, w: v.w, h: v.h })); if (vs.length) return vs; return (m.full || m.preview) ? [{ label: (w.formats || ['영상'])[0], src: m.full || m.preview, w: aspectOf(w)[0], h: aspectOf(w)[1] }] : []; };
+    const sources = w => { const m = w.media || {}; const vs = (m.variants || []).filter(v => v.src && /\.(mp4|webm|mov)(\?|$)/i.test(v.src)).map(v => ({ label: v.label, src: v.src, sd: v.sd, w: v.w, h: v.h })); if (vs.length) return vs; return (m.full || m.preview) ? [{ label: (w.formats || ['영상'])[0], src: m.full || m.preview, sd: m.sd, w: aspectOf(w)[0], h: aspectOf(w)[1] }] : []; };
+    const lowBW = () => SAVE || innerWidth < 900;
+    const pickSrc = s => (s.sd && lowBW() && !document.fullscreenElement) ? s.sd : s.src;
+    let MUTED = (() => { try { return sessionStorage.getItem('pf.muted') === '1'; } catch (e) { return false; } })();
     const kindOf = w => (w.media && w.media.youtube) ? 'youtube' : sources(w).length ? 'video' : (w.links && w.links.embed) ? 'iframe' : 'image';
     const clearStage = () => { [...el.vw.children].forEach(n => { if (!n.classList.contains('big') && !n.classList.contains('next')) n.remove(); }); frame = null; V.pause(); };
     const setAspect = (w, h) => { el.vw.style.setProperty('--va', `${w}/${h}`); el.vw.style.setProperty('--vr', (w / h).toFixed(4)); P.style.setProperty('--va', `${w}/${h}`); };
@@ -170,7 +175,7 @@
       el.bg.style.backgroundImage = poster ? `url(${url(poster)})` : 'none';
       clearStage(); el.next.classList.remove('on'); delete el.next.dataset.dismissed; clearInterval(cdT);
       let embs = [];
-      if (kind === 'video') { const s0 = srcs[0]; setAspect(s0.w || 16, s0.h || 9); V.src = url(s0.src); V.poster = poster ? url(poster) : ''; V.muted = false; el.vw.prepend(V); if (autoplay) V.play().catch(() => { V.muted = true; V.play().catch(() => { }); }); }
+      if (kind === 'video') { const s0 = srcs[0]; setAspect(s0.w || 16, s0.h || 9); V.dataset.hd = url(s0.src); V.src = url(pickSrc(s0)); V.poster = poster ? url(poster) : ''; V.muted = MUTED; el.vw.prepend(V); if (autoplay) V.play().catch(() => { V.muted = true; V.play().catch(() => { }); }); }
       else if (kind === 'youtube') { setAspect(16, 9); frame = document.createElement('iframe'); frame.allow = 'autoplay; fullscreen; picture-in-picture'; frame.title = w.title; frame.src = `https://www.youtube-nocookie.com/embed/${w.media.youtube}?autoplay=${autoplay ? 1 : 0}&rel=0&modestbranding=1&playsinline=1`; el.vw.prepend(frame); }
       else if (kind === 'iframe') {
         embs = (w.links.embeds && w.links.embeds.length) ? w.links.embeds : [{ label: '데모', src: w.links.embed }]; setAspect(16, 10);
@@ -198,7 +203,7 @@
       showTab('desc');
       document.title = `${w.title} — HANSY`;
     };
-    const switchFmt = (i) => { const s = sources(cur)[i]; if (!s) return; setAspect(s.w || 16, s.h || 9); const wasPlaying = !V.paused; V.src = url(s.src); if (wasPlaying || autoplay) V.play().catch(() => { }); };
+    const switchFmt = (i) => { const s = sources(cur)[i]; if (!s) return; setAspect(s.w || 16, s.h || 9); const wasPlaying = !V.paused; V.dataset.hd = url(s.src); V.src = url(pickSrc(s)); if (wasPlaying || autoplay) V.play().catch(() => { }); };
     const jump = (n) => { if (n < 0 || n >= queue.length) return; idx = n; cur = BY[queue[idx]]; T.dataset.cur = cur.id; autoplay = true; render(cur); wake(); const ly = $('.lay', T); if (ly) ly.scrollTop = 0; };
     const open = (id, opt = {}) => {
       const w = BY[id]; if (!w) return; lastFocus = document.activeElement;
@@ -230,6 +235,10 @@
     el.pp.addEventListener('click', toggle); el.vw.addEventListener('click', e => { if (e.target === V || e.target.closest('.big')) toggle(); });
     $('.prev', T).addEventListener('click', () => jump(idx - 1)); $('.nxt', T).addEventListener('click', () => jump(idx + 1));
     el.mute.addEventListener('click', () => { V.muted = !V.muted; });
+    V.addEventListener('volumechange', () => { MUTED = V.muted; try { sessionStorage.setItem('pf.muted', MUTED ? '1' : '0'); } catch (e) { } });
+    let bufT = null; V.addEventListener('waiting', () => { clearTimeout(bufT); bufT = setTimeout(() => el.vw.classList.add('buffering'), 2000); });
+    ['playing', 'canplay', 'pause', 'emptied'].forEach(ev => V.addEventListener(ev, () => { clearTimeout(bufT); el.vw.classList.remove('buffering'); }));
+    document.addEventListener('fullscreenchange', () => { if (document.fullscreenElement && V.dataset.hd && V.currentSrc && !V.currentSrc.endsWith(V.dataset.hd.replace(/^\.\//, ''))) { const t = V.currentTime, pl = !V.paused; V.src = V.dataset.hd; V.addEventListener('loadedmetadata', () => { V.currentTime = t; if (pl) V.play().catch(() => { }); }, { once: true }); } });
     $('.full', T).addEventListener('click', () => { const t = el.vw; document.fullscreenElement ? document.exitFullscreen() : (t.requestFullscreen && t.requestFullscreen()); });
     $('.pipb', T).addEventListener('click', async () => { if (!cur || kindOf(cur) !== 'video') { close(false); return; } if (document.pictureInPictureEnabled && !RM) { try { await V.requestPictureInPicture(); return; } catch (e) { } } close(true); });
     $('.cancel', el.next).addEventListener('click', e => { e.stopPropagation(); clearInterval(cdT); el.next.classList.remove('on'); el.next.dataset.dismissed = '1'; });
@@ -244,7 +253,7 @@
       if (V.duration && V.duration >= 60 && V.duration - V.currentTime <= 8 && !el.next.classList.contains('on') && !el.next.dataset.dismissed && queue[idx + 1] && T.classList.contains('on')) { const n = BY[queue[idx + 1]]; $('img', el.next).src = url(posterOf(n)); $('b', el.next).textContent = n.title; const cd = $('.cd', el.next); cd.innerHTML = ico('play', 'sm'); cd.style.setProperty('--p', 0); el.next.classList.add('on'); }
     });
     V.addEventListener('ended', () => {
-      if (P.classList.contains('on')) { if (idx + 1 < queue.length && kindOf(BY[queue[idx + 1]]) === 'video') { idx++; cur = BY[queue[idx]]; V.src = url(sources(cur)[0].src); V.play().catch(() => { }); $('.bar b', P).textContent = cur.title; } else hidePip(true); return; }
+      if (P.classList.contains('on')) { if (idx + 1 < queue.length && kindOf(BY[queue[idx + 1]]) === 'video') { idx++; cur = BY[queue[idx]]; V.src = url(pickSrc(sources(cur)[0])); V.play().catch(() => { }); $('.bar b', P).textContent = cur.title; } else hidePip(true); return; }
       const n = BY[queue[idx + 1]]; if (!n) { el.vw.classList.add('paused'); return; }
       $('img', el.next).src = url(posterOf(n)); $('b', el.next).textContent = n.title; el.next.classList.add('on');
       if (!reel) return;
@@ -278,14 +287,14 @@
   /* ---------- 라이브러리 필터 ---------- */
   const LIB = $('.lib');
   if (LIB) {
-    const st = { kind: null, view: 'grid', sort: 'rec' };
+    const st = { kind: (location.hash.slice(1) && KINDS[location.hash.slice(1)]) ? location.hash.slice(1) : null, view: 'grid', sort: 'rec' };
     const grid = $('.grid', LIB), list = $('.list', LIB), cnt = $('.cnt', LIB);
     const items = DATA.filter(w => w.grade <= 2);
     const match = w => (!st.kind || (w.kinds || []).includes(st.kind));
     const pr = w => (typeof w.priority === 'number' ? w.priority : 999);
     const sortFn = (a, b) => (pr(a) - pr(b)) || (a.grade - b.grade) || ((a.sort || 99) - (b.sort || 99));
     const uiCls = w => (w.group === 'tools' || w.group === 'research') ? ' ui' : '';
-    const cardHTML = (w) => { const o = 'wide'; const p = (w.media && w.media.poster16) || posterOf(w); const ar = (w.media && w.media.pw && w.media.ph) ? (w.media.pw / w.media.ph) : 16 / 9; return `<a class="card ${o}${uiCls(w)}" style="--ar:${ar.toFixed(4)}" href="?w=${esc(w.id)}" data-id="${esc(w.id)}"><div class="art${p ? '' : ' ph'}" data-info="${esc(w.copy && w.copy.one || '')}">${p ? `<img src="${esc(url(p))}" alt="" loading="lazy" width="600" height="600">` : `<span class="pt">${esc(w.year || '')}</span>`}<span class="pl">${ico('play', 'sm')}</span></div><div class="t">${esc(w.title)}</div><div class="s">${esc(w.type || w.subtitle || '')}${(w.links && w.links.live) ? ' ↗' : ''}</div></a>`; };
+    const cardHTML = (w) => { const o = 'wide'; const p = (w.media && w.media.poster16) || posterOf(w); const ar = (w.media && w.media.pw && w.media.ph) ? (w.media.pw / w.media.ph) : 16 / 9; return `<a class="card ${o}${uiCls(w)}" style="--ar:${ar.toFixed(4)}" href="?w=${esc(w.id)}" data-id="${esc(w.id)}"><div class="art${p ? '' : ' ph'}" data-info="${esc(w.copy && w.copy.one || '')}">${p ? `<img src="${esc(url(p))}"${w.media && w.media.srcset ? ` srcset="${esc(w.media.srcset.split(', ').map(x => url(x.split(' ')[0]) + ' ' + x.split(' ')[1]).join(', '))}" sizes="(max-width:760px) 45vw, 260px"` : ''} alt="" loading="lazy" width="600" height="338">` : `<span class="pt">${esc(w.year || '')}</span>`}<span class="pl">${ico('play', 'sm')}</span></div><div class="t">${esc(w.title)}</div><div class="s">${esc(w.type || w.subtitle || '')}${(w.links && w.links.live) ? ' ↗' : ''}</div></a>`; };
     const rowHTML = (w, i) => { const p = posterOf(w); return `<button class="li" data-id="${esc(w.id)}"><span class="n">${String(i + 1).padStart(2, '0')}</span><span class="th">${p ? `<img src="${esc(url(p))}" alt="" loading="lazy" width="128" height="128">` : ''}</span><span class="t">${esc(w.title)}<small>${esc(w.copy && w.copy.one || '')}</small></span><span class="m">${esc(w.role || w.subtitle || '')}</span><span class="c m">${esc((w.channels || []).join(' · '))}</span><span class="y">${w.year || ''}</span></button>`; };
     const U = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u')) || 8;
     const span = () => { if (grid.hidden || !grid.offsetParent) return; grid.classList.remove('ms'); let ok = 0; $$('.card', grid).forEach(c => { c.style.gridRowEnd = ''; const h = c.getBoundingClientRect().height; if (h) { c.style.gridRowEnd = `span ${Math.ceil(h / U)}`; ok++; } }); if (ok) grid.classList.add('ms'); };
@@ -301,7 +310,8 @@
       span();
       $$('.rail button').forEach(b => b.setAttribute('aria-pressed', st[b.dataset.f] === (b.dataset.v || null) || (!st[b.dataset.f] && !b.dataset.v)));
     };
-    $$('.rail button').forEach(b => b.addEventListener('click', () => { st[b.dataset.f] = st[b.dataset.f] === b.dataset.v ? null : (b.dataset.v || null); draw(); }));
+    $$('.rail button').forEach(b => b.addEventListener('click', () => { st[b.dataset.f] = st[b.dataset.f] === b.dataset.v ? null : (b.dataset.v || null); hist.replace(hist.st(), location.pathname + location.search + (st.kind ? '#' + st.kind : '')); draw(); }));
+    addEventListener('hashchange', () => { const k = location.hash.slice(1); st.kind = KINDS[k] ? k : null; draw(); });
     $$('.seg[data-k] button').forEach(b => b.addEventListener('click', () => { const k = b.closest('.seg').dataset.k; st[k] = b.dataset.v; $$('button', b.parentElement).forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); }));
     draw();
   }

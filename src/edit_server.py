@@ -18,8 +18,18 @@ class H(http.server.SimpleHTTPRequestHandler):
         if self.path.startswith('/api/ping'): return self._json(200, {'ok': True, 'repo': str(REPO)})
         return super().do_GET()
     def do_POST(self):
-        n = int(self.headers.get('Content-Length') or 0); body = json.loads(self.rfile.read(n) or b'{}')
-        p = urllib.parse.urlparse(self.path).path
+        n = int(self.headers.get('Content-Length') or 0); u = urllib.parse.urlparse(self.path); p = u.path
+        if p == '/api/upload':
+            name = pathlib.Path(urllib.parse.parse_qs(u.query).get('name', ['upload.mp4'])[0]).name
+            d = pathlib.Path(__import__('os').environ.get('PF_MASTERS', REPO / 'masters')); d.mkdir(exist_ok=True)
+            with open(d / name, 'wb') as f:
+                left = n
+                while left > 0:
+                    chunk = self.rfile.read(min(left, 1 << 20))
+                    if not chunk: break
+                    f.write(chunk); left -= len(chunk)
+            return self._json(200, {'ok': True, 'name': name})
+        body = json.loads(self.rfile.read(n) or b'{}')
         try:
             if p == '/api/save':
                 for name in ('works', 'home'):
@@ -36,6 +46,25 @@ class H(http.server.SimpleHTTPRequestHandler):
                 p16 = REPO / 'assets' / 'poster16' / f'{wid}.jpg'
                 if p16.exists(): p16.unlink()
                 return self._json(200, {'ok': True, 'path': f'assets/poster/{wid}.jpg'})
+            if p == '/api/addwork':
+                wid = body['id'].strip(); master = body.get('master', '').strip()
+                if not wid or not wid.replace('-', '').replace('_', '').isalnum(): return self._json(400, {'ok': False, 'err': 'ID는 영문·숫자·-·_만'})
+                wf = REPO / 'data' / 'works.json'; W = json.loads(wf.read_text(encoding='utf-8'))
+                if any(w['id'] == wid for w in W): return self._json(400, {'ok': False, 'err': '이미 있는 ID'})
+                W.append({'id': wid, 'grade': 2, 'group': 'performance', 'title': body.get('title') or wid, 'subtitle': '', 'year': body.get('year') or '', 'period': '', 'role': '', 'tools': [], 'channels': [], 'formats': [], 'kinds': body.get('kinds') or [], 'type': body.get('type') or '', 'contrib': '1인 제작',
+                          'media': {'poster': None, 'preview': None, 'full': None, 'youtube': None, 'variants': [], 'shot': None}, 'links': {}, 'copy': {'one': ''}, 'metrics': [], 'tags': [], 'sort': 50})
+                wf.write_text(json.dumps(W, ensure_ascii=False, indent=1), encoding='utf-8')
+                if master:
+                    mf = REPO / 'data' / 'media_map.json'; M = json.loads(mf.read_text(encoding='utf-8')); M[wid] = {'full': master}; mf.write_text(json.dumps(M, ensure_ascii=False, indent=1), encoding='utf-8')
+                    r = subprocess.run([sys.executable, str(REPO / 'src' / 'media.py'), wid], capture_output=True, text=True, cwd=str(REPO))
+                    W = json.loads(wf.read_text(encoding='utf-8')); w = next(x for x in W if x['id'] == wid); m = w['media']
+                    if m.get('full') and not m.get('poster'):
+                        out = REPO / 'assets' / 'poster' / f'{wid}.jpg'
+                        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', '1', '-i', str(REPO / m['full']), '-frames:v', '1', '-q:v', '2', str(out)])
+                        if out.exists(): m['poster'] = f'assets/poster/{wid}.jpg'
+                    wf.write_text(json.dumps(W, ensure_ascii=False, indent=1), encoding='utf-8')
+                    return self._json(200, {'ok': True, 'out': (r.stdout + r.stderr)[-1500:]})
+                return self._json(200, {'ok': True})
             if p == '/api/build':
                 r = subprocess.run([sys.executable, str(REPO / 'src' / 'build.py')], capture_output=True, text=True, cwd=str(REPO))
                 return self._json(200, {'ok': r.returncode == 0, 'out': (r.stdout + r.stderr)[-2000:]})

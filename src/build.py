@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """HANSY portfolio — static build. data/*.json → /home/claude/pf/*.html"""
-import json, html, pathlib, shutil, datetime, re
+import json, html, pathlib, shutil, datetime, re, hashlib, subprocess
 import os
 REPO = pathlib.Path(__file__).resolve().parent.parent
 SRC = pathlib.Path(os.environ.get('PF_SRC', REPO / 'src')); DATA = pathlib.Path(os.environ.get('PF_DATA', REPO / 'data')); OUT = pathlib.Path(os.environ.get('PF_OUT', REPO))
@@ -52,11 +52,42 @@ def make_poster16(w):
         return str(out)
     except Exception as ex:
         print('poster16 fail', w['id'], ex); return None
+def thumbs(path):
+    """카드용 WebP 640·1280 (원본보다 오래되면 재생성). 반환: srcset 문자열"""
+    if not path or path.startswith('http'): return ''
+    sp = REPO / path
+    if not sp.exists(): return ''
+    out = []
+    for wd in (640, 1280):
+        tp = pathlib.Path('assets/thumb') / f"{hashlib.md5(path.encode()).hexdigest()[:10]}-{wd}.webp"; op = REPO / tp
+        if not op.exists() or op.stat().st_mtime < sp.stat().st_mtime:
+            try:
+                im = Image.open(sp).convert('RGB')
+                if im.width > wd: im = im.resize((wd, max(1, round(im.height * wd / im.width))), Image.LANCZOS)
+                op.parent.mkdir(parents=True, exist_ok=True); im.save(op, 'WEBP', quality=80, method=5)
+            except Exception as ex:
+                print('thumb fail', path, ex); return ''
+        out.append(f'{tp} {wd}w')
+    return ', '.join(out)
+def bbclip(w):
+    """빌보드 구간 클립: media.full(hd)에서 billboard.loop 구간만 잘라 assets/bb/<id>_<시작>_<끝>.mp4 — 구간을 바꾸면 자동으로 새로 자름"""
+    m = w.get('media') or {}; bb = m.get('billboard') or {}; src = m.get('full') or bb.get('src')
+    if not src or not (REPO / src).exists(): return None, None
+    a, b = (bb.get('loop') or [0, 8])[:2]; a = float(a or 0); b = float(b or 8)
+    if b <= a: b = a + 6
+    tag = f"{a:g}_{b:g}".replace('.', 'p'); out = pathlib.Path('assets/bb') / f"{w['id']}_{tag}.mp4"; op = REPO / out
+    if not op.exists() or op.stat().st_mtime < (REPO / src).stat().st_mtime:
+        op.parent.mkdir(parents=True, exist_ok=True)
+        for old in op.parent.glob(f"{w['id']}_*.mp4"): old.unlink()
+        r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{a}', '-t', f'{b - a + 0.4:.2f}', '-i', str(REPO / src), '-map', '0:v:0', '-map', '0:a:0?', '-vf', "scale='min(1920,iw)':-2", '-c:v', 'libx264', '-preset', 'medium', '-crf', '21', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', str(op)], capture_output=True, text=True)
+        if r.returncode: print('bb clip fail', w['id'], r.stderr[-300:]); return None, None
+    return str(out), b - a
 def prio(w): return (w.get('priority') if isinstance(w.get('priority'), (int, float)) else 999, w.get('grade', 2), w.get('sort', 99))
 for _w in W:
     _d = pdim(poster(_w)); _m = _w.setdefault('media', {}); _m['pw'], _m['ph'] = (_d or (0, 0))
     _p16 = make_poster16(_w)
     if _p16: _m['poster16'] = _p16
+    _m['srcset'] = thumbs(_m.get('poster16') or poster(_w))
 W.sort(key=prio)
 def is_video(p): return bool(p) and str(p).lower().endswith(('.mp4', '.webm', '.mov'))
 
@@ -80,6 +111,7 @@ def head(title, desc, canon, og=None):
 <title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{SITE}{canon}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="{SITE}{og or 'assets/poster/td_review2605_h.jpg'}"><meta property="og:type" content="website">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script type="application/ld+json">{json.dumps({"@context": "https://schema.org", "@type": "Person", "name": "김한결", "alternateName": "Hansy", "jobTitle": R.get("title", ""), "email": "mailto:" + EMAIL, "url": SITE, "sameAs": ["https://github.com/hansy-daangn"]}, ensure_ascii=False)}</script>
 <link rel="stylesheet" href="css/site.css"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%230e0e10%22/%3E%3Crect x=%228%22 y=%2213%22 width=%2216%22 height=%226%22 fill=%22%23cc1433%22/%3E%3C/svg%3E"></head>'''
 def nav(cur):
     tabs = [('index.html', '홈'), ('works.html', '작업'), ('tools.html', '도구 · 자동화'), ('resume.html', '이력서')]
@@ -96,7 +128,9 @@ def card(w, cls='wide'):
     p = small((m.get('poster16') if cls == 'wide' and m.get('poster16') else poster(w))); ui = ' ui' if w['group'] in ('tools', 'research') else ''
     hgt = {'sq': 600, 'wide': 338, 'tall': 1067}.get(cls, 338)
     d = pdim(poster(w)); ar = (d[0] / d[1]) if d else (16 / 9)
-    img = f'<img src="{e(p)}" alt="" loading="lazy" width="600" height="{hgt}">' if p else f'<span class="pt">{e(w.get("year",""))}</span>'
+    ss = thumbs(p)
+    sizes = '(max-width:760px) 264px, 304px' if cls == 'wide' else '(max-width:760px) 132px, 172px'
+    img = (f'<img src="{e(p)}"' + (f' srcset="{e(ss)}" sizes="{sizes}"' if ss else '') + f' alt="" loading="lazy" width="600" height="{hgt}">') if p else f'<span class="pt">{e(w.get("year",""))}</span>'
     live = ' ↗' if (w.get('links') or {}).get('live') else ''
     return f'<a class="card {cls}{ui}" style="--ar:{ar:.4f}" href="?w={e(w["id"])}" data-id="{e(w["id"])}"><div class="art{"" if p else " ph"}" data-info="{e((w.get("copy") or {}).get("one",""))}">{img}<span class="pl" aria-hidden="true">{ico("play","sm")}</span></div><div class="t">{e(w["title"])}</div><div class="s">{e(w.get("type") or w.get("subtitle",""))}{live}</div></a>'
 def row(title, items, cls=None, more='works.html'):
@@ -106,7 +140,7 @@ def row(title, items, cls=None, more='works.html'):
     if cls is None:
         # 세로 소재만 모인 행은 9:16, 그 외는 전부 16:9(세로·정방은 블러 배경 합성 썸네일)
         cls = 'tall' if all(orient(w) == 'tall' for w in items) else 'wide'
-    return f'''<section class="row" data-queue><div class="wrap hd"><h2>{e(title)}</h2>{f'<a href="{more}">전체 보기 ›</a>' if more else ''}</div>
+    return f'''<section class="row" data-queue><div class="wrap hd"><h2>{e(title)}</h2>{f'<a class="more" href="{more}">더보기 ›</a>' if more else ''}</div>
 <div class="wrap"><div class="trk"><div class="ar l"><button aria-label="왼쪽으로">{ico("chev-l")}</button></div><div class="sc">{''.join(card(w, cls) for w in items)}</div><div class="ar r"><button aria-label="오른쪽으로">{ico("chev-r")}</button></div></div></div></section>'''
 
 WHO = '김한결 — 모션·3D로 광고 영상을 만들고, 성과를 읽는 도구까지 직접 만드는 디자이너'
@@ -118,10 +152,10 @@ def home():
     slides = []
     for i, w in enumerate(feat):
         m = w.get('media') or {}; bb = m.get('billboard') or {}
-        p = bb.get('poster') or m.get('poster16') or poster(w); pv = bb.get('src') if is_video(bb.get('src')) else None
+        p = bb.get('poster') or m.get('poster16') or poster(w); pv, plen = bbclip(w)
         if bb: portrait = (bb.get('w') or 16) / (bb.get('h') or 9) < 1.3
         else: d = pdim(p); portrait = bool(d) and d[0] / d[1] < 1.3
-        loop = bb.get('loop') or [0, 8]
+        loop = [0, round(plen, 2)] if pv else (bb.get('loop') or [0, 8])
         src_attr = f'src="{e(p)}" fetchpriority="high"' if i == 0 else f'data-src="{e(p)}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" loading="lazy"'
         blur = (f'<div class="blur" style="background-image:url({e(p)})"></div>' if i == 0 else f'<div class="blur" data-bg="{e(p)}"></div>') if portrait else ''
         art = f'<div class="art{" portrait" if portrait else ""}">{blur}<img {src_attr} alt="" width="1920" height="1080">' + (f'<video muted loop playsinline preload="none" data-src="{e(pv)}" data-loop="{loop[0]},{loop[1]}" data-dur="{bb.get('dur') or 9}" poster="{e(p)}" aria-hidden="true"></video>' if pv else '') + '</div>'
@@ -134,7 +168,7 @@ def home():
     rows = [row('대표 작업', rep, 'wide')] if rep else []
     for r in H.get('rows') or []:
         items = [BY[i] for i in r.get('ids', []) if i in BY] if r.get('ids') else by_kind(r.get('kind', ''))
-        rows.append(row(r.get('title') or KINDS.get(r.get('kind'), ''), items, None, r.get('more', 'works.html')))
+        rows.append(row(r.get('title') or KINDS.get(r.get('kind'), ''), items, None, r.get('more') or (f"works.html#{r['kind']}" if r.get('kind') else 'works.html')))
     body = f'''<body class="home" data-base="./">{nav('index.html')}<main>
 <section class="bb" aria-label="피처드 작업"><div class="frame">{''.join(slides)}</div></section>
 {''.join(rows)}
@@ -212,5 +246,19 @@ if (OUT/'about.html').exists(): (OUT/'about.html').write_text('<!DOCTYPE html><m
 for name, fn in []:
     (OUT/name).write_text(fn(), encoding='utf-8')
 (OUT/'.nojekyll').write_text('')
-missing = [(w['id'], p) for w in W for p in [poster(w), (w.get('media') or {}).get('preview'), (w.get('media') or {}).get('full'), ((w.get('media') or {}).get('billboard') or {}).get('src')] + [v.get('src') for v in (w.get('media') or {}).get('variants', [])] if p and not str(p).startswith('http') and not (OUT/p).exists()]
+# 작품별 공유 페이지(카톡·슬랙 미리보기용) — 열면 상영관으로 이동
+(OUT/'w').mkdir(exist_ok=True)
+for old in (OUT/'w').glob('*.html'): old.unlink()
+for w in W:
+    if not has_media(w): continue
+    c = w.get('copy') or {}; m = w.get('media') or {}; og = m.get('poster16') or poster(w)
+    desc = c.get('one') or w.get('type') or ''
+    (OUT/'w'/f"{w['id']}.html").write_text(f'''<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>{e(w["title"])} — Hansy</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{SITE}works.html?w={e(w["id"])}">
+<meta property="og:title" content="{e(w["title"])} — 김한결 Hansy"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="{SITE}{e(og)}"><meta property="og:type" content="video.other"><meta name="twitter:card" content="summary_large_image">
+<meta http-equiv="refresh" content="0;url=../works.html?w={e(w["id"])}"></head><body><a href="../works.html?w={e(w["id"])}">{e(w["title"])}</a><script>location.replace('../works.html?w={e(w["id"])}')</script></body></html>''', encoding='utf-8')
+urls = ['', 'works.html', 'tools.html', 'resume.html'] + [f"w/{w['id']}.html" for w in W if has_media(w)]
+(OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>{SITE}{u}</loc></url>' for u in urls) + '</urlset>\n', encoding='utf-8')
+(OUT/'robots.txt').write_text(f'User-agent: *\nDisallow: /pf/edit.html\nSitemap: {SITE}sitemap.xml\n', encoding='utf-8')
+(OUT/'404.html').write_text(head('페이지를 찾을 수 없음 — Hansy', '김한결 포트폴리오', '404.html').replace('href="css/site.css"', 'href="/pf/css/site.css"') + f'''<body><main><div class="wrap sec"><h1 class="pg-h">페이지를 찾을 수 없습니다</h1><p><a class="btn" href="/pf/">홈으로</a></p></div></main></body></html>''', encoding='utf-8')
+missing = [(w['id'], p) for w in W for p in [poster(w), (w.get('media') or {}).get('preview'), (w.get('media') or {}).get('full'), (w.get('media') or {}).get('sd')] + [v.get('src') for v in (w.get('media') or {}).get('variants', [])] + [v.get('sd') for v in (w.get('media') or {}).get('variants', [])] if p and '/' in str(p) and not str(p).startswith('http') and not (OUT/p).exists()]
 print('built', len(W), 'works; media-less:', [w['id'] for w in W if not has_media(w)], '; missing files:', missing[:10])

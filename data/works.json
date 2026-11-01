@@ -32,26 +32,29 @@
   "media": {
    "poster": "assets/poster/td_declutter.jpg",
    "preview": "assets/video/td_declutter.mp4",
-   "full": "assets/full/td_declutter.mp4",
+   "full": "assets/hd/declutter_Fin_H_1920x1080-cb0dbe.mp4",
    "youtube": null,
    "variants": [
     {
      "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/declutter_Fin_H_1920x1080.mp4",
-     "w": 1280,
-     "h": 720
+     "src": "assets/hd/declutter_Fin_H_1920x1080-cb0dbe.mp4",
+     "w": 1920,
+     "h": 1080,
+     "sd": "assets/sd/declutter_Fin_H_1920x1080-cb0dbe.mp4"
     },
     {
      "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/declutter_Fin_V_1080x1920.mp4",
-     "w": 720,
-     "h": 1280
+     "src": "assets/hd/declutter_Fin_V_1080x1920-1aea5b.mp4",
+     "w": 1080,
+     "h": 1920,
+     "sd": "assets/sd/declutter_Fin_V_1080x1920-1aea5b.mp4"
     },
     {
      "label": "1:1 — 정방 · 영상",
-     "src": "assets/cdn/declutter_Fin_F_1080x1080.mp4",
-     "w": 720,
-     "h": 720
+     "src": "assets/hd/declutter_Fin_F_1080x1080-653b7e.mp4",
+     "w": 1080,
+     "h": 1080,
+     "sd": "assets/sd/declutter_Fin_F_1080x1080-653b7e.mp4"
     },
     {
      "label": "1.91:1 — 배너 · 이미지",
@@ -118,7 +121,9 @@
     "dur": 9
    },
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "sd": "assets/sd/declutter_Fin_H_1920x1080-cb0dbe.mp4",
+   "srcset": "assets/thumb/e656a4b76c-640.webp 640w, assets/thumb/e656a4b76c-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -171,7 +176,9 @@
   ],
   "type": "3D 모션 광고 + 배너 세트",
   "contrib": "1인 제작",
-  "priority": 1
+  "priority": 1,
+  "dur": "20초",
+  "dur_auto": true
  },
  {
   "id": "td_review2605",
@@ -199,26 +206,29 @@
   "media": {
    "poster": "assets/poster/td_review2605.jpg",
    "preview": "assets/video/td_review2605.mp4",
-   "full": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",
+   "full": "assets/hd/maugrowth_biz_promo_reviewReward_1920x1080_2605-e0f2f2.mp4",
    "youtube": null,
    "variants": [
     {
      "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",
+     "src": "assets/hd/maugrowth_biz_promo_reviewReward_1920x1080_2605-e0f2f2.mp4",
      "w": 1920,
-     "h": 1080
+     "h": 1080,
+     "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1920x1080_2605-e0f2f2.mp4"
     },
     {
      "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/maugrowth_biz_promo_reviewReward_1080x1920_2605.mp4",
+     "src": "assets/hd/maugrowth_biz_promo_reviewReward_1080x1920_2605-858d66.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1080x1920_2605-858d66.mp4"
     },
     {
      "label": "1:1 — 정방 · 영상",
-     "src": "assets/cdn/maugrowth_biz_promo_reviewReward_1080x1080_2605.mp4",
+     "src": "assets/hd/maugrowth_biz_promo_reviewReward_1080x1080_2605-7d68f3.mp4",
      "w": 1080,
-     "h": 1080
+     "h": 1080,
+     "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1080x1080_2605-7d68f3.mp4"
     }
    ],
    "shot": null,
@@ -237,7 +247,9 @@
     "dur": 9
    },
    "pw": 720,
-   "ph": 720
+   "ph": 720,
+   "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1920x1080_2605-e0f2f2.mp4",
+   "srcset": "assets/thumb/df254aae4b-640.webp 640w, assets/thumb/df254aae4b-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -289,7 +301,9 @@
    "3d"
   ],
   "type": "3D 모션 광고",
-  "contrib": "1인 제작 · 콘셉트·카피는 마케터 협업"
+  "contrib": "1인 제작 · 콘셉트·카피는 마케터 협업",
+  "dur": "35초",
+  "dur_auto": true
  },
  {
   "id": "creativereporter",
@@ -325,7 +339,8 @@
    "note": "실화면은 사내 데이터 — 캡처 시 수치 마스킹 필요. GitHub Pages 404(비공개), 뷰어는 사내 도토리",
    "diagram": "assets/lab/cr_flow.png",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/c54da4ae1a-640.webp 640w, assets/thumb/c54da4ae1a-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -426,7 +441,8 @@
     "poster": "assets/fig/top3_subliminal.jpg"
    },
    "pw": 1039,
-   "ph": 585
+   "ph": 585,
+   "srcset": "assets/thumb/c19b4b63d0-640.webp 640w, assets/thumb/c19b4b63d0-1280.webp 1280w"
   },
   "links": {
    "live": "https://www.youtube.com/watch?v=J4zBpmVj49c",
@@ -491,7 +507,7 @@
   "media": {
    "poster": "assets/poster/local-runners-teaser.jpg",
    "preview": "assets/video/local-runners-teaser.mp4",
-   "full": "assets/full/local-runners-teaser.mp4",
+   "full": "assets/hd/LOCAL_RUNNERS_v5_0_with_grain-2419b3.mp4",
    "youtube": null,
    "variants": [],
    "shot": null,
@@ -514,7 +530,9 @@
     ],
     "dur": 9
    },
-   "poster16": "assets/poster16/local-runners-teaser.jpg"
+   "poster16": "assets/poster16/local-runners-teaser.jpg",
+   "sd": "assets/sd/LOCAL_RUNNERS_v5_0_with_grain-2419b3.mp4",
+   "srcset": "assets/thumb/44c7f9304b-640.webp 640w, assets/thumb/44c7f9304b-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -570,7 +588,8 @@
    "variants": [],
    "shot": "assets/shots/bakery-previz.jpg",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/c95b948a42-640.webp 640w, assets/thumb/c95b948a42-1280.webp 1280w"
   },
   "links": {
    "live": "https://hansy-daangn.github.io/bakery-gallery/previz16/",
@@ -664,7 +683,8 @@
    "variants": [],
    "shot": null,
    "pw": 1097,
-   "ph": 645
+   "ph": 645,
+   "srcset": "assets/thumb/7040ab0f7c-640.webp 640w, assets/thumb/7040ab0f7c-1280.webp 1280w"
   },
   "links": {
    "live": "https://www.youtube.com/watch?v=m1VSvI_tZbI",
@@ -720,7 +740,7 @@
   "media": {
    "poster": "assets/poster/bakery-vlog.jpg",
    "preview": "assets/video/bakery-vlog.mp4",
-   "full": "assets/full/bakery-vlog.mp4",
+   "full": "assets/hd/1030_biz_alw_v3_-2830ca.mp4",
    "youtube": null,
    "variants": [],
    "shot": "assets/shots/seedance-board-v4.jpg",
@@ -742,7 +762,9 @@
     ],
     "dur": 9
    },
-   "poster16": "assets/poster16/bakery-vlog.jpg"
+   "poster16": "assets/poster16/bakery-vlog.jpg",
+   "sd": "assets/sd/1030_biz_alw_v3_-2830ca.mp4",
+   "srcset": "assets/thumb/7df4d9a7fd-640.webp 640w, assets/thumb/7df4d9a7fd-1280.webp 1280w"
   },
   "links": {
    "live": "https://hansy-daangn.github.io/bakery-gallery/",
@@ -868,7 +890,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/td_godaangn.jpg"
+   "poster16": "assets/poster16/td_godaangn.jpg",
+   "srcset": "assets/thumb/becae73d5a-640.webp 640w, assets/thumb/becae73d5a-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -952,7 +975,8 @@
    "variants": [],
    "shot": "assets/shots/creativenamer.jpg",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/8d90792cca-640.webp 640w, assets/thumb/8d90792cca-1280.webp 1280w"
   },
   "links": {
    "live": "https://hansy-daangn.github.io/CreativeNamer/",
@@ -1076,7 +1100,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/td_raffle_v.jpg"
+   "poster16": "assets/poster16/td_raffle_v.jpg",
+   "srcset": "assets/thumb/8f77e5c619-640.webp 640w, assets/thumb/8f77e5c619-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1162,7 +1187,8 @@
    "shot": "assets/shots/kf-overview.jpg",
    "note": "사내 도토리 배포 — 공개 라이브 없음. 캡처 시 API 키·잔액 마스킹",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/dfcae6ab41-640.webp 640w, assets/thumb/dfcae6ab41-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1246,13 +1272,15 @@
   "media": {
    "poster": "assets/poster/local-runners-boosting.jpg",
    "preview": "assets/video/local-runners-boosting.mp4",
-   "full": "assets/full/local-runners-boosting.mp4",
+   "full": "assets/hd/b1d24513-localRunners_boosting_AFIN_v7-2c2d88.mp4",
    "youtube": null,
    "variants": [],
    "shot": null,
    "pw": 1080,
    "ph": 1920,
-   "poster16": "assets/poster16/local-runners-boosting.jpg"
+   "poster16": "assets/poster16/local-runners-boosting.jpg",
+   "sd": "assets/sd/b1d24513-localRunners_boosting_AFIN_v7-2c2d88.mp4",
+   "srcset": "assets/thumb/9e60cf480c-640.webp 640w, assets/thumb/9e60cf480c-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1348,7 +1376,8 @@
    },
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/mg_keyword_spring.jpg"
+   "poster16": "assets/poster16/mg_keyword_spring.jpg",
+   "srcset": "assets/thumb/9bdf165d14-640.webp 640w, assets/thumb/9bdf165d14-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1441,39 +1470,45 @@
   ],
   "media": {
    "poster": "assets/poster/nayeon_vd02.jpg",
-   "preview": "assets/video/nayeon_vd02.mp4",
-   "full": "assets/cdn/nayeon_vd02.mp4",
+   "preview": "assets/video/nayeon-campaign.mp4",
+   "full": "assets/hd/9a2e5ba2-VD02Fin_-_Capcha-v-detailed-3c8068.mp4",
    "youtube": null,
    "shot": null,
    "variants": [
     {
      "label": "티저 — 나연이의 당근 농장 · 7초",
-     "src": "assets/cdn/nayeon_vd01.mp4",
+     "src": "assets/hd/4a775841-VD01_-_move_it_away_B_editedOn0904-40eaf7.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/4a775841-VD01_-_move_it_away_B_editedOn0904-40eaf7.mp4"
     },
     {
      "label": "응모 안내 — 캡차 · 20초",
-     "src": "assets/cdn/nayeon_vd02.mp4",
+     "src": "assets/hd/9a2e5ba2-VD02Fin_-_Capcha-v-detailed-3c8068.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/9a2e5ba2-VD02Fin_-_Capcha-v-detailed-3c8068.mp4"
     },
     {
      "label": "POV — 디자이너 · 12초",
-     "src": "assets/cdn/nayeon_pov.mp4",
+     "src": "assets/hd/bfbd59dc-pv102-46d086.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/bfbd59dc-pv102-46d086.mp4"
     },
     {
      "label": "현장 스케치 — 54초",
-     "src": "assets/cdn/nayeon_event.mp4",
+     "src": "assets/hd/nayeon_offlineevent_v4_8-473cb5.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/nayeon_offlineevent_v4_8-473cb5.mp4"
     }
    ],
    "pw": 1080,
    "ph": 1920,
-   "poster16": "assets/poster16/nayeon-campaign.jpg"
+   "poster16": "assets/poster16/nayeon-campaign.jpg",
+   "sd": "assets/sd/9a2e5ba2-VD02Fin_-_Capcha-v-detailed-3c8068.mp4",
+   "srcset": "assets/thumb/9ae76a6f40-640.webp 640w, assets/thumb/9ae76a6f40-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1640,7 +1675,8 @@
    },
    "pw": 640,
    "ph": 640,
-   "poster16": "assets/poster16/cr_10y.jpg"
+   "poster16": "assets/poster16/cr_10y.jpg",
+   "srcset": "assets/thumb/b2ee719693-640.webp 640w, assets/thumb/b2ee719693-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1736,7 +1772,8 @@
    "variants": [],
    "shot": "assets/shots/hf-workspace.jpg",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/0e50317b6e-640.webp 640w, assets/thumb/0e50317b6e-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1860,7 +1897,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/td_pickup.jpg"
+   "poster16": "assets/poster16/td_pickup.jpg",
+   "srcset": "assets/thumb/0e8185c5f1-640.webp 640w, assets/thumb/0e8185c5f1-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -1954,7 +1992,8 @@
    },
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/sf_bizjul.jpg"
+   "poster16": "assets/poster16/sf_bizjul.jpg",
+   "srcset": "assets/thumb/cc13433586-640.webp 640w, assets/thumb/cc13433586-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2053,7 +2092,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/td_nintendo.jpg"
+   "poster16": "assets/poster16/td_nintendo.jpg",
+   "srcset": "assets/thumb/adc445e115-640.webp 640w, assets/thumb/adc445e115-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2183,7 +2223,8 @@
    },
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/mg_rent1.jpg"
+   "poster16": "assets/poster16/mg_rent1.jpg",
+   "srcset": "assets/thumb/b4c1f91c42-640.webp 640w, assets/thumb/b4c1f91c42-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2263,7 +2304,8 @@
    },
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/ai_closet1.jpg"
+   "poster16": "assets/poster16/ai_closet1.jpg",
+   "srcset": "assets/thumb/42291ef8c1-640.webp 640w, assets/thumb/42291ef8c1-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2391,7 +2433,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/sf_10000walk.jpg"
+   "poster16": "assets/poster16/sf_10000walk.jpg",
+   "srcset": "assets/thumb/828fa32007-640.webp 640w, assets/thumb/828fa32007-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2472,33 +2515,38 @@
   ],
   "media": {
    "poster": "assets/poster/mg_keyword_chuseok_v1.jpg",
-   "preview": "assets/video/mg_keyword_chuseok_v1.mp4",
-   "full": "assets/cdn/mg_keyword_chuseok_v1.mp4",
+   "preview": "assets/video/mg_keyword_chuseok.mp4",
+   "full": "assets/hd/maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__1_-1b5586.mp4",
    "youtube": null,
    "shot": null,
    "variants": [
     {
      "label": "9:16 — A",
-     "src": "assets/cdn/mg_keyword_chuseok_v1.mp4",
+     "src": "assets/hd/maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__1_-1b5586.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__1_-1b5586.mp4"
     },
     {
      "label": "9:16 — B",
-     "src": "assets/cdn/mg_keyword_chuseok_v2.mp4",
+     "src": "assets/hd/maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__2_-97d6db.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__2_-97d6db.mp4"
     },
     {
      "label": "16:9",
-     "src": "assets/cdn/mg_keyword_chuseok_h.mp4",
+     "src": "assets/hd/maugrowth_fleamarket_keyword-chuseok_1920x1080_2609__1_-36ebc5.mp4",
      "w": 1920,
-     "h": 1080
+     "h": 1080,
+     "sd": "assets/sd/maugrowth_fleamarket_keyword-chuseok_1920x1080_2609__1_-36ebc5.mp4"
     }
    ],
    "pw": 1080,
    "ph": 1920,
-   "poster16": "assets/poster16/mg_keyword_chuseok.jpg"
+   "poster16": "assets/poster16/mg_keyword_chuseok.jpg",
+   "sd": "assets/sd/maugrowth_fleamarket_keyword-chuseok_1080x1920_2609__1_-1b5586.mp4",
+   "srcset": "assets/thumb/7981ddfc51-640.webp 640w, assets/thumb/7981ddfc51-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2553,7 +2601,8 @@
    "variants": [],
    "shot": null,
    "pw": 1038,
-   "ph": 441
+   "ph": 441,
+   "srcset": "assets/thumb/f966c2dff8-640.webp 640w, assets/thumb/f966c2dff8-1280.webp 1280w"
   },
   "links": {
    "live": "https://www.youtube.com/watch?v=Z6hTS4C-4Ls",
@@ -2612,7 +2661,8 @@
    "shot": null,
    "pw": 1400,
    "ph": 1050,
-   "poster16": "assets/poster16/fusion_paper.jpg"
+   "poster16": "assets/poster16/fusion_paper.jpg",
+   "srcset": "assets/thumb/7e55d5c79d-640.webp 640w, assets/thumb/7e55d5c79d-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2699,7 +2749,8 @@
    ],
    "shot": null,
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/cbaf1c3fcf-640.webp 640w, assets/thumb/cbaf1c3fcf-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2774,7 +2825,8 @@
    "shot": null,
    "pw": 1600,
    "ph": 1200,
-   "poster16": "assets/poster16/fusion_datagarden.jpg"
+   "poster16": "assets/poster16/fusion_datagarden.jpg",
+   "srcset": "assets/thumb/e5248d67ef-640.webp 640w, assets/thumb/e5248d67ef-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2839,7 +2891,8 @@
     "full": "assets/full/mg_lyric.mp4"
    },
    "pw": 800,
-   "ph": 450
+   "ph": 450,
+   "srcset": "assets/thumb/19fd69777e-640.webp 640w, assets/thumb/19fd69777e-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -2893,7 +2946,8 @@
    "shot": "assets/shots/itempalette.jpg",
    "note": "임베드 전 내부 수치(검색 클릭수) 노출 점검 필요",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/0708cb5923-640.webp 640w, assets/thumb/0708cb5923-1280.webp 1280w"
   },
   "links": {
    "live": "https://hansy-daangn.github.io/itempalette/",
@@ -2959,7 +3013,8 @@
    "variants": [],
    "shot": "assets/shots/promptlibrary-studio.jpg",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/0a4b897407-640.webp 640w, assets/thumb/0a4b897407-1280.webp 1280w"
   },
   "links": {
    "live": "https://hansy-daangn.github.io/PromptLibrary/studio.html",
@@ -3028,7 +3083,8 @@
    "variants": [],
    "shot": "assets/shots/runner-prompt-studio.jpg",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/243a4fd82a-640.webp 640w, assets/thumb/243a4fd82a-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3090,26 +3146,29 @@
   "media": {
    "poster": "assets/poster/mg_bizreview.jpg",
    "preview": "assets/video/mg_bizreview.mp4",
-   "full": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4",
+   "full": "assets/hd/maugrowth_biz_promo_reviewReward_1920x1080_2606-09158e.mp4",
    "youtube": null,
    "variants": [
     {
      "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4",
+     "src": "assets/hd/maugrowth_biz_promo_reviewReward_1920x1080_2606-09158e.mp4",
      "w": 1920,
-     "h": 1080
+     "h": 1080,
+     "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1920x1080_2606-09158e.mp4"
     },
     {
      "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/maugrowth_biz_promo_reviewReward_1080x1920_2606.mp4",
+     "src": "assets/hd/maugrowth_biz_promo_reviewReward_1080x1920_2606-f7feeb.mp4",
      "w": 1080,
-     "h": 1920
+     "h": 1920,
+     "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1080x1920_2606-f7feeb.mp4"
     },
     {
      "label": "1:1 — 정방 · 영상",
-     "src": "assets/cdn/maugrowth_biz_promo_reviewReward_1080x1080_2606.mp4",
+     "src": "assets/hd/maugrowth_biz_promo_reviewReward_1080x1080_2606-76628e.mp4",
      "w": 1080,
-     "h": 1080
+     "h": 1080,
+     "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1080x1080_2606-76628e.mp4"
     }
    ],
    "shot": null,
@@ -3123,7 +3182,9 @@
     "poster": "assets/poster/mg_bizreview_h.jpg"
    },
    "pw": 720,
-   "ph": 720
+   "ph": 720,
+   "sd": "assets/sd/maugrowth_biz_promo_reviewReward_1920x1080_2606-09158e.mp4",
+   "srcset": "assets/thumb/df6ff3e033-640.webp 640w, assets/thumb/df6ff3e033-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3150,7 +3211,9 @@
    "3d"
   ],
   "type": "3D 모션 광고",
-  "contrib": "1인 제작 · 카피는 마케터 협업"
+  "contrib": "1인 제작 · 카피는 마케터 협업",
+  "dur": "26초",
+  "dur_auto": true
  },
  {
   "id": "mg_ahnabada",
@@ -3177,7 +3240,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/mg_ahnabada.jpg"
+   "poster16": "assets/poster16/mg_ahnabada.jpg",
+   "srcset": "assets/thumb/d5a72729a7-640.webp 640w, assets/thumb/d5a72729a7-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3234,7 +3298,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/mg_simbatdan.jpg"
+   "poster16": "assets/poster16/mg_simbatdan.jpg",
+   "srcset": "assets/thumb/d80490e6ef-640.webp 640w, assets/thumb/d80490e6ef-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3320,7 +3385,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/td_mapwalk.jpg"
+   "poster16": "assets/poster16/td_mapwalk.jpg",
+   "srcset": "assets/thumb/9248639730-640.webp 640w, assets/thumb/9248639730-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3372,7 +3438,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/ai_article.jpg"
+   "poster16": "assets/poster16/ai_article.jpg",
+   "srcset": "assets/thumb/0933df07b9-640.webp 640w, assets/thumb/0933df07b9-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3424,7 +3491,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/mg_ars.jpg"
+   "poster16": "assets/poster16/mg_ars.jpg",
+   "srcset": "assets/thumb/194b234cca-640.webp 640w, assets/thumb/194b234cca-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3487,7 +3555,8 @@
    "shot": null,
    "pw": 600,
    "ph": 1066,
-   "poster16": "assets/poster16/mg_jobs_spring.jpg"
+   "poster16": "assets/poster16/mg_jobs_spring.jpg",
+   "srcset": "assets/thumb/6dd3de2ade-640.webp 640w, assets/thumb/6dd3de2ade-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3567,33 +3636,38 @@
   ],
   "media": {
    "poster": "assets/poster/cr_instantbuy.jpg",
-   "preview": null,
-   "full": null,
+   "preview": "assets/video/cr_instantbuy.mp4",
+   "full": "assets/hd/maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607-860135.mp4",
    "youtube": null,
    "variants": [
     {
      "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607.mp4",
-     "w": 1280,
-     "h": 720
+     "src": "assets/hd/maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607-860135.mp4",
+     "w": 1920,
+     "h": 1080,
+     "sd": "assets/sd/maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607-860135.mp4"
     },
     {
      "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/maugrowth_fleamarket_instantbuyKeyword_1080x1920_2607.mp4",
-     "w": 720,
-     "h": 1280
+     "src": "assets/hd/maugrowth_fleamarket_instantbuyKeyword_1080x1920_2607-b8af39.mp4",
+     "w": 1080,
+     "h": 1920,
+     "sd": "assets/sd/maugrowth_fleamarket_instantbuyKeyword_1080x1920_2607-b8af39.mp4"
     },
     {
      "label": "1:1 — 정방 · 영상",
-     "src": "assets/cdn/maugrowth_fleamarket_instantbuyKeyword_1080x1080_2607.mp4",
-     "w": 720,
-     "h": 720
+     "src": "assets/hd/maugrowth_fleamarket_instantbuyKeyword_1080x1080_2607-21099e.mp4",
+     "w": 1080,
+     "h": 1080,
+     "sd": "assets/sd/maugrowth_fleamarket_instantbuyKeyword_1080x1080_2607-21099e.mp4"
     }
    ],
    "shot": null,
    "note": "cdn 3파일 모두 25MB 초과 — 프리뷰 재인코딩 필요",
    "pw": 1920,
-   "ph": 1080
+   "ph": 1080,
+   "sd": "assets/sd/maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607-860135.mp4",
+   "srcset": "assets/thumb/db4259802c-640.webp 640w, assets/thumb/db4259802c-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3618,7 +3692,9 @@
    "motion"
   ],
   "type": "템플릿 모션 광고",
-  "contrib": "1인 제작"
+  "contrib": "1인 제작",
+  "dur": "21초",
+  "dur_auto": true
  },
  {
   "id": "cr_keyword_images",
@@ -3643,175 +3719,175 @@
    "배너"
   ],
   "media": {
-   "poster": null,
+   "poster": "assets/img/kw/3f8be73ad1.jpg",
    "preview": null,
    "full": null,
    "youtube": null,
    "variants": [
     {
      "label": "피크닉 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1dasb_u5mh998_ecpdwq1ypdh7plc8.jpg",
+     "src": "assets/img/kw/3f8be73ad1.jpg",
      "w": 1200,
      "h": 1600,
      "remote": true
     },
     {
      "label": "피크닉 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1j96h_dflzupn_zhccibkaaiwjg9zs.png",
+     "src": "assets/img/kw/5ad4d84c29.png",
      "w": 768,
      "h": 1024,
      "remote": true
     },
     {
      "label": "피크닉 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1j96y_fhdikso_mtgiwybqwhvrxv4u.png",
+     "src": "assets/img/kw/f275d9ef3d.png",
      "w": 720,
      "h": 960,
      "remote": true
     },
     {
      "label": "피크닉 · 320×480 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1dat1_sjmaski_odaceecuzkzboprg.png",
+     "src": "assets/img/kw/bb1bf6958f.png",
      "w": 320,
      "h": 480,
      "remote": true
     },
     {
      "label": "피크닉 · 1:1 — 정방 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1j94c_swts0y5_fbl7512czquv3lqh.png",
+     "src": "assets/img/kw/cb6719a2a6.png",
      "w": 720,
      "h": 720,
      "remote": true
     },
     {
      "label": "피크닉 · 1.91:1 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1j98e_f9kawiz_ylzmifzgkag9mdwu.png",
+     "src": "assets/img/kw/e30215e0e6.png",
      "w": 1200,
      "h": 628,
      "remote": true
     },
     {
      "label": "피크닉 · 2:1 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1j97o_rairsz0_vkgsujzyebjjymhw.png",
+     "src": "assets/img/kw/0751bba211.png",
      "w": 1200,
      "h": 600,
      "remote": true
     },
     {
      "label": "피크닉 · 480×320 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1dap7_lk91jr5_fa4cnzgsrjtekorc.png",
+     "src": "assets/img/kw/4ad12ece22.png",
      "w": 480,
      "h": 320,
      "remote": true
     },
     {
      "label": "피크닉 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4cf_mcq7nel_ppsarxjszybz4wyg.jpg",
+     "src": "assets/img/kw/453b703d0f.jpg",
      "w": 1200,
      "h": 1600,
      "remote": true
     },
     {
      "label": "피크닉 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4f2_pvcjnug_bznh7v4cazbrabkh.png",
+     "src": "assets/img/kw/7f1dd96967.png",
      "w": 768,
      "h": 1024,
      "remote": true
     },
     {
      "label": "피크닉 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4bq_lfxgkgs_wdhnret6akob6wkv.png",
+     "src": "assets/img/kw/b1b09b3a2a.png",
      "w": 720,
      "h": 960,
      "remote": true
     },
     {
      "label": "피크닉 · 320×480 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4cs_ukazxqy_qnbedh8qvhinv6vr.png",
+     "src": "assets/img/kw/8a72e9864f.png",
      "w": 320,
      "h": 480,
      "remote": true
     },
     {
      "label": "피크닉 · 1:1 — 정방 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4ej_i4fjbep_ozxhqagdsyzbqcsu.png",
+     "src": "assets/img/kw/f5611383a6.png",
      "w": 720,
      "h": 720,
      "remote": true
     },
     {
      "label": "피크닉 · 1.91:1 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4gz_kixcjlp_itboxyqyi5p7nw7d.png",
+     "src": "assets/img/kw/6d150911c3.png",
      "w": 1200,
      "h": 628,
      "remote": true
     },
     {
      "label": "피크닉 · 2:1 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4fg_xqfdxb7_f2objrzidosldojf.png",
+     "src": "assets/img/kw/88477d347f.png",
      "w": 1200,
      "h": 600,
      "remote": true
     },
     {
      "label": "피크닉 · 320×100 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4bq_iy0xv42_lwbowyua7xllalh4.png",
+     "src": "assets/img/kw/bc9744756d.png",
      "w": 320,
      "h": 100,
      "remote": true
     },
     {
      "label": "바스켓 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4cf_mcq7nel_ppsarxjszybz4wyg.jpg",
+     "src": "assets/img/kw/453b703d0f.jpg",
      "w": 1200,
      "h": 1600,
      "remote": true
     },
     {
      "label": "바스켓 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4f2_pvcjnug_bznh7v4cazbrabkh.png",
+     "src": "assets/img/kw/7f1dd96967.png",
      "w": 768,
      "h": 1024,
      "remote": true
     },
     {
      "label": "바스켓 · 3:4 — 세로 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4bq_lfxgkgs_wdhnret6akob6wkv.png",
+     "src": "assets/img/kw/b1b09b3a2a.png",
      "w": 720,
      "h": 960,
      "remote": true
     },
     {
      "label": "바스켓 · 320×480 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4cs_ukazxqy_qnbedh8qvhinv6vr.png",
+     "src": "assets/img/kw/8a72e9864f.png",
      "w": 320,
      "h": 480,
      "remote": true
     },
     {
      "label": "바스켓 · 1:1 — 정방 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4ej_i4fjbep_ozxhqagdsyzbqcsu.png",
+     "src": "assets/img/kw/f5611383a6.png",
      "w": 720,
      "h": 720,
      "remote": true
     },
     {
      "label": "바스켓 · 1.91:1 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4gz_kixcjlp_itboxyqyi5p7nw7d.png",
+     "src": "assets/img/kw/6d150911c3.png",
      "w": 1200,
      "h": 628,
      "remote": true
     },
     {
      "label": "바스켓 · 2:1 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4fg_xqfdxb7_f2objrzidosldojf.png",
+     "src": "assets/img/kw/88477d347f.png",
      "w": 1200,
      "h": 600,
      "remote": true
     },
     {
      "label": "바스켓 · 320×100 — 배너 · 이미지",
-     "src": "https://cdn-f.adsmoloco.com/Voql38wJkmDNzXbW/creative/mmf1d4bq_iy0xv42_lwbowyua7xllalh4.png",
+     "src": "assets/img/kw/bc9744756d.png",
      "w": 320,
      "h": 100,
      "remote": true
@@ -3819,8 +3895,10 @@
    ],
    "shot": null,
    "note": "로컬 파일 없음 — 변형은 몰로코 CDN 원격 URL(만료 가능), 이전 사이트와 동일",
-   "pw": 0,
-   "ph": 0
+   "pw": 1200,
+   "ph": 1600,
+   "poster16": "assets/poster16/cr_keyword_images.jpg",
+   "srcset": "assets/thumb/a732e09984-640.webp 640w, assets/thumb/a732e09984-1280.webp 1280w"
   },
   "links": {
    "live": null,
@@ -3896,7 +3974,8 @@
    "variants": [],
    "shot": "assets/shots/aipp-board.jpg",
    "pw": 1280,
-   "ph": 720
+   "ph": 720,
+   "srcset": "assets/thumb/7115f2d42a-640.webp 640w, assets/thumb/7115f2d42a-1280.webp 1280w"
   },
   "links": {
    "live": null,
