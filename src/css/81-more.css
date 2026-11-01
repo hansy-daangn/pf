@@ -1,0 +1,13 @@
+/* more — 「모두 보기」·줄 제목을 누르면 (2·3은 줄 제목도 링크)
+   1 작업 탭으로 이동(지금) · 2 제자리 덮개 갤러리(그 줄만 큰 격자, Esc·바깥 클릭 닫힘) · 3 작업 탭 + 그 줄만(분류 목록 맨 위에 줄 이름 칩) */
+body[data-more="2"] .rgal{position:fixed;inset:0;z-index:45;background:color-mix(in oklab,var(--frame) 46%,transparent);opacity:0;transition:opacity var(--dur) var(--ease)}
+body[data-more="2"] .rgal.on{opacity:1}
+body[data-more="2"] .rgal .rgs{position:absolute;left:0;right:0;top:var(--s5);bottom:0;max-width:var(--maxw);margin:0 auto;background:var(--bg);border-radius:var(--r2) var(--r2) 0 0;overflow-y:auto;overscroll-behavior:contain;padding:0 var(--gut) var(--s8);box-shadow:var(--shadow-lg);transform:translateY(var(--s5));transition:transform var(--dur) var(--ease)}
+body[data-more="2"] .rgal.on .rgs{transform:none}
+body[data-more="2"] .rgal .rgh{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:var(--s2);padding:var(--s3) 0 var(--s2);background:var(--bg)}
+body[data-more="2"] .rgal .rgh h2{font-size:var(--t-title);font-weight:700;letter-spacing:-.02em}
+body[data-more="2"] .rgal .rgx{width:var(--s5);height:var(--s5);flex:none;border-radius:50%;display:grid;place-items:center;background:var(--ink-4);transition:background var(--d-micro) var(--ease)}
+body[data-more="2"] .rgal .rgx:hover{background:var(--ink-3)}
+body[data-more="2"] .rgal .rgg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--s5) var(--s2)}
+body[data-more="2"] .rgal .rgg.tall{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+body[data-more="2"] .rgal .card{width:auto}

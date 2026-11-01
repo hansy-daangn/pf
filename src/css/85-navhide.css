@@ -1,0 +1,7 @@
+/* 내비 스크롤 동작(navhide) — 1 늘 고정(지금, 규칙 없음) · 2 내리면 위로 숨고 조금이라도 올리면 미끄러져 나옴(맨 위 근처·내비 안 포커스면 늘 보임)
+   site.js onSc가 .nav.hide를 붙임(아래로 8px 넘게 → 숨김, 위로 4px → 나옴). 따라오는 왼쪽 칸(작업 분류·도구 목록·이력서 프로필)도 같이 위로 붙음 */
+body[data-navhide="2"] .nav{transition:transform var(--dur) var(--ease),border-color var(--dur) var(--ease),background var(--dur) var(--ease)}
+body[data-navhide="2"] .nav.hide:not(:focus-within){transform:translateY(-100%)}
+body[data-navhide="2"] :is(.rail,.trail,.cvw > .cv > .idc){transition:top var(--dur) var(--ease)}
+body[data-navhide="2"]:has(.nav.hide:not(:focus-within)) :is(.rail,.trail){top:var(--s3)}
+body[data-navhide="2"]:has(.nav.hide:not(:focus-within)) .cvw > .cv > .idc{top:var(--s5)}

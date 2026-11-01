@@ -25,7 +25,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .nav .tabs a{position:relative;padding:calc(var(--u)*2) 0;font-weight:500;transition:color var(--d-micro) var(--ease)}
 .nav .tabs a:hover{color:var(--ink)}
 .nav .tabs a[aria-current="page"]{color:var(--ink);font-weight:600}
-.nav .tabs a[aria-current="page"]:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--acc)}
+.nav .tabs .ul{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--acc);view-transition-name:tabline}
 .nav .cta{justify-self:end}
 .btn{display:inline-flex;align-items:center;gap:var(--s1);font-size:var(--t-body);font-weight:600;line-height:1;padding:var(--s1) var(--s2);min-height:var(--s5);border-radius:999px;background:var(--ink);color:var(--bg);transition:opacity var(--d-micro) var(--ease),transform var(--d-micro) var(--ease);white-space:nowrap}
 .btn:hover{opacity:.88}.btn:active{transform:scale(.97)}
@@ -36,6 +36,27 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 main{padding-top:var(--nav-h);animation:pagein calc(var(--dur)*1.5) var(--ease) both}
 @keyframes pagein{from{opacity:0;transform:translateY(var(--s1))}to{opacity:1;transform:none}}
+#main:focus{outline:0}
+
+/* ---- 탭 이동(P37): 같은 사이트 페이지끼리 교차 문서 전환 — 내비는 제자리, 현재 탭 밑줄만 새 탭으로 미끄러짐,
+   내용은 원래 등장(pagein) 그대로(이전 화면은 바로 빠지고 새 화면 위 등장 1번만). 미지원 브라우저는 지금과 같음 ---- */
+@view-transition{navigation:auto}
+.nav{view-transition-name:nav}
+::view-transition-old(root){animation:none;opacity:0}
+::view-transition-new(root){animation:none}
+::view-transition-group(*){animation-duration:var(--dur);animation-timing-function:var(--ease)}
+@media (prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+/* 미리 렌더된 페이지(.pre, head 인라인 스크립트)는 보이는 순간 등장 애니메이션을 다시 시작 */
+.pre main{animation:none;opacity:0}
+
+/* ---- 본문 바로가기(P50): 첫 Tab에만 보임 ---- */
+.skip{position:fixed;left:var(--gut);top:var(--s1);z-index:60;display:inline-flex;align-items:center;min-height:var(--s5);padding:var(--s1) var(--s2);border-radius:999px;background:var(--ink);color:var(--bg);font-size:var(--t-sm);font-weight:600;transform:translateY(calc(-100% - var(--s2)));transition:transform var(--d-half) var(--ease)}
+.skip:focus{transform:none}
+
+/* ---- 썸네일 자리표시(P47): 칸은 작품 평균색으로 먼저 칠하고 이미지는 도착하면 페이드인 ---- */
+.card .art[style]{background-color:var(--c,var(--ink-4))}
+.card .art img{opacity:0;transition:opacity var(--d-half) var(--ease)}
+.card .art img.in{opacity:1}
 
 /* ---- 섹션 공통 ---- */
 .sec{padding-block:var(--s8)}

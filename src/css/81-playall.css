@@ -1,0 +1,8 @@
+/* playall — 줄 「모두 재생」 (site.js rowHTML .pall → 상영관 큐 = 그 줄 영상)
+   1 없음(지금) · 2 줄에 올리면 「▶ 모두 재생」 알약(「모두 보기」와 함께) · 3 늘 작은 ▶(글자 없음) */
+body:is([data-playall="2"],[data-playall="3"]) .row .hd .pall{display:inline-flex;align-items:center;justify-content:center;gap:var(--s05);height:var(--s3);padding:0 var(--s1) 0 calc(var(--s1) - 2px);border-radius:999px;background:var(--ink-4);color:var(--ink);font-size:var(--t-micro);font-weight:600;white-space:nowrap;transition:opacity var(--d-half) var(--ease),background var(--d-micro) var(--ease)}
+body:is([data-playall="2"],[data-playall="3"]) .row .hd .pall:hover{background:var(--ink-3)}
+body[data-playall="2"] .row .hd .pall{opacity:0}
+body[data-playall="2"] .row:is(:hover,:focus-within) .hd .pall{opacity:1}
+body[data-playall="3"] .row .hd .pall{width:var(--s3);padding:0;border-radius:50%}
+body[data-playall="3"] .row .hd .pall span{display:none}

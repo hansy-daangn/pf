@@ -1,0 +1,7 @@
+/* 필터 바꿀 때 카드 움직임(P36) — 1 즉시 바뀜(지금, 규칙 없음) · 2 미끄러져 재배치
+   2는 site.js가 바꾸는 순간에만 카드에 view-transition-name·class(wcard)를 붙임 → 남는 카드는 새 자리로(그룹 이동은 공용 --dur·--ease),
+   빠지는 카드는 흐려지며 작아지고, 새 카드는 페이드인. 미지원·움직임 줄이기는 즉시 */
+::view-transition-old(*.wcard):only-child{animation:wfx-out var(--d-half) var(--ease) both}
+::view-transition-new(*.wcard):only-child{animation:wfx-in var(--dur) var(--ease) both}
+@keyframes wfx-out{to{opacity:0;transform:scale(.94);filter:blur(6px)}}
+@keyframes wfx-in{from{opacity:0;transform:scale(.96)}}

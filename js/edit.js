@@ -462,9 +462,12 @@
   const head = (title, sub = '', back = false) => `<header class="eh">${back ? `<button class="ib" data-back aria-label="뒤로 (Esc)" title="뒤로 (Esc)">${IC.back}</button>` : ''}<div class="tt">${title}${sub ? `<small>${sub}</small>` : ''}</div><button class="ib hp" aria-label="패널 숨기기" title="패널 숨기기">${IC.side}</button></header>`;
 
   // 작품
-  const FIELDS = [['title', '제목'], ['one', '한 줄 설명', 'ta'], ['type', '종류'], ['tools', '툴', 'arr'], ['channels', '매체', 'arr'], ['formats', '규격', 'arr'], ['dur', '길이'], ['period', '시기'], ['contrib', '기여도']];
-  const getF = (w, k) => k === 'one' ? ((w.copy || {}).one || '') : Array.isArray(w[k]) ? w[k].join(' · ') : String(w[k] ?? '');
-  const setF = (w, k, v, arr) => { if (k === 'one') { (w.copy = w.copy || {}).one = v; return; } if (arr) w[k] = v.split(/[·,]/).map(x => x.trim()).filter(Boolean); else if (!v && k !== 'title') delete w[k]; else w[k] = v; };
+  const FIELDS = [['title', '제목'], ['one', '한 줄 설명', 'ta'], ['type', '종류'], ['tools', '툴', 'arr'], ['channels', '매체', 'arr'], ['formats', '규격', 'arr'], ['made_with', '만든 도구', 'arr'], ['dur', '길이'], ['period', '시기'], ['contrib', '기여도']];
+  const toolNm = t => String(t.title).split(' — ')[0], nk = s => String(s).toLowerCase().replace(/\s/g, '');   // 만든 도구(P44): 화면엔 도구 이름, 저장은 도구 id
+  const getF = (w, k) => k === 'one' ? ((w.copy || {}).one || '') : k === 'made_with' ? (w.made_with || []).map(id => W(id) ? toolNm(W(id)) : id).join(' · ') : Array.isArray(w[k]) ? w[k].join(' · ') : String(w[k] ?? '');
+  const setF = (w, k, v, arr) => { if (k === 'one') { (w.copy = w.copy || {}).one = v; return; }
+    if (k === 'made_with') { const T = PF.S.all.filter(PF.isTool), ids = [...new Set(v.split(/[·,]/).map(x => x.trim()).filter(Boolean).map(x => (T.find(t => t.id === x || nk(toolNm(t)) === nk(x)) || {}).id).filter(Boolean))]; if (ids.length) w.made_with = ids; else delete w.made_with; return; }
+    if (arr) w[k] = v.split(/[·,]/).map(x => x.trim()).filter(Boolean); else if (!v && k !== 'title') delete w[k]; else w[k] = v; };
   const select = (id, from = null) => {
     if (!W(id)) return; if (mode && mode.t === 'work' && mode.id === id) { openPanel(); return; }
     killMT(); mode = { t: 'work', id, from, fromRid: ridOf(from) }; EI.dataset.v = 'work'; const w = W(id), vs = PF.vidsOf(w);

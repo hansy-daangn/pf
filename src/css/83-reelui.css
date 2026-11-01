@@ -1,0 +1,17 @@
+/* 쇼릴 보기 방식(reelui) — 1 일반 상영관(지금, 규칙 없음) · 2 스토리식(영상 위에 작품 수만큼 나뉜 진행 막대 · 끝나면 바로 다음 · 왼쪽 ⅓ 이전/나머지 다음 · 누르고 있으면 멈춤) · 3 스토리식 + 영상만(I 키로 패널)
+   상태: .theater[data-reel](쇼릴이 넘김을 맡음) · [data-reelui="2|3"] · .rhold(누르고 있음) · .pinfo(3에서 패널 펼침) */
+.theater[data-reel] .vw .next{display:none}
+.theater .rbar{display:flex;gap:3px;flex:none;max-width:100%;margin:0 auto var(--s1);pointer-events:none;transition:opacity var(--d-half) var(--ease)}   /* 영상 바로 위 — 영상을 가리지 않음, 폭은 JS가 영상 폭에 맞춤 */
+.theater .rbar i{flex:1;height:3px;border-radius:2px;background:var(--ink-3);overflow:hidden}
+.theater .rbar b{display:block;height:100%;background:var(--ink);transform-origin:left center;transform:scaleX(0)}
+.theater .rzone{position:absolute;inset:0;z-index:2;display:grid;grid-template-columns:1fr 2fr;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.theater .rzone i{cursor:pointer}
+.theater[data-reelui] .ctl :is(.pg,.tm){display:none}
+.theater.rhold :is(.rbar,.top,.ctl,.meta){opacity:0}
+.theater.rhold .vw .big{opacity:0}
+/* 3: 영상만 크게 — 정보 패널은 I 키·상단 ⓘ로 */
+.theater[data-reelui="3"][data-reelui]:not(.pinfo) .panel{display:none}
+@media (min-width:1100px){
+  body .theater[data-reel][data-reelui="3"][data-reelui]:not(.pinfo) .lay{grid-template-columns:minmax(0,1fr)}
+}
+.theater[data-reelui="3"].pinfo .rinfo{background:var(--ink);color:var(--bg)}

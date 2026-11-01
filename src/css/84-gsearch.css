@@ -1,0 +1,18 @@
+/* 어디서나 검색(P35) — 1 작업 탭 안에서만(지금, 규칙 없음) · 2 내비 돋보기 → 덮개 검색(「/」 열기 · Esc 닫기) · 3 「/」 키만(작업 탭 검색칸으로, 화면 변화 없음) */
+body[data-gsearch="2"]:not([data-edit="1"]) .nav .cta{display:flex;align-items:center;gap:var(--s1)}
+body[data-gsearch="2"]:not([data-edit="1"]) .nav .sbtn[hidden]{display:inline-grid!important}
+body[data-gsearch="2"] .nav .sbtn{place-items:center;width:var(--s5);height:var(--s5);border-radius:50%;color:inherit;transition:background var(--d-micro) var(--ease)}
+body[data-gsearch="2"] .nav .sbtn:hover{background:var(--ink-4)}
+body[data-gsearch="2"] .gs{position:fixed;inset:0;z-index:45;overflow-y:auto;overscroll-behavior:contain;background:var(--bg);color:var(--ink);opacity:0;visibility:hidden;transition:opacity var(--d-half) var(--ease),visibility 0s linear var(--d-half)}
+body[data-gsearch="2"] .gs.on{opacity:1;visibility:visible;transition:opacity var(--d-half) var(--ease)}
+body[data-gsearch="2"] .gs-bar{position:sticky;top:0;z-index:2;background:var(--bg-glass);backdrop-filter:saturate(1.4) blur(20px);-webkit-backdrop-filter:saturate(1.4) blur(20px);border-bottom:1px solid var(--ink-3)}
+body[data-gsearch="2"] .gs-bar .in{display:flex;align-items:center;gap:var(--s2);height:calc(var(--u)*13);transform:translateY(calc(var(--s1) * -1));transition:transform var(--dur) var(--ease)}
+body[data-gsearch="2"] .gs.on .gs-bar .in{transform:none}
+body[data-gsearch="2"] .gs .gi{width:calc(var(--u)*3.5);height:calc(var(--u)*3.5);color:var(--ink-2);stroke-width:2}
+body[data-gsearch="2"] .gs-q{flex:1;min-width:0;font:inherit;font-size:var(--t-disp);font-weight:700;letter-spacing:-.03em;line-height:1.2;border:0;outline:0;background:none;color:var(--ink);padding:0;-webkit-appearance:none;appearance:none}
+body[data-gsearch="2"] .gs-q::placeholder{color:color-mix(in oklab,var(--ink) 28%,transparent)}
+body[data-gsearch="2"] .gs-q:focus-visible{outline:0}
+body[data-gsearch="2"] .gs-q::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+body[data-gsearch="2"] .gs-x{display:inline-grid;place-items:center;width:var(--s5);height:var(--s5);border-radius:50%;background:var(--ink-4);flex:none;transition:background var(--d-micro) var(--ease)}
+body[data-gsearch="2"] .gs-x:hover{background:var(--ink-3)}
+body[data-gsearch="2"] .gs-body{padding-block:var(--s3) var(--s13)}

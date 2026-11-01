@@ -1,0 +1,15 @@
+/* popfmt — 확장 카드에서 규격 바꿔 보기 (site.js Pop fmts·swap · 비율이 다른 규격이 2개 이상인 작품만)
+   1 없음(지금) · 2 아이콘에 올리면 그 규격 영상으로 + 틀도 그 비율로 부드럽게 · 3 아이콘만(누르면 상영관이 그 규격으로) */
+/* 정보 줄(종류·길이) 오른쪽 끝에 아이콘 — 줄 높이는 그대로, 글이 길면 말줄임 */
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .sr:has(.fm:not(:empty)){display:flex;align-items:center;gap:var(--s1);margin-top:var(--s05)}
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .sr:has(.fm:not(:empty)) .s{flex:1;min-width:0;margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .fm{display:flex;align-items:center;flex:none;margin-block:calc(var(--s05) * -1);margin-right:calc(var(--s05) * -1)}
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .fm button{width:var(--s3);height:var(--s3);display:grid;place-items:center;border-radius:var(--s05);color:var(--ink-2);transition:color var(--d-micro) var(--ease),background var(--d-micro) var(--ease)}
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .fm button:hover{color:var(--ink);background:var(--ink-4)}
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .fm i{display:block;width:var(--fw);height:var(--fh);border:1.5px solid currentColor;border-radius:2px;transition:background var(--d-micro) var(--ease)}
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .fm [aria-pressed="true"]{color:var(--ink)}
+body:is([data-popfmt="2"],[data-popfmt="3"]) .pop .bd .fm [aria-pressed="true"] i{background:currentColor}
+/* 2: 틀(폭·영상 높이·위치)이 새 비율로 부드럽게 */
+body[data-popfmt="2"] .pop .art{aspect-ratio:auto;height:calc(var(--pw,300px) * var(--pop-r,.5625))}
+body[data-popfmt="2"] .pop.on.mo{transition:opacity var(--d-half) var(--ease),transform var(--dur) var(--ease),width var(--dur) var(--ease),left var(--dur) var(--ease),top var(--dur) var(--ease)}
+body[data-popfmt="2"] .pop.mo .art{transition:height var(--dur) var(--ease)}

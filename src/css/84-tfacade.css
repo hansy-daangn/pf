@@ -1,0 +1,4 @@
+/* 체험판 첫 화면(P42) — 1 바로 로드(지금, 규칙 없음) · 2 도구 화면 이미지 + 가운데 「체험하기」 알약 → 누르면 실제 체험판(목록·알약에 올리면 미리 받기) */
+body[data-tfacade="2"] .tstage .tfc:has(.tgo){cursor:pointer}
+body[data-tfacade="2"] .tstage .tgo{position:relative;z-index:1;min-height:var(--s5);padding-inline:var(--s3);background:var(--bg);color:var(--ink);box-shadow:var(--shadow-lg),var(--ring);transition:transform var(--d-half) var(--ease),opacity var(--d-micro) var(--ease)}
+body[data-tfacade="2"] .tstage .tfc:hover .tgo{transform:scale(1.04)}

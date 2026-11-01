@@ -1,0 +1,12 @@
+/* 규격 멀티뷰(P23 multi) — 1 없음(지금, 규칙 없음) · 2 「모두」 칩(규격 버튼 맨 앞 → 모든 규격 동시 재생) · 3 멀티뷰로 시작(규격 2개 이상이면 처음부터 나란히)
+   칸 = 규격 원비율 그대로(자르지 않음), 최대 4칸 · 올린 칸이 소리(테두리) · 누르면 그 규격 단독 — 동작·크기 계산은 site.js mvStart·mvLayout */
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .vw.multi{background:none;box-shadow:none;overflow:visible;border-radius:0}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .vw .mv{position:absolute;inset:0;display:flex;justify-content:center;gap:8px}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .vw .mv .tile{position:relative;flex:none;height:100%;aspect-ratio:var(--r,16/9);border-radius:var(--r2);overflow:hidden;background:var(--frame);box-shadow:var(--shadow-lg);cursor:pointer;transition:box-shadow var(--d-micro) var(--ease)}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .vw .mv .tile video{position:absolute;inset:0;width:100%;height:100%;background:var(--frame)}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .vw .mv .tile.aud{box-shadow:0 0 0 2px var(--ink),var(--shadow-lg)}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .vw.multi .big{border-radius:var(--r2)}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .mvall .fth{display:grid;place-items:center;--ar:1.4;background:none;box-shadow:none}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .mvall .fth .ic{width:100%;height:100%}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .mvall.fmt[aria-pressed="true"] .fth{box-shadow:none;color:var(--ink)}
+:is(body[data-multi="2"],body[data-multi="3"]) .theater .stage:fullscreen .vw.multi{inset:0;margin:auto}

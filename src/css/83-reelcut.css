@@ -1,0 +1,4 @@
+/* 쇼릴 구성(reelcut) — 1 전체(지금, 규칙 없음) · 2 하이라이트(각 작품 피처드 구간만 이어 재생) · 3 시작 때 고르기(「하이라이트」「전체」 알약) */
+.rpick{position:fixed;z-index:45;display:flex;gap:var(--s1);padding:var(--s1);border-radius:999px;background:var(--bg-glass);backdrop-filter:saturate(1.4) blur(20px);-webkit-backdrop-filter:saturate(1.4) blur(20px);box-shadow:var(--shadow-lg),var(--ring);opacity:0;transform:translateY(calc(var(--s1) * -1));transition:opacity var(--d-half) var(--ease),transform var(--d-half) var(--ease)}
+.rpick.on{opacity:1;transform:none}
+.rpick .btn small{font-size:var(--t-micro);font-weight:500;opacity:.72;margin-left:2px}

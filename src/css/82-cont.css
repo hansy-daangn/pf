@@ -1,0 +1,4 @@
+/* 미리보기에서 상영관으로 이어서(P02 cont) — 1 처음부터(지금, 규칙 없음) · 2 보던 장면 그대로 이어서(피처드·확장 카드) · 3 피처드만 이어서
+   이어서 열 때는 미리보기 마지막 장면(canvas.contf)을 상영관 영상이 그 위치에서 나올 때까지 덮어 둠(포스터로 돌아가는 깜빡임 없음) — 동작은 site.js 재생 코어 */
+:is(body[data-cont="2"],body[data-cont="3"]) .theater .vw > canvas.contf{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;transition:opacity var(--d-half) var(--ease)}
+:is(body[data-cont="2"],body[data-cont="3"]) .theater .vw > canvas.contf.off{opacity:0}

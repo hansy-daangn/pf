@@ -1,0 +1,32 @@
+/* 대기열 보기(queue) — 1 숫자만(지금, 규칙 없음) · 2 패널 맨 위 접이식 목록(탭이면 「대기열」 탭) · 3 위쪽 「01 / 08」을 누르면 덮개 목록
+   목록(.ql)은 시리즈 탭(ptabs 3)과 같이 씀 */
+.theater .ql{list-style:none;display:flex;flex-direction:column;gap:2px;position:relative}
+.theater .ql button{position:relative;display:grid;grid-template-columns:calc(var(--u) * 3) calc(var(--u) * 12) minmax(0,1fr);align-items:center;gap:var(--s1);width:100%;padding:var(--s05);border-radius:var(--s1);text-align:left;color:var(--ink);transition:background var(--d-micro) var(--ease)}
+.theater .ql button:hover{background:var(--ink-4)}
+.theater .ql button[aria-current]{background:var(--ink-4)}
+.theater .ql button[aria-current]:before{content:"";position:absolute;left:0;top:28%;bottom:28%;width:2px;border-radius:1px;background:var(--acc)}
+.theater .ql .qn{font-size:var(--t-micro);color:var(--ink-2);text-align:center}
+.theater .ql button[aria-current] .qn{color:var(--acc);font-weight:700}
+.theater .qth{position:relative;display:block;aspect-ratio:16/9;border-radius:var(--s05);overflow:hidden;background:var(--ink-4)}
+.theater .qth img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.theater .qth.fill img.bg{filter:blur(10px) brightness(.85);transform:scale(1.15)}
+.theater .qth.fill img:not(.bg){object-fit:contain}
+.theater .qtx{min-width:0}
+.theater .qtx b{display:block;font-size:var(--t-sm);font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theater .qtx small{display:block;font-size:var(--t-micro);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theater .ser .stt{font-size:var(--t-body);margin-bottom:var(--s1)}
+/* 2: 패널 맨 위 접이식 */
+.theater .que .qh{display:flex;align-items:center;gap:var(--s1);width:100%;font-size:var(--t-sm);color:var(--ink);padding:var(--s05) 0}
+.theater .que .qh .num{margin-left:auto;color:var(--ink-2);font-size:var(--t-micro)}
+.theater .que .qh .ic{color:var(--ink-2);transition:transform var(--dur) var(--ease)}
+.theater .que .qh[aria-expanded="true"] .ic{transform:rotate(90deg)}
+.theater .que:not([role=tabpanel]) .ql{max-height:calc(var(--u) * 29);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;margin-top:var(--s1)}
+.theater :is(.que:not([role=tabpanel]),.qdd) .ql{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 var(--s2),#000 calc(100% - var(--s2)),transparent);mask-image:linear-gradient(to bottom,transparent,#000 var(--s2),#000 calc(100% - var(--s2)),transparent);padding-block:var(--s1)}
+/* 3: 위쪽 숫자 → 덮개 목록 */
+.theater .qbtn{display:inline-flex;align-items:center;gap:var(--s05);padding:var(--s05) var(--s1) var(--s05) var(--s2);border-radius:999px;color:var(--ink-2);transition:background var(--d-micro) var(--ease),color var(--d-micro) var(--ease)}
+.theater .qbtn:hover,.theater .qbtn[aria-expanded="true"]{background:var(--ink-4);color:var(--ink)}
+.theater .qbtn .ic{transform:rotate(90deg);transition:transform var(--dur) var(--ease)}
+.theater .qbtn[aria-expanded="true"] .ic{transform:rotate(-90deg)}
+.theater .qdd{position:absolute;top:calc(var(--nav-h) - var(--s1));width:min(calc(var(--u) * 46),calc(100vw - var(--s5)));padding:var(--s1);border-radius:var(--r2);background:color-mix(in oklab,var(--bg) 86%,transparent);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--shadow-lg);font-size:var(--t-body);opacity:0;transform:translate(-50%,calc(var(--s1) * -1));transition:opacity var(--d-half) var(--ease),transform var(--d-half) var(--ease)}
+.theater .qdd.on{opacity:1;transform:translate(-50%,0)}
+.theater .qdd .ql{max-height:min(60dvh,calc(var(--u) * 58));overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}

@@ -1,0 +1,27 @@
+/* 규격 고르는 모양(fmtpick) — 1 글자 칩(지금, 규칙 없음) · 2 모양 썸네일(규격 모양 그대로, 바꾸면 틀이 새 비율로 부드럽게) · 3 패널 맨 위 규격 목록(영상 + 이미지 한 목록)
+   썸네일 = 그 규격 영상의 같은 초 장면(원비율 — 자르지 않음) */
+@property --vr{syntax:'<number>';inherits:true;initial-value:1.7778}
+.theater .fth{display:block;position:relative;width:min(calc(var(--u) * 6),calc(var(--u) * 4 * var(--ar,1)));aspect-ratio:var(--ar,1);border-radius:3px;overflow:hidden;background:var(--ink-3);box-shadow:inset 0 0 0 1.5px color-mix(in oklab,var(--ink) 28%,transparent)}
+.theater .fth img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity var(--d-half) var(--ease)}
+.theater .fth img.on{opacity:1}
+/* 2: 모양 썸네일 */
+.theater .fmts.shape{gap:var(--s05);align-items:flex-end}
+.theater .fmt{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:var(--s05);min-width:calc(var(--u) * 6);padding:var(--s05);border-radius:var(--s1);color:var(--ink-2);font-size:var(--t-micro);transition:color var(--d-micro) var(--ease),background var(--d-micro) var(--ease)}
+.theater .fmt small{font-size:inherit;line-height:1;font-weight:600;white-space:nowrap}
+.theater .fmt:hover{color:var(--ink);background:var(--ink-4)}
+.theater .fmt .fth{transition:box-shadow var(--d-micro) var(--ease)}
+.theater .fmt[aria-pressed="true"]{color:var(--ink)}
+.theater .fmt[aria-pressed="true"] .fth{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--ink)}
+.theater .stage.morph,.theater .vw.morph,.theater .lay.morph{transition:--vr var(--dur) var(--ease)}
+.theater .vw.morph{aspect-ratio:var(--vr)}
+/* 3: 패널 맨 위 규격 목록 — 영상은 재생, 이미지는 라이트박스 */
+.theater .vars .vl{display:flex;flex-direction:column;gap:2px}
+.theater .vr{position:relative;display:grid;grid-template-columns:calc(var(--u) * 7) minmax(0,1fr) auto;align-items:center;gap:var(--s2);width:100%;padding:var(--s05) var(--s1);border-radius:var(--s1);text-align:left;color:var(--ink);transition:background var(--d-micro) var(--ease)}
+.theater .vr:hover{background:var(--ink-4)}
+.theater .vr[aria-pressed="true"]{background:var(--ink-4)}
+.theater .vr[aria-pressed="true"]:before{content:"";position:absolute;left:0;top:28%;bottom:28%;width:2px;border-radius:1px;background:var(--acc)}
+.theater .vr.im{cursor:zoom-in}
+.theater .vr .fb{display:grid;place-items:center;height:calc(var(--u) * 5)}
+.theater .vr .fth{width:min(calc(var(--u) * 7),calc(var(--u) * 5 * var(--ar,1)))}
+.theater .vr b{font-size:var(--t-sm);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theater .vr small{font-size:var(--t-micro);color:var(--ink-2)}

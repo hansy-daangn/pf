@@ -1,0 +1,5 @@
+/* popinfo — 확장 카드 정보량 (site.js Pop info · 위치는 글 영역 실제 높이로 보정)
+   1 제목·종류·길이(지금) · 2 + 한 줄 소개(말줄임) · 3 + 툴·매체 칩 한 줄 */
+body[data-popinfo="2"] .pop .bd .x .one{margin-top:var(--s1);font-size:var(--t-micro);line-height:1.5;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body[data-popinfo="3"] .pop .bd .x .cps{display:flex;flex-wrap:wrap;gap:var(--s05);margin-top:var(--s1);max-height:var(--s3);overflow:hidden}
+body[data-popinfo="3"] .pop .bd .x .cps span{display:inline-flex;align-items:center;height:var(--s3);padding:0 var(--s1);border-radius:999px;border:1px solid var(--ink-3);font-size:var(--t-micro);color:var(--ink-2);white-space:nowrap}

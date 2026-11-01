@@ -509,7 +509,10 @@
    "owned"
   ],
   "type": "AI 생성 티저 필름",
-  "contrib": "1인 제작 · BGM 프롬프트 포함"
+  "contrib": "1인 제작 · BGM 프롬프트 포함",
+  "made_with": [
+   "runner-prompt-studio"
+  ]
  },
  {
   "id": "previz-studio",
@@ -744,7 +747,11 @@
    "ai"
   ],
   "type": "AI 생성 셀프캠 광고",
-  "contrib": "1인 제작"
+  "contrib": "1인 제작",
+  "made_with": [
+   "previz-studio",
+   "hf-unlimited-runner"
+  ]
  },
  {
   "id": "td_godaangn",
@@ -1351,7 +1358,10 @@
    "motion"
   ],
   "type": "템플릿 모션 광고 (시즌 3종)",
-  "contrib": "1인 제작 · 매물 가격·카피는 마케터와 조정"
+  "contrib": "1인 제작 · 매물 가격·카피는 마케터와 조정",
+  "made_with": [
+   "eff_ae_c4d"
+  ]
  },
  {
   "id": "nayeon-campaign",
@@ -2441,7 +2451,10 @@
    "motion"
   ],
   "type": "템플릿 모션 광고",
-  "contrib": "1인 제작 · 매물·카피는 마케터와 조정"
+  "contrib": "1인 제작 · 매물·카피는 마케터와 조정",
+  "made_with": [
+   "eff_ae_c4d"
+  ]
  },
  {
   "id": "top3_metaphor",
@@ -3496,7 +3509,10 @@
   ],
   "type": "템플릿 모션 광고",
   "contrib": "1인 제작",
-  "dur": "21초"
+  "dur": "21초",
+  "made_with": [
+   "eff_ae_c4d"
+  ]
  },
  {
   "id": "cr_keyword_images",
@@ -3733,6 +3749,9 @@
    "ai"
   ],
   "type": "AI 이미지 양산 체계",
-  "contrib": "1인 제작 · 실행·채점은 Claude 에이전트"
+  "contrib": "1인 제작 · 실행·채점은 Claude 에이전트",
+  "made_with": [
+   "hf-unlimited-runner"
+  ]
  }
 ]

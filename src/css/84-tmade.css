@@ -1,0 +1,15 @@
+/* 이 도구로 만든 작업(P44) — 1 없음(지금, 규칙 없음) · 2 체험판 설명 아래 작품 줄(홈 카드·확장 카드 그대로) · 3 설명 오른쪽 작은 썸네일 3개 + 「모두」(작업 탭이 그 도구 조건으로) */
+body[data-tmade="2"] .tmade.m2{margin-top:var(--s5)}
+body[data-tmade="2"] .tmade.m2 .row .wrap{max-width:none;padding-inline:0}
+body[data-tmade="2"] .tmade.m2 .row .sc{margin-inline:0;padding-inline:0;scroll-padding-inline:0}   /* 도구 칸 안에서 끝남(홈 줄처럼 화면 끝까지 번지지 않게) */
+body[data-tmade="2"] .tmade.m2 .row .ar.l{left:var(--s1)}
+body[data-tmade="2"] .tmade.m2 .row .ar.r{right:var(--s1)}
+body[data-tmade="3"] .tmade.m3{margin-top:var(--s3);padding-top:var(--s2);border-top:1px solid var(--ink-3)}
+body[data-tmade="3"] .tmade.m3 .hd{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s2);margin-bottom:var(--s1)}
+body[data-tmade="3"] .tmade.m3 h3{font-size:var(--t-sm);font-weight:600;color:var(--ink-2)}
+body[data-tmade="3"] .tmade.m3 .more{font-size:var(--t-sm);font-weight:600;color:var(--ink-2);transition:color var(--d-micro) var(--ease)}
+body[data-tmade="3"] .tmade.m3 .more:hover{color:var(--ink)}
+body[data-tmade="3"] .tmade.m3 .th{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s1)}
+body[data-tmade="3"] .tmade.m3 .card{width:auto}
+body[data-tmade="3"] .tmade.m3 .card .t{font-size:var(--t-micro);-webkit-line-clamp:1;line-clamp:1;margin-top:var(--s05)}
+body[data-tmade="3"] .tmade.m3 .card .s{display:none}

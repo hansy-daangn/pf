@@ -1,0 +1,20 @@
+/* 정보 패널을 탭으로(ptabs) — 1 한 흐름 스크롤(지금, 규칙 없음) · 2 탭 3개(정보 · 이미지 소재 · 비슷한 작업) · 3 탭 + 시리즈(home.json series)
+   JS가 2·3일 때만 .panel.tabs를 붙임(편집 화면은 늘 1) — 규격(fmtpick 3)·대기열(queue 2)도 있으면 탭이 됨 */
+.theater .panel.tabs .ptl{display:flex;gap:var(--s3);flex:none;border-bottom:1px solid var(--ink-3);overflow-x:auto;scrollbar-width:none}
+.theater .panel.tabs .ptl::-webkit-scrollbar{display:none}
+.theater .panel.tabs [role=tab]{position:relative;flex:none;padding:var(--s1) 0 calc(var(--s1) + 2px);font-size:var(--t-body);font-weight:600;color:var(--ink-2);white-space:nowrap;transition:color var(--d-micro) var(--ease)}
+.theater .panel.tabs [role=tab] small{font-size:var(--t-micro);font-weight:500;color:var(--ink-2);margin-left:2px}
+.theater .panel.tabs [role=tab]:hover,.theater .panel.tabs [role=tab][aria-selected="true"]{color:var(--ink)}
+.theater .panel.tabs [role=tab]:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:1px;background:var(--acc);transform:scaleX(0);transition:transform var(--dur) var(--ease)}
+.theater .panel.tabs [role=tab][aria-selected="true"]:after{transform:none}
+.theater .panel.tabs [role=tab]:focus-visible{outline-offset:-2px}
+.theater .panel.tabs [role=tabpanel] > h3:not(.stt){display:none}
+.theater .panel.tabs [role=tabpanel]:focus-visible{outline-offset:-2px}
+.theater .panel.tabs .tin{animation:ptin var(--d-half) var(--ease) both}
+@keyframes ptin{from{opacity:0;transform:translateY(var(--s05))}}
+/* 넓은 화면: 탭 줄은 고정, 탭 내용만 스크롤 */
+@media (min-width:1100px){
+  .theater .panel.tabs{overflow:hidden;gap:0;padding:var(--s1) 0 0}
+  .theater .panel.tabs .ptl{margin:0 var(--s3)}
+  .theater .panel.tabs [role=tabpanel]{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:var(--s3)}
+}

@@ -1,0 +1,5 @@
+/* 다음·이전 작품으로 넘어갈 때(P27 tnext) — 1 즉시 교체(지금, 규칙 없음) · 2 옆으로 밀림(다음이면 왼쪽으로 빠지고 새 작품이 오른쪽에서) · 3 짧은 크로스페이드
+   지금 장면을 그림(.tghost)으로 떠서 움직임 — 위치·움직임은 site.js ghosts·tnext(WAAPI, --dur·--ease) */
+:is(body[data-tnext="2"],body[data-tnext="3"]) .tghost{border-radius:var(--r2);overflow:hidden}
+:is(body[data-tnext="2"],body[data-tnext="3"]) .tghost canvas{display:block;width:100%;height:100%}
+:is(body[data-tnext="2"],body[data-tnext="3"]) .stage:fullscreen ~ .tghost,:is(body[data-tnext="2"],body[data-tnext="3"]) .stage:fullscreen .tghost{border-radius:0}

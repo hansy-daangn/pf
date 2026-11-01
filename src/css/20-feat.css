@@ -32,6 +32,8 @@
 .fx .bt .btn:not(.ghost){background:var(--ink);color:var(--bg)}
 .fx .bt .btn.ghost{background:color-mix(in oklab,var(--ink) 8%,transparent)}
 .fctl{display:flex;gap:var(--s05);align-items:center;margin-top:var(--s3)}
+.fdots{display:flex;gap:var(--s05);align-items:center}   /* 점만 tablist(재생·소리 버튼은 밖) — 모양은 그대로 */
+body:not([data-edit="1"]) .fv{cursor:pointer}   /* 영상 자체를 누르면 상영관 */
 .fctl button[data-i]{position:relative;width:var(--s2);height:var(--s05);border-radius:var(--s05);background:var(--ink-3);overflow:hidden;transition:width var(--d-micro) var(--ease)}
 .fctl button[data-i].on{width:var(--s5)}
 .fctl button[data-i] i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}

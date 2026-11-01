@@ -1,0 +1,9 @@
+/* 이력서 목차(cvtoc) — 1 없음(지금, 규칙 없음) · 2 프로필 아래 목차(경력·학력·기술·수상·논문, 지금 읽는 절 진하게, 누르면 그 절로) */
+@media (min-width:901px){
+  body[data-cvtoc="2"] .cv .toc{display:flex;order:3;flex-direction:column;align-self:stretch;margin-top:var(--s1);padding-top:var(--s3);border-top:1px solid var(--ink-3)}
+  body[data-cvtoc="2"] .cv .toc a{position:relative;padding:calc(var(--s05) + 1px) 0 calc(var(--s05) + 1px) var(--s2);font-size:var(--t-sm);color:var(--ink-2);transition:color var(--d-micro) var(--ease)}
+  body[data-cvtoc="2"] .cv .toc a:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ink-3);transition:background var(--d-micro) var(--ease)}
+  body[data-cvtoc="2"] .cv .toc a:hover{color:var(--ink)}
+  body[data-cvtoc="2"] .cv .toc a[aria-current]{color:var(--ink);font-weight:600}
+  body[data-cvtoc="2"] .cv .toc a[aria-current]:before{background:var(--acc)}
+}

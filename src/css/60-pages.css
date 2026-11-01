@@ -7,13 +7,19 @@
 .rail button[aria-pressed="true"]{background:var(--ink-4);color:var(--ink);font-weight:600}
 .rail button[aria-pressed="true"] small{color:var(--ink-2)}
 .lib .tb{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);margin-bottom:var(--s2);flex-wrap:wrap}
-.lib .tb .cnt{font-size:var(--t-micro);color:var(--ink-2)}
+.lib .tb .cnt{font-size:var(--t-micro);color:var(--ink-2);margin-left:auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--s3) var(--s2);align-items:start}
 .grid .card{width:auto}
 .lib .q{flex:1;max-width:360px;font:inherit;font-size:var(--t-sm);padding:var(--s1) var(--s2);border-radius:999px;border:1px solid var(--ink-3);background:var(--bg);color:var(--ink);outline:none}
 .lib .q:focus{border-color:var(--ink-2)}
 .chips{display:flex;gap:var(--s05);flex-wrap:wrap}
 .chip{font-size:var(--t-sm);padding:var(--s05) var(--s1);border:1px solid var(--ink-3);border-radius:999px;color:var(--ink-2);white-space:nowrap;min-height:var(--s3);display:inline-flex;align-items:center}
+/* 주소로 들어온 조건(툴·매체·규격·만든 도구·줄) 중 화면의 다른 곳에 안 보이는 것 — 눌러서 지움 */
+.lib .tb .act{display:flex;gap:var(--s05);flex-wrap:wrap;flex:1;min-width:0}
+.lib .tb .act:empty{display:none}
+.lib .chip.x{gap:var(--s05);color:var(--ink);border-color:var(--ink-2);cursor:pointer;transition:background var(--d-micro) var(--ease)}
+.lib .chip.x:hover{background:var(--ink-4)}
+.lib .chip.x .ic{width:calc(var(--u)*1.5);height:calc(var(--u)*1.5);color:var(--ink-2)}
 @media (max-width:980px){.lib{grid-template-columns:1fr}.rail{position:static;display:flex;gap:var(--s1);overflow-x:auto;scrollbar-width:none;padding-bottom:var(--s1)}.rail button{width:auto;white-space:nowrap;border:1px solid var(--ink-3);border-radius:999px;padding:var(--s05) var(--s2);font-size:var(--t-micro)}.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.lib .q{max-width:none}}
 
 /* ---- 도구 런처 ---- */
@@ -28,6 +34,15 @@
 .tbar .chips{display:flex;gap:var(--s05);flex-wrap:wrap}.tbar .r{display:flex;gap:var(--s1)}.tbar .chip{cursor:pointer}.tbar .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .tstage{position:relative;aspect-ratio:16/10;border-radius:var(--r2);overflow:hidden;background:#0b0b0d;box-shadow:var(--shadow-lg),var(--ring)}
 .tstage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+/* 도구 전환(P41): 새 체험판은 뒤에서 받아 다 되면 위로 페이드인(흰 화면 번쩍임 없음) · 1초 넘게 걸리면 가운데 작은 스피너만 */
+.tstage iframe.nx,.tstage .tfc{opacity:0;transition:opacity var(--d-half) var(--ease)}
+.tstage iframe.nx.in,.tstage .tfc.in{opacity:1}
+.tstage .tfc{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;background:var(--frame)}
+.tstage .tfc .bg{position:absolute;inset:-8%;background:center/cover no-repeat;filter:blur(40px) brightness(.8) saturate(1.3)}
+.tstage .tfc img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.tstage.busy::after{content:"";position:absolute;left:50%;top:50%;z-index:3;width:var(--s3);height:var(--s3);margin:calc(var(--s3) / -2);border-radius:50%;border:2px solid color-mix(in oklab,var(--on-frame) 25%,transparent);border-top-color:var(--on-frame);background:color-mix(in oklab,var(--frame) 55%,transparent);box-shadow:0 0 0 var(--s1) color-mix(in oklab,var(--frame) 55%,transparent);animation:tspin .9s linear infinite}
+@keyframes tspin{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){.tstage.busy::after{animation-duration:2.4s}}
 .tdesc{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:var(--s5);padding-top:var(--s3);margin-top:var(--s3);border-top:1px solid var(--ink-3)}
 .tdesc h2{font-size:var(--t-title);font-weight:700;letter-spacing:-.02em;line-height:1.15}
 .tdesc .one{font-size:var(--t-h);font-weight:500;line-height:1.45;margin-top:var(--s1);letter-spacing:-.01em}
@@ -54,6 +69,8 @@
 .cv td b{font-weight:600}.cv td .sm{display:block;color:var(--ink-2);font-size:var(--t-sm);margin-top:2px}
 .cv table.skills td.d{color:var(--ink);font-weight:600;font-size:var(--t-body)}
 .cv details{margin-top:var(--s1)}.cv summary{cursor:pointer;font-size:var(--t-sm);color:var(--ink-2);padding:var(--s1) 0}
+.cv h3[id]{scroll-margin-top:calc(var(--nav-h) + var(--s3))}
+.cv .cvr,.cv .toc{display:none}   /* 프로필 쇼릴(cvreel)·목차(cvtoc) 자리 — 2·3을 고를 때만 보임 */
 @media (max-width:760px){.cv td.d{width:calc(var(--u)*11)}.cv .idc img{width:calc(var(--u)*10);height:calc(var(--u)*13)}}
 @media print{.cv td{font-size:11px}}
 /* 넓은 화면(901px~): 사진·이름·연락처가 왼쪽에서 따라오고, 내용은 오른쪽 */

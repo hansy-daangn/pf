@@ -1,0 +1,20 @@
+/* 미리보기 자동 재생 스위치(apswitch) — 1 없음(지금, 규칙 없음) · 2 푸터 스위치 · 3 내비 아이콘
+   스위치(.aps)는 build.py가 늘 넣어 두고(hidden), site.js Auto.ui가 고른 번호의 것만 보이게 함. 손잡이 안 ▶(켜짐)/❚❚(꺼짐) */
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps{display:inline-flex;align-items:center;gap:var(--s1);color:inherit;font-size:inherit;line-height:1;cursor:pointer}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps .kn{position:relative;flex:none;width:calc(var(--u)*4.5);height:var(--s2);border-radius:999px;background:var(--ink-3);transition:background var(--d-half) var(--ease)}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps .kn:before{content:"";position:absolute;left:0;top:50%;width:calc(var(--u)*2.5);height:calc(var(--u)*2.5);margin-top:calc(var(--u)*-1.25);border-radius:50%;background:var(--bg);box-shadow:var(--shadow),var(--ring);transition:transform var(--d-half) var(--ease),background var(--d-half) var(--ease)}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps .kn .ic{position:absolute;left:calc(var(--u)*.5);top:50%;width:calc(var(--u)*1.5);height:calc(var(--u)*1.5);margin-top:calc(var(--u)*-.75);color:var(--ink-2);transition:transform var(--d-half) var(--ease),opacity var(--d-micro) var(--ease)}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps .kn .ic.on{opacity:0}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps[aria-checked="true"] .kn{background:var(--ink-2)}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps[aria-checked="true"] .kn:before{transform:translateX(calc(var(--u)*2));background:var(--ink)}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps[aria-checked="true"] .kn .ic{transform:translateX(calc(var(--u)*2));color:var(--bg)}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps[aria-checked="true"] .kn .ic.on{opacity:1}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps[aria-checked="true"] .kn .ic.off{opacity:0}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps:hover .kn{background:color-mix(in oklab,var(--ink) 30%,transparent)}
+body:is([data-apswitch="2"],[data-apswitch="3"]) .aps[aria-checked="true"]:hover .kn{background:var(--ink-2)}
+/* 2 푸터: 글자 + 스위치, 메일 앞 */
+body[data-apswitch="2"] footer .aps{margin-right:var(--s3);vertical-align:middle}
+body[data-apswitch="2"] footer .aps:hover{color:var(--ink)}
+/* 3 내비: 쇼릴 왼쪽 스위치만(이름은 aria-label·title) */
+body[data-apswitch="3"] .nav .cta{display:flex;align-items:center;gap:var(--s2)}
+body[data-apswitch="3"] .nav .aps{min-height:var(--s5);padding-inline:var(--s05)}

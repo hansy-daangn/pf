@@ -1,0 +1,10 @@
+/* 공유 링크(share) — 1 없음(지금, 규칙 없음) · 2 링크 복사(상단 아이콘 → 공유용 w/<id>.html) · 3 링크 + 지금 장면부터(?t=초)
+   버튼(.shb)은 JS가 2·3일 때만 보임 */
+.theater .shp{position:absolute;top:calc(var(--nav-h) - var(--s1));display:flex;flex-direction:column;align-items:stretch;gap:var(--s2);padding:var(--s2);min-width:calc(var(--u) * 26);border-radius:var(--r2);background:color-mix(in oklab,var(--bg) 86%,transparent);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:var(--shadow-lg);font-size:var(--t-sm);color:var(--ink);opacity:0;transform:translateY(calc(var(--s1) * -1));transition:opacity var(--d-half) var(--ease),transform var(--d-half) var(--ease)}
+.theater .shp.on{opacity:1;transform:none}
+.theater .shp label{display:flex;align-items:center;gap:var(--s1);cursor:pointer;user-select:none}
+.theater .shp input{accent-color:var(--acc);width:var(--s2);height:var(--s2);margin:0}
+.theater .shp .btn{justify-content:center}
+.theater .shok{position:absolute;top:calc(var(--nav-h) - var(--s1));padding:var(--s05) var(--s2);border-radius:999px;background:var(--ink);color:var(--bg);font-size:var(--t-sm);font-weight:600;white-space:nowrap;opacity:0;transform:translateY(calc(var(--s05) * -1));transition:opacity var(--d-half) var(--ease),transform var(--d-half) var(--ease);pointer-events:none}
+.theater .shok.on{opacity:1;transform:none}
+.theater.idle .top:has(.shp:not([hidden]),.shok.on,.qdd:not([hidden])){opacity:1;pointer-events:auto}

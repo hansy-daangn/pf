@@ -1,0 +1,4 @@
+/* 라이브 앰비언트(P26 liveamb) — 1 포스터 색 고정(지금, 규칙 없음) · 2 재생 중 장면 색을 따라 약 1초마다 부드럽게 바뀜
+   배경(.bgart) 안에 16×10 캔버스 두 장을 겹쳐 번갈아 그림(배경의 흐림·채도·투명도를 그대로 받음) · 일시정지·움직임 줄이기·데이터 절약이면 멈춤 — site.js ambTick */
+body[data-liveamb="2"] .theater .bgart canvas.amb{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity calc(var(--dur)*2) var(--ease)}
+body[data-liveamb="2"] .theater .bgart canvas.amb.on{opacity:1}

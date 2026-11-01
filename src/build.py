@@ -141,13 +141,37 @@ def sig_hv(w):
     vs = videos(w); return f"{(vs[0].get('sd') or vs[0]['hd']) if vs else ''}@{(w.get('media') or {}).get('start') or 0}"
 def sig_bb(w):
     v = feat_video(w); return f"{v['hd']}@{bb_range(w)[0]}" if v else ''
+def avgc(path):
+    """썸네일 자리표시 색(P47) — 이미지 평균색 #rrggbb(이미지가 오기 전 카드 칸을 이 색으로 칠함)"""
+    try:
+        im = Image.open(REPO / path); im.draft('RGB', (64, 64)); r, g, b = im.convert('RGB').resize((1, 1), Image.BOX).getpixel((0, 0))
+        return f'#{r:02x}{g:02x}{b:02x}'
+    except Exception: return None
+try: _OLDX = json.load(open(DATA / 'derived.json'))
+except Exception: _OLDX = {}
+def loud(w):
+    """작품 간 소리 크기 맞춤(P48) — 영상 파일은 그대로 두고 통합 음량(LUFS)·트루 피크(dBTP)만 재서 넣음 → 재생 때 site.js Loud가 게인으로 맞춤.
+    {hd 경로: [LUFS, dBTP, 파일 크기]} · 크기가 같으면 이전 측정값 재사용(빌드마다 다시 재지 않음) · 소리 없는 영상은 빠짐"""
+    old = (_OLDX.get(w['id']) or {}).get('lu') or {}; out = {}
+    for v in videos(w):
+        p = REPO / (v.get('hd') or '')
+        if not v.get('hd') or not p.is_file(): continue
+        sz = p.stat().st_size; o = old.get(v['hd'])
+        if o and len(o) == 3 and o[2] == sz: out[v['hd']] = o; continue
+        r = subprocess.run(['ffmpeg', '-nostats', '-hide_banner', '-i', str(p), '-map', '0:a:0', '-af', 'ebur128=peak=true', '-f', 'null', '-'], capture_output=True, text=True)
+        s = r.stderr[r.stderr.rfind('Summary:'):] if 'Summary:' in r.stderr else ''
+        mi = re.search(r'I:\s+(-?[\d.]+) LUFS', s); mp = re.search(r'Peak:\s+(-?[\d.]+|-inf) dBFS', s)
+        if mi and mp and mp.group(1) != '-inf' and float(mi.group(1)) > -70: out[v['hd']] = [float(mi.group(1)), float(mp.group(1)), sz]
+    return out
 X = {}   # data/derived.json — 빌드가 만드는 파생 이미지(사이트 JS는 from이 지금 데이터와 같을 때만 사용)
 for _w in W:
     _d = pdim(poster(_w)); _x = X[_w['id']] = {'pw': (_d or (0, 0))[0], 'ph': (_d or (0, 0))[1]}
     _ws = make_poster16(_w) or small(poster(_w))
-    if _ws: _x['wide'] = {'src': _ws, 'srcset': thumbs(_ws), 'from': sig_wide(_w)}
+    if _ws: _x['wide'] = {'src': _ws, 'srcset': thumbs(_ws), 'from': sig_wide(_w), 'c': avgc(_ws)}
     _ts = small(poster(_w))
-    if _ts: _x['tall'] = {'src': _ts, 'srcset': thumbs(_ts), 'from': poster(_w)}
+    if _ts: _x['tall'] = {'src': _ts, 'srcset': thumbs(_ts), 'from': poster(_w), 'c': avgc(_ts)}
+    _lu = loud(_w)
+    if _lu: _x['lu'] = _lu
     _hv = hv_frame(_w)
     if _hv: _x['hv'] = {'src': _hv, 'from': sig_hv(_w)}
     if feat_video(_w): _x['bb'] = {'src': bb_poster(_w), 'from': sig_bb(_w)}
@@ -176,6 +200,7 @@ def VP():
     return f"width={D['pick'].get('mvw', 1200)}"
 def head(title, desc, canon, og=None, vp='width=device-width,initial-scale=1,viewport-fit=cover'):
     return f'''<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="{vp}"><meta name="color-scheme" content="light only">
+<script>(d=>{{if(d.prerendering){{d.documentElement.classList.add('pre');d.addEventListener('prerenderingchange',()=>d.documentElement.classList.remove('pre'),{{once:true}})}}}})(document)</script>
 <title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{SITE}{canon}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="{SITE}{og or 'assets/poster/td_review2605_h.jpg'}"><meta property="og:type" content="website">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -183,15 +208,23 @@ def head(title, desc, canon, og=None, vp='width=device-width,initial-scale=1,vie
 <link rel="stylesheet" href="css/site.css"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%230e0e10%22/%3E%3Crect x=%228%22 y=%2213%22 width=%2216%22 height=%226%22 fill=%22%23cc1433%22/%3E%3C/svg%3E"></head>'''
 def nav(cur):
     tabs = [('index.html', '홈'), ('works.html', '작업'), ('tools.html', '도구 · 자동화'), ('resume.html', '이력서')]
-    t = ''.join(f'<a href="{h}"{" aria-current=\"page\"" if h == cur else ""}>{n}</a>' for h, n in tabs)
-    return f'<header class="nav"><div class="wrap in"><a class="lg" href="index.html">Hansy<small>Kim Hangyeol</small></a><nav class="tabs" aria-label="주요 메뉴">{t}</nav><div class="cta"><a class="btn acc" href="index.html?reel" data-reel>{ico("play","sm")}<span>쇼릴</span></a></div></div></header>'
+    t = ''.join(f'<a href="{h}"{" aria-current=\"page\"" if h == cur else ""}>{n}{"<i class=\"ul\" aria-hidden=\"true\"></i>" if h == cur else ""}</a>' for h, n in tabs)   # .ul = 현재 탭 밑줄(탭을 옮기면 새 탭으로 미끄러짐, P37)
+    return f'<a class="skip" href="#main">본문 바로가기</a><header class="nav"><div class="wrap in"><a class="lg" href="index.html">Hansy<small>Kim Hangyeol</small></a><nav class="tabs" aria-label="주요 메뉴">{t}</nav><div class="cta">{APS("n")}{SBTN}<a class="btn acc" href="index.html?reel" data-reel>{ico("play","sm")}<span>쇼릴</span></a></div></div></header>'
+def APS(where):
+    """미리보기 자동 재생 스위치(P39 apswitch) — 2 = 푸터(f), 3 = 내비(n). 보이는 건 site.js가 고른 번호에 맞춰 hidden을 풂"""
+    knob = f'<i class="kn" aria-hidden="true">{ico("play", "on")}{ico("pause", "off")}</i>'
+    if where == 'n': return f'<button class="aps n" type="button" role="switch" aria-checked="true" aria-label="미리보기 자동 재생" title="미리보기 자동 재생" hidden>{knob}</button>'
+    return f'<button class="aps f" type="button" role="switch" aria-checked="true" hidden><span>미리보기 자동 재생</span>{knob}</button>'
 def foot():
-    return f'''<footer><div class="wrap in"><span>© {datetime.date.today().year} 김한결 Hansy</span><span><a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a> · <a href="https://github.com/hansy-daangn" target="_blank" rel="noopener">GitHub ↗</a></span></div></footer>'''
+    return f'''<footer><div class="wrap in"><span>© {datetime.date.today().year} 김한결 Hansy</span><span>{APS("f")}<a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a> · <a href="https://github.com/hansy-daangn" target="_blank" rel="noopener">GitHub ↗</a></span></div></footer>'''
 def tail(extra='', edit=False):
     ALL = json.load(open(DATA/'works.json'))
-    XP = X if edit else {k: {kk: vv for kk, vv in v.items() if kk != 'film'} for k, v in X.items()}   # 필름스트립은 편집기만
+    XP = X   # 필름스트립 메타(27건 ≈ 5KB)도 공개 페이지에 — 상영관 진행 바 장면 미리보기(P15), 이미지는 처음 올릴 때만 받음 · data/derived.json과 같아져 로드 직후 불필요한 다시 그리기도 없어짐
     blob = json.dumps({'works': ALL, 'home': H, 'design': D, 'derived': XP}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
-    return f'{ICONS}<script type="application/json" id="pf-data">{blob}</script><script src="js/site.js" defer></script>{extra}</body></html>'
+    spec = '' if edit else SPECRULES   # 편집 화면은 미리 렌더하지 않음
+    return f'{ICONS}<script type="application/json" id="pf-data">{blob}</script><script src="js/site.js" defer></script>{extra}{spec}</body></html>'
+# P37 탭 이동 즉시: 내비 탭(지금 탭 제외)에 0.2초 올리면 그 페이지를 미리 렌더(크롬 121+, 미지원 브라우저는 무시). /edit·/design·w/는 내비 탭이 아니라 대상 밖
+SPECRULES = '<script type="speculationrules">{"prerender":[{"source":"document","where":{"selector_matches":".nav .tabs a:not([aria-current])"},"eagerness":"moderate"}]}</script>'
 
 WHO = '김한결 — 모션·3D로 광고 영상을 만들고, 성과를 읽는 도구까지 직접 만드는 디자이너'
 def noscript(items):
@@ -210,9 +243,17 @@ def works():
 <div class="lib"><aside class="rail" aria-label="분류"></aside><div data-queue><div class="tb"><input class="q" type="search" placeholder="제목·툴·매체 검색" aria-label="작업 검색"><span class="cnt"></span></div><div class="grid"></div></div></div>{noscript(W)}</div></main>{foot()}{tail()}'''
     return head('작업 — Hansy', '김한결의 전체 작업: 3D · AI · 모션 영상, 온드 콘텐츠, 도구, 개인 작업.', 'works.html', vp=VP()) + body
 
+SBTN = ('<button class="sbtn" type="button" data-gs hidden aria-label="검색" title="검색 (/)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'
+        '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20 20"/></svg></button>')   # 어디서나 검색(P35 gsearch 2) — 고른 번호일 때만 CSS가 보이게 함
 def tools():
     ts = [w for w in W if w['group'] == 'tools']
     first = next((w for w in ts if (w.get('links') or {}).get('embed')), ts[0])
+    def stage(w):   # 체험판 첫 화면(P42 tfacade): 2 = 도구 화면 이미지 + 「체험하기」(누르면 site.js가 실제 체험판으로), 1 = 바로 로드
+        src = (w.get('links') or {}).get('embed')
+        if D['pick'].get('tfacade') == 2 and src:
+            s = (w.get('media') or {}).get('shot') or poster(w)
+            return f'''<div class="tfc in" data-for="{e(w['id'])}"><div class="bg" style="background-image:url('{e(s)}')"></div><img src="{e(s)}" alt=""><button class="btn tgo" type="button">{ico("play","sm")} 체험하기</button></div>'''
+        return f'<iframe title="{e(w["title"])}" src="{e(src or "about:blank")}" allow="fullscreen; clipboard-write" loading="eager"></iframe>'
     def tdesc(w):
         c = w.get('copy') or {}; l = w.get('links') or {}
         what = ''.join(f'<li>{e(x)}</li>' for x in c.get('what') or [])
@@ -227,7 +268,7 @@ def tools():
     body = f'''<body data-base="./">{nav('tools.html')}<main><div class="wrap sec"><h1 class="pg-h">도구 · 자동화</h1>
 <div class="tl" data-queue><aside class="trail" aria-label="도구 목록">{rail}</aside>
 <div class="tmain"><div class="tbar"><span class="chips">{chips}</span><span class="r"><button class="btn ghost sm big" type="button">크게 보기</button><a class="btn ghost sm open" href="{e((first.get('links') or {}).get('embed') or '#')}" target="_blank" rel="noopener">새 창 ↗</a></span></div>
-<div class="tstage" data-id="{e(first['id'])}"><iframe title="{e(first['title'])}" src="{e((first.get('links') or {}).get('embed') or 'about:blank')}" allow="fullscreen; clipboard-write" loading="eager"></iframe></div>
+<div class="tstage" data-id="{e(first['id'])}">{stage(first)}</div>
 {''.join(tdesc(w) for w in ts)}</div></div></div></main>{foot()}{tail()}'''
     return head('도구 · 자동화 — Hansy', '김한결이 직접 만든 업무 도구: CreativeReporter, CreativeNamer, KarrotField, 3D 구도실, HF Unlimited Runner 등 — 바로 써볼 수 있는 체험판.', 'tools.html', vp=VP()) + body
 
@@ -248,17 +289,18 @@ def resume():
     aw = R.get('awards', [])
     uni = [a for a in aw if a.get('date', '') >= '2019-03']; hs = [a for a in aw if a.get('date', '') < '2019-03']
     def awrow(a): return f'<tr><td class="d">{e(ym(a.get("date","")))}</td><td><b>{e(a.get("name",""))}</b> — {e(a.get("prize",""))}<span class="sm">{e(a.get("field",""))} · {e(a.get("role",""))} · {e(a.get("host",""))}</span></td></tr>'
-    awards = f'<h3>수상 <small>{len(aw)}건 — 대학 이후 {len(uni)} · 고교 {len(hs)}</small></h3>' + tbl(awrow(a) for a in uni) + (f'<details><summary>고교 시절 {len(hs)}건</summary>' + tbl(awrow(a) for a in hs) + '</details>' if hs else '')
+    awards = f'<h3 id="cv-awards">수상 <small>{len(aw)}건 — 대학 이후 {len(uni)} · 고교 {len(hs)}</small></h3>' + tbl(awrow(a) for a in uni) + (f'<details><summary>고교 시절 {len(hs)}건</summary>' + tbl(awrow(a) for a in hs) + '</details>' if hs else '')
     papers = ''.join(f'<tr><td class="d">{e(p.get("year",""))}</td><td><b>{e(p.get("title",""))}</b><span class="sm">{e(p.get("role",""))} · {e(p.get("venue",""))} · {e(p.get("award",""))}</span><span class="sm">{e(p.get("summary",""))}</span></td></tr>' for p in R.get('papers', []))
     summary = ' '.join(R['summary']) if isinstance(R.get('summary'), list) else R.get('summary', '')
+    toc = '<nav class="toc" aria-label="이력서 목차">' + ''.join(f'<a href="#cv-{k}">{n}</a>' for k, n in [('career', '경력'), ('edu', '학력'), ('skills', '기술'), ('awards', '수상')] + ([('papers', '논문')] if papers else [])) + '</nav>'   # cvtoc 2에서만 보임
     body = f'''<body data-base="./">{nav('resume.html')}<main><div class="wrap sec cvw"><div class="cv">
-<header class="idc"><img src="assets/img/profile.jpg" alt="김한결" width="104" height="136"><div><h1 class="nm">{e(R["name"])}</h1><div class="jb">{e(R.get("title",""))}</div><div class="em"><a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a> · <a href="https://github.com/hansy-daangn" target="_blank" rel="noopener">github.com/hansy-daangn</a></div><div class="base">{e(R.get("base_line","병역 육군 병장 만기전역 · 입사 가능 시기 협의 후 즉시"))}</div></div></header>
+<header class="idc"><img src="assets/img/profile.jpg" alt="김한결" width="104" height="136"><a class="cvr" href="index.html?reel" aria-label="쇼릴 보기"></a><div><h1 class="nm">{e(R["name"])}</h1><div class="jb">{e(R.get("title",""))}</div><div class="em"><a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a> · <a href="https://github.com/hansy-daangn" target="_blank" rel="noopener">github.com/hansy-daangn</a></div><div class="base">{e(R.get("base_line","병역 육군 병장 만기전역 · 입사 가능 시기 협의 후 즉시"))}</div></div>{toc}</header>
 <p class="tag">{e(R.get("tagline",""))}</p><p class="ds">{e(summary)}</p>
-<h3>경력</h3>{car}
-<h3>학력</h3>{edu_t}
-<h3>기술</h3>{sk}
+<h3 id="cv-career">경력</h3>{car}
+<h3 id="cv-edu">학력</h3>{edu_t}
+<h3 id="cv-skills">기술</h3>{sk}
 {awards}
-{f'<h3>논문</h3><table>{papers}</table>' if papers else ''}
+{f'<h3 id="cv-papers">논문</h3><table>{papers}</table>' if papers else ''}
 </div></div></main>{foot()}{tail()}'''
     return head('이력서 — 김한결 Hansy', '김한결(Hansy) 이력서 — 경력, 학력, 기술, 수상, 논문.', 'resume.html', vp=VP()) + body
 
@@ -269,12 +311,12 @@ for f in ('edit.js',):
     if (SRC/f).exists(): shutil.copy(SRC/f, OUT/'js'/f)
 for f in ('edit.css',):
     if (SRC/f).exists(): shutil.copy(SRC/f, OUT/'css'/f)
-(OUT/'edit').mkdir(exist_ok=True); (OUT/'edit/index.html').write_text(home(edit=True).replace('<body', '<body' + BODY_ATTR, 1), encoding='utf-8')
+(OUT/'edit').mkdir(exist_ok=True); (OUT/'edit/index.html').write_text(home(edit=True).replace('<body', '<body' + BODY_ATTR, 1).replace('<main>', '<main id="main">', 1), encoding='utf-8')
 if (SRC/'design.html').exists():
     (OUT/'design').mkdir(exist_ok=True); (OUT/'design/index.html').write_text((SRC/'design.html').read_text(encoding='utf-8'), encoding='utf-8')
 (OUT/'edit.html').write_text('<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=edit/"><title>편집으로 이동</title>', encoding='utf-8')
 for name, fn in [('index.html', home), ('works.html', works), ('tools.html', tools), ('resume.html', resume)]:
-    (OUT/name).write_text(fn().replace('<body', '<body' + BODY_ATTR, 1), encoding='utf-8')
+    (OUT/name).write_text(fn().replace('<body', '<body' + BODY_ATTR, 1).replace('<main>', '<main id="main">', 1), encoding='utf-8')   # 본문 바로가기(P50) 목적지
 if (OUT/'about.html').exists(): (OUT/'about.html').write_text('<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=resume.html"><title>이력서로 이동</title>', encoding='utf-8')
 (OUT/'.nojekyll').write_text('')
 # 작품별 공유 페이지(카톡·슬랙 미리보기용) — 열면 상영관으로 이동
@@ -286,7 +328,7 @@ for w in W:
     desc = c.get('one') or w.get('type') or ''
     (OUT/'w'/f"{w['id']}.html").write_text(f'''<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>{e(w["title"])} — Hansy</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{SITE}works.html?w={e(w["id"])}">
 <meta property="og:title" content="{e(w["title"])} — 김한결 Hansy"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="{SITE}{e(og)}"><meta property="og:type" content="video.other"><meta name="twitter:card" content="summary_large_image">
-<meta http-equiv="refresh" content="0;url=../works.html?w={e(w["id"])}"></head><body><a href="../works.html?w={e(w["id"])}">{e(w["title"])}</a><script>location.replace('../works.html?w={e(w["id"])}')</script></body></html>''', encoding='utf-8')
+<meta http-equiv="refresh" content="0;url=../works.html?w={e(w["id"])}"></head><body><a href="../works.html?w={e(w["id"])}">{e(w["title"])}</a><script>location.replace('../works.html?w={e(w["id"])}'+(location.search?'&'+location.search.slice(1):''))</script></body></html>''', encoding='utf-8')
 urls = ['', 'works.html', 'tools.html', 'resume.html'] + [f"w/{w['id']}.html" for w in W if has_media(w)]
 (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>{SITE}{u}</loc></url>' for u in urls) + '</urlset>\n', encoding='utf-8')
 (OUT/'robots.txt').write_text(f'User-agent: *\nDisallow: /pf/edit/\nDisallow: /pf/design/\nSitemap: {SITE}sitemap.xml\n', encoding='utf-8')

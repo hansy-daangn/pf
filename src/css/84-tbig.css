@@ -1,0 +1,8 @@
+/* 체험판 크게 보기(P43) — 1 상영관에서 열기(지금, 규칙 없음) · 2 체험판만 브라우저 전체 화면(Esc 복귀) · 3 집중 모드(목록·설명을 접고 내비 아래를 가득, 다시 누르거나 Esc로 복귀) */
+body[data-tbig="2"] .tstage:fullscreen{border-radius:0;box-shadow:none}
+body[data-tbig="2"] .tstage:-webkit-full-screen{width:100%;height:100%;border-radius:0;box-shadow:none}
+html.tfocus{overflow:hidden}
+html.tfocus main{animation:none}   /* 등장 애니메이션(transform)이 fixed의 기준 상자가 되지 않게 */
+body[data-tbig="3"] .tl.focus :is(.trail,.tdesc,.tmade){display:none}
+body[data-tbig="3"] .tl.focus .tmain{position:fixed;z-index:30;inset:var(--nav-h) 0 0 0;display:flex;flex-direction:column;padding:var(--s1) var(--gut) var(--s3);background:var(--bg)}
+body[data-tbig="3"] .tl.focus .tstage{flex:1;min-height:0;aspect-ratio:auto}

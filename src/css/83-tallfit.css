@@ -1,0 +1,9 @@
+/* 세로 영상일 때 배치(tallfit) — 1 왼쪽 칸 가운데(지금, 규칙 없음) · 2 영상·패널 붙여 가운데 · 3 패널이 넓어짐(남는 폭만큼 — 이미지 소재·비슷한 작업 여러 열)
+   세로 = 영상 가로/세로 < 0.95 → setAspect가 .lay[data-tall] */
+@media (min-width:1100px){
+  body:is([data-tallfit="2"],[data-tallfit="3"]):not([data-edit="1"]) .theater .lay[data-tall]{--tcw:max(calc(var(--u) * 50),calc((100dvh - var(--nav-h) - 180px) * var(--vr,.5625)))}
+  body[data-tallfit="2"]:not([data-edit="1"]) .theater .lay[data-tall]{grid-template-columns:var(--tcw) 400px;justify-content:center}
+  body[data-tallfit="3"]:not([data-edit="1"]) .theater .lay[data-tall]{grid-template-columns:var(--tcw) minmax(400px,1fr)}
+  body[data-tallfit="3"]:not([data-edit="1"]) .theater .lay[data-tall] .panel .sg{grid-template-columns:repeat(auto-fill,minmax(calc(var(--u) * 26),1fr))}
+  body[data-tallfit="3"]:not([data-edit="1"]) .theater .lay[data-tall] .panel :is(.desc,.vars,.que){max-width:calc(var(--u) * 80)}
+}

@@ -1,0 +1,4 @@
+/* because — 방금 본 작품과 비슷한 줄 (site.js becauseRow·insertBecause, 세션 동안만)
+   1 없음(지금) · 2 대표 작업 아래 · 3 피처드 바로 아래 */
+body:is([data-because="2"],[data-because="3"]) .row.rin{animation:rowin calc(var(--dur) * 1.5) var(--ease) both}
+@keyframes rowin{from{opacity:0;transform:translateY(var(--s2))}}

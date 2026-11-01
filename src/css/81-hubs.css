@@ -1,0 +1,19 @@
+/* hubs — 분류 바로가기 (피처드 아래 · 대표 작업 위, 누르면 작업 탭 #분류)
+   1 없음(지금) · 2 분류 타일 5개(그 분류 장면 16:9 + 이름, 올리면 살짝 떠오름) · 3 분류 알약 줄(이름 + 수) */
+body[data-hubs="2"] .row.hubs .hbx{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s2)}
+body[data-hubs="2"] .row.hubs .hub{display:block;color:inherit}
+body[data-hubs="2"] .row.hubs .ha{position:relative;display:block;aspect-ratio:16/9;border-radius:var(--r);overflow:hidden;background:var(--ink-4);box-shadow:var(--ring);transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+body[data-hubs="2"] .row.hubs .ha img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+body[data-hubs="2"] .row.hubs .ha.fill img.bg{filter:blur(18px) brightness(.85) saturate(1.35);transform:scale(1.15)}
+body[data-hubs="2"] .row.hubs .ha.fill img:not(.bg){object-fit:contain}
+body[data-hubs="2"] .row.hubs .hub b{display:block;margin-top:var(--s1);font-size:var(--t-sm);font-weight:600}
+body[data-hubs="2"] .row.hubs .hub small{display:none}
+body[data-hubs="2"] .row.hubs .hub:is(:hover,:focus-visible) .ha{transform:translateY(calc(var(--s05) * -1));box-shadow:var(--shadow),var(--ring)}
+body[data-hubs="2"] .row.hubs .hub:focus-visible{outline:0}
+body[data-hubs="2"] .row.hubs .hub:focus-visible .ha{outline:2px solid var(--acc);outline-offset:3px}
+body[data-hubs="3"] .row.hubs .hbx{display:flex;flex-wrap:wrap;gap:var(--s1)}
+body[data-hubs="3"] .row.hubs .ha{display:none}
+body[data-hubs="3"] .row.hubs .hub{display:inline-flex;align-items:center;gap:var(--s1);min-height:var(--s5);padding:0 var(--s2);border-radius:999px;background:var(--ink-4);transition:background var(--d-micro) var(--ease)}
+body[data-hubs="3"] .row.hubs .hub:hover{background:var(--ink-3)}
+body[data-hubs="3"] .row.hubs .hub b{font-size:var(--t-sm);font-weight:600}
+body[data-hubs="3"] .row.hubs .hub small{font-size:var(--t-micro);color:var(--ink-2)}
