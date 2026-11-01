@@ -44,13 +44,3 @@
 @media (prefers-reduced-motion:reduce){:root,body{--dur:0ms}}
 .theater{--bg:#0b0b0d;--ink:#f2f0ea;--shadow:0 2px 12px color-mix(in oklab,var(--bg) 60%,transparent);--shadow-lg:0 18px 50px color-mix(in oklab,var(--bg) 80%,transparent)}
 
-/* ---- 모듈: 색 (theme) ---- 1 라이트 · 2 홈만 다크 · 3 전체 다크 */
-body[data-theme="2"].home,body[data-theme="3"]{--bg:#0b0b0d;--ink:#f2f0ea;--shadow:0 2px 12px color-mix(in oklab,#000 60%,transparent);--shadow-lg:0 18px 50px color-mix(in oklab,#000 80%,transparent)}
-/* ---- 모듈: 움직임 속도 (motion) ---- 1 280ms · 2 400ms · 3 520ms */
-body[data-motion="1"]{--dur:280ms}
-body[data-motion="3"]{--dur:520ms}
-/* ---- 모듈: 강조색 (acc) ---- 1 레드 · 2 당근 오렌지 · 3 잉크(무채색) · 4 블루 — 쓰는 곳: 쇼릴 버튼·현재 탭 밑줄·진행 바·포커스 링 */
-body[data-acc="2"]{--acc:#ff6f0f}
-body[data-acc="3"],body[data-acc="3"] .theater{--acc:var(--ink)}
-body[data-acc="3"] .btn.acc{color:var(--bg)}
-body[data-acc="4"]{--acc:#0a66e8}

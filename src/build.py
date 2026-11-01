@@ -171,10 +171,9 @@ ICONS = '''<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hid
 </svg>'''
 def ico(n, cls=''): return f'<svg class="ic {cls}" aria-hidden="true"><use href="#i-{n}"></use></svg>'
 
-def VP(page):
-    """모바일 보기: 1 = 홈만 반응형, 나머지 탭은 데스크톱 화면 축소 · 2 = 전부 축소 · 3 = 전부 반응형"""
-    mv = int(D['pick'].get('mview', 1))
-    return 'width=device-width,initial-scale=1,viewport-fit=cover' if mv == 3 or (mv == 1 and page == 'home') else f"width={D['pick'].get('mvw', 1200)}"
+def VP():
+    """모바일 보기: 공개 페이지는 데스크톱 화면을 비율 그대로 축소(폭 = 슬라이더 mvw). 편집 화면만 폰 폭(device-width)"""
+    return f"width={D['pick'].get('mvw', 1200)}"
 def head(title, desc, canon, og=None, vp='width=device-width,initial-scale=1,viewport-fit=cover'):
     return f'''<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="{vp}"><meta name="color-scheme" content="light only">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{SITE}{canon}">
@@ -202,14 +201,14 @@ def home(edit=False):
     body = f'''<body class="home" data-base="./"{' data-edit="1"' if edit else ''}>{nav('index.html')}<main>
 <section class="feat" aria-label="피처드 작업"></section><div class="rows"></div>{noscript(W)}
 </main>{foot()}{tail('<script src="js/edit.js" defer></script>' if edit else '', edit)}'''
-    h = head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat0) if feat0 else None, 'width=device-width,initial-scale=1,viewport-fit=cover' if edit else VP('home'))
+    h = head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat0) if feat0 else None, 'width=device-width,initial-scale=1,viewport-fit=cover' if edit else VP())
     if edit: h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8"><base href="../"><meta name="robots" content="noindex">', 1).replace('<link rel="stylesheet" href="css/site.css">', '<link rel="stylesheet" href="css/site.css"><link rel="stylesheet" href="css/edit.css">')
     return h + body
 
 def works():
     body = f'''<body data-base="./">{nav('works.html')}<main><div class="wrap sec"><h1 class="pg-h">작업</h1>
 <div class="lib"><aside class="rail" aria-label="분류"></aside><div data-queue><div class="tb"><input class="q" type="search" placeholder="제목·툴·매체 검색" aria-label="작업 검색"><span class="cnt"></span></div><div class="grid"></div></div></div>{noscript(W)}</div></main>{foot()}{tail()}'''
-    return head('작업 — Hansy', '김한결의 전체 작업: 3D · AI · 모션 영상, 온드 콘텐츠, 도구, 개인 작업.', 'works.html', vp=VP('works')) + body
+    return head('작업 — Hansy', '김한결의 전체 작업: 3D · AI · 모션 영상, 온드 콘텐츠, 도구, 개인 작업.', 'works.html', vp=VP()) + body
 
 def tools():
     ts = [w for w in W if w['group'] == 'tools']
@@ -230,7 +229,7 @@ def tools():
 <div class="tmain"><div class="tbar"><span class="chips">{chips}</span><span class="r"><button class="btn ghost sm big" type="button">크게 보기</button><a class="btn ghost sm open" href="{e((first.get('links') or {}).get('embed') or '#')}" target="_blank" rel="noopener">새 창 ↗</a></span></div>
 <div class="tstage" data-id="{e(first['id'])}"><iframe title="{e(first['title'])}" src="{e((first.get('links') or {}).get('embed') or 'about:blank')}" allow="fullscreen; clipboard-write" loading="eager"></iframe></div>
 {''.join(tdesc(w) for w in ts)}</div></div></div></main>{foot()}{tail()}'''
-    return head('도구 · 자동화 — Hansy', '김한결이 직접 만든 업무 도구: CreativeReporter, CreativeNamer, KarrotField, 3D 구도실, HF Unlimited Runner 등 — 바로 써볼 수 있는 체험판.', 'tools.html', vp=VP('tools')) + body
+    return head('도구 · 자동화 — Hansy', '김한결이 직접 만든 업무 도구: CreativeReporter, CreativeNamer, KarrotField, 3D 구도실, HF Unlimited Runner 등 — 바로 써볼 수 있는 체험판.', 'tools.html', vp=VP()) + body
 
 def ym(s):
     s = str(s or '').strip()
@@ -261,7 +260,7 @@ def resume():
 {awards}
 {f'<h3>논문</h3><table>{papers}</table>' if papers else ''}
 </div></div></main>{foot()}{tail()}'''
-    return head('이력서 — 김한결 Hansy', '김한결(Hansy) 이력서 — 경력, 학력, 기술, 수상, 논문.', 'resume.html', vp=VP('resume')) + body
+    return head('이력서 — 김한결 Hansy', '김한결(Hansy) 이력서 — 경력, 학력, 기술, 수상, 논문.', 'resume.html', vp=VP()) + body
 
 (OUT/'css').mkdir(exist_ok=True); (OUT/'js').mkdir(exist_ok=True)
 (OUT/'css/site.css').write_text('\n'.join(f'/* ===== {f.name} ===== */\n' + f.read_text(encoding='utf-8') for f in sorted((SRC/'css').glob('*.css'))), encoding='utf-8'); shutil.copy(SRC/'site.js', OUT/'js/site.js')

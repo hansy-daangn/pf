@@ -1,11 +1,11 @@
-/* ---- 상영관 (공통 + theater 1 시네마) ---- */
+/* ---- 상영관 — 배경: 작품 색이 화면 가득 번짐(앰비언트 진하게) · 좁은 화면은 정보가 스크롤 아래, 넓은 화면은 오른쪽 패널 ---- */
 .theater{outline:none;position:fixed;inset:0;z-index:60;overflow:clip;background:var(--bg);color:var(--ink);opacity:0;visibility:hidden;transition:opacity var(--dur) var(--ease),visibility 0s linear var(--dur)}
 .theater.on{opacity:1;visibility:visible;transition:opacity var(--dur) var(--ease)}
 .theater .stage,.theater .panel{transition:opacity calc(var(--dur)*1.5) var(--ease),transform calc(var(--dur)*1.5) var(--ease)}
 .theater:not(.on) .stage{opacity:0;transform:translateY(var(--s2)) scale(.985)}.theater:not(.on) .panel{opacity:0;transform:translateX(var(--s2))}
 .theater.on .panel{transition-delay:calc(var(--dur)*.2)}
-.theater .bgart{position:absolute;inset:-8%;background-size:cover;background-position:center;filter:blur(80px) saturate(1.2);opacity:.22;transform:scale(1.1)}
-.theater .veil{position:absolute;inset:0;background:color-mix(in oklab,var(--bg) 78%,transparent)}
+.theater .bgart{position:absolute;inset:-8%;background-size:cover;background-position:center;filter:blur(calc(var(--u) * 12)) saturate(1.8);opacity:.75;transform:scale(1.1)}
+.theater .veil{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,color-mix(in oklab,var(--bg) 30%,transparent),color-mix(in oklab,var(--bg) 72%,transparent))}
 .theater .top{position:absolute;left:0;right:0;top:0;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 var(--gut);z-index:3;font-size:var(--t-micro);color:var(--ink-2);transition:opacity var(--dur) var(--ease)}
 .theater .top b{color:var(--ink);font-weight:600}
 .theater .top .r{display:flex;gap:var(--s1)}
@@ -79,29 +79,11 @@
 .theater .sg button:hover img{box-shadow:var(--shadow)}
 @media (max-width:760px){.theater .gg img{height:calc(var(--u)*13)}.theater .sg{grid-template-columns:repeat(2,1fr)}}
 
-
-
-/* ==========================================================================
-   모듈: 상영관 (theater) — 1 시네마(정보는 스크롤 아래, 기본) · 2 오른쪽 정보 패널
-   ========================================================================== */
+/* ---- 넓은 화면(1100px~): 영상 오른쪽에 정보 패널 (유튜브) ---- */
 @media (min-width:1100px){
-  body[data-theater="2"] .theater .lay{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--s3);overflow:hidden;padding-bottom:var(--s3)}
-  body[data-theater="2"] .theater .stage{min-height:0;justify-content:flex-start}
-  body[data-theater="2"] .theater .panel{width:auto;margin:0;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:var(--s3);border-radius:var(--r2);background:color-mix(in oklab,var(--ink) 5%,transparent);gap:var(--s3)}
-  body[data-theater="2"] .theater .panel .sg{grid-template-columns:repeat(2,1fr)}
-  body[data-theater="2"] .theater .panel .lead{font-size:var(--t-body)}
-  body[data-theater="2"] .theater .vw,body[data-theater="2"] .theater .meta,body[data-theater="2"] .theater .ctl{width:min(100%,calc((100dvh - var(--nav-h) - 180px) * var(--vr,1.7778)))}
-  body[data-theater="2"] .theater .infob{display:none}
+  .theater .lay{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--s3);overflow:hidden;padding-bottom:var(--s3)}
+  .theater .stage{min-height:0;justify-content:flex-start}
+  .theater .panel{width:auto;margin:0;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:var(--s3);border-radius:var(--r2);background:color-mix(in oklab,var(--ink) 5%,transparent);gap:var(--s3)}
+  .theater .panel .sg{grid-template-columns:repeat(2,1fr)}
+  .theater .panel .lead{font-size:var(--t-body)}
 }
-
-
-/* ==========================================================================
-   모듈: 상영관 배경 (thbg) — .theater > .bgart(작품 그림 흐리게) + .veil(덮개)
-   1 블러 포스터(기본) · 3 페이지 색  (2 순수 검정은 1과 거의 같아 뺌)(애플 TV 앱 라이트) · 4 앰비언트 진하게(유튜브)
-   ========================================================================== */
-/* 3: 상영관 색 토큰을 페이지에서 그대로 물려받음(라이트면 흰 배경) — 영상 틀 안만 어둡게 유지 */
-body[data-thbg="3"] .theater{--bg:inherit;--ink:inherit;--shadow:inherit;--shadow-lg:inherit}
-body[data-thbg="3"] .theater .bgart{opacity:.3}
-body[data-thbg="3"] .theater .vw{--bg:var(--frame);--ink:var(--on-frame);--ink-2:color-mix(in oklab,var(--ink) 60%,transparent);--ink-3:color-mix(in oklab,var(--ink) 12%,transparent);box-shadow:var(--shadow-lg),var(--ring)}
-body[data-thbg="4"] .theater .bgart{opacity:.75;filter:blur(calc(var(--u) * 12)) saturate(1.8)}
-body[data-thbg="4"] .theater .veil{background:radial-gradient(ellipse at 50% 45%,color-mix(in oklab,var(--bg) 30%,transparent),color-mix(in oklab,var(--bg) 72%,transparent))}
