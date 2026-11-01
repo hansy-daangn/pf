@@ -13,9 +13,7 @@
   "top3_subliminal",
   "nayeon-campaign",
   "mg_keyword_spring",
-  "cr_10y",
-  "creativereporter",
-  "previz-studio"
+  "cr_10y"
  ],
  "rows": [
   {
@@ -37,12 +35,7 @@
   {
    "title": "개인 작업",
    "kind": "personal"
-  },
-  {
-   "title": "도구 · 자동화",
-   "kind": "tools",
-   "more": "tools.html"
   }
  ],
- "_help": "billboard=홈 상단 슬라이드 순서, rep=대표 작업 순서, rows=홈 행(제목·kind). kind: 3d·ai·motion·owned·image·personal·tools. 특정 행 순서를 고정하려면 행에 \"ids\":[...] 추가. 썸네일 교체: assets/poster/<id>.jpg 파일을 바꾸면 끝(1080px 이상, 원본 비율)."
+ "_help": "billboard=피처드 순서, rep=대표 작업 순서(repTitle=줄 이름, repHidden=숨김), rows=홈 재생목록(title·ids 또는 kind, hidden=숨김). 도구(group tools)는 홈·작업 탭에 안 나옴. 편집은 /edit/에서."
 }

@@ -7,6 +7,8 @@
 .card .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .card.ui .art img{object-position:left top}
 .card:hover .art,.card:focus-visible .art{box-shadow:var(--shadow),var(--ring)}
+.card:focus-visible{outline:0}.card:focus-visible .art{outline:2px solid var(--acc);outline-offset:3px}
+.row .card .t{-webkit-line-clamp:1;line-clamp:1}
 .card .t{font-size:var(--t-sm);font-weight:600;margin-top:var(--s1);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card .s{font-size:var(--t-micro);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -31,5 +33,5 @@ body[data-size="3"] .card.wide{--cw:clamp(240px,25vw,360px)}
 body[data-size="3"] .card.tall{--cw:clamp(150px,14vw,210px)}
 
 /* 16:9 썸네일이 아직 없을 때(편집 직후): 같은 이미지를 흐리게 깔고 원비율로 올림 */
-.card .art.fill img.bg{filter:blur(18px) brightness(.75);transform:scale(1.15)}
+.card .art.fill img.bg{filter:blur(18px) brightness(.85) saturate(1.35);transform:scale(1.15)}
 .card .art.fill img:not(.bg){object-fit:contain}

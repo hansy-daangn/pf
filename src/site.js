@@ -11,7 +11,7 @@
   const EDIT = document.body.dataset.edit === '1';
   const KINDS = { '3d': '3D 영상', ai: 'AI 영상', motion: '모션 영상', owned: '온드 콘텐츠', image: '이미지 소재', personal: '개인 작업', tools: '도구 · 자동화' };
   const BASE = document.body.dataset.base || './';
-  const url = p => (!p ? '' : /^(https?:|data:|blob:)/.test(p) ? p : BASE + p);
+  const url = p => (!p ? '' : S.blob[p] ? S.blob[p] : /^(https?:|data:|blob:)/.test(p) ? p : BASE + p);   // S.blob: 편집기에서 아직 올리지 않은 새 이미지
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const nb = s => esc(s).split(' ').map(x => `<span class="nb">${x}</span>`).join(' ');
   const ico = (n, cls = '') => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"></use></svg>`;
@@ -24,11 +24,12 @@
   const byPrio = (a, b) => pr(a) - pr(b) || (a.grade || 2) - (b.grade || 2) || (a.sort || 99) - (b.sort || 99);
 
   /* ---------- 데이터: 페이지에 들어 있는 것으로 바로 그리고, 최신 파일을 받아 바뀌었으면 다시 그림 ---------- */
-  const S = { all: [], H: {}, D: { pick: {}, modules: {} }, X: {} };
-  let DATA = [], BY = {};
+  const S = { all: [], H: {}, D: { pick: {}, modules: {} }, X: {}, blob: {} };
+  let DATA = [], MDATA = [], BY = {};
+  const isTool = w => w.group === 'tools' || w.group === 'research';   // 도구는 도구 탭에서만
   const setData = blob => {
     if (blob.works) S.all = blob.works; if (blob.home) S.H = blob.home; if (blob.design) S.D = blob.design; if (blob.derived) S.X = blob.derived;
-    DATA = S.all.filter(w => (w.grade ?? 3) <= 2 && posterOf(w)).sort(byPrio); BY = Object.fromEntries(S.all.map(w => [w.id, w]));
+    DATA = S.all.filter(w => (w.grade ?? 3) <= 2 && posterOf(w)).sort(byPrio); MDATA = DATA.filter(w => !isTool(w)); BY = Object.fromEntries(S.all.map(w => [w.id, w]));
   };
   try { setData(JSON.parse($('#pf-data').textContent)); } catch (e) { }
 
@@ -36,6 +37,8 @@
   const applyDesign = pick => {
     const M = S.D.modules || {};
     Object.entries(pick || {}).forEach(([k, v]) => { if (!M[k]) return; if (M[k].type === 'range') document.body.style.setProperty(`--${k}`, v + (M[k].unit || '')); else document.body.dataset[k] = v; });
+    const P = { ...(S.D.pick || {}), ...(pick || {}) }, vm = document.querySelector('meta[name="viewport"]');   // 모바일: 데스크톱 화면을 비율 그대로 축소
+    if (vm && !EDIT) vm.content = (+P.mview === 3 || (+P.mview !== 2 && document.body.classList.contains('home'))) ? 'width=device-width,initial-scale=1,viewport-fit=cover' : `width=${P.mvw || 1200}`;
     dispatchEvent(new Event('resize'));
   };
   let previewing = false;   // /design 미리보기 안에서는 저장된 값 대신 고르는 중인 값을 씀
@@ -70,14 +73,16 @@
   const cardHTML = (w, cls = 'wide') => {
     const t = thumbOf(w, cls); const sizes = cls === 'wide' ? '(max-width:760px) 264px, 360px' : '(max-width:760px) 132px, 210px';
     const img = `<img src="${esc(url(t.src))}"${t.srcset ? ` srcset="${esc(t.srcset.split(', ').map(s => url(s.split(' ')[0]) + ' ' + s.split(' ')[1]).join(', '))}" sizes="${sizes}"` : ''} alt="" loading="lazy">`;
-    return `<a class="card ${cls}${(w.group === 'tools' || w.group === 'research') ? ' ui' : ''}" href="?w=${esc(w.id)}" data-id="${esc(w.id)}"><div class="art${t.fill ? ' fill' : ''}">${t.fill ? `<img class="bg" src="${esc(url(t.src))}" alt="" loading="lazy">` : ''}${img}</div><div class="t">${esc(w.title)}</div><div class="s">${esc(w.type || w.subtitle || '')}${(w.links && w.links.live) ? ' ↗' : ''}</div></a>`;
+    return `<a class="card ${cls}${(w.group === 'tools' || w.group === 'research') ? ' ui' : ''}" href="?w=${esc(w.id)}" data-id="${esc(w.id)}"><div class="art${t.fill ? ' fill' : ''}">${t.fill ? `<img class="bg" src="${esc(url(t.src))}" alt="" loading="lazy">` : ''}${img}</div><div class="t">${esc(w.title)}</div><div class="s">${esc(w.type || w.subtitle || '')}</div></a>`;
   };
   const rowList = () => {
     const H = S.H, rows = [];
-    const rep = (H.rep || []).map(id => BY[id]).filter(w => w && posterOf(w) && (w.grade ?? 3) <= 2);
-    if (rep.length) rows.push({ key: 'rep', title: '대표 작업', items: rep, cls: 'wide', more: 'works.html' });
+    const ok = w => w && posterOf(w) && (w.grade ?? 3) <= 2 && !isTool(w);
+    const rep = (H.rep || []).map(id => BY[id]).filter(ok);
+    if (rep.length && !H.repHidden) rows.push({ key: 'rep', title: H.repTitle || '대표 작업', items: rep, cls: 'wide', more: 'works.html' });
     (H.rows || []).forEach((r, i) => {
-      const items = r.ids ? r.ids.map(id => BY[id]).filter(w => w && posterOf(w) && (w.grade ?? 3) <= 2) : DATA.filter(w => (w.kinds || []).includes(r.kind));
+      if (r.hidden) return;
+      const items = r.ids ? r.ids.map(id => BY[id]).filter(ok) : MDATA.filter(w => (w.kinds || []).includes(r.kind));
       if (!items.length) return;
       rows.push({ key: `rows.${i}`, title: r.title || KINDS[r.kind] || '', items, cls: items.every(w => orientOf(w) === 'tall') ? 'tall' : 'wide', more: r.more || (r.kind ? `works.html#${r.kind}` : 'works.html') });
     });
@@ -85,7 +90,7 @@
   };
   const rowHTML = r => `<section class="row" data-queue data-row="${r.key}"><div class="wrap"><div class="hd"><h2>${esc(r.title)}</h2>${r.more ? `<a class="more" href="${esc(r.more)}">더보기</a>` : ''}</div>
 <div class="trk"><span class="arr"><button class="ar l" aria-label="이전" disabled>${ico('chev-l')}</button><button class="ar r" aria-label="다음">${ico('chev-r')}</button></span><div class="sc">${r.items.map(w => cardHTML(w, r.cls)).join('')}</div></div></div></section>`;
-  const featItems = () => (S.H.billboard || []).map(id => BY[id]).filter(w => w && feVideo(w)).slice(0, 8);
+  const featItems = () => (S.H.billboard || []).map(id => BY[id]).filter(w => w && feVideo(w) && !isTool(w)).slice(0, 8);
   const featHTML = items => {
     if (!items.length) return '';
     const frames = items.map((w, i) => { const v = feVideo(w), [a, b] = segOf(w), x = S.X[w.id] || {}; const p = (x.bb && x.bb.from === `${v.hd}@${a}`) ? x.bb.src : posterOf(w);
@@ -101,6 +106,9 @@
     R.innerHTML = rowList().map(rowHTML).join(''); mountRows(R);
   };
 
+  /* ---------- 내비: 맨 위에선 투명, 스크롤하면 유리 배경 ---------- */
+  const NAV = $('.nav'); const onSc = () => NAV && NAV.classList.toggle('sc', scrollY > 8); addEventListener('scroll', onSc, { passive: true }); onSc();
+
   /* ---------- 확장 카드(호버 0.5초 → 원비율 영상) ---------- */
   const queueOf = card => { const c = card.closest('[data-queue]'); return c ? $$('.card[data-id]:not([hidden])', c).map(x => x.dataset.id).filter((v, i, a) => a.indexOf(v) === i) : [card.dataset.id]; };
   const Pop = (() => {
@@ -115,7 +123,7 @@
       const [aw, ah] = (v0 && v0.w && v0.h) ? [v0.w, v0.h] : c.classList.contains('tall') ? [9, 16] : [16, 9]; const tall = ah / aw > 1.2;
       const capH = innerHeight * (tall ? .5 : .46);
       let pw = Math.min(Math.max(r.width * 1.45, tall ? 0 : 320), innerWidth - 32); if (pw * ah / aw > capH) pw = capH * aw / ah; pw = Math.max(pw, tall ? 200 : 280);
-      P.style.setProperty('--pw', pw + 'px'); P.style.setProperty('--pa', `${aw}/${ah}`);
+      P.style.setProperty('--pw', pw + 'px'); P.style.setProperty('--pa', `${aw}/${ah}`); P.style.setProperty('--s0', Math.min(1, r.width / pw).toFixed(3));   // 카드 크기 그대로에서 커지기 시작
       const x = S.X[w.id]; const p = (x && x.hv && v0 && x.hv.from === `${v0.sd || v0.hd}@${startOf(w)}`) ? x.hv.src : posterOf(w);   // 호버 시작 초의 프레임 → 영상이 시작돼도 장면이 안 바뀜
       ART.innerHTML = `<div class="bgb" style="background-image:url('${esc(url(p))}')"></div><img alt="" src="${esc(url(p))}">`;
       $('.t', P).textContent = w.title; $('.s', P).textContent = [w.type, w.dur].filter(Boolean).join(' · ');
@@ -184,15 +192,15 @@
     const holds = new Set(); const blocked = () => user || holds.size > 0;
     const seg = f => { const a = +f.dataset.a || 0, b = +f.dataset.b || a + 8; return { a, b: Math.max(b, a + 1) }; };
     const fill = p => dots.forEach((d, k) => { d.classList.toggle('on', k === i); const x = $('i', d); if (x) x.style.width = (k === i ? Math.max(0, Math.min(1, p)) * 100 : 0) + '%'; });
-    const tick = () => { cancelAnimationFrame(raf); const v = V; if (!v || !frames[i]) return; const s = seg(frames[i]); fill((v.currentTime - s.a) / (s.b - s.a)); if (!holds.has('edit') && (v.currentTime >= s.b - .04 || v.ended)) { go(i + 1); return; } raf = requestAnimationFrame(tick); };
+    const tick = () => { cancelAnimationFrame(raf); const v = V; if (!v || !frames[i]) return; const s = seg(frames[i]); fill((v.currentTime - s.a) / (s.b - s.a)); if (v.currentTime >= s.b - .04 || v.ended) { if (EDIT) { v.currentTime = s.a; v.play().catch(() => { }); } else { go(i + 1); return; } } raf = requestAnimationFrame(tick); };   // 편집 중엔 넘기지 않고 구간 반복
     const load = () => {
       if (V) { const old = V; old.pause(); setTimeout(() => killVideo(old), 1000); } V = null; cancelAnimationFrame(raf); clearTimeout(fb); fill(0);
       const f = frames[i]; if (!f) return; const s = seg(f);
       document.body.style.setProperty('--feat-img', `url('${$('img', f).src}')`);   // 절대 주소(CSS 변수 안의 상대 url은 css/ 기준으로 풀림)
-      if (SAVE) { fb = setTimeout(() => go(i + 1), (s.b - s.a) * 1000); return; }
+      if (SAVE) { if (!EDIT) fb = setTimeout(() => go(i + 1), (s.b - s.a) * 1000); return; }
       V = freshVideo(f.dataset[big() ? 'hd' : 'sd'], s.a, { muted }); f.appendChild(V);
       const v = V; v.addEventListener('playing', () => { clearTimeout(fb); tick(); });
-      v.addEventListener('error', () => { fb = setTimeout(() => go(i + 1), 4000); }, { once: true });
+      v.addEventListener('error', () => { if (!EDIT) fb = setTimeout(() => go(i + 1), 4000); }, { once: true });
       if (!blocked()) v.play().catch(() => { v.muted = true; v.play().catch(() => { }); });
     };
     const go = n => {
@@ -213,7 +221,7 @@
       const ids = texts.map(t => t.dataset.id);
       $$('[data-open]', F).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.open, { queue: ids, autoplay: true })));
       $$('[data-info]', F).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.info, { queue: ids, autoplay: false, info: true })));
-      const inset = () => fv.classList.toggle('inset', fv.getBoundingClientRect().width < innerWidth - 2);
+      const inset = () => fv.classList.toggle('inset', fv.getBoundingClientRect().width < F.getBoundingClientRect().width - 2);
       addEventListener('resize', inset); offResize = () => removeEventListener('resize', inset); inset();
       load();
     };
@@ -224,7 +232,7 @@
   window.__featPause = () => Feat.hold('theater'); window.__featResume = () => Feat.release('theater');
 
   /* ---------- 쇼릴 ---------- */
-  $$('[data-reel]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); const q = DATA.filter(w => w.grade === 1 && vidsOf(w).length).map(w => w.id); if (q.length) Theater.open(q[0], { queue: q, autoplay: true }); }));
+  $$('[data-reel]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); const q = MDATA.filter(w => w.grade === 1 && vidsOf(w).length).map(w => w.id); if (q.length) Theater.open(q[0], { queue: q, autoplay: true }); }));
 
   /* ---------- 상영관 ---------- */
   const Theater = (() => {
@@ -245,7 +253,7 @@
     let MUTED = (() => { try { return sessionStorage.getItem('pf.muted') === '1'; } catch (e) { return false; } })();
     const kindOf = w => vidsOf(w).length ? 'video' : (w.media && w.media.youtube) ? 'youtube' : (w.links && w.links.embed) ? 'iframe' : 'image';
     const clearStage = () => { [...el.vw.children].forEach(n => { if (!n.classList.contains('big') && !n.classList.contains('next')) n.remove(); }); frame = null; V.pause(); };
-    const setAspect = (w, h) => { el.vw.style.setProperty('--va', `${w}/${h}`); el.vw.style.setProperty('--vr', (w / h).toFixed(4)); };
+    const setAspect = (w, h) => { [el.vw, el.vw.parentElement].forEach(x => { x.style.setProperty('--va', `${w}/${h}`); x.style.setProperty('--vr', (w / h).toFixed(4)); }); };   // 제목·진행 바도 영상 폭에 맞춤
     const chip = s => String(s).split(' — ')[0];
     const loadVideo = (v, keepTime) => {
       const t = keepTime ? V.currentTime : 0, playing = !V.paused;
@@ -288,7 +296,7 @@
         `<div class="ext">${L.live ? `<a class="btn ghost sm" href="${esc(L.live)}" target="_blank" rel="noopener">라이브 ↗</a>` : ''}${L.github ? `<a class="btn ghost sm" href="${esc(L.github)}" target="_blank" rel="noopener">GitHub ↗</a>` : ''}${L.artifact ? `<a class="btn ghost sm" href="${esc(L.artifact)}" target="_blank" rel="noopener">원본 ↗</a>` : ''}</div>`;
       const imgs = (w.media && w.media.images) || [];
       el.gal.innerHTML = imgs.length ? `<h3>이미지 소재 <small>${imgs.length}</small></h3><div class="gg">${imgs.map(im => `<a href="${esc(url(im.src))}" target="_blank" rel="noopener" style="--r:${(im.w / im.h).toFixed(3)}"><img src="${esc(url(im.src))}" alt="${esc(im.label)}" loading="lazy" width="${im.w}" height="${im.h}"><span>${esc(chip(im.label))}</span></a>`).join('')}</div>` : '';
-      const ks = w.kinds || []; const sim = DATA.filter(x => x.id !== w.id && posterOf(x) && (x.kinds || []).some(k => ks.includes(k))).sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999)).slice(0, 8);
+      const ks = w.kinds || []; const sim = MDATA.filter(x => x.id !== w.id && posterOf(x) && (x.kinds || []).some(k => ks.includes(k))).sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999)).slice(0, 8);
       el.sim.innerHTML = sim.length ? `<h3>비슷한 작업</h3><div class="sg">${sim.map(x => `<button data-id="${esc(x.id)}"><img src="${esc(url(thumbOf(x, 'wide').src))}" alt="" loading="lazy"><b>${esc(x.title)}</b></button>`).join('')}</div>` : '';
       $$('.sg button', el.sim).forEach(b => b.addEventListener('click', () => { const q = sim.map(x => x.id); queue = q; jump(q.indexOf(b.dataset.id)); }));
       document.title = `${w.title} — HANSY`;
@@ -366,9 +374,9 @@
   const renderWorks = () => {
     const LIB = $('.lib'); if (!LIB) return;
     const rail = $('.rail', LIB), grid = $('.grid', LIB), cnt = $('.cnt', LIB), q = $('.q', LIB);
-    const count = k => DATA.filter(w => (w.kinds || []).includes(k)).length;
-    rail.innerHTML = `<button data-v="">전체 <small>${DATA.length}</small></button>` + Object.keys(KINDS).filter(count).map(k => `<button data-v="${k}">${KINDS[k]} <small>${count(k)}</small></button>`).join('');
-    grid.innerHTML = DATA.map(w => cardHTML(w, 'wide')).join(''); mountRows(grid);
+    const count = k => MDATA.filter(w => (w.kinds || []).includes(k)).length;
+    rail.innerHTML = `<button data-v="">전체 <small>${MDATA.length}</small></button>` + Object.keys(KINDS).filter(count).map(k => `<button data-v="${k}">${KINDS[k]} <small>${count(k)}</small></button>`).join('');
+    grid.innerHTML = MDATA.map(w => cardHTML(w, 'wide')).join(''); mountRows(grid);
     const st = { kind: KINDS[location.hash.slice(1)] ? location.hash.slice(1) : '', q: q.value || '' };
     const KO = { google: '구글', moloco: '몰로코', meta: '메타', localads: '로컬광고', youtube: '유튜브', instagram: '인스타그램' };
     const hay = w => [w.title, w.type, w.subtitle, (w.tools || []).join(' '), (w.channels || []).map(c => `${c} ${KO[String(c).toLowerCase()] || ''}`).join(' '), (w.kinds || []).map(k => KINDS[k]).join(' ')].join(' ').toLowerCase();
@@ -406,12 +414,12 @@
 
   /* ---------- 시작: 그리기 → 딥링크 → 최신 데이터 확인(바뀌었으면 다시 그리기) ---------- */
   const renderAll = () => { renderHome(); renderWorks(); ambient(); };
-  const ambient = () => { if (document.querySelector('.feat .fs')) return; const w = (S.H.billboard || []).map(id => BY[id]).find(Boolean) || DATA[0]; if (w) document.body.style.setProperty('--feat-img', `url('${new URL(url(posterOf(w)), document.baseURI).href}')`); };
-  window.PF = { S, setData, renderAll, renderHome, renderWorks, applyDesign, Feat, cardHTML, segOf, feVideo, sigWide, posterOf, vidsOf, url, esc, ico, KINDS, get BY() { return BY; }, get DATA() { return DATA; } };
+  const ambient = () => { if (document.querySelector('.feat .fs')) return; const w = (S.H.billboard || []).map(id => BY[id]).find(Boolean) || MDATA[0]; if (w) document.body.style.setProperty('--feat-img', `url('${new URL(url(posterOf(w)), document.baseURI).href}')`); };
+  window.PF = { S, setData, renderAll, renderHome, renderWorks, applyDesign, Feat, cardHTML, segOf, feVideo, sigWide, posterOf, vidsOf, url, esc, ico, KINDS, get BY() { return BY; }, get DATA() { return DATA; }, get MDATA() { return MDATA; }, isTool, Theater: window.Theater };
   renderAll();
   document.body.dataset.title = document.title;
   const qs = new URLSearchParams(location.search); const q = qs.get('w');
-  if (q && BY[q]) Theater.open(q, { autoplay: false, replace: true, queue: DATA.map(w => w.id) });
+  if (q && BY[q]) Theater.open(q, { replace: true, queue: (isTool(BY[q]) ? DATA : MDATA).map(w => w.id), autoplay: true });
   if (qs.has('reel')) { const b = $('[data-reel]'); b && b.click(); }
   if (!EDIT) {
     const get = f => fetch(`data/${f}.json`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null);

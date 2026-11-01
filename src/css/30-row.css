@@ -3,7 +3,7 @@
    1 제목 오른쪽 · 2 줄 양 끝(카드 옆 여백)
    ========================================================================== */
 .row{padding-top:var(--rowgap,var(--s8))}
-.feat + .rows > .row:first-child{padding-top:var(--s5)}
+.feat + .rows > .row:first-child{padding-top:0}
 .row .wrap{position:relative}
 .row .hd{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s2);min-height:var(--s5)}
 .row .hd h2{font-size:var(--t-h);font-weight:700;letter-spacing:-.02em}

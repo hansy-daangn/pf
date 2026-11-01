@@ -19,7 +19,30 @@
   "bb": {
    "src": "assets/poster/bb/td_declutter_0p3.jpg",
    "from": "assets/v/td_declutter.mp4@0.3"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/td_declutter_0.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/td_declutter.mp4"
+   },
+   {
+    "src": "assets/film/td_declutter_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/td_declutter-2.mp4"
+   },
+   {
+    "src": "assets/film/td_declutter_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/td_declutter-3.mp4"
+   }
+  ]
  },
  "td_review2605": {
   "pw": 720,
@@ -41,7 +64,30 @@
   "bb": {
    "src": "assets/poster/bb/td_review2605_0.jpg",
    "from": "assets/v/td_review2605.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/td_review2605_0.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/td_review2605.mp4"
+   },
+   {
+    "src": "assets/film/td_review2605_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/td_review2605-2.mp4"
+   },
+   {
+    "src": "assets/film/td_review2605_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/td_review2605-3.mp4"
+   }
+  ]
  },
  "creativereporter": {
   "pw": 1280,
@@ -91,7 +137,16 @@
   "bb": {
    "src": "assets/poster/bb/local-runners-teaser_0.jpg",
    "from": "assets/v/local-runners-teaser.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/local-runners-teaser_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/local-runners-teaser.mp4"
+   }
+  ]
  },
  "previz-studio": {
   "pw": 1280,
@@ -141,7 +196,16 @@
   "bb": {
    "src": "assets/poster/bb/bakery-vlog_0.jpg",
    "from": "assets/v/bakery-vlog.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/bakery-vlog_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/bakery-vlog.mp4"
+   }
+  ]
  },
  "td_godaangn": {
   "pw": 600,
@@ -163,7 +227,16 @@
   "bb": {
    "src": "assets/poster/bb/td_godaangn_0.jpg",
    "from": "assets/v/td_godaangn.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/td_godaangn_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/td_godaangn.mp4"
+   }
+  ]
  },
  "creativenamer": {
   "pw": 1280,
@@ -199,7 +272,23 @@
   "bb": {
    "src": "assets/poster/bb/td_raffle_v_0.jpg",
    "from": "assets/v/td_raffle_v-2.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/td_raffle_v_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/td_raffle_v.mp4"
+   },
+   {
+    "src": "assets/film/td_raffle_v_1.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/td_raffle_v-2.mp4"
+   }
+  ]
  },
  "karrotfield": {
   "pw": 1280,
@@ -235,7 +324,16 @@
   "bb": {
    "src": "assets/poster/bb/local-runners-boosting_1.jpg",
    "from": "assets/v/local-runners-boosting.mp4@1.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/local-runners-boosting_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/local-runners-boosting.mp4"
+   }
+  ]
  },
  "mg_keyword_spring": {
   "pw": 600,
@@ -257,7 +355,30 @@
   "bb": {
    "src": "assets/poster/bb/mg_keyword_spring_0p3.jpg",
    "from": "assets/v/mg_keyword_spring-2.mp4@0.3"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_keyword_spring_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_keyword_spring.mp4"
+   },
+   {
+    "src": "assets/film/mg_keyword_spring_1.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/mg_keyword_spring-2.mp4"
+   },
+   {
+    "src": "assets/film/mg_keyword_spring_2.jpg",
+    "n": 30,
+    "fw": 54,
+    "fh": 72,
+    "from": "assets/v/mg_keyword_spring-3.mp4"
+   }
+  ]
  },
  "nayeon-campaign": {
   "pw": 1080,
@@ -279,7 +400,37 @@
   "bb": {
    "src": "assets/poster/bb/nayeon-campaign_0.jpg",
    "from": "assets/v/nayeon-campaign.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/nayeon-campaign_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/nayeon-campaign.mp4"
+   },
+   {
+    "src": "assets/film/nayeon-campaign_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/nayeon-campaign-2.mp4"
+   },
+   {
+    "src": "assets/film/nayeon-campaign_2.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/nayeon-campaign-3.mp4"
+   },
+   {
+    "src": "assets/film/nayeon-campaign_3.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/nayeon-campaign-4.mp4"
+   }
+  ]
  },
  "cr_10y": {
   "pw": 640,
@@ -301,7 +452,51 @@
   "bb": {
    "src": "assets/poster/bb/cr_10y_0.jpg",
    "from": "assets/v/cr_10y.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/cr_10y_0.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/cr_10y.mp4"
+   },
+   {
+    "src": "assets/film/cr_10y_1.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/cr_10y-2.mp4"
+   },
+   {
+    "src": "assets/film/cr_10y_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/cr_10y-3.mp4"
+   },
+   {
+    "src": "assets/film/cr_10y_3.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/cr_10y-4.mp4"
+   },
+   {
+    "src": "assets/film/cr_10y_4.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/cr_10y-5.mp4"
+   },
+   {
+    "src": "assets/film/cr_10y_5.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/cr_10y-6.mp4"
+   }
+  ]
  },
  "hf-unlimited-runner": {
   "pw": 1280,
@@ -337,7 +532,16 @@
   "bb": {
    "src": "assets/poster/bb/td_pickup_0.jpg",
    "from": "assets/v/td_pickup.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/td_pickup_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/td_pickup.mp4"
+   }
+  ]
  },
  "sf_bizjul": {
   "pw": 600,
@@ -359,7 +563,16 @@
   "bb": {
    "src": "assets/poster/bb/sf_bizjul_0.jpg",
    "from": "assets/v/sf_bizjul.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/sf_bizjul_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/sf_bizjul.mp4"
+   }
+  ]
  },
  "td_nintendo": {
   "pw": 600,
@@ -381,7 +594,16 @@
   "bb": {
    "src": "assets/poster/bb/td_nintendo_0.jpg",
    "from": "assets/v/td_nintendo.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/td_nintendo_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/td_nintendo.mp4"
+   }
+  ]
  },
  "mg_rent1": {
   "pw": 600,
@@ -403,7 +625,16 @@
   "bb": {
    "src": "assets/poster/bb/mg_rent1_0.jpg",
    "from": "assets/v/mg_rent1.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_rent1_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_rent1.mp4"
+   }
+  ]
  },
  "ai_closet1": {
   "pw": 600,
@@ -425,7 +656,16 @@
   "bb": {
    "src": "assets/poster/bb/ai_closet1_0.jpg",
    "from": "assets/v/ai_closet1.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/ai_closet1_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/ai_closet1.mp4"
+   }
+  ]
  },
  "sf_10000walk": {
   "pw": 600,
@@ -447,7 +687,23 @@
   "bb": {
    "src": "assets/poster/bb/sf_10000walk_0.jpg",
    "from": "assets/v/sf_10000walk-2.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/sf_10000walk_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/sf_10000walk.mp4"
+   },
+   {
+    "src": "assets/film/sf_10000walk_1.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/sf_10000walk-2.mp4"
+   }
+  ]
  },
  "mg_keyword_chuseok": {
   "pw": 1080,
@@ -469,7 +725,30 @@
   "bb": {
    "src": "assets/poster/bb/mg_keyword_chuseok_0.jpg",
    "from": "assets/v/mg_keyword_chuseok-3.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_keyword_chuseok_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_keyword_chuseok.mp4"
+   },
+   {
+    "src": "assets/film/mg_keyword_chuseok_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_keyword_chuseok-2.mp4"
+   },
+   {
+    "src": "assets/film/mg_keyword_chuseok_2.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/mg_keyword_chuseok-3.mp4"
+   }
+  ]
  },
  "top3_metaphor": {
   "pw": 1038,
@@ -519,7 +798,23 @@
   "bb": {
    "src": "assets/poster/bb/eff_ae_c4d_0.jpg",
    "from": "assets/v/eff_ae_c4d.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/eff_ae_c4d_0.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/eff_ae_c4d.mp4"
+   },
+   {
+    "src": "assets/film/eff_ae_c4d_1.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/eff_ae_c4d-2.mp4"
+   }
+  ]
  },
  "fusion_datagarden": {
   "pw": 1600,
@@ -555,7 +850,16 @@
   "bb": {
    "src": "assets/poster/bb/mg_charge_0.jpg",
    "from": "assets/v/mg_charge.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_charge_0.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/mg_charge.mp4"
+   }
+  ]
  },
  "itempalette": {
   "pw": 1280,
@@ -619,7 +923,30 @@
   "bb": {
    "src": "assets/poster/bb/mg_bizreview_0.jpg",
    "from": "assets/v/mg_bizreview.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_bizreview_0.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/mg_bizreview.mp4"
+   },
+   {
+    "src": "assets/film/mg_bizreview_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_bizreview-2.mp4"
+   },
+   {
+    "src": "assets/film/mg_bizreview_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/mg_bizreview-3.mp4"
+   }
+  ]
  },
  "mg_ahnabada": {
   "pw": 600,
@@ -641,7 +968,16 @@
   "bb": {
    "src": "assets/poster/bb/mg_ahnabada_0.jpg",
    "from": "assets/v/mg_ahnabada.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_ahnabada_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_ahnabada.mp4"
+   }
+  ]
  },
  "mg_simbatdan": {
   "pw": 600,
@@ -663,7 +999,16 @@
   "bb": {
    "src": "assets/poster/bb/mg_simbatdan_0.jpg",
    "from": "assets/v/mg_simbatdan.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_simbatdan_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_simbatdan.mp4"
+   }
+  ]
  },
  "td_mapwalk": {
   "pw": 600,
@@ -685,7 +1030,16 @@
   "bb": {
    "src": "assets/poster/bb/td_mapwalk_0.jpg",
    "from": "assets/v/td_mapwalk.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/td_mapwalk_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/td_mapwalk.mp4"
+   }
+  ]
  },
  "ai_article": {
   "pw": 600,
@@ -707,7 +1061,16 @@
   "bb": {
    "src": "assets/poster/bb/ai_article_0.jpg",
    "from": "assets/v/ai_article.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/ai_article_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/ai_article.mp4"
+   }
+  ]
  },
  "mg_ars": {
   "pw": 600,
@@ -729,7 +1092,16 @@
   "bb": {
    "src": "assets/poster/bb/mg_ars_0.jpg",
    "from": "assets/v/mg_ars.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_ars_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_ars.mp4"
+   }
+  ]
  },
  "mg_jobs_spring": {
   "pw": 600,
@@ -751,7 +1123,23 @@
   "bb": {
    "src": "assets/poster/bb/mg_jobs_spring_0.jpg",
    "from": "assets/v/mg_jobs_spring-2.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/mg_jobs_spring_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_jobs_spring.mp4"
+   },
+   {
+    "src": "assets/film/mg_jobs_spring_1.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/mg_jobs_spring-2.mp4"
+   }
+  ]
  },
  "cr_instantbuy": {
   "pw": 1920,
@@ -773,7 +1161,30 @@
   "bb": {
    "src": "assets/poster/bb/cr_instantbuy_0.jpg",
    "from": "assets/v/cr_instantbuy.mp4@0.0"
-  }
+  },
+  "film": [
+   {
+    "src": "assets/film/cr_instantbuy_0.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/cr_instantbuy.mp4"
+   },
+   {
+    "src": "assets/film/cr_instantbuy_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/cr_instantbuy-2.mp4"
+   },
+   {
+    "src": "assets/film/cr_instantbuy_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/cr_instantbuy-3.mp4"
+   }
+  ]
  },
  "cr_keyword_images": {
   "pw": 1200,

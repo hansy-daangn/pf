@@ -35,7 +35,8 @@
 .fctl button[data-i]{position:relative;width:var(--s2);height:var(--s05);border-radius:var(--s05);background:var(--ink-3);overflow:hidden;transition:width var(--d-micro) var(--ease)}
 .fctl button[data-i].on{width:var(--s5)}
 .fctl button[data-i] i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}
-.fctl .pp,.fctl .snd{width:var(--s3);height:var(--s3);border-radius:50%;color:var(--ink-2);display:grid;place-items:center}
+.fctl .pp,.fctl .snd{width:var(--s5);height:var(--s5);border-radius:50%;color:var(--ink);background:var(--ink-4);display:grid;place-items:center;transition:background var(--d-micro) var(--ease)}
+.fctl :is(.pp,.snd):hover{background:var(--ink-3)}
 .fctl .pp{margin-left:var(--s1)}
 
 /* 홈: 피처드가 맨 위에서 시작, 내비는 투명했다가 스크롤하면 유리 (카드형 3 제외) */
@@ -49,10 +50,10 @@ body[data-feat="1"] .fx h2{font-size:clamp(var(--t-title),2.6vw,var(--t-disp))}
 
 /* ---- 2 오른쪽 제목: 영상 오른쪽 끝이 배경으로 스며들고 그 옆에 제목 ---- */
 body[data-feat="2"] .fbox{width:auto;display:grid;grid-template-columns:minmax(0,var(--featw,1120px)) minmax(240px,340px);align-items:center;justify-content:center;padding-inline:var(--gut)}
-body[data-feat="2"] .fv{--fr:22%}
+body[data-feat="2"] .fv{--fl:6%;--fr:22%;--ft:16%}
 body[data-feat="2"] .fv.inset{--fl:6%;--fr:22%}
 body[data-feat="2"] .ft{position:relative;z-index:2;margin-left:calc(var(--s8) * -1)}
-body[data-feat="2"] .fx h2{font-size:clamp(var(--t-title),2.2vw,var(--t-disp))}
+body[data-feat="2"] .fx h2{font-size:clamp(var(--t-disp),2.8vw,calc(var(--t-disp) * 1.25))}
 
 /* ---- 3 카드 + 옆 설명: 둥근 카드(페이드 없음), 내비는 유리 ---- */
 body[data-feat="3"] .fbox{width:auto;display:grid;grid-template-columns:minmax(0,var(--featw,1120px)) minmax(240px,340px);gap:var(--s5);align-items:end;justify-content:center;padding:var(--s3) var(--gut) 0}

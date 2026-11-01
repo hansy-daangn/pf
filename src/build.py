@@ -43,8 +43,8 @@ def blurfill(src, out):
     if op.exists() and op.stat().st_mtime >= sp.stat().st_mtime: return str(out)
     im = Image.open(sp).convert('RGB'); Wd, Hd = 1280, 720
     bg = im.copy(); r = max(Wd / bg.width, Hd / bg.height); bg = bg.resize((int(bg.width * r) + 1, int(bg.height * r) + 1), Image.LANCZOS)
-    bg = bg.crop(((bg.width - Wd) // 2, (bg.height - Hd) // 2, (bg.width - Wd) // 2 + Wd, (bg.height - Hd) // 2 + Hd)).filter(ImageFilter.GaussianBlur(36))
-    bg = ImageEnhance.Brightness(bg).enhance(0.72)
+    bg = bg.crop(((bg.width - Wd) // 2, (bg.height - Hd) // 2, (bg.width - Wd) // 2 + Wd, (bg.height - Hd) // 2 + Hd)).filter(ImageFilter.GaussianBlur(48))
+    bg = ImageEnhance.Color(ImageEnhance.Brightness(bg).enhance(0.85)).enhance(1.35)
     fg = im.copy(); r2 = min(Wd / fg.width, Hd / fg.height); fg = fg.resize((max(1, int(fg.width * r2)), max(1, int(fg.height * r2))), Image.LANCZOS)
     bg.paste(fg, ((Wd - fg.width) // 2, (Hd - fg.height) // 2)); op.parent.mkdir(parents=True, exist_ok=True); bg.save(op, quality=86)
     return str(out)
@@ -119,6 +119,21 @@ def hv_frame(w):
         r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{t}', '-i', str(src), '-frames:v', '1', '-vf', "scale='min(960,iw)':-2", '-q:v', '4', str(op)], capture_output=True, text=True)
         if r.returncode or not op.exists(): return None
     return str(out)
+FILM_N, FILM_H = 30, 72
+def film(w):
+    """편집기 타임라인용 필름스트립: 영상마다 30장면을 가로로 이어 붙인 한 장. assets/film/<id>_<k>.jpg"""
+    out = []
+    for k, v in enumerate(videos(w)):
+        src = REPO / (v.get('sd') or v['hd']); dur = float(v.get('dur') or 0)
+        if not src.exists() or dur <= 0 or not v.get('w') or not v.get('h'): out.append(None); continue
+        fw = max(2, round(FILM_H * v['w'] / v['h'] / 2) * 2)
+        rel = pathlib.Path('assets/film') / f"{w['id']}_{k}.jpg"; op = REPO / rel
+        if not op.exists() or op.stat().st_mtime < src.stat().st_mtime:
+            op.parent.mkdir(parents=True, exist_ok=True)
+            r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-vf', f"fps={FILM_N}/{dur:.3f},scale={fw}:{FILM_H},tile={FILM_N}x1", '-frames:v', '1', '-q:v', '5', str(op)], capture_output=True, text=True)
+            if r.returncode or not op.exists(): print('film fail', w['id'], k, r.stderr[-200:]); out.append(None); continue
+        out.append({'src': str(rel), 'n': FILM_N, 'fw': fw, 'fh': FILM_H, 'from': v['hd']})
+    return out
 def prio(w): return (w.get('priority') if isinstance(w.get('priority'), (int, float)) else 999, w.get('grade', 2), w.get('sort', 99))
 def sig_wide(w):
     m = w.get('media') or {}; return f"{m.get('poster_w') or ''}|{poster(w)}|{m.get('poster_w_t', '')}"
@@ -136,6 +151,8 @@ for _w in W:
     _hv = hv_frame(_w)
     if _hv: _x['hv'] = {'src': _hv, 'from': sig_hv(_w)}
     if feat_video(_w): _x['bb'] = {'src': bb_poster(_w), 'from': sig_bb(_w)}
+    _f = film(_w)
+    if any(_f): _x['film'] = _f
 W.sort(key=prio)
 def is_video(p): return bool(p) and str(p).lower().endswith(('.mp4', '.webm', '.mov'))
 
@@ -154,8 +171,12 @@ ICONS = '''<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hid
 </svg>'''
 def ico(n, cls=''): return f'<svg class="ic {cls}" aria-hidden="true"><use href="#i-{n}"></use></svg>'
 
-def head(title, desc, canon, og=None):
-    return f'''<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="light only">
+def VP(page):
+    """모바일 보기: 1 = 홈만 반응형, 나머지 탭은 데스크톱 화면 축소 · 2 = 전부 축소 · 3 = 전부 반응형"""
+    mv = int(D['pick'].get('mview', 1))
+    return 'width=device-width,initial-scale=1,viewport-fit=cover' if mv == 3 or (mv == 1 and page == 'home') else f"width={D['pick'].get('mvw', 1200)}"
+def head(title, desc, canon, og=None, vp='width=device-width,initial-scale=1,viewport-fit=cover'):
+    return f'''<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="{vp}"><meta name="color-scheme" content="light only">
 <title>{e(title)}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{SITE}{canon}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:image" content="{SITE}{og or 'assets/poster/td_review2605_h.jpg'}"><meta property="og:type" content="website">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -167,9 +188,10 @@ def nav(cur):
     return f'<header class="nav"><div class="wrap in"><a class="lg" href="index.html">Hansy<small>Kim Hangyeol</small></a><nav class="tabs" aria-label="주요 메뉴">{t}</nav><div class="cta"><a class="btn acc" href="index.html?reel" data-reel>{ico("play","sm")}<span>쇼릴</span></a></div></div></header>'
 def foot():
     return f'''<footer><div class="wrap in"><span>© {datetime.date.today().year} 김한결 Hansy</span><span><a href="mailto:{e(EMAIL)}">{e(EMAIL)}</a> · <a href="https://github.com/hansy-daangn" target="_blank" rel="noopener">GitHub ↗</a></span></div></footer>'''
-def tail(extra=''):
+def tail(extra='', edit=False):
     ALL = json.load(open(DATA/'works.json'))
-    blob = json.dumps({'works': ALL, 'home': H, 'design': D, 'derived': X}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    XP = X if edit else {k: {kk: vv for kk, vv in v.items() if kk != 'film'} for k, v in X.items()}   # 필름스트립은 편집기만
+    blob = json.dumps({'works': ALL, 'home': H, 'design': D, 'derived': XP}, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     return f'{ICONS}<script type="application/json" id="pf-data">{blob}</script><script src="js/site.js" defer></script>{extra}</body></html>'
 
 WHO = '김한결 — 모션·3D로 광고 영상을 만들고, 성과를 읽는 도구까지 직접 만드는 디자이너'
@@ -179,15 +201,15 @@ def home(edit=False):
     feat0 = next((BY[i] for i in H.get('billboard') or [] if i in BY), None)
     body = f'''<body class="home" data-base="./"{' data-edit="1"' if edit else ''}>{nav('index.html')}<main>
 <section class="feat" aria-label="피처드 작업"></section><div class="rows"></div>{noscript(W)}
-</main>{foot()}{tail('<script src="js/edit.js" defer></script>' if edit else '')}'''
-    h = head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat0) if feat0 else None)
+</main>{foot()}{tail('<script src="js/edit.js" defer></script>' if edit else '', edit)}'''
+    h = head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat0) if feat0 else None, VP('home'))
     if edit: h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8"><base href="../"><meta name="robots" content="noindex">', 1).replace('<link rel="stylesheet" href="css/site.css">', '<link rel="stylesheet" href="css/site.css"><link rel="stylesheet" href="css/edit.css">')
     return h + body
 
 def works():
     body = f'''<body data-base="./">{nav('works.html')}<main><div class="wrap sec"><h1 class="pg-h">작업</h1>
 <div class="lib"><aside class="rail" aria-label="분류"></aside><div data-queue><div class="tb"><input class="q" type="search" placeholder="제목·툴·매체 검색" aria-label="작업 검색"><span class="cnt"></span></div><div class="grid"></div></div></div>{noscript(W)}</div></main>{foot()}{tail()}'''
-    return head('작업 — Hansy', '김한결의 전체 작업: 3D · AI · 모션 영상, 온드 콘텐츠, 도구, 개인 작업.', 'works.html') + body
+    return head('작업 — Hansy', '김한결의 전체 작업: 3D · AI · 모션 영상, 온드 콘텐츠, 도구, 개인 작업.', 'works.html', vp=VP('works')) + body
 
 def tools():
     ts = [w for w in W if w['group'] == 'tools']
@@ -208,7 +230,7 @@ def tools():
 <div class="tmain"><div class="tbar"><span class="chips">{chips}</span><span class="r"><button class="btn ghost sm big" type="button">크게 보기</button><a class="btn ghost sm open" href="{e((first.get('links') or {}).get('embed') or '#')}" target="_blank" rel="noopener">새 창 ↗</a></span></div>
 <div class="tstage" data-id="{e(first['id'])}"><iframe title="{e(first['title'])}" src="{e((first.get('links') or {}).get('embed') or 'about:blank')}" allow="fullscreen; clipboard-write" loading="eager"></iframe></div>
 {''.join(tdesc(w) for w in ts)}</div></div></div></main>{foot()}{tail()}'''
-    return head('도구 · 자동화 — Hansy', '김한결이 직접 만든 업무 도구: CreativeReporter, CreativeNamer, KarrotField, 3D 구도실, HF Unlimited Runner 등 — 바로 써볼 수 있는 체험판.', 'tools.html') + body
+    return head('도구 · 자동화 — Hansy', '김한결이 직접 만든 업무 도구: CreativeReporter, CreativeNamer, KarrotField, 3D 구도실, HF Unlimited Runner 등 — 바로 써볼 수 있는 체험판.', 'tools.html', vp=VP('tools')) + body
 
 def ym(s):
     s = str(s or '').strip()
@@ -239,7 +261,7 @@ def resume():
 {awards}
 {f'<h3>논문</h3><table>{papers}</table>' if papers else ''}
 </div></div></main>{foot()}{tail()}'''
-    return head('이력서 — 김한결 Hansy', '김한결(Hansy) 이력서 — 경력, 학력, 기술, 수상, 논문.', 'resume.html') + body
+    return head('이력서 — 김한결 Hansy', '김한결(Hansy) 이력서 — 경력, 학력, 기술, 수상, 논문.', 'resume.html', vp=VP('resume')) + body
 
 (OUT/'css').mkdir(exist_ok=True); (OUT/'js').mkdir(exist_ok=True)
 (OUT/'css/site.css').write_text('\n'.join(f'/* ===== {f.name} ===== */\n' + f.read_text(encoding='utf-8') for f in sorted((SRC/'css').glob('*.css'))), encoding='utf-8'); shutil.copy(SRC/'site.js', OUT/'js/site.js')

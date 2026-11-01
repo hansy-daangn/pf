@@ -1,5 +1,5 @@
 /* ---- 확장 카드 (hover 1) ---- */
-.pop{position:fixed;z-index:50;width:var(--pw,300px);border-radius:var(--r2);overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:var(--shadow-lg),var(--ring);opacity:0;transform:scale(.8);transition:opacity var(--d-half) var(--ease),transform var(--dur) var(--ease),visibility 0s linear var(--d-half);pointer-events:none;visibility:hidden}
+.pop{position:fixed;z-index:50;width:var(--pw,300px);border-radius:var(--r2);overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:var(--shadow-lg),var(--ring);opacity:0;transform:scale(var(--s0,.8));transition:opacity var(--d-half) var(--ease),transform var(--dur) var(--ease),visibility 0s linear var(--d-half);pointer-events:none;visibility:hidden}
 .pop.on{opacity:1;transform:none;pointer-events:auto;visibility:visible;transition:opacity var(--d-half) var(--ease),transform var(--dur) var(--ease)}
 .pop .art{position:relative;aspect-ratio:var(--pa,16/9);background:#0b0b0d;overflow:hidden;cursor:pointer}
 .pop .art .bgb{position:absolute;inset:-10%;background-size:cover;background-position:center;filter:blur(28px) saturate(1.2) brightness(.7);transform:scale(1.1)}
