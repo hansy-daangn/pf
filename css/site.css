@@ -86,12 +86,12 @@ main{padding-top:var(--nav-h);animation:pagein calc(var(--dur)*1.5) var(--ease) 
 @keyframes pagein{from{opacity:0;transform:translateY(var(--s1))}to{opacity:1;transform:none}}
 
 /* ---- 빌보드 ---- */
-.bb{position:relative;height:clamp(56vh,56.25vw,82vh);min-height:520px;overflow:hidden;background:var(--ink)}
+.bb{position:relative;height:56.25vw;overflow:hidden;background:var(--ink)}
 .bb .slide{position:absolute;inset:0;opacity:0;transition:opacity calc(var(--dur)*2) var(--ease);pointer-events:none}
 .bb .slide.on{opacity:1;pointer-events:auto}
 .bb .art{position:absolute;inset:0}
 .bb .art img,.bb .art video{width:100%;height:100%;object-fit:cover;object-position:center}
-.bb .art img{transform:scale(1.04);transition:transform calc(var(--dur)*20) linear}.bb .slide.on .art img{transform:scale(1)}
+
 .bb .art video{position:absolute;inset:0;opacity:0;transition:opacity calc(var(--dur)*1.5) var(--ease)}
 .bb .art video.on{opacity:1}
 .bb .art.portrait img,.bb .art.portrait video{object-fit:contain;object-position:68% 50%}
@@ -306,7 +306,7 @@ footer a:hover{color:var(--ink)}
 .theater .vw{position:relative;margin:0 auto;max-width:100%;max-height:calc(100dvh - var(--nav-h) - 160px);aspect-ratio:var(--va,16/9);border-radius:var(--r2);overflow:hidden;background:#0b0b0d;box-shadow:var(--shadow-lg);width:min(100%,calc((100dvh - var(--nav-h) - 160px) * var(--vr,1.7778)))}
 .theater .vw video,.theater .vw iframe,.theater .vw img{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0b0d}
 .theater .vw img{object-fit:contain}
-.theater .vw .big{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);background:color-mix(in oklab,var(--bg) 30%,transparent);opacity:0;transition:opacity var(--d-micro) var(--ease)}
+.theater .vw .big{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink);background:color-mix(in oklab,var(--bg) 30%,transparent);opacity:0;transition:opacity var(--d-micro) var(--ease);pointer-events:none}
 .theater .vw .big .ic{width:var(--s8);height:var(--s8)}
 .theater .vw.paused .big{opacity:1}
 .theater .vw .big .ic{transition:transform var(--dur) var(--ease);transform:scale(.9)}.theater .vw.paused .big .ic{transform:none}

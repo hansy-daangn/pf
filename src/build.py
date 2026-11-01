@@ -124,7 +124,7 @@ def home():
         loop = bb.get('loop') or [0, 8]
         src_attr = f'src="{e(p)}" fetchpriority="high"' if i == 0 else f'data-src="{e(p)}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" loading="lazy"'
         blur = (f'<div class="blur" style="background-image:url({e(p)})"></div>' if i == 0 else f'<div class="blur" data-bg="{e(p)}"></div>') if portrait else ''
-        art = f'<div class="art{" portrait" if portrait else ""}">{blur}<img {src_attr} alt="" width="1920" height="1080">' + (f'<video muted loop playsinline preload="none" data-src="{e(pv)}" data-loop="{loop[0]},{loop[1]}" poster="{e(p)}" aria-hidden="true"></video>' if pv else '') + '</div>'
+        art = f'<div class="art{" portrait" if portrait else ""}">{blur}<img {src_attr} alt="" width="1920" height="1080">' + (f'<video muted loop playsinline preload="none" data-src="{e(pv)}" data-loop="{loop[0]},{loop[1]}" data-dur="{bb.get('dur') or 9}" poster="{e(p)}" aria-hidden="true"></video>' if pv else '') + '</div>'
         c = w.get('copy') or {}
         slides.append(f'''<div class="slide{" on" if i==0 else ""}" data-id="{e(w["id"])}" aria-hidden="{"false" if i==0 else "true"}"{"" if i==0 else " inert"}>{art}<div class="veil"></div>
 <div class="tx"><div class="wrap in"><div>{f'<p class="who">{e(WHO)}</p>' if i==0 else ''}<div class="k">{e(w.get("type") or "")} · {e(w.get("year",""))}</div><h1>{nb(w["title"])}</h1><p class="one">{e(c.get("one",""))}</p>

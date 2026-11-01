@@ -73,6 +73,8 @@
       field('기여도', 'contrib', w.contrib || ''), field('길이', 'dur', w.dur || ''),
       field('툴 (· 로 구분)', 'tools', (w.tools || []).join(' · ')), field('매체 (· 로 구분)', 'channels', (w.channels || []).join(' · ')),
       field('시기', 'period', w.period || ''), `<label>노출<select data-k="grade"><option value="1"${w.grade === 1 ? ' selected' : ''}>대표(1)</option><option value="2"${w.grade === 2 ? ' selected' : ''}>일반(2)</option><option value="3"${w.grade >= 3 ? ' selected' : ''}>숨김</option></select></label>`,
+      field('빌보드 구간 시작(초)', 'bb.a', (w.media && w.media.billboard && w.media.billboard.loop ? w.media.billboard.loop[0] : ''), 'number'), field('빌보드 구간 끝(초)', 'bb.b', (w.media && w.media.billboard && w.media.billboard.loop ? w.media.billboard.loop[1] : ''), 'number'),
+      field('빌보드 표시 시간(초)', 'bb.dur', (w.media && w.media.billboard && w.media.billboard.dur) || '', 'number'),
       `<label style="grid-column:1/-1">분류<span class="kinds">${Object.entries(KINDS).map(([k, v]) => `<label><input type="checkbox" data-kind="${k}"${(w.kinds || []).includes(k) ? ' checked' : ''}>${v}</label>`).join('')}</span></label>`,
     ].join('');
     $$('#form [data-k]').forEach(el => el.addEventListener('input', () => { apply(w, el.dataset.k, el.value); dirty = true; }));
@@ -81,6 +83,7 @@
   }
   function apply(w, k, v) {
     if (k === 'copy.one') { w.copy.one = v; return; }
+    if (k.startsWith('bb.')) { const m = w.media || (w.media = {}); const bb = m.billboard || (m.billboard = { kind: 'video', src: m.full || '', loop: [0, 8], dur: 9 }); if (!bb.loop) bb.loop = [0, 8]; if (k === 'bb.a') bb.loop[0] = +v || 0; if (k === 'bb.b') bb.loop[1] = +v || 8; if (k === 'bb.dur') bb.dur = +v || 9; return; }
     if (k === 'priority') { w.priority = v === '' ? undefined : +v; list(); return; }
     if (k === 'grade') { w.grade = +v; list(); return; }
     if (k === 'tools' || k === 'channels') { w[k] = v.split('·').map(s => s.trim()).filter(Boolean); return; }

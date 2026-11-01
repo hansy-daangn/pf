@@ -38,20 +38,20 @@
     {
      "label": "16:9 — 가로 · 영상",
      "src": "assets/cdn/declutter_Fin_H_1920x1080.mp4",
-     "w": 1920,
-     "h": 1080
+     "w": 1280,
+     "h": 720
     },
     {
      "label": "9:16 — 세로 · 영상",
      "src": "assets/cdn/declutter_Fin_V_1080x1920.mp4",
-     "w": 1080,
-     "h": 1920
+     "w": 720,
+     "h": 1280
     },
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/declutter_Fin_F_1080x1080.mp4",
-     "w": 1080,
-     "h": 1080
+     "w": 720,
+     "h": 720
     },
     {
      "label": "1.91:1 — 배너 · 이미지",
@@ -107,14 +107,15 @@
    "full16": "assets/cdn/declutter_Fin_H_1920x1080.mp4",
    "billboard": {
     "kind": "video",
-    "src": "assets/bb/td_declutter.mp4",
-    "w": 1920,
-    "h": 1080,
+    "src": "assets/full/td_declutter.mp4",
+    "w": 1280,
+    "h": 720,
     "poster": "assets/poster/td_declutter.jpg",
     "loop": [
      0.3,
      4.8
-    ]
+    ],
+    "dur": 9
    },
    "pw": 1280,
    "ph": 720
@@ -198,7 +199,7 @@
   "media": {
    "poster": "assets/poster/td_review2605.jpg",
    "preview": "assets/video/td_review2605.mp4",
-   "full": "assets/full/td_review2605.mp4",
+   "full": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",
    "youtube": null,
    "variants": [
     {
@@ -225,14 +226,15 @@
    "full16": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",
    "billboard": {
     "kind": "video",
-    "src": "assets/bb/td_review2605.mp4",
-    "w": 1600,
-    "h": 646,
+    "src": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2605.mp4",
+    "w": 1920,
+    "h": 1080,
     "poster": "assets/poster/td_review2605_h.jpg",
     "loop": [
      0,
      5.5
-    ]
+    ],
+    "dur": 9
    },
    "pw": 720,
    "ph": 720
@@ -314,12 +316,12 @@
   ],
   "formats": [],
   "media": {
-   "poster": "assets/shots/cr-mock.jpg",
+   "poster": "assets/shots/cr-detail-v3.jpg",
    "preview": null,
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/cr-mock.jpg",
+   "shot": "assets/shots/cr-detail-v3.jpg",
    "note": "실화면은 사내 데이터 — 캡처 시 수치 마스킹 필요. GitHub Pages 404(비공개), 뷰어는 사내 도토리",
    "diagram": "assets/lab/cr_flow.png",
    "pw": 1280,
@@ -328,13 +330,9 @@
   "links": {
    "live": null,
    "artifact": null,
-   "embed": "demos/cr-mock/index.html",
+   "embed": "demos/cr-detail-v3/index.html",
    "internal": "https://dotori.karrot.work/artifacts/nhatgbo1yy",
    "embeds": [
-    {
-     "label": "대시보드 체험판",
-     "src": "demos/cr-mock/index.html"
-    },
     {
      "label": "소재 상세 UI 확정안",
      "src": "demos/cr-detail-v3/index.html"
@@ -358,7 +356,7 @@
     "팀 발표 2026-08-14",
     "비개발자 1인 설계·개발·운영"
    ],
-   "try": "주차·매체를 바꾸고 정렬해 보세요. 소재를 누르면 상세 패널 — 모든 수치는 예시값"
+   "try": "실제 앱은 사내 로그인 전용 — 공개본은 소재 상세 화면 확정안(목업 수치)"
   },
   "metrics": [
    {
@@ -506,14 +504,15 @@
    "ph": 1920,
    "billboard": {
     "kind": "video",
-    "src": "assets/bb/local-runners-teaser.mp4",
-    "w": 720,
-    "h": 1280,
+    "src": "assets/full/local-runners-teaser.mp4",
+    "w": 1080,
+    "h": 1920,
     "poster": "assets/poster/local-runners-teaser.jpg",
     "loop": [
      0,
-     7
-    ]
+     8
+    ],
+    "dur": 9
    },
    "poster16": "assets/poster16/local-runners-teaser.jpg"
   },
@@ -733,14 +732,15 @@
    "ph": 1920,
    "billboard": {
     "kind": "video",
-    "src": "assets/bb/bakery-vlog.mp4",
-    "w": 720,
-    "h": 1280,
+    "src": "assets/full/bakery-vlog.mp4",
+    "w": 1080,
+    "h": 1920,
     "poster": "assets/poster/bakery-vlog.jpg",
     "loop": [
      0,
-     7
-    ]
+     8
+    ],
+    "dur": 9
    },
    "poster16": "assets/poster16/bakery-vlog.jpg"
   },
@@ -1049,18 +1049,6 @@
    "youtube": null,
    "variants": [
     {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mja29b8d_ffdynrz_wus195gglssnqwyn_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mja29b92_ir3uv0y_lmn9yfknfckbmom7_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
-    },
-    {
      "label": "9:16 — 세로 · 이미지",
      "src": "assets/cdn/mja27t13_sw8dsuq_e9ymspjnlibgmbcn.png",
      "w": 720,
@@ -1075,20 +1063,14 @@
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mja29bcy_dd8zu7j_qmzr2ixjjtfi9zym_transcoded.mp4",
-     "w": 1920,
-     "h": 1920
+     "w": 640,
+     "h": 640
     },
     {
      "label": "1:1 — 정방 · 이미지",
      "src": "assets/cdn/mja27szw_j4zwnmp_wvguww2ybicxzqcf.png",
      "w": 720,
      "h": 720
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mja29b8d_b07fjpq_sebotwzo6elonwcg_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
     }
    ],
    "shot": null,
@@ -1172,12 +1154,12 @@
   "channels": [],
   "formats": [],
   "media": {
-   "poster": "assets/shots/kf-mock.jpg",
+   "poster": "assets/shots/kf-overview.jpg",
    "preview": null,
    "full": null,
    "youtube": null,
    "variants": [],
-   "shot": "assets/shots/kf-mock.jpg",
+   "shot": "assets/shots/kf-overview.jpg",
    "note": "사내 도토리 배포 — 공개 라이브 없음. 캡처 시 API 키·잔액 마스킹",
    "pw": 1280,
    "ph": 720
@@ -1186,13 +1168,9 @@
    "live": null,
    "github": null,
    "artifact": "https://claude.ai/artifact/CeJW6oW78JzCtVgStbHnKQ",
-   "embed": "demos/kf-mock/index.html",
+   "embed": "demos/kf-overview/index.html",
    "internal": "https://dotori.karrot.work/artifacts/0o4ahilzoq",
    "embeds": [
-    {
-     "label": "생성 콘솔 체험판",
-     "src": "demos/kf-mock/index.html"
-    },
     {
      "label": "Admin Overview 시안",
      "src": "demos/kf-overview/index.html"
@@ -1214,7 +1192,7 @@
     "2026-10-12부터 시범 운영",
     "Claude 에이전트 여러 개를 병렬로 돌려 1인 개발"
    ],
-   "try": "프롬프트를 넣고 생성을 눌러 보세요 — 결과는 예시 패턴, 키는 마스킹"
+   "try": "실제 서비스는 사내 전용 — 공개본은 Admin Overview 시안"
   },
   "metrics": [
    {
@@ -1333,46 +1311,10 @@
    "youtube": null,
    "variants": [
     {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mmf1du86_rkf8dpq_ejgjk78fwttpmub8_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mkzgceol_cvsebvl_wzxxvd85hsey7p8o_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mg0d0g9h_vjskwzm_lpbrdjwxo9rgxnwn_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mfv7b5zi_smldxil_k0fvcdghpoqga5el_transcoded.mp4",
-     "w": 720,
-     "h": 1280
-    },
-    {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mfv7b617_jkozc9q_rs7txreksw4sumsh_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mfv7b644_otusycf_betet8mczqqrktrk_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mfv7b637_gtxzbdu_vwvsj8dr7vyyi0cr_transcoded.mp4",
-     "w": 1280,
-     "h": 720
+     "w": 640,
+     "h": 640
     }
    ],
    "shot": null,
@@ -1394,14 +1336,15 @@
    ],
    "billboard": {
     "kind": "video",
-    "src": "assets/bb/mg_keyword_spring.mp4",
-    "w": 1920,
-    "h": 1080,
+    "src": "assets/full/mg_keyword_spring.mp4",
+    "w": 720,
+    "h": 1280,
     "poster": "assets/poster/mg_keyword_spring.jpg",
     "loop": [
      0.3,
      6.3
-    ]
+    ],
+    "dur": 9
    },
    "pw": 600,
    "ph": 1066,
@@ -1595,110 +1538,38 @@
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mht0y602_zjery3d_qf3ih3ypghbjjs3v_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
+     "w": 640,
+     "h": 640
     },
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mht0y600_icsb3gd_pr2nxqecvzawshqx_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mhuinjsc_prkzuad_g77on2acifhzylh9_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mht0y607_b6lzahm_b0gghwznzyu2zjvh_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
+     "w": 640,
+     "h": 640
     },
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mht0y5zu_qcs9gp3_wanreur6fjb7h1kv_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mht0y601_sxofml0_pbw2iiuyqibpvfgo_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mg7ql256_mfekgbl_wagahty3udcqy2vd_transcoded.mp4",
      "w": 640,
-     "h": 360
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mg7ql24l_nzxwfdn_l54zt8xuorxxxahr_transcoded.mp4",
-     "w": 640,
-     "h": 360
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mg7ql24b_dffrdw6_opmk3uhntseurys5_transcoded.mp4",
-     "w": 640,
-     "h": 360
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mhuinjnf_p7mlyuw_hv4u14fonbolzi9u_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
+     "h": 640
     },
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mht0y60i_ojqibkr_fhlqyxdwm8tmz5wz_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mht0y600_jvzgpdh_zrzazbukbrqqcyyf_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
+     "w": 640,
+     "h": 640
     },
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mht0y60c_rdwwug8_ziapqghlaslkgvib_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mg7ql24e_qbvnobm_hw6mseiikgny4ooj_transcoded.mp4",
      "w": 640,
-     "h": 360
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mg7ql27z_xqmmmzc_cqfsitnzh3iudhvx_transcoded.mp4",
-     "w": 640,
-     "h": 360
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mht0y60c_pnz074b_klmbxobqphtteqbh_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
+     "h": 640
     },
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mhuinjnf_gcondto_nafklzltjzc3gh03_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mg7ql24d_bfpcdjt_fdhpie3oilrjlxt9_transcoded.mp4",
      "w": 640,
-     "h": 360
+     "h": 640
     },
     {
      "label": "1.91:1 — 배너 · 이미지",
@@ -1757,14 +1628,15 @@
    ],
    "billboard": {
     "kind": "video",
-    "src": "assets/bb/cr_10y.mp4",
-    "w": 1080,
-    "h": 1080,
+    "src": "assets/cdn/mht0y602_zjery3d_qf3ih3ypghbjjs3v_transcoded.mp4",
+    "w": 640,
+    "h": 640,
     "poster": "assets/poster/cr_10y_fleamarket.jpg",
     "loop": [
      0,
      6
-    ]
+    ],
+    "dur": 9
    },
    "pw": 640,
    "ph": 640,
@@ -2271,18 +2143,6 @@
    "youtube": null,
    "variants": [
     {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mkced292_tlh85o7_ajzvayvfu2gqebdo_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
-    },
-    {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mewgikxq_kkd9sqt_yuvfxuqgn1jfyl8n_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
-    },
-    {
      "label": "9:16 — 세로 · 이미지",
      "src": "assets/cdn/mewgjee9_znfmksm_mrh4iv0t3aerr3fj.png",
      "w": 720,
@@ -2311,12 +2171,6 @@
      "src": "assets/cdn/mewgerur_zksgvgu_ofdcvxw8myha1l8n.png",
      "w": 320,
      "h": 480
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mkwn9x31_awg9vye_yoe4v9byup781hbs_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
     }
    ],
    "shot": null,
@@ -2492,16 +2346,10 @@
    "youtube": null,
    "variants": [
     {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mhxig779_gljzeok_tub9dk2wvcpn85q7_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
-    },
-    {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mhxig76e_zs04d3j_yhthphtre2lrwgpw_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
+     "w": 640,
+     "h": 640
     },
     {
      "label": "3:4 — 세로 · 이미지",
@@ -2825,22 +2673,16 @@
    "youtube": null,
    "variants": [
     {
-     "label": "관성 익스프레션 데모 · 영상",
-     "src": "assets/fig/move.mp4",
-     "w": 0,
-     "h": 0
-    },
-    {
      "label": "XPresso 군중 렌더 · 영상",
      "src": "assets/fig/nd_m1.mp4",
-     "w": 0,
-     "h": 0
+     "w": 1280,
+     "h": 720
     },
     {
      "label": "XPresso 군중 뷰포트 · 영상",
      "src": "assets/fig/nd_m2.mp4",
-     "w": 0,
-     "h": 0
+     "w": 1280,
+     "h": 720
     },
     {
      "label": "익스프레션 코드",
@@ -3248,7 +3090,7 @@
   "media": {
    "poster": "assets/poster/mg_bizreview.jpg",
    "preview": "assets/video/mg_bizreview.mp4",
-   "full": "assets/full/mg_bizreview.mp4",
+   "full": "assets/cdn/maugrowth_biz_promo_reviewReward_1920x1080_2606.mp4",
    "youtube": null,
    "variants": [
     {
@@ -3636,22 +3478,10 @@
    "youtube": null,
    "variants": [
     {
-     "label": "9:16 — 세로 · 영상",
-     "src": "assets/cdn/mm4bvdvl_nags4md_izcnrdaacmixwogd_transcoded.mp4",
-     "w": 1080,
-     "h": 1920
-    },
-    {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/mm4bvdv5_pz6a5q2_xrnl4cg23myutdnu_transcoded.mp4",
-     "w": 1080,
-     "h": 1080
-    },
-    {
-     "label": "16:9 — 가로 · 영상",
-     "src": "assets/cdn/mm4bvdvl_gy6iovu_vzlctt1pfbzdq2z0_transcoded.mp4",
-     "w": 1920,
-     "h": 1080
+     "w": 640,
+     "h": 640
     }
    ],
    "shot": null,
@@ -3744,20 +3574,20 @@
     {
      "label": "16:9 — 가로 · 영상",
      "src": "assets/cdn/maugrowth_fleamarket_instantbuyKeyword_1920x1080_2607.mp4",
-     "w": 1920,
-     "h": 1080
+     "w": 1280,
+     "h": 720
     },
     {
      "label": "9:16 — 세로 · 영상",
      "src": "assets/cdn/maugrowth_fleamarket_instantbuyKeyword_1080x1920_2607.mp4",
-     "w": 1080,
-     "h": 1920
+     "w": 720,
+     "h": 1280
     },
     {
      "label": "1:1 — 정방 · 영상",
      "src": "assets/cdn/maugrowth_fleamarket_instantbuyKeyword_1080x1080_2607.mp4",
-     "w": 1080,
-     "h": 1080
+     "w": 720,
+     "h": 720
     }
    ],
    "shot": null,

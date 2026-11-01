@@ -24,7 +24,7 @@
   const aspectOf = w => { const f = (w.formats || [])[0] || '16:9'; const m = /^(\d+):(\d+)$/.exec(f); return m ? [+m[1], +m[2]] : [16, 9]; };
 
   /* ---------- 시안 스위치 (확정 후 PREF 기본값만 바꾸면 됨) ---------- */
-  const PREF = { theme: 'light', bb: 'full', card: 'native', hover: 'play', stage: 'wide', tempo: 'base', pip: 'right' };
+  const PREF = { theme: 'light', bb: 'full', card: 'native', hover: 'pop', stage: 'wide', tempo: 'base', pip: 'right' };
   const VARIANTS = [
     ['theme', '테마', [['light', '라이트', '애플 TV 앱(iOS/web) · 현재'], ['home-dark', '홈만 다크', '홈은 상영관처럼, 서브페이지는 라이트'], ['dark', '전체 다크', '넷플릭스 · 왓챠 · 웨이브']]],
     ['bb', '빌보드', [['full', '풀블리드', '넷플릭스 · 프라임 — 화면 전체'], ['card', '카드형', '애플 TV · 쿠팡플레이 — 둥근 카드']]],
@@ -111,8 +111,8 @@
   if (BB) {
     const slides = $$('.slide', BB), dots = $$('.dots button[data-i]', BB), pp = $('.dots .pp', BB); const GAP = RM ? 0 : 700;
     dots.forEach(d => { d.innerHTML = '<i></i>'; });
-    let advT = null; const DUR = 9000;
-    const arm = () => { clearTimeout(advT); dots.forEach(d => d.classList.remove('go')); const d = dots[i]; if (!d) return; d.style.setProperty('--bbd', DUR + 'ms'); void d.offsetWidth; if (paused || RM || document.hidden) return; d.classList.add('go'); advT = setTimeout(() => go(i + 1), DUR); };
+    let advT = null; const durOf = s => { const v = $('video', s); const n = v ? parseFloat(v.dataset.dur) : 0; return (n > 0 ? n : 9) * 1000; };
+    const arm = () => { clearTimeout(advT); dots.forEach(d => d.classList.remove('go')); const d = dots[i]; if (!d) return; const DUR = durOf(slides[i]); d.style.setProperty('--bbd', DUR + 'ms'); void d.offsetWidth; if (paused || RM || document.hidden) return; d.classList.add('go'); advT = setTimeout(() => go(i + 1), DUR); };
     const disarm = () => { clearTimeout(advT); dots.forEach(d => d.classList.remove('go')); };
     let i = 0, paused = false, loopT = null;
     const loopOf = v => { const l = (v.dataset.loop || '0,8').split(',').map(Number); return { a: l[0] || 0, b: l[1] || 8 }; };
