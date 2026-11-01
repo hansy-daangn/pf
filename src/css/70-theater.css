@@ -97,10 +97,8 @@
 
 /* ==========================================================================
    모듈: 상영관 배경 (thbg) — .theater > .bgart(작품 그림 흐리게) + .veil(덮개)
-   1 블러 포스터(기본) · 2 순수 검정(넷플릭스 플레이어) · 3 페이지 색(애플 TV 앱 라이트) · 4 앰비언트 진하게(유튜브)
+   1 블러 포스터(기본) · 3 페이지 색  (2 순수 검정은 1과 거의 같아 뺌)(애플 TV 앱 라이트) · 4 앰비언트 진하게(유튜브)
    ========================================================================== */
-body[data-thbg="2"] .theater{--bg:#000}
-body[data-thbg="2"] .theater .bgart,body[data-thbg="2"] .theater .veil{display:none}
 /* 3: 상영관 색 토큰을 페이지에서 그대로 물려받음(라이트면 흰 배경) — 영상 틀 안만 어둡게 유지 */
 body[data-thbg="3"] .theater{--bg:inherit;--ink:inherit;--shadow:inherit;--shadow-lg:inherit}
 body[data-thbg="3"] .theater .bgart{opacity:.3}

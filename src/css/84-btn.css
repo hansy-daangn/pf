@@ -1,10 +1,15 @@
 /* ==========================================================================
    모듈: 버튼 모양 (btn) — .btn(재생·상세·쇼릴·도구 링크) + 같은 모양 언어를 쓰는 칩·검색칸
-   1 알약(기본) · 2 둥근 사각(애플 TV·넷플릭스) · 3 테두리 · 4 글자형
+   1 알약(기본) · 2 넷플릭스형(크고 각진 사각) · 3 테두리 · 4 글자형
    ========================================================================== */
-/* ---- 2 둥근 사각: 모서리 토큰(--r, 슬라이더 radius)과 같은 둥글기 ---- */
-body[data-btn="2"] .btn{border-radius:var(--r)}
-body[data-btn="2"] :is(.chip,.lib .q){border-radius:calc(var(--r) * .75)}
+/* ---- 2 넷플릭스형: 모서리 4px의 각진 사각, 피처드·확장 카드 버튼은 크고 굵게 ---- */
+body[data-btn="2"] .btn{border-radius:calc(var(--u) / 2)}
+body[data-btn="2"] :is(.chip,.lib .q){border-radius:calc(var(--u) / 2)}
+body[data-btn="2"] .fx .bt{gap:var(--s1)}
+body[data-btn="2"] .fx .bt .btn{min-height:calc(var(--u) * 6.5);padding:0 calc(var(--u) * 3.5) 0 var(--s3);font-size:var(--t-h);font-weight:700;gap:var(--s1)}
+body[data-btn="2"] .fx .bt .btn .ic.sm{width:var(--s3);height:var(--s3)}
+body[data-btn="2"] .fx .bt .btn.ghost{background:color-mix(in oklab,var(--ink) 14%,transparent)}
+body[data-btn="2"] .pop .bd .btn{border-radius:calc(var(--u) / 2);min-height:calc(var(--u) * 4.5);font-weight:700}
 
 /* ---- 3 테두리: 채움 없이 선만, 강조 버튼은 강조색 선 ---- */
 body[data-btn="3"] .btn,body[data-btn="3"] .fx .bt .btn:not(.ghost),body[data-btn="3"] .fx .bt .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px currentColor}

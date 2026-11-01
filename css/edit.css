@@ -5,6 +5,8 @@ body[data-edit="1"] .nav{top:var(--ebh)}
 body[data-edit="1"] .theater{top:var(--ebh)}
 body.ei-on{padding-right:var(--eiw)}
 body.ei-on .nav,body.ei-on .theater{right:var(--eiw)}
+body.ei-on.ei-hide{padding-right:0}body.ei-hide .ei{display:none!important}body.ei-on.ei-hide .nav,body.ei-on.ei-hide .theater{right:0}
+.e-loading main,.e-loading .ei .bd{pointer-events:none;opacity:.5;transition:opacity .2s}
 .eb,.ei,.emodal,.etoast{font-family:var(--e-font);-webkit-font-smoothing:antialiased}
 .eb button,.ei button,.emodal button{font:inherit;color:inherit;cursor:pointer}
 .eb button:disabled,.ei button:disabled,.emodal button:disabled{cursor:default;opacity:.32}
@@ -64,6 +66,9 @@ body[data-edit="1"] .row .hd{position:relative}
 .eghost>*{width:100%!important;height:100%!important;margin:0!important}
 .eghost.pill{transform:none;padding:8px 14px;border-radius:999px;background:var(--e-sel);color:#fff;font:700 14px/1.2 var(--e-font);white-space:nowrap;filter:drop-shadow(0 10px 20px rgba(0,0,0,.3))}
 .eph{flex:0 0 auto;border-radius:var(--r);border:2px dashed var(--e-sel);background:color-mix(in oklab,var(--e-sel) 8%,transparent)}
+.ecollapse .row{padding-top:var(--s3)!important}.ecollapse .row .trk{display:none}.ecollapse .row .hd{margin-bottom:0}
+.row.edrop .wrap{outline:2px dashed var(--e-sel);outline-offset:6px;border-radius:var(--r);background:color-mix(in oklab,var(--e-sel) 5%,transparent)}
+.row.eempty .sc{min-height:80px;align-items:center}.row.eempty .hd h2{color:var(--ink-2)}
 .eph.line{height:0;border:0;border-top:3px solid var(--e-sel);border-radius:2px;max-width:var(--maxw);margin:6px auto}
 .ei .eph{border-radius:8px}
 /* 피처드 순서 칩 */
@@ -106,7 +111,7 @@ body.ei-on .ei{display:flex}
 .ei .lnk:hover{text-decoration:underline}
 /* 영상 타임라인 */
 .ei .vbox{background:#000;border-radius:10px;overflow:hidden;display:grid;place-items:center;height:208px}
-.ei .vbox video{max-width:100%;max-height:100%;display:block;cursor:pointer}
+.ei .vbox video{width:100%;height:100%;object-fit:contain;display:block;cursor:pointer}
 .ei .vc{display:flex;align-items:center;gap:6px;margin:8px 0 34px}
 .ei .vc .pp{margin-left:-6px}
 .ei .tm{font-variant-numeric:tabular-nums;color:var(--e-ink2);font-size:12px}
@@ -118,12 +123,11 @@ body.ei-on .ei{display:flex}
 .ei .dim.l{left:0;border-radius:6px 0 0 6px}.ei .dim.r{right:0;border-radius:0 6px 6px 0}
 .ei .rng{position:absolute;top:-3px;bottom:-3px;border:2px solid var(--e-sel);border-radius:6px;cursor:grab}
 .ei .tl[data-drag="mv"] .rng{cursor:grabbing}
-.ei .rng .h{position:absolute;top:-2px;bottom:-2px;width:12px;background:var(--e-sel);cursor:ew-resize}
+.ei .rng .h{position:absolute;top:-2px;bottom:-2px;width:12px;background:var(--e-sel);cursor:ew-resize;z-index:3}
 .ei .rng .h::after{content:"";position:absolute;left:5px;top:50%;width:2px;height:14px;margin-top:-7px;border-radius:1px;background:rgba(255,255,255,.85)}
 .ei .rng .h.a{left:-8px;border-radius:6px 0 0 6px}.ei .rng .h.b{right:-8px;border-radius:0 6px 6px 0}
-.ei .flag{position:absolute;top:-22px;bottom:-3px;width:0;border-left:2px solid var(--e-hv);margin-left:-1px;cursor:ew-resize;z-index:2}
-.ei .flag::before{content:"";position:absolute;left:-9px;width:16px;top:0;bottom:0}
-.ei .flag b{position:absolute;top:0;left:-2px;padding:2px 6px;border-radius:4px 4px 4px 0;background:var(--e-hv);color:#1a1205;font-size:10px;font-weight:800;white-space:nowrap;line-height:1.3}
+.ei .flag{position:absolute;top:-22px;bottom:-3px;width:0;border-left:2px solid var(--e-hv);margin-left:-1px;z-index:2;pointer-events:none}
+.ei .flag b{position:absolute;top:0;left:-2px;padding:2px 6px;border-radius:4px 4px 4px 0;background:var(--e-hv);color:#1a1205;font-size:10px;font-weight:800;white-space:nowrap;line-height:1.3;pointer-events:auto;cursor:ew-resize}
 .ei .ph{position:absolute;top:-6px;bottom:-6px;width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.5);pointer-events:none;z-index:3;border-radius:1px}
 .ei .tip{position:absolute;bottom:calc(100% + 28px);transform:translateX(-50%);pointer-events:none;z-index:5;background:#000;border-radius:8px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15)}
 .ei .tip .fr{display:block;background-repeat:no-repeat}
@@ -152,7 +156,7 @@ body.ei-on .ei{display:flex}
 .ei .cv .card{width:100%!important;--cw:100%}
 .ei .cv .card .t,.ei .cv .card .s,.ei .cv .card .ex{display:none}
 .ei .tp .pv{height:120px;background:#000;border-radius:8px;display:grid;place-items:center;overflow:hidden}
-.ei .tp .pv img{max-width:100%;max-height:100%;display:block}
+.ei .tp .pv img{width:100%;height:100%;object-fit:contain;display:block}
 .ei .tg figcaption{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:12px;color:var(--e-ink2)}
 /* 정보 */
 .ei .f{display:block;margin-bottom:10px}
@@ -167,7 +171,7 @@ body.ei-on .ei{display:flex}
 .ei .seg{display:inline-flex;background:var(--e-bg2);border-radius:8px;padding:3px}
 .ei .seg button{height:28px;padding:0 14px;border-radius:6px;color:var(--e-ink2);font-weight:600;font-size:12px}
 .ei .seg button[aria-pressed="true"]{background:var(--e-bg3);color:var(--e-ink);box-shadow:0 1px 2px rgba(0,0,0,.4)}
-.ei .gx .pv{margin-left:auto}
+.ei .gx .thv{margin-left:auto}
 /* 재생목록 목록 */
 .ei .pls,.ei .pits{padding:6px 8px 16px}
 .ei .pli,.ei .pit{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer;background:var(--e-bg)}
@@ -193,7 +197,7 @@ body.ei-on .ei{display:flex}
 
 /* ---------- 알림 ---------- */
 .etoast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);z-index:101;display:flex;align-items:center;gap:14px;padding:10px 10px 10px 16px;border-radius:10px;background:#26262c;color:var(--e-ink);font-size:13px;font-weight:500;box-shadow:0 14px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
-body.ei-on .etoast{left:calc((100% - var(--eiw)) / 2)}
+body.ei-on:not(.ei-hide) .etoast{left:calc((100% - var(--eiw)) / 2)}
 .etoast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 .etoast button{color:#8fbcff;font-weight:700;padding:4px 8px;border-radius:6px}
 .etoast button:hover{background:rgba(255,255,255,.08)}
@@ -226,7 +230,7 @@ body.ei-on .etoast{left:calc((100% - var(--eiw)) / 2)}
 .emodal .mpi.on .ck{background:var(--e-sel);border-color:var(--e-sel)}
 .emodal .mpi b{display:block;font-weight:600;margin-top:8px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .emodal .mpi small{display:block;color:var(--e-ink3);font-size:12px;margin-top:2px}
-.emodal .mpi:disabled{opacity:.35}
+.emodal .mpi:disabled,.emodal .mpi.full{opacity:.35}
 .emodal .mpf{display:flex;align-items:center;gap:8px;padding:14px 24px;border-top:1px solid var(--e-line)}
 .emodal .mpf .cnt{color:var(--e-ink2);font-weight:600}
 

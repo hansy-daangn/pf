@@ -52,7 +52,7 @@ body[data-feat="1"] .fx h2{font-size:clamp(var(--t-title),2.6vw,var(--t-disp))}
 body[data-feat="2"] .fbox{width:auto;display:grid;grid-template-columns:minmax(0,var(--featw,1120px)) minmax(240px,340px);align-items:center;justify-content:center;padding-inline:var(--gut)}
 body[data-feat="2"] .fv{--fl:6%;--fr:22%;--ft:16%}
 body[data-feat="2"] .fv.inset{--fl:6%;--fr:22%}
-body[data-feat="2"] .ft{position:relative;z-index:2;margin-left:calc(var(--s8) * -1)}
+body[data-feat="2"] .ft{position:relative;z-index:2;margin-left:calc(var(--s8) * -1);margin-top:var(--nav-h)}   /* 좁은 폭에서도 글자가 내비 밑으로 안 들어가게 */
 body[data-feat="2"] .fx h2{font-size:clamp(var(--t-disp),2.8vw,calc(var(--t-disp) * 1.25))}
 
 /* ---- 3 카드 + 옆 설명: 둥근 카드(페이드 없음), 내비는 유리 ---- */

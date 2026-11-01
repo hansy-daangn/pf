@@ -24,7 +24,7 @@
     undo: svg('<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>'), redo: svg('<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>'),
     x: svg('<path d="M18 6 6 18M6 6l12 12"/>'), back: svg('<path d="m15 18-6-6 6-6"/>'), play: svg('<path d="M7 5v14l11-7z" fill="currentColor" stroke="none"/>'), pause: svg('<path d="M7 5h3v14H7zM14 5h3v14h-3z" fill="currentColor" stroke="none"/>'),
     eye: svg('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'), eyeOff: svg('<path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/>'),
-    grip: svg(dot(9, 6) + dot(15, 6) + dot(9, 12) + dot(15, 12) + dot(9, 18) + dot(15, 18)), plus: svg('<path d="M12 5v14M5 12h14"/>'), list: svg('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'),
+    grip: svg(dot(9, 6) + dot(15, 6) + dot(9, 12) + dot(15, 12) + dot(9, 18) + dot(15, 18)), plus: svg('<path d="M12 5v14M5 12h14"/>'), side: svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>'), list: svg('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'),
   };
   let token = localStorage.getItem(TK) || '';
   let base = clone(cur());            // 마지막으로 GitHub에 있는 상태
@@ -48,7 +48,9 @@
   document.body.prepend(bar);
   const stEl = $('.st', bar), saEl = $('.sa', bar), cnB = $('.cn', bar), uB = $('.u', bar), rB = $('.r', bar);
   const status = (s, t, act = '') => { bar.dataset.s = s; stEl.textContent = t; saEl.innerHTML = act; };
+  let autoNote = null;   // 자동 분류 목록이 직접 관리로 바뀐 순간(알림에 덧붙임)
   const toast = (msg, canUndo = true) => {
+    if (autoNote) { msg += ` · '${autoNote}'은 이제 직접 고른 목록(새 작품 자동 추가 안 됨)`; autoNote = null; }
     let t = $('.etoast'); if (!t) { t = document.createElement('div'); t.className = 'etoast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
     t.innerHTML = `<span>${esc(msg)}</span>${canUndo ? '<button>되돌리기</button>' : ''}`; t.classList.add('on');
     const b = $('button', t); if (b) b.onclick = () => { uB.click(); t.classList.remove('on'); };
@@ -61,18 +63,24 @@
   const pushUndo = pre => { undo.push(pre); if (undo.length > 150) undo.shift(); redo.length = 0; histUI(); };
   const change = (fn, { render = true } = {}) => {
     const pre = snap(); fn(PF.S); PF.setData(cur()); if (snap() === pre) return false;
-    pushUndo(pre); if (render) rerender(); refreshPanel(); queueSave(); return true;
+    pushUndo(pre); if (render) rerender(); refreshPanel(); queueSave();
+    queueMicrotask(() => { if (autoNote) toast('순서를 바꿨어요'); });
+    return true;
   };
   const restore = s => { PF.setData(JSON.parse(s)); rerender(); refreshPanel(true); queueSave(); };
   uB.onclick = () => { if (!undo.length) return; redo.push(snap()); restore(undo.pop()); histUI(); };
   rB.onclick = () => { if (!redo.length) return; undo.push(snap()); restore(redo.pop()); histUI(); };
   histUI();
 
+  const lock = on => document.body.classList.toggle('e-loading', on);   // 불러오는 동안 편집 잠금
   const featId = () => { const f = $$('.feat .fs')[PF.Feat.i]; return f ? f.dataset.id : null; };
+  let featSig = '';
+  const fsig = () => JSON.stringify([featIds().map(id => { const w = W(id), m = w.media || {}; return [id, PF.segOf(w), w.title, w.type, w.year, (w.copy || {}).one, PF.posterOf(w), m.poster_w]; }), PF.S.X === undefined]);
   const rerender = () => {
-    const y = scrollY, xs = {}, fid = featId();
+    const y = scrollY, xs = {}, fid = featId(), sig = fsig();
     $$('.rows .row').forEach(r => { const sc = $('.sc', r); if (sc) xs[r.dataset.row] = sc.scrollLeft; });
-    PF.renderHome(); decorate();
+    if (sig === featSig && PF.renderRows) PF.renderRows(); else { PF.renderHome(); featSig = sig; }   // 피처드가 그대로면 줄만(영상이 처음부터 다시 안 나오게)
+    decorate();
     $$('.rows .row').forEach(r => { const sc = $('.sc', r), x = xs[r.dataset.row]; if (sc && x) { sc.style.scrollBehavior = 'auto'; sc.scrollLeft = x; sc.style.scrollBehavior = ''; } });
     if (fid) { const k = $$('.feat .fs').findIndex(f => f.dataset.id === fid); if (k > 0) PF.Feat.go(k); }
     scrollTo({ top: y, behavior: 'instant' });
@@ -84,10 +92,14 @@
   const validKey = k => k === 'feat' || k === 'rep' || !!rowObj(k);
   const autoIds = k => { const r = rowObj(k); return PF.MDATA.filter(w => (w.kinds || []).includes(r.kind)).map(w => w.id); };
   const viewIds = k => { const H = PF.S.H; if (k === 'feat') return H.billboard || []; if (k === 'rep') return H.rep || []; const r = rowObj(k); return r.ids || autoIds(k); };
-  const keyIds = k => { const H = PF.S.H; if (k === 'feat') return H.billboard || (H.billboard = []); if (k === 'rep') return H.rep || (H.rep = []); const r = rowObj(k); if (!r.ids) r.ids = autoIds(k); return r.ids; };   // 바꿀 때만(자동 목록은 이때 직접 관리로 바뀜)
+  const keyIds = k => { const H = PF.S.H; if (k === 'feat') return H.billboard || (H.billboard = []); if (k === 'rep') return H.rep || (H.rep = []); const r = rowObj(k); if (!r.ids) { r.ids = autoIds(k); autoNote = listTitle(k); } return r.ids; };   // 바꿀 때만(자동 목록은 이때 직접 관리로 바뀜)
   const listTitle = k => { const H = PF.S.H; if (k === 'feat') return '피처드'; if (k === 'rep') return H.repTitle || '대표 작업'; const r = rowObj(k); return r.title || KINDS[r.kind] || '재생목록'; };
   const setTitle = (k, v) => { const H = PF.S.H; if (k === 'rep') { if (v === '대표 작업') delete H.repTitle; else H.repTitle = v; } else if (k !== 'feat') rowObj(k).title = v; };
   const isHidden = k => k === 'rep' ? !!PF.S.H.repHidden : k === 'feat' ? false : !!rowObj(k).hidden;
+  const slug = s => String(s || '').toLowerCase().replace(/[^a-z0-9가-힣]+/g, '-').replace(/^-|-$/g, '').slice(0, 24) || 'list';
+  const ensureIds = st => { const seen = new Set(); ((st.home || {}).rows || []).forEach(r => { if (!r.id || seen.has(r.id)) { const b = 'r-' + (r.kind || slug(r.title)); let id = b, n = 2; while (seen.has(id)) id = `${b}-${n++}`; r.id = id; } seen.add(r.id); }); };
+  const ridOf = k => (k && k.startsWith('rows.') && rowObj(k)) ? rowObj(k).id : null;
+  const keyOf = rid => { const i = (PF.S.H.rows || []).findIndex(r => r.id === rid); return i < 0 ? null : `rows.${i}`; };
   const lists = () => [{ k: 'feat' }, { k: 'rep' }, ...(PF.S.H.rows || []).map((r, i) => ({ k: `rows.${i}` }))];
   const shown = id => { const w = W(id); return !!w && !isTool(w) && !!PF.posterOf(w) && (w.grade ?? 3) <= 2; };
   const inList = (k, id) => viewIds(k).includes(id);
@@ -139,18 +151,21 @@
   let saving = false, again = false, saveT = 0, retryN = 0, saveN = 0;
   const persist = () => { try { localStorage.setItem(DRAFT, JSON.stringify({ base, cur: cur() })); } catch (e) { } };
   const queueSave = () => { persist(); clearTimeout(saveT); if (!token) return idle(); const n = nChanged(); status(n ? 'busy' : 'ok', n ? `변경 ${n}건 저장 대기` : '저장됨'); if (n) saveT = setTimeout(save, 1200); };
+  const knownRefs = () => { const s = new Set(); base.works.forEach(w => { const m = w.media || {}; ['poster', 'poster_w'].forEach(k => m[k] && s.add(m[k])); }); return s; };
+  const fixMissing = () => {   // 이미지 파일이 없는 새 경로는 저장하지 않고 되돌림(깨진 썸네일 방지)
+    const known = knownRefs(); let fixed = false;
+    PF.S.all.forEach(w => { const m = w.media || {}; ['poster', 'poster_w'].forEach(k => { const p = m[k]; if (p && p.startsWith('assets/poster/e/') && !pend[p] && !known.has(p) && !uploaded.has(p)) { const o = ((base.works.find(x => x.id === w.id) || {}).media) || {}; if (o[k]) m[k] = o[k]; else delete m[k]; fixed = true; } }); });
+    if (fixed) { PF.setData(cur()); toast('이미지 파일을 찾지 못해 썸네일을 되돌렸어요', false); }
+    return fixed;
+  };
   const save = async () => {
     clearTimeout(saveT);
     if (saving) { again = true; return; }
     if (!token) return idle();
-    // 이미지 파일이 없는 새 경로는 저장하지 않고 되돌림(깨진 썸네일 방지)
-    const known = new Set(); base.works.forEach(w => { const m = w.media || {}; ['poster', 'poster_w'].forEach(k => m[k] && known.add(m[k])); });
-    let fixed = false;
-    PF.S.all.forEach(w => { const m = w.media || {}; ['poster', 'poster_w'].forEach(k => { const p = m[k]; if (p && p.startsWith('assets/poster/e/') && !pend[p] && !known.has(p) && !uploaded.has(p)) { const o = ((base.works.find(x => x.id === w.id) || {}).media) || {}; if (o[k]) m[k] = o[k]; else delete m[k]; fixed = true; } }); });
-    if (fixed) { PF.setData(cur()); rerender(); refreshPanel(); toast('이미지 파일을 찾지 못해 썸네일 하나를 되돌렸어요', false); }
+    if (fixMissing()) { rerender(); refreshPanel(); }
     const d = diff(base, cur());
     if (empty(d)) { localStorage.removeItem(DRAFT); return idle(); }
-    const up = [...refs()].filter(p => pend[p]);
+    const known = knownRefs(), up = [...refs()].filter(p => pend[p] && !known.has(p));
     saving = true; const n = ++saveN; status('busy', '저장 중…');
     try {
       let merged = null, sha = '';
@@ -168,15 +183,15 @@
         try { await api(`${R}/git/refs/heads/${GH.branch}`, { method: 'PATCH', body: JSON.stringify({ sha: c.sha, force: false }) }); sha = c.sha; }
         catch (e) { if (e.status === 422 && attempt < 3) continue; throw e; }
       }
-      up.forEach(p => { uploaded.add(p); delete pend[p]; IDB.del(p).catch(() => { }); });
-      const keep = new Set([...refs(), ...histRefs()]); Object.keys(pend).forEach(p => { if (!keep.has(p)) { delete pend[p]; IDB.del(p).catch(() => { }); } });
+      up.forEach(p => uploaded.add(p));   // 보관함 이미지는 '사이트 반영됨' 확인 뒤에 지움(그 전에 새로고침해도 썸네일 유지)
+      const keep = new Set([...refs(), ...histRefs()]); Object.keys(pend).forEach(p => { if (!keep.has(p) && !uploaded.has(p)) { delete pend[p]; IDB.del(p).catch(() => { }); } });
       const old = base; base = clone(merged);
       const mine = merge(merged, diff(old, cur()));   // 저장하는 동안 고친 것 + 다른 곳에서 바뀐 것 모두 유지
       if (!same(mine, cur())) { PF.setData(mine); rerender(); refreshPanel(); }
       retryN = 0;
       if (nChanged()) persist(); else localStorage.removeItem(DRAFT);
       status('ok', '저장됨 · 사이트 반영 중', `<a href="https://github.com/${GH.owner}/${GH.repo}/commit/${sha}" target="_blank" rel="noopener">커밋 ↗</a>`);
-      watchDeploy(merged, n);
+      watchDeploy(merged, n, up);
     } catch (e) {
       again = false;
       const auth = e.status === 401 || (e.status === 403 && !/rate limit/i.test(e.message));
@@ -185,12 +200,13 @@
       console.warn(e);
     } finally { saving = false; if (again) { again = false; queueSave(); } }
   };
-  const watchDeploy = async (merged, n) => {   // 실제 사이트 파일이 바뀌었는지 확인
+  const dropKept = ps => ps.forEach(p => { if (pend[p]) { delete pend[p]; IDB.del(p).catch(() => { }); } });
+  const watchDeploy = async (merged, n, imgs = []) => {   // 실제 사이트 파일이 바뀌었는지 확인
     for (let k = 0; k < 30; k++) {
       await sleep(k ? 8000 : 15000); if (n !== saveN || saving) return;
       try {
         const [w, h] = await Promise.all(['works', 'home'].map(f => fetch(`data/${f}.json?t=${Date.now()}`, { cache: 'no-store' }).then(r => r.json())));
-        if (same(w, merged.works) && same(h, merged.home)) { if (n === saveN && bar.dataset.s === 'ok') status('ok', '사이트 반영됨', saEl.innerHTML); return; }
+        if (same(w, merged.works) && same(h, merged.home)) { dropKept(imgs); if (n === saveN && bar.dataset.s === 'ok') status('ok', '사이트 반영됨', saEl.innerHTML); return; }
       } catch (e) { }
     }
   };
@@ -208,7 +224,12 @@
     m.close = close; return m;
   };
   const loadLatest = async () => {
-    try { const head = (await api(`${R}/git/ref/heads/${GH.branch}`)).object.sha; const remote = await remoteState(head); base = clone(remote); PF.setData(clone(remote)); return true; }
+    try {
+      const head = (await api(`${R}/git/ref/heads/${GH.branch}`)).object.sha; const remote = await remoteState(head); ensureIds(remote);
+      const old = base, mine = diff(old, cur()), fix = x => JSON.stringify(merge(remote, diff(old, JSON.parse(x))));
+      for (let i = 0; i < undo.length; i++) undo[i] = fix(undo[i]); for (let i = 0; i < redo.length; i++) redo[i] = fix(redo[i]);
+      base = clone(remote); PF.setData(merge(remote, mine)); ensureIds(cur()); return true;
+    }
     catch (e) { if (e.status === 401) { token = ''; localStorage.removeItem(TK); } return false; }
   };
   const connect = () => {
@@ -226,8 +247,8 @@
       try {
         const r = await api(R); if (!r.permissions || !r.permissions.push) throw new Error('perm');
         localStorage.setItem(TK, token); m.close(); cnB.hidden = true;
-        const d = diff(base, cur()); status('busy', '최신 내용 불러오는 중…');   // 연결 전에 고친 것은 최신 원본 위에 다시 얹음
-        await loadLatest(); if (!empty(d)) PF.setData(merge(cur(), d));
+        status('busy', '최신 내용 불러오는 중…'); lock(true);   // 연결 전에 고친 것은 최신 원본 위에 다시 얹음(loadLatest)
+        await loadLatest(); lock(false);
         rerender(); refreshPanel(true); queueSave();
       } catch (e) { token = prev; $('.msg', m).textContent = '연결 실패 — 저장소 선택과 Contents 읽기·쓰기 권한을 확인해 주세요'; }
     };
@@ -241,11 +262,16 @@
     const r0 = new Map(els.map(x => [x, x.getBoundingClientRect()])); mutate();
     els.forEach(x => { const a = r0.get(x), b = x.getBoundingClientRect(), dx = a.left - b.left, dy = a.top - b.top; if (Math.abs(dx) + Math.abs(dy) < 1) return; x.animate([{ transform: `translate(${dx}px,${dy}px)` }, { transform: 'none' }], { duration: 180, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
   };
-  const dragItems = (e, item, { box, sel, axis = 'x', key = el => el.dataset.id, scroller = null, page = false, ghostHTML = null, onDrop }) => {
-    const sx = e.clientX, sy = e.clientY; let on = false, ghost = null, ph = null, px = sx, py = sy, raf = 0, dx = 0, dy = 0;
+  const dragItems = (e, item, { box, sel, axis = 'x', key = el => el.dataset.id, scroller = null, page = false, ghostHTML = null, onDrop, onStart = null, onEnd = null, outside = null }) => {
+    const sx = e.clientX, sy = e.clientY; let on = false, ghost = null, ph = null, px = sx, py = sy, raf = 0, dx = 0, dy = 0, out = null, far = false;
     const id = key(item), next0 = nextItem(item, sel), before0 = next0 ? key(next0) : null;
     const sibs = () => [...box.children].filter(x => x.matches(sel) && x !== item);
     const place = () => {
+      if (outside) {   // 카드를 다른 재생목록 위로 → 그 목록에 추가(원래 줄의 자리 표시는 숨김)
+        const home = outside.home.getBoundingClientRect(), inHome = py > home.top - 24 && py < home.bottom + 24;
+        const hit = inHome ? null : outside.find(px, py); if (out !== hit) { if (out) out.classList.remove('edrop'); out = hit; if (out) out.classList.add('edrop'); }
+        ph.style.display = inHome ? '' : 'none'; if (!inHome) return;
+      }
       const others = sibs(); let before = null;
       for (const o of others) { const r = o.getBoundingClientRect(); if (axis === 'x' ? px < r.left + r.width / 2 : py < r.top + r.height / 2) { before = o; break; } }
       if (nextItem(ph, sel) === before) return;
@@ -258,40 +284,65 @@
       (item.closest('.ei') || document.body).appendChild(ghost);
       ph = document.createElement('div'); ph.className = 'eph' + (axis === 'y' && ghostHTML ? ' line' : ''); if (!(axis === 'y' && ghostHTML)) { ph.style.width = r.width + 'px'; ph.style.height = r.height + 'px'; }
       item.after(ph); item.classList.add('edragging');
+      if (onStart) onStart(ph, py);
       loop();
     };
     const pos = () => { if (ghost) { ghost.style.left = (ghostHTML ? px + 14 : px - dx) + 'px'; ghost.style.top = (ghostHTML ? py - 18 : py - dy) + 'px'; } };
     const loop = () => {   // 가장자리에 가까울수록 빠르게 자동 스크롤
       raf = requestAnimationFrame(loop); let moved = false;
-      if (scroller) { const r = scroller.getBoundingClientRect(), E = 90; const p = axis === 'x' ? px : py, lo = axis === 'x' ? r.left : r.top, hi = axis === 'x' ? r.right : r.bottom; let v = 0; if (p > hi - E) v = Math.min(1, (p - (hi - E)) / E); else if (p < lo + E) v = -Math.min(1, ((lo + E) - p) / E); if (v) { if (axis === 'x') scroller.scrollLeft += v * 22; else scroller.scrollTop += v * 18; moved = true; } }
-      if (page) { const top = 140, E = 90; let v = 0; if (py > innerHeight - E) v = Math.min(1, (py - (innerHeight - E)) / E); else if (py < top) v = -Math.min(1, (top - py) / E); if (v) { scrollBy(0, v * 20); moved = true; } }
+      if (scroller && !(outside && ph.style.display === 'none')) { const r = scroller.getBoundingClientRect(), E = 90; const p = axis === 'x' ? px : py, lo = axis === 'x' ? r.left : r.top, hi = axis === 'x' ? r.right : r.bottom; let v = 0; if (p > hi - E) v = Math.min(1, (p - (hi - E)) / E); else if (p < lo + E) v = -Math.min(1, ((lo + E) - p) / E); if (v) { if (axis === 'x') scroller.scrollLeft += v * 22; else scroller.scrollTop += v * 18; moved = true; } }
+      if (page && far) { const top = 130, E = 90; let v = 0; if (py > innerHeight - E) v = Math.min(1, (py - (innerHeight - E)) / E); else if (py < top) v = -Math.min(1, (top - py) / E); if (v) { scrollBy(0, v * 20); moved = true; } }
       if (moved) place();
     };
-    const move = ev => { px = ev.clientX; py = ev.clientY; if (!on) { if (Math.hypot(px - sx, py - sy) < 6) return; start(); } pos(); place(); };
+    const move = ev => { px = ev.clientX; py = ev.clientY; if (Math.abs(py - sy) > 40) far = true; if (!on) { if (Math.hypot(px - sx, py - sy) < 6) return; start(); } pos(); place(); };
     const end = ev => {
       removeEventListener('pointermove', move); removeEventListener('pointerup', end); removeEventListener('pointercancel', end); cancelAnimationFrame(raf);
       if (!on) return; justDragged = Date.now();
-      const nx = nextItem(ph, sel), before = nx ? key(nx) : null;
+      const nx = nextItem(ph, sel), before = nx ? key(nx) : null, hidden = ph.style.display === 'none', target = out;
+      if (out) out.classList.remove('edrop');
       ghost.remove(); ph.remove(); item.classList.remove('edragging'); document.body.classList.remove('edrag');
-      if (ev.type === 'pointerup' && before !== before0 && before !== id) onDrop(id, before);
+      const ok = ev.type === 'pointerup';
+      if (onEnd) onEnd(ok);
+      if (!ok) return;
+      if (outside && hidden) { if (target) outside.drop(id, target, px, py); return; }
+      if (before !== before0 && before !== id) onDrop(id, before);
     };
     addEventListener('pointermove', move); addEventListener('pointerup', end); addEventListener('pointercancel', end);
   };
+  const rowAt = (x, y, not) => { const el = document.elementFromPoint(x, y), r = el && el.closest('.rows .row'); return r && r !== not ? r : null; };
   document.addEventListener('pointerdown', e => {
     if (e.button !== 0 || e.target.closest('[contenteditable="true"], .ex, .eadd, .eopen, input, textarea, select, .emodal, [data-rm], [data-hide]')) return;
     const t = e.target;
     const hd = t.closest('.rows .row .ehandle');
-    if (hd) { const row = hd.closest('.row'); e.preventDefault(); return dragItems(e, row, { box: row.parentElement, sel: '.row:not([data-row="rep"])', axis: 'y', key: el => el.dataset.row, page: true, ghostHTML: esc($('h2', row).textContent), onDrop: (k, b) => moveRow(k, b) }); }
+    if (hd) {   // 줄 끌기: 끄는 동안 모든 줄을 제목만 남게 접음(노션·유튜브 스튜디오 방식)
+      const row = hd.closest('.row'), rows = row.parentElement; e.preventDefault(); let rec = 0;
+      return dragItems(e, row, { box: rows, sel: '.row:not([data-row="rep"])', axis: 'y', key: el => el.dataset.row, page: true, ghostHTML: esc($('h2', row).textContent),
+        onStart: (ph, py) => { rec = row.getBoundingClientRect().top; rows.classList.add('ecollapse'); scrollBy(0, ph.getBoundingClientRect().top - py); },
+        onEnd: ok => { rows.classList.remove('ecollapse'); if (!ok) scrollBy(0, row.getBoundingClientRect().top - rec); },
+        onDrop: (k, b) => moveRow(k, b) });
+    }
     const ch = t.closest('.estrip .ech');
     if (ch) return dragItems(e, ch, { box: ch.parentElement, sel: '.ech', scroller: ch.parentElement, onDrop: (id, b) => change(() => moveId(keyIds('feat'), id, b)) });
     const c = t.closest('.rows .sc > .card');
-    if (c) { const k = c.closest('.row').dataset.row; return dragItems(e, c, { box: c.parentElement, sel: '.card', scroller: c.parentElement, onDrop: (id, b) => change(() => moveId(keyIds(k), id, b)) }); }
+    if (c) {
+      const row = c.closest('.row'), k = row.dataset.row;
+      return dragItems(e, c, { box: c.parentElement, sel: '.card', scroller: c.parentElement, onDrop: (id, b) => change(() => moveId(keyIds(k), id, b)),
+        outside: { home: row, find: (x, y) => rowAt(x, y, row), drop: (id, tr, x, y) => {
+          const k2 = tr.dataset.row; if (inList(k2, id)) return toast(`'${listTitle(k2)}'에 이미 있어요`, false);
+          const el = document.elementFromPoint(x, y), bc = el && el.closest('.card'), b = bc && bc.dataset.id !== id ? bc.dataset.id : null;
+          change(() => { const a = keyIds(k2); a.push(id); if (b) moveId(a, id, b); }); toast(`'${listTitle(k2)}'에 추가했어요`);
+        } } });
+    }
     const pli = t.closest('.ei .pli[data-k^="rows."]');
     if (pli) return dragItems(e, pli, { box: pli.parentElement, sel: '.pli[data-k^="rows."]', axis: 'y', key: el => el.dataset.k, scroller: $('.ei .bd'), onDrop: (k, b) => moveRow(k, b) });
     const pit = t.closest('.ei .pit');
     if (pit && mode && mode.t === 'list') { const k = mode.k; return dragItems(e, pit, { box: pit.parentElement, sel: '.pit', axis: 'y', scroller: $('.ei .bd'), onDrop: (id, b) => change(() => moveId(keyIds(k), id, b)) }); }
   });
-  const moveRow = (k, b) => change(S => { const a = S.H.rows, o = a[ix(k)], bo = b ? a[ix(b)] : null; a.splice(a.indexOf(o), 1); a.splice(bo ? a.indexOf(bo) : a.length, 0, o); });
+  const moveRow = (k, b) => {
+    const rid = ridOf(k);
+    change(S => { const a = S.H.rows, o = a[ix(k)], bo = b ? a[ix(b)] : null; a.splice(a.indexOf(o), 1); a.splice(bo ? a.indexOf(bo) : a.length, 0, o); });
+    const r = $(`.rows .row[data-row="${keyOf(rid)}"]`); if (r) { const bb = r.getBoundingClientRect(); if (bb.top < 100 || bb.bottom > innerHeight) r.scrollIntoView({ block: 'center' }); }
+  };
   document.addEventListener('dragstart', e => { if (e.target.closest && e.target.closest('.feat, .rows, .ei')) e.preventDefault(); });
 
   /* ---------- 글자 바로 고치기(두 번 누르기) ---------- */
@@ -340,7 +391,7 @@
   const stop = e => { e.preventDefault(); e.stopPropagation(); };
   document.addEventListener('click', e => {
     const t = e.target;
-    if (t.closest('.eb, .ei, .emodal, .etoast')) return;
+    if (t.closest('.eb, .ei, .emodal, .etoast, .theater')) return;
     if (Date.now() - justDragged < 120) return stop(e);
     if (t.closest('[contenteditable="true"]')) return stop(e);
     const x = t.closest('.ex');
@@ -360,14 +411,21 @@
 
   /* ---------- 화면에 편집 손잡이 붙이기(이벤트는 위에서 한 번만 연결) ---------- */
   const chip = id => { const w = W(id); return w ? `<div class="ech" data-id="${esc(id)}"><img src="${esc(PF.url(wideSrc(w)))}" alt=""><span>${esc(w.title.split(' — ')[0])}</span><button class="ex" aria-label="피처드에서 빼기" title="빼기">${IC.x}</button></div>` : ''; };
+  const featIds = () => (PF.S.H.billboard || []).filter(id => { const w = W(id); return w && PF.feVideo(w) && !isTool(w) && (w.grade ?? 3) <= 2; }).slice(0, 8);   // 사이트 피처드와 같은 규칙(최대 8)
   const chipOn = () => { const id = featId(); $$('.estrip .ech').forEach(c => c.classList.toggle('on', c.dataset.id === id)); };
   const decorate = () => {
     const F = $('.feat');
-    if (F && !$('.estrip', F)) { const ids = (PF.S.H.billboard || []).filter(id => { const w = W(id); return w && PF.feVideo(w) && !isTool(w); }); F.insertAdjacentHTML('beforeend', `<div class="estrip"><button class="lb" title="피처드 편집">피처드</button><div class="chips">${ids.map(chip).join('')}</div><button class="eadd sm" data-k="feat" title="피처드에 작품 추가" aria-label="피처드에 작품 추가">${IC.plus}</button></div>`); }
+    if (F && !$('.estrip', F)) { const ids = featIds(); F.insertAdjacentHTML('beforeend', `<div class="estrip"><button class="lb" title="피처드 편집">피처드</button><div class="chips">${ids.map(chip).join('')}</div><button class="eadd sm" data-k="feat" title="피처드에 작품 추가" aria-label="피처드에 작품 추가">${IC.plus}</button></div>`); }
+    const RB = $('.rows');   // 비어 있는 재생목록도 편집 화면에선 자리를 보여 줌(만든 직후 어디 생겼는지 보이게)
+    if (RB) (PF.S.H.rows || []).forEach((r, i) => {
+      const k = `rows.${i}`; if (r.hidden || $(`.row[data-row="${k}"]`, RB)) return;
+      const html = `<section class="row eempty" data-row="${k}"><div class="wrap"><div class="hd"><h2>${esc(listTitle(k))}</h2></div><div class="trk"><div class="sc"></div></div></div></section>`;
+      const nxt = $$('.row[data-row^="rows."]', RB).find(x => ix(x.dataset.row) > i); nxt ? nxt.insertAdjacentHTML('beforebegin', html) : RB.insertAdjacentHTML('beforeend', html);
+    });
     $$('.rows .row').forEach(row => {
       const k = row.dataset.row, hd = $('.hd', row), sc = $('.sc', row); if (!hd || $('.eopen', hd)) return;
       if (k !== 'rep') hd.insertAdjacentHTML('afterbegin', `<button class="ehandle" title="끌어서 줄 순서 바꾸기" aria-label="끌어서 줄 순서 바꾸기">${IC.grip}</button>`);
-      $('h2', hd).insertAdjacentHTML('afterend', `<button class="eopen" data-k="${k}">재생목록 편집</button>`);
+      hd.insertAdjacentHTML('beforeend', `<button class="eopen" data-k="${k}">재생목록 편집</button>`);
       $$('.card', sc).forEach(c => $('.art', c).insertAdjacentHTML('beforeend', `<button class="ex" title="이 재생목록에서 빼기" aria-label="이 재생목록에서 빼기">${IC.x}</button>`));
       sc.insertAdjacentHTML('beforeend', `<button class="eadd" data-k="${k}" title="작품 추가" aria-label="작품 추가">${IC.plus}</button>`);
     });
@@ -384,17 +442,18 @@
     if (mode.t === 'work') $$(`.rows .card[data-id="${cs(mode.id)}"], .estrip .ech[data-id="${cs(mode.id)}"]`).forEach(x => x.classList.add('esel'));
     if (mode.t === 'list') { if (mode.k === 'feat') { const s = $('.estrip'); if (s) s.classList.add('esel'); } else { const r = $(`.rows .row[data-row="${mode.k}"]`); if (r) r.classList.add('esel'); } }
   };
-  const openPanel = () => { if (!document.body.classList.contains('ei-on')) { document.body.classList.add('ei-on'); dispatchEvent(new Event('resize')); } };
+  const openPanel = () => { const b = document.body; if (!b.classList.contains('ei-on') || b.classList.contains('ei-hide')) { b.classList.add('ei-on'); b.classList.remove('ei-hide'); dispatchEvent(new Event('resize')); requestAnimationFrame(() => MT && MT.layout()); } };
+  const hidePanel = () => { document.body.classList.add('ei-hide'); dispatchEvent(new Event('resize')); };
   const killMT = () => { if (MT) { MT.kill(); MT = null; } };
-  const closePanel = () => { killMT(); mode = null; EI.innerHTML = ''; delete EI.dataset.v; document.body.classList.remove('ei-on'); markSel(); dispatchEvent(new Event('resize')); };
+  const closePanel = () => openLists();   // 패널은 닫지 않고 기본 화면(재생목록 전체)으로
   const refreshPanel = force => {
     if (!mode) return;
     if (mode.t === 'work') { if (!W(mode.id)) return closePanel(); workParts(force); }
     else if (mode.t === 'lists') drawLists();
-    else if (!validKey(mode.k)) openLists(); else drawList(mode.k);
+    else { if (mode.rid) mode.k = keyOf(mode.rid) || ''; if (!validKey(mode.k)) return openLists(); drawList(mode.k); }
     markSel();
   };
-  const head = (title, sub = '', back = false) => `<header class="eh">${back ? `<button class="ib" data-back aria-label="재생목록 전체" title="재생목록 전체">${IC.back}</button>` : ''}<div class="tt">${title}${sub ? `<small>${sub}</small>` : ''}</div><button class="ib x" aria-label="패널 닫기" title="닫기 (Esc)">${IC.x}</button></header>`;
+  const head = (title, sub = '', back = false) => `<header class="eh">${back ? `<button class="ib" data-back aria-label="뒤로 (Esc)" title="뒤로 (Esc)">${IC.back}</button>` : ''}<div class="tt">${title}${sub ? `<small>${sub}</small>` : ''}</div><button class="ib hp" aria-label="패널 숨기기" title="패널 숨기기">${IC.side}</button></header>`;
 
   // 작품
   const FIELDS = [['title', '제목'], ['one', '한 줄 설명', 'ta'], ['type', '종류'], ['tools', '툴', 'arr'], ['channels', '매체', 'arr'], ['formats', '규격', 'arr'], ['dur', '길이'], ['period', '시기'], ['contrib', '기여도']];
@@ -402,8 +461,8 @@
   const setF = (w, k, v, arr) => { if (k === 'one') { (w.copy = w.copy || {}).one = v; return; } if (arr) w[k] = v.split(/[·,]/).map(x => x.trim()).filter(Boolean); else if (!v && k !== 'title') delete w[k]; else w[k] = v; };
   const select = (id, from = null) => {
     if (!W(id)) return; if (mode && mode.t === 'work' && mode.id === id) { openPanel(); return; }
-    killMT(); mode = { t: 'work', id, from }; EI.dataset.v = 'work'; const w = W(id), vs = PF.vidsOf(w);
-    EI.innerHTML = head(`<b>${esc(w.title)}</b>`, esc(w.type || ' '), !!from) + `<div class="bd">
+    killMT(); mode = { t: 'work', id, from, fromRid: ridOf(from) }; EI.dataset.v = 'work'; const w = W(id), vs = PF.vidsOf(w);
+    EI.innerHTML = head(`<b>${esc(w.title)}</b>`, esc(w.type || ' '), true) + `<div class="bd">
 ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinline preload="auto"></video></div>
 <div class="vc"><button class="ib pp" aria-label="재생">${IC.play}</button><span class="tm">0.0 / 0.0초</span><span class="sp"></span>${vs.length > 1 ? `<select class="vs" aria-label="영상 버전">${vs.map((v, i) => `<option value="${i}">${esc((v.label || `영상 ${i + 1}`).split(' — ')[0])} · ${v.w}×${v.h}</option>`).join('')}</select>` : ''}</div>
 <div class="tl"><div class="strip"></div><i class="dim l"></i><i class="dim r"></i><div class="rng"><i class="h a"></i><i class="h b"></i></div><div class="flag"><b>호버</b></div><i class="ph"></i><div class="tip" hidden><i class="fr"></i><span></span></div></div>
@@ -411,16 +470,20 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
 <div class="acts"><span>현재 장면을</span><button class="btn2" data-cap="w">카드 썸네일로</button><button class="btn2" data-cap="p">포스터로</button></div></section>` : ''}
 <section class="sec pl"><h4>재생목록</h4><div class="ml"></div></section>
 <section class="sec th"><h4>썸네일</h4><div class="tg"></div></section>
-<section class="sec nf"><h4>정보</h4>${FIELDS.map(([k, l, t]) => `<label class="f"><span>${l}</span>${t === 'ta' ? `<textarea data-f="${k}" rows="2"></textarea>` : `<input type="text" data-f="${k}"${t === 'arr' ? ' data-arr="1" placeholder="· 로 구분"' : ''}>`}</label>`).join('')}</section>
-<section class="sec gx"><h4>노출</h4><div class="seg" role="group" aria-label="노출">${[[1, '대표'], [2, '일반'], [3, '숨김']].map(([g, l]) => `<button data-g="${g}">${l}</button>`).join('')}</div><button class="btn2 pv">상영관에서 보기</button></section></div>`;
+<section class="sec nf"><h4>정보</h4>${FIELDS.map(([k, l, t]) => `<label class="f"><span>${l}</span>${t === 'ta' ? `<textarea data-f="${k}" rows="2"></textarea>` : `<input type="text" data-f="${k}"${t === 'arr' ? ' data-arr="1"' : ''}>`}</label>`).join('')}</section>
+<section class="sec gx"><h4>노출</h4><div class="seg" role="group" aria-label="노출">${[[1, '대표'], [2, '일반'], [3, '숨김']].map(([g, l]) => `<button data-g="${g}">${l}</button>`).join('')}</div><button class="btn2 thv">상영관에서 보기</button></section></div>`;
     $$('[data-f]', EI).forEach(inp => {
-      const k = inp.dataset.f, arr = inp.dataset.arr === '1'; let pre = null;
-      inp.addEventListener('focus', () => { pre = snap(); });
-      inp.addEventListener('input', () => { const v = inp.value.replace(/\s+/g, ' ').trim(); if (k === 'title' && !v) return; setF(W(id), k, v, arr); PF.setData(cur()); syncText(id); });
-      inp.addEventListener('blur', () => { if (k === 'title' && !inp.value.trim()) inp.value = W(id).title; if (pre && snap() !== pre) { pushUndo(pre); queueSave(); } pre = null; });
+      const k = inp.dataset.f, arr = inp.dataset.arr === '1'; let pre = null, pushed = false;
+      inp.addEventListener('focus', () => { pre = snap(); pushed = false; });
+      inp.addEventListener('input', () => {
+        const v = inp.value.replace(/\s+/g, ' ').trim(); if (k === 'title' && !v) return;
+        if (!pushed && pre) { pushUndo(pre); pushed = true; }
+        setF(W(id), k, v, arr); PF.setData(cur()); syncText(id); queueSave();
+      });
+      inp.addEventListener('blur', () => { if (k === 'title' && !inp.value.trim()) inp.value = W(id).title; pre = null; pushed = false; });
       inp.addEventListener('keydown', e => {
         if (e.key === 'Enter' && (inp.tagName === 'INPUT' || !e.shiftKey)) { e.preventDefault(); inp.blur(); }
-        if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (pre) { PF.setData(JSON.parse(pre)); syncText(id); inp.value = getF(W(id), k); pre = null; } inp.blur(); }
+        if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (pushed && pre) { PF.setData(JSON.parse(pre)); undo.pop(); histUI(); syncText(id); inp.value = getF(W(id), k); queueSave(); } pushed = false; pre = null; inp.blur(); }
       });
     });
     openPanel(); workParts(true); markSel();
@@ -429,8 +492,9 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
   const workParts = force => {
     const id = mode.id, w = W(id);
     $('.eh b', EI).textContent = w.title; $('.eh small', EI).textContent = w.type || ' ';
-    const noV = !PF.feVideo(w);
-    $('.ml', EI).innerHTML = lists().map(({ k }) => { const off = k === 'feat' && noV; return `<label class="ck${off ? ' off' : ''}${isHidden(k) ? ' hid' : ''}"><input type="checkbox" data-k="${k}"${inList(k, id) ? ' checked' : ''}${off ? ' disabled' : ''}><span>${esc(listTitle(k))}</span>${off ? '<small>영상 없음</small>' : isHidden(k) ? '<small>숨김</small>' : ''}</label>`; }).join('') + `<button class="lnk" data-newlist>${IC.plus}새 재생목록</button>`;
+    const noV = !PF.feVideo(w), ml = $('.ml', EI), sig = lists().map(({ k }) => k + listTitle(k) + isHidden(k)).join('|');
+    if (ml.dataset.sig === sig) $$('input[data-k]', ml).forEach(c => { c.checked = inList(c.dataset.k, id); });
+    else (ml.dataset.sig = sig, ml.innerHTML = lists().map(({ k }) => { const off = k === 'feat' && noV; return `<label class="ck${off ? ' off' : ''}${isHidden(k) ? ' hid' : ''}"><input type="checkbox" data-k="${k}"${inList(k, id) ? ' checked' : ''}${off ? ' disabled' : ''}><span>${esc(listTitle(k))}</span>${off ? '<small>영상 없음</small>' : isHidden(k) ? '<small>숨김</small>' : ''}</label>`; }).join('') + `<button class="lnk" data-newlist>${IC.plus}새 재생목록</button>`);
     $('.tg', EI).innerHTML = `<figure class="tw"><div class="cv">${PF.cardHTML(w, 'wide')}</div><figcaption><span>카드</span><label class="lnk">이미지 올리기<input type="file" accept="image/*" data-up="w" hidden></label></figcaption></figure><figure class="tp"><div class="pv"><img src="${esc(PF.url(PF.posterOf(w)))}" alt=""></div><figcaption><span>포스터</span><label class="lnk">올리기<input type="file" accept="image/*" data-up="p" hidden></label></figcaption></figure>`;
     $$('[data-f]', EI).forEach(inp => { if (force || document.activeElement !== inp) inp.value = getF(w, inp.dataset.f); });
     const g = w.grade ?? 3; $$('[data-g]', EI).forEach(b => b.setAttribute('aria-pressed', +b.dataset.g === Math.min(3, g)));
@@ -478,11 +542,12 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
     const tAt = x => { const r = tl.getBoundingClientRect(); return Math.max(0, Math.min(dur, (x - r.left) / r.width * dur)); };
     tl.addEventListener('pointerdown', e => {
       if (!dur || e.button !== 0) return; e.preventDefault();
-      const m = e.target.closest('.h.a') ? 'a' : e.target.closest('.h.b') ? 'b' : e.target.closest('.flag') ? 'hs' : e.target.closest('.rng') ? 'mv' : 'seek';
+      const m = e.target.closest('.h.a') ? 'a' : e.target.closest('.h.b') ? 'b' : e.target.closest('.flag b') ? 'hs' : e.target.closest('.rng') ? 'mv' : 'seek';
       tl.setPointerCapture(e.pointerId); V.pause(); loopSeg = false; drag = m; tl.dataset.drag = m;
-      const t0 = tAt(e.clientX), a0 = a, b0 = b, mn = Math.min(MIN, dur);
+      const t0 = tAt(e.clientX), x0 = e.clientX, a0 = a, b0 = b, mn = Math.min(MIN, dur); let moved = false;
       const mv = ev => {
         const t = tAt(ev.clientX); let s = t;
+        if (m === 'mv' && !moved) { if (Math.abs(ev.clientX - x0) < 4) return; moved = true; }   // 구간 안쪽: 4px 넘게 움직여야 통째로 옮김
         if (m === 'a') { a = Math.max(0, Math.min(t, b - mn)); s = a; }
         else if (m === 'b') { b = Math.min(dur, Math.max(t, a + mn)); s = b; }
         else if (m === 'mv') { const d = Math.max(-a0, Math.min(dur - b0, t - t0)); a = a0 + d; b = b0 + d; s = a; }
@@ -491,11 +556,12 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
       };
       const up = () => {
         tl.removeEventListener('pointermove', mv); tl.removeEventListener('pointerup', up); tl.removeEventListener('pointercancel', up); drag = null; delete tl.dataset.drag; tip.hidden = true;
-        if (m === 'a' || m === 'b' || m === 'mv') { a = r2(a); b = r2(b); commitSeg(id, a, b); seek(a); loopSeg = true; V.play().catch(() => { }); }
+        if (m === 'mv' && !moved) { seek(t0); return; }   // 그냥 누르면 그 장면으로 이동(일시정지)
+        if (m === 'a' || m === 'b' || m === 'mv') { a = r2(a); b = r2(b); if (b - a < mn - 1e-6) { b = Math.min(dur, r2(a + mn)); if (b - a < mn - 1e-6) a = Math.max(0, r2(b - mn)); } commitSeg(id, a, b); seek(a); loopSeg = true; V.play().catch(() => { }); }
         else if (m === 'hs') { hs = r2(hs); change(() => { media(W(id)).start = hs; }, { render: false }); seek(hs); V.play().catch(() => { }); }
       };
       tl.addEventListener('pointermove', mv); tl.addEventListener('pointerup', up); tl.addEventListener('pointercancel', up);
-      if (m === 'seek') mv(e); else showTip(m === 'b' ? b : m === 'hs' ? hs : a);
+      if (m === 'seek') mv(e); else if (m !== 'mv') showTip(m === 'b' ? b : m === 'hs' ? hs : a);
     });
     tl.addEventListener('pointermove', e => { if (!drag && dur) showTip(tAt(e.clientX)); });
     tl.addEventListener('pointerleave', () => { if (!drag) tip.hidden = true; });
@@ -557,7 +623,10 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
     $('.bd', EI).scrollTop = top;
   };
   // 재생목록 하나(유튜브 재생목록 편집처럼: 이름 · 작품 추가 · 끌어서 순서 · 빼기 · 숨김 · 삭제)
-  const openList = k => { if (!validKey(k)) return; killMT(); mode = { t: 'list', k }; drawList(k); openPanel(); markSel(); };
+  const openList = k => {
+    if (!validKey(k)) return; killMT(); mode = { t: 'list', k, rid: ridOf(k) }; drawList(k); openPanel(); markSel();
+    const r = k === 'feat' ? $('.feat') : $(`.rows .row[data-row="${k}"]`); if (r) { const b = r.getBoundingClientRect(); if (b.top < 90 || b.top > innerHeight - 160) r.scrollIntoView({ behavior: 'smooth', block: k === 'feat' ? 'start' : 'center' }); }
+  };
   const drawList = k => {
     const bd0 = $('.bd', EI), top = bd0 && EI.dataset.v === 'list:' + k ? bd0.scrollTop : 0; EI.dataset.v = 'list:' + k;
     const ids = viewIds(k), auto = k.startsWith('rows.') && !rowObj(k).ids, hid = isHidden(k), ae = document.activeElement, focused = !!(ae && ae.classList && ae.classList.contains('ttl') && EI.contains(ae));
@@ -568,43 +637,44 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
     $('.bd', EI).scrollTop = top;
     const t = $('.ttl', EI); if (k === 'feat') return; let pre = null;
     if (focused) { t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
-    t.addEventListener('focus', () => { pre = snap(); });
-    t.addEventListener('input', () => { const v2 = t.value.replace(/\s+/g, ' ').trim(); if (!v2) return; setTitle(k, v2); PF.setData(cur()); const h = $(`.rows .row[data-row="${k}"] .hd h2`); if (h) h.textContent = v2; });
-    t.addEventListener('blur', () => { if (!t.value.trim()) t.value = listTitle(k); if (pre && snap() !== pre) { pushUndo(pre); queueSave(); } pre = null; });
-    t.addEventListener('keydown', e => { if (e.key === 'Enter') t.blur(); if (e.key === 'Escape') { e.stopPropagation(); if (pre) { PF.setData(JSON.parse(pre)); t.value = listTitle(k); const h = $(`.rows .row[data-row="${k}"] .hd h2`); if (h) h.textContent = t.value; pre = null; } t.blur(); } });
+    let pushed = false; const syncH = () => { const h = $(`.rows .row[data-row="${k}"] .hd h2`); if (h) h.textContent = listTitle(k); };
+    t.addEventListener('focus', () => { pre = snap(); pushed = false; });
+    t.addEventListener('input', () => { const v2 = t.value.replace(/\s+/g, ' ').trim(); if (!v2) return; if (!pushed && pre) { pushUndo(pre); pushed = true; } setTitle(k, v2); PF.setData(cur()); syncH(); queueSave(); });
+    t.addEventListener('blur', () => { if (!t.value.trim()) t.value = listTitle(k); pre = null; pushed = false; });
+    t.addEventListener('keydown', e => { if (e.key === 'Enter') t.blur(); if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); if (pushed && pre) { PF.setData(JSON.parse(pre)); undo.pop(); histUI(); t.value = listTitle(k); syncH(); queueSave(); } pushed = false; pre = null; t.blur(); } });
   };
-  const newList = () => { let k = ''; change(S => { (S.H.rows = S.H.rows || []).push({ title: '새 재생목록', ids: [] }); k = `rows.${S.H.rows.length - 1}`; }); openList(k); setTimeout(() => { const t = $('.ttl', EI); if (t) { t.focus(); t.select(); } }, 40); };
+  const newList = () => { let k = ''; change(S => { (S.H.rows = S.H.rows || []).push({ title: '새 재생목록', ids: [] }); ensureIds(cur()); k = `rows.${S.H.rows.length - 1}`; }); openList(k); setTimeout(() => { const t = $('.ttl', EI); if (t) { t.focus(); t.select(); } }, 40); };
   const toggleHidden = k => change(S => { if (k === 'rep') { if (S.H.repHidden) delete S.H.repHidden; else S.H.repHidden = true; } else { const r = rowObj(k); if (r.hidden) delete r.hidden; else r.hidden = true; } });
 
   // 여러 작품 고르기(체크한 순서대로 번호)
-  const multiPick = ({ title, ids, ok, onDone }) => {
+  const multiPick = ({ title, ids, ok, onDone, max = 0 }) => {
     const pool = PF.S.all.filter(w => !isTool(w) && PF.posterOf(w)); const chosen = ids.filter(id => pool.some(w => w.id === id)); const first = chosen.slice(); let kind = '';
     const kinds = Object.keys(KINDS).filter(k => k !== 'tools' && pool.some(w => (w.kinds || []).includes(k)));
     const m = modal(`<div class="mph"><h3>${esc(title)}</h3><input type="search" placeholder="제목·종류 검색" aria-label="검색"></div><div class="kf">${['', ...kinds].map(k => `<button data-kf="${k}" aria-pressed="${!k}">${k ? KINDS[k] : '전체'}</button>`).join('')}</div><div class="mpg"></div><div class="mpf"><span class="cnt"></span><span class="sp"></span><button class="btn2" data-x>취소</button><button class="btn2 pri" data-ok>완료</button></div>`, 'wide mp');
     const q = $('input', m), grid = $('.mpg', m);
-    const marks = () => { $$('.mpi', grid).forEach(b => { const i = chosen.indexOf(b.dataset.id); b.classList.toggle('on', i >= 0); $('.ck', b).textContent = i >= 0 ? i + 1 : ''; }); $('.cnt', m).textContent = `${chosen.length}개 선택`; };
+    const marks = () => { const full = max && chosen.length >= max; $$('.mpi', grid).forEach(b => { const i = chosen.indexOf(b.dataset.id); b.classList.toggle('on', i >= 0); b.classList.toggle('full', !!full && i < 0); $('.ck', b).textContent = i >= 0 ? i + 1 : ''; }); $('.cnt', m).textContent = max ? `${chosen.length}/${max} 선택` : `${chosen.length}개 선택`; };
     const draw = () => {
       const s = q.value.trim().toLowerCase();
       grid.innerHTML = pool.filter(w => (!kind || (w.kinds || []).includes(kind)) && (!s || `${w.title} ${w.type || ''}`.toLowerCase().includes(s))).map(w => { const why = ok ? ok(w) : null; return `<button class="mpi" data-id="${esc(w.id)}"${why ? ' disabled' : ''}><span class="im"><img src="${esc(PF.url(wideSrc(w)))}" alt="" loading="lazy"><i class="ck"></i></span><b>${esc(w.title)}</b><small>${why ? esc(why) : esc(w.type || '')}${(w.grade ?? 3) > 2 ? ' · 숨김' : ''}</small></button>`; }).join('') || '<p class="emp">없어요</p>';
       marks();
     };
-    grid.addEventListener('click', e => { const b = e.target.closest('.mpi'); if (!b || b.disabled) return; const i = chosen.indexOf(b.dataset.id); i >= 0 ? chosen.splice(i, 1) : chosen.push(b.dataset.id); marks(); });
+    grid.addEventListener('click', e => { const b = e.target.closest('.mpi'); if (!b || b.disabled) return; const i = chosen.indexOf(b.dataset.id); if (i >= 0) chosen.splice(i, 1); else if (!max || chosen.length < max) chosen.push(b.dataset.id); marks(); });
     $('.kf', m).addEventListener('click', e => { const b = e.target.closest('[data-kf]'); if (!b) return; kind = b.dataset.kf; $$('[data-kf]', m).forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); });
-    q.addEventListener('input', draw); q.addEventListener('keydown', e => { if (e.key === 'Enter') $('[data-ok]', m).click(); });
+    q.addEventListener('input', draw);
     $('[data-ok]', m).onclick = () => { m.close(); if (!same(chosen, first)) onDone(chosen.slice()); };
     draw(); setTimeout(() => q.focus(), 30);
   };
   const pickFor = k => {
     if (!validKey(k)) return; const before = viewIds(k).slice();
-    multiPick({ title: `${listTitle(k)} — 작품 고르기`, ids: before, ok: k === 'feat' ? (w => PF.feVideo(w) ? null : '영상 없음') : null,
+    multiPick({ title: `${listTitle(k)} — 작품 고르기`, ids: before, max: k === 'feat' ? 8 : 0, ok: k === 'feat' ? (w => PF.feVideo(w) ? null : '영상 없음') : null,
       onDone: ids => { change(() => { const a = keyIds(k); a.splice(0, a.length, ...ids); unhide(ids.filter(id => !before.includes(id))); }); if (!mode || mode.t !== 'work') openList(k); } });
   };
 
   // 패널 안 클릭·체크
   EI.addEventListener('click', e => {
     if (Date.now() - justDragged < 120) return; const t = e.target;
-    if (t.closest('.x')) return closePanel();
-    if (t.closest('[data-back]')) return (mode.t === 'work' && mode.from && validKey(mode.from)) ? openList(mode.from) : openLists();
+    if (t.closest('.hp')) return hidePanel();
+    if (t.closest('[data-back]')) { if (mode.t === 'work' && mode.from) { const k = mode.fromRid ? keyOf(mode.fromRid) : mode.from; if (k && validKey(k)) return openList(k); } return openLists(); }
     if (t.closest('[data-newlist]')) return newList();
     const hb = t.closest('[data-hide]'); if (hb) { e.stopPropagation(); const k = hb.dataset.hide; toggleHidden(k); return toast(isHidden(k) ? `'${listTitle(k)}' 홈에서 숨김` : `'${listTitle(k)}' 홈에 보임`); }
     if (t.closest('[data-pick]')) return pickFor(mode.k);
@@ -613,7 +683,7 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
     const pli = t.closest('.pli'); if (pli) return openList(pli.dataset.k);
     const pit = t.closest('.pit'); if (pit) return select(pit.dataset.id, mode.k);
     const g = t.closest('[data-g]'); if (g && mode.t === 'work') return change(() => { W(mode.id).grade = +g.dataset.g; });
-    if (t.closest('.pv') && mode.t === 'work' && PF.Theater) return PF.Theater.open(mode.id, { queue: [mode.id], autoplay: true });
+    if (t.closest('.thv') && mode.t === 'work' && PF.Theater) return PF.Theater.open(mode.id, { queue: [mode.id], autoplay: true });
   });
   EI.addEventListener('change', e => {
     const c = e.target.closest('input[type=checkbox][data-k]');
@@ -621,20 +691,28 @@ ${vs.length ? `<section class="sec md"><div class="vbox"><video muted playsinlin
     const up = e.target.closest('input[type=file][data-up]');
     if (up && mode && mode.t === 'work') { const f = up.files[0], id = mode.id; if (!f) return; const im = new Image(); im.onload = () => makeImg(id, up.dataset.up, im, im.naturalWidth, im.naturalHeight).then(() => URL.revokeObjectURL(im.src)); im.src = URL.createObjectURL(f); }
   });
-  $('.pl', bar).addEventListener('click', () => (mode && mode.t === 'lists') ? closePanel() : openLists());
+  $('.pl', bar).addEventListener('click', () => openLists());
+  let escTheater = false;
+  addEventListener('keydown', e => { if (e.key === 'Escape') escTheater = !!$('.theater.on'); }, true);
   addEventListener('keydown', e => {
-    const ae = document.activeElement, typing = ae && (ae.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName));
-    if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'z' && !typing && !$('.emodal')) { e.preventDefault(); (e.shiftKey ? rB : uB).click(); return; }
-    if (e.key === 'Escape' && !typing && !$('.emodal') && !$('.theater.on') && mode) closePanel();
+    const ae = document.activeElement, typing = ae && (ae.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)), k = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && !e.altKey && (k === 'z' || k === 'y') && !typing && !$('.emodal')) { e.preventDefault(); (e.shiftKey || k === 'y' ? rB : uB).click(); return; }
+    if (e.key === 'Escape' && !typing && !$('.emodal') && !escTheater && mode && mode.t !== 'lists') { if (mode.t === 'work' && mode.from) $('[data-back]', EI).click(); else openLists(); }
   });
+  // 상영관에서 다른 작품으로 넘어가면 패널도 따라감
+  const TH = $('.theater'); if (TH) new MutationObserver(() => { const c = TH.dataset.cur; if (TH.classList.contains('on') && c && W(c) && !(mode && mode.t === 'work' && mode.id === c)) select(c); }).observe(TH, { attributes: true, attributeFilter: ['data-cur', 'class'] });
 
   /* ---------- 시작: 보관된 이미지·초안 복원 → 최신 원본(연결 시) 위에 다시 얹기 ---------- */
   (async () => {
-    cnB.hidden = !!token; status('busy', '불러오는 중…');
+    lock(true); cnB.hidden = !!token; status('busy', '불러오는 중…');
     try { for (const k of await IDB.keys()) { const b = await IDB.get(k); if (b) { pend[k] = b; PF.S.blob[k] = URL.createObjectURL(b); } } } catch (e) { }
     let draft = null; try { draft = JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch (e) { }
+    ensureIds(base); ensureIds(cur());
     if (token) await loadLatest();
     if (draft && draft.base && draft.cur) { const d = diff(draft.base, draft.cur); if (!empty(d)) PF.setData(merge(cur(), d)); }
-    rerender(); persist(); if (token && nChanged()) queueSave(); else idle();
+    ensureIds(cur()); fixMissing();
+    rerender(); openLists(); persist(); lock(false); if (token && nChanged()) queueSave(); else idle();
+    // 이미 올린 이미지가 사이트에 있으면 보관함에서 지움
+    const known = knownRefs(); Object.keys(pend).forEach(p => { if (!known.has(p)) return; fetch(PF.url(p), { method: 'HEAD', cache: 'no-store' }).then(r => { if (r.ok) dropKept([p]); }).catch(() => { }); });
   })();
 })();

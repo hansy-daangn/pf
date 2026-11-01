@@ -36,11 +36,19 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 main{padding-top:var(--nav-h);animation:pagein calc(var(--dur)*1.5) var(--ease) both}
 @keyframes pagein{from{opacity:0;transform:translateY(var(--s1))}to{opacity:1;transform:none}}
-/* ---- 모듈: 페이지 등장 (pagein) ---- 1 살짝 올라옴(위) · 2 페이드만 · 3 확대(98%→100%, 애플) · 4 없음 */
-@keyframes pagein-fade{from{opacity:0}to{opacity:1}}
-@keyframes pagein-zoom{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
-body[data-pagein="2"] main{animation-name:pagein-fade}
-body[data-pagein="3"] main{animation-name:pagein-zoom;transform-origin:50% 0}
+/* ---- 모듈: 페이지 등장 (pagein) ---- 1 살짝 올라옴(위) · 2 블러 걷힘(visionOS) · 3 차례로 등장(위에서부터 한 덩어리씩) · 4 없음 */
+@keyframes pagein-blur{from{opacity:0;filter:blur(calc(var(--u) * 2.5))}to{opacity:1;filter:none}}
+@keyframes pagein-rise{from{opacity:0;transform:translateY(calc(var(--u) * 5))}to{opacity:1;transform:none}}
+body[data-pagein="2"] main{animation:pagein-blur calc(var(--dur)*2) var(--ease) both;transform-origin:50% 0}
+body[data-pagein="3"] main{animation:none}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row){animation:pagein-rise calc(var(--dur)*2) var(--ease) both}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(2){animation-delay:calc(var(--dur)*.3)}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(3){animation-delay:calc(var(--dur)*.6)}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(4){animation-delay:calc(var(--dur)*.9)}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(n+5){animation-delay:calc(var(--dur)*1.2)}
+body[data-pagein="3"] main .rows > .row:nth-child(1){animation-delay:calc(var(--dur)*.3)}
+body[data-pagein="3"] main .rows > .row:nth-child(2){animation-delay:calc(var(--dur)*.6)}
+body[data-pagein="3"] main .rows > .row:nth-child(n+3){animation-delay:calc(var(--dur)*.9)}
 body[data-pagein="4"] main{animation:none}
 
 /* ---- 섹션 공통 ---- */

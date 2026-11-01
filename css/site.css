@@ -95,11 +95,19 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 main{padding-top:var(--nav-h);animation:pagein calc(var(--dur)*1.5) var(--ease) both}
 @keyframes pagein{from{opacity:0;transform:translateY(var(--s1))}to{opacity:1;transform:none}}
-/* ---- 모듈: 페이지 등장 (pagein) ---- 1 살짝 올라옴(위) · 2 페이드만 · 3 확대(98%→100%, 애플) · 4 없음 */
-@keyframes pagein-fade{from{opacity:0}to{opacity:1}}
-@keyframes pagein-zoom{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
-body[data-pagein="2"] main{animation-name:pagein-fade}
-body[data-pagein="3"] main{animation-name:pagein-zoom;transform-origin:50% 0}
+/* ---- 모듈: 페이지 등장 (pagein) ---- 1 살짝 올라옴(위) · 2 블러 걷힘(visionOS) · 3 차례로 등장(위에서부터 한 덩어리씩) · 4 없음 */
+@keyframes pagein-blur{from{opacity:0;filter:blur(calc(var(--u) * 2.5))}to{opacity:1;filter:none}}
+@keyframes pagein-rise{from{opacity:0;transform:translateY(calc(var(--u) * 5))}to{opacity:1;transform:none}}
+body[data-pagein="2"] main{animation:pagein-blur calc(var(--dur)*2) var(--ease) both;transform-origin:50% 0}
+body[data-pagein="3"] main{animation:none}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row){animation:pagein-rise calc(var(--dur)*2) var(--ease) both}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(2){animation-delay:calc(var(--dur)*.3)}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(3){animation-delay:calc(var(--dur)*.6)}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(4){animation-delay:calc(var(--dur)*.9)}
+body[data-pagein="3"] :is(main > :not(.wrap,.rows),main > .wrap > :not(.lib,.cv,.tl),.lib > *,.tl > *,.cv > *,.rows > .row):nth-child(n+5){animation-delay:calc(var(--dur)*1.2)}
+body[data-pagein="3"] main .rows > .row:nth-child(1){animation-delay:calc(var(--dur)*.3)}
+body[data-pagein="3"] main .rows > .row:nth-child(2){animation-delay:calc(var(--dur)*.6)}
+body[data-pagein="3"] main .rows > .row:nth-child(n+3){animation-delay:calc(var(--dur)*.9)}
 body[data-pagein="4"] main{animation:none}
 
 /* ---- 섹션 공통 ---- */
@@ -165,7 +173,7 @@ body[data-feat="1"] .fx h2{font-size:clamp(var(--t-title),2.6vw,var(--t-disp))}
 body[data-feat="2"] .fbox{width:auto;display:grid;grid-template-columns:minmax(0,var(--featw,1120px)) minmax(240px,340px);align-items:center;justify-content:center;padding-inline:var(--gut)}
 body[data-feat="2"] .fv{--fl:6%;--fr:22%;--ft:16%}
 body[data-feat="2"] .fv.inset{--fl:6%;--fr:22%}
-body[data-feat="2"] .ft{position:relative;z-index:2;margin-left:calc(var(--s8) * -1)}
+body[data-feat="2"] .ft{position:relative;z-index:2;margin-left:calc(var(--s8) * -1);margin-top:var(--nav-h)}   /* 좁은 폭에서도 글자가 내비 밑으로 안 들어가게 */
 body[data-feat="2"] .fx h2{font-size:clamp(var(--t-disp),2.8vw,calc(var(--t-disp) * 1.25))}
 
 /* ---- 3 카드 + 옆 설명: 둥근 카드(페이드 없음), 내비는 유리 ---- */
@@ -247,10 +255,13 @@ body[data-arrow="2"] .row .ar:disabled{opacity:0;pointer-events:none}
 body[data-card="2"] .card .art{border-radius:calc(var(--r) / 2)}
 body[data-card="2"] .card .t,body[data-card="2"] .card .s{display:none}
 body[data-card="2"] .row .sc{--gap:var(--s1)}
-body[data-card="3"] .card .art{border-radius:calc(var(--r) * 1.75);box-shadow:var(--shadow),var(--ring)}
-body[data-card="3"] .card:hover .art{box-shadow:var(--shadow-lg),var(--ring)}
-body[data-card="3"] .row .sc{--gap:var(--s3)}
-body[data-card="3"] .card .t{font-size:var(--t-body);margin-top:var(--s2)}
+/* 3 패널: 썸네일과 제목·종류가 옅은 판 하나에 담김 (앱스토어 투데이·스팀) */
+body[data-card="3"] .card{background:var(--ink-4);border-radius:var(--r2);padding:var(--s1) var(--s1) var(--s2);transition:background var(--d-micro) var(--ease)}
+body[data-card="3"] .card:hover{background:var(--ink-3)}
+body[data-card="3"] .card :is(.t,.s){padding-inline:var(--s05)}
+body[data-card="3"] .card .t{font-size:var(--t-body);margin-top:var(--s1)}
+body[data-card="3"]:is([data-info="3"],[data-info="4"]) .card{padding-bottom:var(--s1)}
+body[data-card="3"]:is([data-info="3"],[data-info="4"]) .card :is(.t,.s){padding-inline:var(--s1)}
 
 /* ==========================================================================
    모듈: 카드 크기 (size) — 1 작게 · 2 기본 · 3 크게
@@ -289,9 +300,12 @@ body[data-size="3"] .card.tall{--cw:clamp(150px,14vw,210px)}
 .card .art video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:color-mix(in oklab,#0b0b0d 55%,transparent);opacity:0;transition:opacity var(--d-half) var(--ease)}
 .card .art video.on{opacity:1}
 .card .art .pb{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--acc);transform:scaleX(0);transform-origin:left;transition:transform .25s linear;z-index:1}
+/* 3 스포트라이트(애플 TV 포커스): 올린 카드가 커지며 재생, 같은 줄의 나머지 카드는 어둡게 물러남 */
+body[data-hover="3"] .card{transition:opacity var(--dur) var(--ease),filter var(--dur) var(--ease)}
 body[data-hover="3"] .card .art{transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
-body[data-hover="3"] .card.playing .art{transform:scale(1.06);box-shadow:var(--shadow-lg),var(--ring);z-index:2}
-body[data-hover="3"] .row .sc{padding-block:var(--s2) var(--s2)}
+body[data-hover="3"] .card.playing .art{transform:scale(1.12);transform-origin:50% 88%;box-shadow:var(--shadow-lg),var(--ring);z-index:2}
+body[data-hover="3"] :is(.sc,.grid):has(> .card.playing) > .card:not(.playing){opacity:.28;filter:saturate(.4)}
+body[data-hover="3"] .row .sc{padding-block:var(--s3) var(--s3);margin-block:calc(var(--s3) * -1 + var(--s05)) calc(var(--s3) * -1 + var(--s1))}
 
 /* ===== 60-pages.css ===== */
 /* ---- 라이브러리 (works) ---- */
@@ -454,10 +468,8 @@ body[data-hover="3"] .row .sc{padding-block:var(--s2) var(--s2)}
 
 /* ==========================================================================
    모듈: 상영관 배경 (thbg) — .theater > .bgart(작품 그림 흐리게) + .veil(덮개)
-   1 블러 포스터(기본) · 2 순수 검정(넷플릭스 플레이어) · 3 페이지 색(애플 TV 앱 라이트) · 4 앰비언트 진하게(유튜브)
+   1 블러 포스터(기본) · 3 페이지 색  (2 순수 검정은 1과 거의 같아 뺌)(애플 TV 앱 라이트) · 4 앰비언트 진하게(유튜브)
    ========================================================================== */
-body[data-thbg="2"] .theater{--bg:#000}
-body[data-thbg="2"] .theater .bgart,body[data-thbg="2"] .theater .veil{display:none}
 /* 3: 상영관 색 토큰을 페이지에서 그대로 물려받음(라이트면 흰 배경) — 영상 틀 안만 어둡게 유지 */
 body[data-thbg="3"] .theater{--bg:inherit;--ink:inherit;--shadow:inherit;--shadow-lg:inherit}
 body[data-thbg="3"] .theater .bgart{opacity:.3}
@@ -529,72 +541,79 @@ body[data-nav="4"] main{padding-top:calc(var(--nav-h) + var(--s2))}
 body[data-rows="2"]{--cols:4;--cols-t:8}
 body[data-rows="2"][data-size="1"]{--cols:5;--cols-t:10}
 body[data-rows="2"][data-size="3"]{--cols:3;--cols-t:6}
-body[data-rows="2"] .row .sc{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--s3) var(--gap,var(--s2));overflow:visible;margin-inline:0;padding-inline:0;scroll-snap-type:none}
-body[data-rows="2"] .row .sc:has(> .card.tall){grid-template-columns:repeat(var(--cols-t),minmax(0,1fr))}
-body[data-rows="2"] .row .card{width:auto}
+body[data-rows="2"] .row:not(.tiles) .sc{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--s3) var(--gap,var(--s2));overflow:visible;margin-inline:0;padding-inline:0;scroll-snap-type:none}
+body[data-rows="2"] .row:not(.tiles) .sc:has(> .card.tall){grid-template-columns:repeat(var(--cols-t),minmax(0,1fr))}
+body[data-rows="2"] .row:not(.tiles) .card{width:auto}
 body[data-rows="2"] .row .arr{display:none}
-body[data-rows="2"] .row .sc > .card.wide:nth-child(n+9),
-body[data-rows="2"][data-size="1"] .row .sc > .card.wide:nth-child(n+11),
-body[data-rows="2"] .row .sc > .card.tall:nth-child(n+9),
-body[data-rows="2"][data-size="1"] .row .sc > .card.tall:nth-child(n+11){display:none}
-body[data-rows="2"][data-size="1"] .row .sc > .card.wide:nth-child(-n+10),
-body[data-rows="2"][data-size="1"] .row .sc > .card.tall:nth-child(-n+10){display:block}
-body[data-rows="2"][data-size="3"] .row .sc > .card.wide:nth-child(n+7),
-body[data-rows="2"][data-size="3"] .row .sc > .card.tall:nth-child(n+7){display:none}
+body[data-rows="2"] .row:not(.tiles) .sc > .card.wide:nth-child(n+9),
+body[data-rows="2"][data-size="1"] .row:not(.tiles) .sc > .card.wide:nth-child(n+11),
+body[data-rows="2"] .row:not(.tiles) .sc > .card.tall:nth-child(n+9),
+body[data-rows="2"][data-size="1"] .row:not(.tiles) .sc > .card.tall:nth-child(n+11){display:none}
+body[data-rows="2"][data-size="1"] .row:not(.tiles) .sc > .card.wide:nth-child(-n+10),
+body[data-rows="2"][data-size="1"] .row:not(.tiles) .sc > .card.tall:nth-child(-n+10){display:block}
+body[data-rows="2"][data-size="3"] .row:not(.tiles) .sc > .card.wide:nth-child(n+7),
+body[data-rows="2"][data-size="3"] .row:not(.tiles) .sc > .card.tall:nth-child(n+7){display:none}
 @media (max-width:760px){
-  body[data-rows="2"] .row .sc{--cols:2!important;--cols-t:3!important;gap:var(--s2) var(--s1)}
-  body[data-rows="2"] .row .sc > .card.wide:nth-child(n+5),body[data-rows="2"] .row .sc > .card.tall:nth-child(n+4){display:none!important}
-  body[data-rows="2"] .row .sc > .card.wide:nth-child(-n+4),body[data-rows="2"] .row .sc > .card.tall:nth-child(-n+3){display:block!important}
+  body[data-rows="2"] .row:not(.tiles) .sc{--cols:2!important;--cols-t:3!important;gap:var(--s2) var(--s1)}
+  body[data-rows="2"] .row:not(.tiles) .sc > .card.wide:nth-child(n+5),body[data-rows="2"] .row:not(.tiles) .sc > .card.tall:nth-child(n+4){display:none!important}
+  body[data-rows="2"] .row:not(.tiles) .sc > .card.wide:nth-child(-n+4),body[data-rows="2"] .row:not(.tiles) .sc > .card.tall:nth-child(-n+3){display:block!important}
 }
 
 /* ---- 3 첫 카드 크게: 맨 앞 작품이 2×2칸, 제목은 그림 아래쪽 위에 (애플 TV 히어로 타일) ---- */
-body[data-rows="3"] .row .sc > .card.wide:first-child{position:relative;display:flex;flex-direction:column}
-body[data-rows="3"] .row .sc > .card.wide:first-child .art{flex:1 1 auto;min-height:0}
-body[data-rows="3"] .row .sc > .card.wide:first-child .art:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(to top,var(--scrim),transparent);pointer-events:none;z-index:1;transition:opacity var(--dur) var(--ease)}
-body[data-rows="3"] .row .sc > .card.wide:first-child .t,body[data-rows="3"] .row .sc > .card.wide:first-child .s{position:absolute;left:var(--s3);right:var(--s3);z-index:2;margin:0;color:var(--on-frame);pointer-events:none;transition:opacity var(--dur) var(--ease)}
-body[data-rows="3"] .row .sc > .card.wide:first-child .t{bottom:calc(var(--s3) + var(--t-micro) * 1.55 + var(--s05));font-size:var(--t-title);font-weight:700;letter-spacing:-.025em;line-height:1.15}
-body[data-rows="3"] .row .sc > .card.wide:first-child .s{bottom:var(--s3);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
-body[data-rows="3"] .row .sc > .card.wide.playing:first-child :is(.t,.s,.art:after){opacity:0}
+body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child{position:relative;display:flex;flex-direction:column}
+body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .art{flex:1 1 auto;min-height:0}
+body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .art:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(to top,var(--scrim),transparent);pointer-events:none;z-index:1;transition:opacity var(--dur) var(--ease)}
+body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .t,body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .s{position:absolute;left:var(--s3);right:var(--s3);z-index:2;margin:0;color:var(--on-frame);pointer-events:none;transition:opacity var(--dur) var(--ease)}
+body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .t{bottom:calc(var(--s3) + var(--t-micro) * 1.55 + var(--s05));font-size:var(--t-title);font-weight:700;letter-spacing:-.025em;line-height:1.15}
+body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .s{bottom:var(--s3);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
+body[data-rows="3"] .row:not(.tiles) .sc > .card.wide.playing:first-child :is(.t,.s,.art:after){opacity:0}
 @media (min-width:761px){
-  body[data-rows="3"] .row .sc:has(> .card.wide){display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:max-content;row-gap:var(--s2)}
-  body[data-rows="3"] .row .sc > .card.wide:first-child{grid-row:1 / span 2;grid-column:span 2;width:calc(var(--cw) * 2 + var(--gap,var(--s2)))}
-  body[data-rows="3"] .row .sc > .card.wide:first-child .art{aspect-ratio:auto}
+  body[data-rows="3"] .row:not(.tiles) .sc:has(> .card.wide){display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:max-content;row-gap:var(--s2)}
+  body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child{grid-row:1 / span 2;grid-column:span 2;width:calc(var(--cw) * 2 + var(--gap,var(--s2)))}
+  body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .art{aspect-ratio:auto}
 }
 @media (max-width:760px){
-  body[data-rows="3"] .row .sc > .card.wide:first-child{--cw:min(82vw,calc(var(--u) * 60))}
-  body[data-rows="3"] .row .sc > .card.wide:first-child .t{font-size:var(--t-h)}
+  body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child{--cw:min(82vw,calc(var(--u) * 60))}
+  body[data-rows="3"] .row:not(.tiles) .sc > .card.wide:first-child .t{font-size:var(--t-h)}
 }
 
-/* ---- 4 숫자 랭킹: 대표 작업 줄(맨 앞 줄)에만 1~10 큰 윤곽 숫자 — 숫자 높이 ≈ 썸네일 높이 ---- */
-body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .sc{counter-reset:rk}
-body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card{--rk-w:calc(var(--cw) * .42);counter-increment:rk;display:grid;grid-template-columns:var(--rk-w) var(--cw);width:auto}
-body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:nth-child(n+11){display:none}
-body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:before{content:counter(rk);grid-row:1 / span 3;align-self:start;justify-self:end;margin-right:calc(var(--s2) * -1);font-size:calc(var(--cw) * .5625 * 1.32);line-height:.76;font-weight:900;letter-spacing:-.1em;font-variant-numeric:tabular-nums;color:var(--bg);-webkit-text-stroke:calc(var(--u) * .375) color-mix(in oklab,var(--ink) 42%,transparent);pointer-events:none;transition:-webkit-text-stroke-color var(--d-half) var(--ease)}
-body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.art,.t,.s){grid-column:2}
-body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:hover:before{-webkit-text-stroke-color:var(--ink)}
-body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:nth-child(10){--rk-w:calc(var(--cw) * .62)}
+/* ---- 4 숫자 랭킹(넷플릭스 톱 10): 대표 작업 줄(맨 앞 줄)에만 1~10 큰 윤곽 숫자
+   한 칸 폭 = 다른 줄 카드 한 장 폭(--cw) — 숫자 28% + 썸네일 72%(16:9 그대로). 썸네일이 숫자 오른쪽 끝을 살짝 덮음.
+   그래서 한 화면에 다른 줄과 같은 개수가 보임 ---- */
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .sc{counter-reset:rk}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card{--rk:calc(var(--cw) * .28);--aw:calc(var(--cw) * .72);counter-increment:rk;display:grid;grid-template-columns:var(--rk) var(--aw);align-content:start}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card:nth-child(n+11){display:none}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card:before{content:counter(rk);grid-row:1 / span 3;grid-column:1;align-self:start;justify-self:end;margin-right:calc(var(--cw) * -.05);font-size:calc(var(--aw) * .5625 * 1.36);line-height:.74;font-weight:900;letter-spacing:-.08em;font-variant-numeric:tabular-nums;color:var(--bg);-webkit-text-stroke:calc(var(--u) * .3) color-mix(in oklab,var(--ink) 38%,transparent);pointer-events:none;transition:-webkit-text-stroke-color var(--d-half) var(--ease)}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card :is(.art,.t,.s){grid-column:2}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card .art{z-index:1}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card:hover:before{-webkit-text-stroke-color:var(--ink)}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card:nth-child(10){--rk:calc(var(--cw) * .5);width:calc(var(--cw) * 1.22)}
+body[data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card:nth-child(10):before{letter-spacing:-.14em}
 
 /* ===== 82-ambient.css ===== */
 /* ==========================================================================
    모듈: 배경 분위기 (amb) — body 뒤에 한 겹(body:before)을 깔아 분위기만 바꿈. 내용·색 토큰은 그대로
-   1 단색(기본) · 2 앰비언트(유튜브 앰비언트 모드·애플 뮤직) · 3 은은한 그라데이션 · 4 필름 그레인
+   1 단색(기본) · 2 앰비언트(유튜브 앰비언트 모드·애플 뮤직) · 3 은은한 그라데이션 · 4 필름 그레인(배경에만)
    --feat-img: site.js가 지금 피처드 포스터를 url(...)로 넣어 줌. 없으면(작업·도구·이력서) 3과 같은 빛으로 대신함
    ========================================================================== */
-body[data-amb="2"],body[data-amb="3"]{position:relative;isolation:isolate}
+body[data-amb]:not([data-amb="1"]){position:relative;isolation:isolate}
 body[data-amb="2"]:before,body[data-amb="3"]:before{content:"";position:absolute;inset:0 0 auto;height:min(calc(var(--u) * 150),140vh);z-index:-1;pointer-events:none;-webkit-mask-image:linear-gradient(#000 25%,transparent);mask-image:linear-gradient(#000 25%,transparent)}
-body[data-amb="3"]:before,body[data-amb="2"]:before{background:radial-gradient(60% 55% at 12% 0%,color-mix(in oklab,var(--acc) 14%,transparent),transparent 70%),radial-gradient(45% 45% at 88% 6%,color-mix(in oklab,var(--ink) 7%,transparent),transparent 70%)}
+body[data-amb="3"]:before{background:radial-gradient(60% 55% at 12% 0%,color-mix(in oklab,var(--acc) 14%,transparent),transparent 70%),radial-gradient(45% 45% at 88% 6%,color-mix(in oklab,var(--ink) 7%,transparent),transparent 70%)}
 
-/* ---- 2 앰비언트: 포스터를 크게 흐려 위쪽에 번지게. 피처드가 바뀌면 같이 바뀜(전환은 site.js 훅) ---- */
-body[data-amb="2"].home:before{background:var(--feat-img) center / cover no-repeat;filter:blur(calc(var(--u) * 12)) saturate(1.6);opacity:.42;transition:background-image calc(var(--dur) * 2) var(--ease)}
-body[data-amb="2"][data-theme="3"].home:before,body[data-amb="2"][data-theme="2"].home:before{opacity:.55}
+/* ---- 2 앰비언트: 포스터를 크게 흐려 위쪽에 번지게. 피처드가 바뀌면 같이 바뀜(전환은 site.js 훅)
+   라이트: 어두운 부분이 회색 안개로 보이지 않게 밝기를 끌어올려 「파스텔 색 빛」만 남김 · 모든 페이지 같은 방식(홈 외엔 첫 피처드 작품) ---- */
+body[data-amb="2"]:before{background:var(--feat-img) center / cover no-repeat;filter:blur(calc(var(--u) * 14)) saturate(2.2) brightness(1.55) contrast(.75);opacity:.5;transition:background-image calc(var(--dur) * 2) var(--ease)}
+body[data-amb="2"]:not(.home):before{height:min(calc(var(--u) * 90),90vh);opacity:.42}
+body[data-amb="2"][data-theme="3"]:before,body[data-amb="2"][data-theme="2"].home:before{filter:blur(calc(var(--u) * 14)) saturate(1.6) brightness(.9);opacity:.55}
 
-/* ---- 4 필름 그레인: 화면 전체에 고정된 회색 입자를 오버레이로 — 흰·검정 바탕은 그대로, 영상·사진 같은 중간 톤에만 입자가 앉음 ---- */
-body[data-amb="4"]:after{content:"";position:fixed;inset:0;z-index:45;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='3 0 0 0 -1  3 0 0 0 -1  3 0 0 0 -1  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* ---- 4 필름 그레인: 배경에만 옅은 입자 — 내용 뒤(z -1)에 깔려 영상·사진·카드 위에는 앉지 않음 ---- */
+body[data-amb="4"]:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.2;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -2.2 1.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+body[data-amb="4"][data-theme="3"]:before,body[data-amb="4"][data-theme="2"].home:before{filter:invert(1);opacity:.16}
 
 /* ===== 83-type.css ===== */
 /* ==========================================================================
    모듈: 글자 위계 (typo) — 글자 크기는 토큰(--fz × --ratio 거듭제곱)에서만 파생, 여기선 비율·굵기·자간·위치만
-   1 기본 · 2 에디토리얼(매거진) · 3 콤팩트(비율 1.2) · 4 모노 라벨
+   1 기본 · 2 에디토리얼(매거진) · 3 콤팩트(비율 1.2) · 4 인덱스(큰 번호 + 고정폭 메타)
    ========================================================================== */
 
 /* ---- 2 에디토리얼: 큰 제목, 굵기 대비, 줄 제목 위에 가는 선 ---- */
@@ -622,19 +641,26 @@ body[data-typo="4"]{--mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,
 body[data-typo="4"] :is(.fx .k,.row .hd .more,.card .s,.lib .tb .cnt,.rail button small,.trail .ti small,.cv td.d,.cv h3 small,.cv .em,.cv .base,.theater .meta .s,.theater .tm,.theater .panel .spec span,.tdesc .meta-tbl span,.pop .bd .s,footer){font-family:var(--mono);font-size:var(--t-micro);letter-spacing:.01em;text-transform:uppercase}
 body[data-typo="4"] :is(.rows,main){counter-reset:sec}
 body[data-typo="4"] .row{counter-increment:sec}
-body[data-typo="4"] .row .hd h2:before,body[data-typo="4"] .cv h3:before{content:counter(sec,decimal-leading-zero);font-family:var(--mono);font-size:var(--t-micro);font-weight:500;letter-spacing:0;color:var(--ink-2);margin-right:var(--s1);vertical-align:.2em}
+/* 번호는 제목보다 크게(두 배 가까이), 가늘고 옅게 — 한눈에 「목차」로 읽히게 */
+body[data-typo="4"] .row .hd h2,body[data-typo="4"] .cv h3{display:flex;align-items:baseline;gap:var(--s2)}
+body[data-typo="4"] .row .hd h2:before,body[data-typo="4"] .cv h3:before{content:counter(sec,decimal-leading-zero);font-family:var(--font);font-size:calc(var(--t-h) * 1.9);font-weight:200;line-height:1;letter-spacing:-.04em;color:var(--ink-2);font-variant-numeric:tabular-nums}
+body[data-typo="4"] .row .hd{min-height:calc(var(--t-h) * 1.9 + var(--s1));align-items:baseline}
 body[data-typo="4"] .cv{counter-reset:sec}
 body[data-typo="4"] .cv h3{counter-increment:sec}
-body[data-typo="4"] .cv h3:before{margin-right:0}
 
 /* ===== 84-btn.css ===== */
 /* ==========================================================================
    모듈: 버튼 모양 (btn) — .btn(재생·상세·쇼릴·도구 링크) + 같은 모양 언어를 쓰는 칩·검색칸
-   1 알약(기본) · 2 둥근 사각(애플 TV·넷플릭스) · 3 테두리 · 4 글자형
+   1 알약(기본) · 2 넷플릭스형(크고 각진 사각) · 3 테두리 · 4 글자형
    ========================================================================== */
-/* ---- 2 둥근 사각: 모서리 토큰(--r, 슬라이더 radius)과 같은 둥글기 ---- */
-body[data-btn="2"] .btn{border-radius:var(--r)}
-body[data-btn="2"] :is(.chip,.lib .q){border-radius:calc(var(--r) * .75)}
+/* ---- 2 넷플릭스형: 모서리 4px의 각진 사각, 피처드·확장 카드 버튼은 크고 굵게 ---- */
+body[data-btn="2"] .btn{border-radius:calc(var(--u) / 2)}
+body[data-btn="2"] :is(.chip,.lib .q){border-radius:calc(var(--u) / 2)}
+body[data-btn="2"] .fx .bt{gap:var(--s1)}
+body[data-btn="2"] .fx .bt .btn{min-height:calc(var(--u) * 6.5);padding:0 calc(var(--u) * 3.5) 0 var(--s3);font-size:var(--t-h);font-weight:700;gap:var(--s1)}
+body[data-btn="2"] .fx .bt .btn .ic.sm{width:var(--s3);height:var(--s3)}
+body[data-btn="2"] .fx .bt .btn.ghost{background:color-mix(in oklab,var(--ink) 14%,transparent)}
+body[data-btn="2"] .pop .bd .btn{border-radius:calc(var(--u) / 2);min-height:calc(var(--u) * 4.5);font-weight:700}
 
 /* ---- 3 테두리: 채움 없이 선만, 강조 버튼은 강조색 선 ---- */
 body[data-btn="3"] .btn,body[data-btn="3"] .fx .bt .btn:not(.ghost),body[data-btn="3"] .fx .bt .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px currentColor}
@@ -666,7 +692,7 @@ body[data-info="3"] .card .t{bottom:calc(var(--s1) + var(--t-micro) * 1.55);-web
 body[data-info="3"] .card .s{bottom:var(--s1);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
 body[data-info="3"] .card.tall :is(.t,.s){left:var(--s1);right:var(--s1)}
 body[data-info="3"] .card.playing :is(.t,.s,.art:after){opacity:0}
-body[data-info="3"][data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.t,.s){left:calc(var(--rk-w) + var(--s2))}
+body[data-info="3"][data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card :is(.t,.s){left:calc(var(--rk) + var(--s2))}
 
 /* ---- 4 호버 때만: 평소엔 썸네일 벽(제목 자리도 없음), 올리면 3과 같은 자리에 제목이 떠오름 (드리블·tvOS 포커스) — 터치 화면은 항상 보임 ---- */
 body[data-info="4"] .card{position:relative}
@@ -676,7 +702,7 @@ body[data-info="4"] .card .t{bottom:calc(var(--s1) + var(--t-micro) * 1.55);-web
 body[data-info="4"] .card .s{bottom:var(--s1);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
 body[data-info="4"] .card.tall :is(.t,.s){left:var(--s1);right:var(--s1)}
 body[data-info="4"] .card.playing :is(.t,.s,.art:after){opacity:0}
-body[data-info="4"][data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.t,.s){left:calc(var(--rk-w) + var(--s2))}
+body[data-info="4"][data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card :is(.t,.s){left:calc(var(--rk) + var(--s2))}
 @media (hover:hover){
   body[data-info="4"] .card:not(:hover):not(:focus-visible) :is(.t,.s,.art:after){opacity:0}
   body[data-info="4"] .card:not(:hover):not(:focus-visible) :is(.t,.s){transform:translateY(var(--s05))}
@@ -796,3 +822,178 @@ body[data-foot="3"] footer a:hover{color:var(--bg)}
 /* ---- 4 가운데: 작게 두 줄 가운데 ---- */
 body[data-foot="4"] footer{border-top:0}
 body[data-foot="4"] footer .in{flex-direction:column;align-items:center;text-align:center;gap:var(--s05)}
+
+/* ===== 91-rowhd.css ===== */
+/* ==========================================================================
+   모듈: 줄 제목 스타일 (rowhd) — .row .hd > h2 + a.more(더보기) + span.pgi(페이지 표시, site.js가 채움)
+   1 기본(제목 + 더보기) · 2 넷플릭스(제목에 올리면 「모두 보기 ›」가 밀려 나옴 + 오른쪽 위 페이지 막대) · 3 굵은 대형 제목
+   ========================================================================== */
+.row .hd .pgi{display:none}
+
+/* ---- 2 넷플릭스: 평소엔 제목만, 줄에 올리면 › , 제목에 올리면 「모두 보기 ›」가 옆으로 밀려 나옴 ---- */
+body[data-rowhd="2"] .row .hd{position:relative;gap:var(--s1)}
+body[data-rowhd="2"] .row .hd .more{display:inline-flex;align-items:center;font-size:0;line-height:1;color:var(--acc);padding-block:var(--s1)}
+body[data-rowhd="2"] .row .hd .more:before{content:"모두 보기";font-size:var(--t-sm);font-weight:600;white-space:nowrap;overflow:hidden;max-width:0;opacity:0;transform:translateX(calc(var(--s1) * -1));transition:max-width var(--dur) var(--ease),opacity var(--d-half) var(--ease),transform var(--dur) var(--ease)}
+body[data-rowhd="2"] .row .hd .more:after{content:"";width:var(--s2);height:var(--s2);background:currentColor;opacity:0;transform:translateX(calc(var(--s1) * -1));transition:opacity var(--d-half) var(--ease),transform var(--dur) var(--ease);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat}
+body[data-rowhd="2"] .row:is(:hover,:focus-within) .hd .more:after{opacity:1;transform:none}
+body[data-rowhd="2"] .row .hd:is(:hover,:focus-within) .more:before{max-width:8em;opacity:1;transform:none;margin-right:var(--s05)}
+/* 오른쪽 위 페이지 표시 막대: 한 화면 = 한 칸, 지금 칸만 진하게 */
+body[data-rowhd="2"] .row .hd .pgi{display:flex;gap:2px;position:absolute;right:0;top:50%;opacity:.7;transition:opacity var(--d-half) var(--ease)}
+body[data-rowhd="2"] .row .hd .pgi i{width:var(--s2);height:2px;background:var(--ink-3);transition:background var(--d-half) var(--ease)}
+body[data-rowhd="2"] .row .hd .pgi i.on{background:var(--ink-2)}
+body[data-rowhd="2"] .row:hover .hd .pgi{opacity:1}
+body[data-rowhd="2"][data-arrow="1"] .row .hd .pgi{right:calc(var(--s5) * 2 + var(--s1) + var(--s2))}
+body[data-rowhd="2"][data-rows="2"] .row .hd .pgi{display:none}
+
+/* ---- 3 굵은 대형 제목: 줄 이름이 화면의 큰 머리말, 더보기는 오른쪽 끝 작은 화살표 링크 ---- */
+body[data-rowhd="3"] .row .hd{align-items:baseline;margin-bottom:var(--s3);min-height:0}
+body[data-rowhd="3"] .row .hd h2{font-size:clamp(var(--t-disp),3.2vw,calc(var(--t-disp) * 1.45));font-weight:800;letter-spacing:-.045em;line-height:1}
+body[data-rowhd="3"] .row .hd .more{margin-left:auto;font-weight:600;color:var(--ink-2)}
+body[data-rowhd="3"] .row .hd .more:after{content:" →"}
+body[data-rowhd="3"][data-arrow="1"] .row .hd .more{margin-right:calc(var(--s5) * 2 + var(--s1) + var(--s2))}
+body[data-rowhd="3"][data-arrow="1"] .row .arr{top:calc((var(--s5) + var(--s3)) * -1)}
+@media (max-width:760px){body[data-rowhd="3"] .row .hd h2{font-size:var(--t-title)}}
+
+/* ===== 92-fnav.css ===== */
+/* ==========================================================================
+   모듈: 피처드 전환 방식 (fnav) — 피처드 작품을 넘기는 손잡이
+   1 점 표시(기본, .fctl 막대) · 2 미니 썸네일 레일(.frail — 피처드 아래, 애플 TV)
+   3 옆 작품이 보이는 캐러셀(가운데 작품 양옆에 이전·다음이 살짝, 제목은 아래 — 디즈니+·애플 TV 웹) · 4 한 작품 고정(넘기지 않고 구간 반복)
+   ========================================================================== */
+.frail{display:none}
+
+/* ---- 2 미니 썸네일 레일: 점 대신 작품 썸네일 줄, 지금 작품은 진하게 + 아래 진행 막대 ---- */
+body[data-fnav="2"] .fctl button[data-i]{display:none}
+body[data-fnav="2"] .fctl .pp{margin-left:0}
+body[data-fnav="2"] .frail{display:flex;gap:var(--s1);max-width:var(--maxw);margin:calc(var(--s1) * -1) auto var(--s5);padding:var(--s05) var(--gut);position:relative;z-index:2;overflow-x:auto;scrollbar-width:none}
+body[data-fnav="2"] .frail::-webkit-scrollbar{display:none}
+.frail button{position:relative;flex:none;width:calc(var(--u) * 17);border-radius:var(--r);overflow:hidden;background:var(--ink-4);opacity:.45;filter:saturate(.7);box-shadow:var(--ring);transition:opacity var(--d-half) var(--ease),filter var(--d-half) var(--ease),box-shadow var(--d-half) var(--ease)}
+.frail button:hover{opacity:.85;filter:none}
+.frail button.on{opacity:1;filter:none;box-shadow:0 0 0 2px var(--ink)}
+.frail .th{position:relative;display:block;aspect-ratio:16/9;overflow:hidden}
+.frail .th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frail .th.fill img:not(.bg){object-fit:contain}
+.frail .th.fill img.bg{filter:blur(12px) brightness(.85) saturate(1.35);transform:scale(1.15)}
+.frail button i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--acc)}
+.frail button:not(.on) i{width:0!important}
+
+/* ---- 3 옆 작품이 보이는 캐러셀: 피처드 크기(--featw)의 카드가 가운데, 양옆 작품은 흐리게 걸쳐 보임 ---- */
+body[data-fnav="3"] .feat{max-width:none;overflow-x:clip}
+body.home[data-fnav="3"] main{padding-top:calc(var(--nav-h) + var(--s2))}
+body[data-fnav="3"] .feat .fbox{display:block;width:min(var(--featw,1120px),calc(100vw - (var(--gut) + 8vw) * 2));padding:0;margin:0 auto}
+body[data-fnav="3"] .feat .fv{overflow:visible;-webkit-mask-image:none;mask-image:none;background:none}
+body[data-fnav="3"] .feat .fv .veil{display:none}
+body[data-fnav="3"] .feat{padding-bottom:var(--s5)}
+body[data-fnav="3"] .feat .fs{--o:0;opacity:.5;transform:translateX(calc(var(--o) * (96% + var(--s2)))) scale(.92);border-radius:var(--r2);overflow:hidden;background:var(--frame);cursor:pointer;
+  transition:transform calc(var(--dur) * 2) var(--ease),opacity calc(var(--dur) * 1.5) var(--ease),box-shadow var(--dur) var(--ease)}
+body[data-fnav="3"] .feat .fs:hover{opacity:.75}
+body[data-fnav="3"] .feat .fs.on{opacity:1;transform:none;cursor:default;box-shadow:var(--shadow-lg),var(--ring);z-index:1}
+body[data-fnav="3"] .feat .fs.far{opacity:0;pointer-events:none}
+body[data-fnav="3"] .feat .fs.jump{transition:opacity calc(var(--dur) * 1.5) var(--ease)}
+body[data-fnav="3"] .feat .ft{position:static;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s3);max-width:none;margin:var(--s3) 0 0;padding:0}
+body[data-fnav="3"] .feat .fx h2{font-size:var(--t-title)}
+body[data-fnav="3"] .feat .fctl{margin-top:0}
+
+/* ---- 4 한 작품 고정: 넘기지 않음 — 점·레일 숨김, 재생·소리 단추만 ---- */
+body[data-fnav="4"] .fctl button[data-i],body[data-fnav="4"] .frail{display:none}
+body[data-fnav="4"] .fctl .pp{margin-left:0}
+@media (max-width:760px){
+  body[data-fnav="3"] .feat .ft{flex-direction:column;align-items:flex-start;gap:var(--s2)}
+  body[data-fnav="3"] .feat .fx h2{font-size:var(--t-h)!important}
+}
+
+/* ===== 93-feath.css ===== */
+/* ==========================================================================
+   모듈: 피처드 높이 기준 (feath)
+   1 너비 기준(기본) — 피처드 크기(--featw) 폭의 16:9
+   2 화면 높이 기준(넷플릭스) — 첫 화면 = 피처드 + 다음 줄 제목·카드 윗부분(--peek). 영상 폭은 그 높이의 16:9로 자동(피처드 크기 슬라이더 무시)
+      좁은 화면(900px 이하, 폰 홈)은 1과 같음
+   ========================================================================== */
+@media (min-width:901px){
+  body.home[data-feath="2"]{--peek:clamp(150px,24vh,250px);--featw:calc((100svh - var(--peek)) * 16 / 9)!important}
+  body.home[data-feath="2"] .feat{max-width:none;min-height:calc(100svh - var(--peek));display:flex;flex-direction:column;justify-content:center}
+  body.home[data-feath="2"] .feat > .fbox{flex:none}
+  /* 옆 제목형(2·3): 글자 칸(260px~)을 뺀 나머지를 영상이 최대한 차지 */
+  body.home[data-feath="2"]:is([data-feat="2"],[data-feat="3"]):not([data-fnav="3"]) .feat .fbox{width:100%;grid-template-columns:minmax(0,min(var(--featw),calc(100% - 260px))) minmax(260px,1fr)}
+  body.home[data-feath="2"][data-fnav="3"] .feat{justify-content:flex-start}
+  body.home[data-feath="2"][data-fnav="3"]{--featw:calc((100svh - var(--peek) - var(--nav-h) - var(--s2) - 120px) * 16 / 9)!important}
+}
+
+/* ===== 94-cardar.css ===== */
+/* ==========================================================================
+   모듈: 카드 비율 방식 (cardar) — 홈 줄 카드
+   1 16:9 고정(기본) — 16:9가 아닌 그림은 블러로 채움
+   2 원비율 — 높이는 16:9 카드 높이로 고정, 폭은 포스터 원래 비율(블러 채움 없음). site.js가 원본 포스터 + --ar(가로/세로)를 넣음
+      그리드(줄 레이아웃 2)·첫 카드 크게(3)의 큰 칸·랭킹(4) 줄처럼 칸 모양이 정해진 곳은 1처럼 블러 채움으로 둠
+   ========================================================================== */
+body[data-cardar="2"]:not([data-rows="2"]) .row .card.nat:not(body[data-rows="3"] .sc > .card:first-child):not(body[data-rows="4"] .rows > .row:is(:first-child:not(.tiles),.tiles + .row) .card){--ch:calc(var(--cw) * 9 / 16);width:calc(var(--ch) * var(--ar))}
+body[data-cardar="2"]:not([data-rows="2"]) .row .card.tall.nat{--ch:calc(var(--cw) * 16 / 9)}
+body[data-cardar="2"]:not([data-rows="2"]) .row .card.nat:not(body[data-rows="3"] .sc > .card:first-child):not(body[data-rows="4"] .rows > .row:is(:first-child:not(.tiles),.tiles + .row) .card) .art{aspect-ratio:var(--ar)}
+body[data-cardar="2"]:not([data-rows="2"]) .row .card.nat:not(body[data-rows="3"] .sc > .card:first-child):not(body[data-rows="4"] .rows > .row:is(:first-child:not(.tiles),.tiles + .row) .card) .art img.bg{display:none}
+body[data-cardar="2"]:not([data-rows="2"]) .row .card.nat:not(body[data-rows="3"] .sc > .card:first-child):not(body[data-rows="4"] .rows > .row:is(:first-child:not(.tiles),.tiles + .row) .card) .art img:not(.bg){object-fit:cover}
+
+/* ===== 95-thtr.css ===== */
+/* ==========================================================================
+   모듈: 카드 → 상영관 전환 모션 (thtr)
+   1 페이드(기본) — 상영관이 페이드로 나타남
+   2 썸네일이 커짐 — 누른 썸네일(카드·확장 카드·피처드)이 상영관 화면 자리로 커지고, 닫으면 제자리로 돌아감
+      View Transitions API(site.js morph). 미지원 브라우저·움직임 줄이기·편집 화면은 1과 같음
+   ========================================================================== */
+.theater.vt,.theater.vt .stage,.theater.vt .panel,.theater.vt .top{transition:none!important}
+::view-transition-group(pf-hero){animation-duration:calc(var(--vt-dur,400ms) * 1.25);animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-old(pf-hero),::view-transition-new(pf-hero){height:100%;object-fit:contain;animation-duration:calc(var(--vt-dur,400ms) * .8)}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt-dur,400ms);animation-timing-function:cubic-bezier(.32,.72,0,1)}
+
+/* ===== 96-homel.css ===== */
+/* ==========================================================================
+   모듈: 홈 구성 (homel)
+   1 빌보드 + 줄(기본)
+   2 큰 타일 + 줄 — 피처드 대신 대표 작업 앞 3개를 큰 가로 타일로(왼쪽 큰 1 + 오른쪽 2), 그 아래 줄(대표 작업 줄은 나머지)
+      site.js renderHome이 .feat를 숨기고 .rows 맨 앞에 section.row.tiles를 넣음. 편집 화면(/edit)은 늘 1
+   ========================================================================== */
+body.home main:has(> .feat[hidden]){padding-top:calc(var(--nav-h) + var(--s3))}
+body .rows > .row.tiles{padding-top:0}
+body .row.tiles > .wrap > .sc{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr);grid-template-rows:auto auto;gap:var(--s3);overflow:visible;margin:0;padding:0;scroll-snap-type:none}
+body .row.tiles .card{width:auto}
+body .row.tiles .card:first-child{grid-row:1 / span 2}
+body .row.tiles .card .t{font-size:var(--t-body);margin-top:var(--s1)}
+body .row.tiles .card:first-child .t{font-size:var(--t-title);font-weight:700;letter-spacing:-.025em;line-height:1.15;margin-top:var(--s2)}
+body .row.tiles .card:first-child .s{font-size:var(--t-sm);margin-top:var(--s05)}
+@media (max-width:760px){body .row.tiles > .wrap > .sc{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s2)}body .row.tiles .card:first-child{grid-row:auto;grid-column:1 / -1}body .row.tiles .card:first-child .t{font-size:var(--t-h)}}
+
+/* ===== 97-detail.css ===== */
+/* ==========================================================================
+   모듈: 상세 진입 방식 (detail)
+   1 상영관(기본) — 카드를 누르면 바로 상영관에서 재생
+   2 상세 창(넷플릭스) — 카드·「상세 정보」를 누르면 작품 정보 창(.dmod)이 먼저 뜸: 위 원비율 미리보기(블러 채움), 아래 제목·재생·정보·비슷한 작업.
+      재생은 창 안 「재생」 → 상영관. 편집 화면은 늘 1
+   ========================================================================== */
+.dmod{position:fixed;inset:0;z-index:58;overflow-y:auto;overscroll-behavior:contain;display:flex;justify-content:center;align-items:flex-start;padding:calc(var(--u) * 6) var(--gut) var(--s8);background:color-mix(in oklab,#000 0%,transparent);transition:background var(--dur) var(--ease)}
+.dmod.on{background:color-mix(in oklab,#000 62%,transparent)}
+.dmod .dbox{position:relative;width:min(100%,calc(var(--u) * 115));background:var(--bg);color:var(--ink);border-radius:var(--r2);overflow:hidden;box-shadow:var(--shadow-lg);outline:none;opacity:0;transform:translateY(var(--s3)) scale(.96);transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease)}
+.dmod.on .dbox{opacity:1;transform:none}
+.dmod .dx{position:absolute;right:var(--s2);top:var(--s2);z-index:3;display:grid;place-items:center;width:var(--s5);height:var(--s5);border-radius:50%;background:color-mix(in oklab,var(--frame) 70%,transparent);color:var(--on-frame);backdrop-filter:blur(8px)}
+.dmod .dv{position:relative;aspect-ratio:16/9;background:var(--frame);overflow:hidden}
+.dmod .dv .bgb{position:absolute;inset:-10%;background-size:cover;background-position:center;filter:blur(32px) saturate(1.2) brightness(.7);transform:scale(1.1)}
+.dmod .dv img,.dmod .dv video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.dmod .dv video{opacity:0;transition:opacity var(--d-half) var(--ease)}.dmod .dv video.on{opacity:1}
+.dmod .dbd{padding:var(--s3) var(--s5) var(--s5)}
+.dmod .dh{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s3)}
+.dmod .dh h2{font-size:var(--t-title);font-weight:700;letter-spacing:-.025em;line-height:1.15;text-wrap:balance}
+.dmod .dh .s{font-size:var(--t-sm);color:var(--ink-2);margin-top:var(--s05)}
+.dmod .dh .bt{display:flex;gap:var(--s1);align-items:center;flex:none}
+.dmod .dh .btn{min-height:var(--s5);padding:var(--s1) var(--s3)}
+.dmod .dh .ib{display:grid;place-items:center;width:var(--s5);height:var(--s5);border-radius:50%;background:var(--ink-4);color:var(--ink)}
+.dmod .dg{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:var(--s5);margin-top:var(--s3);padding-top:var(--s3);border-top:1px solid var(--ink-3)}
+.dmod .lead{font-size:var(--t-h);font-weight:500;line-height:1.45;letter-spacing:-.01em}
+.dmod .hl{margin-top:var(--s2);padding:var(--s1) var(--s2);border-left:2px solid var(--acc);line-height:1.45}
+.dmod .spec{display:grid;grid-template-columns:auto 1fr;gap:var(--s1) var(--s2);align-content:start;font-size:var(--t-sm);line-height:1.45}
+.dmod .spec span{color:var(--ink-2);white-space:nowrap}.dmod .spec b{font-weight:500}
+.dmod .dsim h3{font-size:var(--t-h);font-weight:700;letter-spacing:-.02em;margin:var(--s5) 0 var(--s2)}
+.dmod .sg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s2)}
+.dmod .sg button{text-align:left;color:var(--ink)}
+.dmod .sg img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);background:var(--ink-4);box-shadow:var(--ring)}
+.dmod .sg b{display:block;font-size:var(--t-sm);font-weight:600;margin-top:var(--s1);line-height:1.35}
+.dmod .sg button:hover img{box-shadow:var(--shadow),var(--ring)}
+@media (max-width:760px){.dmod{padding:var(--s2)}.dmod .dbd{padding:var(--s2)}.dmod .dh{flex-direction:column;align-items:flex-start}.dmod .dg{grid-template-columns:minmax(0,1fr)}.dmod .sg{grid-template-columns:repeat(2,minmax(0,1fr))}}

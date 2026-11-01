@@ -1,0 +1,30 @@
+/* ==========================================================================
+   모듈: 줄 제목 스타일 (rowhd) — .row .hd > h2 + a.more(더보기) + span.pgi(페이지 표시, site.js가 채움)
+   1 기본(제목 + 더보기) · 2 넷플릭스(제목에 올리면 「모두 보기 ›」가 밀려 나옴 + 오른쪽 위 페이지 막대) · 3 굵은 대형 제목
+   ========================================================================== */
+.row .hd .pgi{display:none}
+
+/* ---- 2 넷플릭스: 평소엔 제목만, 줄에 올리면 › , 제목에 올리면 「모두 보기 ›」가 옆으로 밀려 나옴 ---- */
+body[data-rowhd="2"] .row .hd{position:relative;gap:var(--s1)}
+body[data-rowhd="2"] .row .hd .more{display:inline-flex;align-items:center;font-size:0;line-height:1;color:var(--acc);padding-block:var(--s1)}
+body[data-rowhd="2"] .row .hd .more:before{content:"모두 보기";font-size:var(--t-sm);font-weight:600;white-space:nowrap;overflow:hidden;max-width:0;opacity:0;transform:translateX(calc(var(--s1) * -1));transition:max-width var(--dur) var(--ease),opacity var(--d-half) var(--ease),transform var(--dur) var(--ease)}
+body[data-rowhd="2"] .row .hd .more:after{content:"";width:var(--s2);height:var(--s2);background:currentColor;opacity:0;transform:translateX(calc(var(--s1) * -1));transition:opacity var(--d-half) var(--ease),transform var(--dur) var(--ease);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 5l7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat}
+body[data-rowhd="2"] .row:is(:hover,:focus-within) .hd .more:after{opacity:1;transform:none}
+body[data-rowhd="2"] .row .hd:is(:hover,:focus-within) .more:before{max-width:8em;opacity:1;transform:none;margin-right:var(--s05)}
+/* 오른쪽 위 페이지 표시 막대: 한 화면 = 한 칸, 지금 칸만 진하게 */
+body[data-rowhd="2"] .row .hd .pgi{display:flex;gap:2px;position:absolute;right:0;top:50%;opacity:.7;transition:opacity var(--d-half) var(--ease)}
+body[data-rowhd="2"] .row .hd .pgi i{width:var(--s2);height:2px;background:var(--ink-3);transition:background var(--d-half) var(--ease)}
+body[data-rowhd="2"] .row .hd .pgi i.on{background:var(--ink-2)}
+body[data-rowhd="2"] .row:hover .hd .pgi{opacity:1}
+body[data-rowhd="2"][data-arrow="1"] .row .hd .pgi{right:calc(var(--s5) * 2 + var(--s1) + var(--s2))}
+body[data-rowhd="2"][data-rows="2"] .row .hd .pgi{display:none}
+
+/* ---- 3 굵은 대형 제목: 줄 이름이 화면의 큰 머리말, 더보기는 오른쪽 끝 작은 화살표 링크 ---- */
+body[data-rowhd="3"] .row .hd{align-items:baseline;margin-bottom:var(--s3);min-height:0}
+body[data-rowhd="3"] .row .hd h2{font-size:clamp(var(--t-disp),3.2vw,calc(var(--t-disp) * 1.45));font-weight:800;letter-spacing:-.045em;line-height:1}
+body[data-rowhd="3"] .row .hd .more{margin-left:auto;font-weight:600;color:var(--ink-2)}
+body[data-rowhd="3"] .row .hd .more:after{content:" →"}
+body[data-rowhd="3"][data-arrow="1"] .row .hd .more{margin-right:calc(var(--s5) * 2 + var(--s1) + var(--s2))}
+body[data-rowhd="3"][data-arrow="1"] .row .arr{top:calc((var(--s5) + var(--s3)) * -1)}
+@media (max-width:760px){body[data-rowhd="3"] .row .hd h2{font-size:var(--t-title)}}

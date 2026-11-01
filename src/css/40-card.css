@@ -19,10 +19,13 @@
 body[data-card="2"] .card .art{border-radius:calc(var(--r) / 2)}
 body[data-card="2"] .card .t,body[data-card="2"] .card .s{display:none}
 body[data-card="2"] .row .sc{--gap:var(--s1)}
-body[data-card="3"] .card .art{border-radius:calc(var(--r) * 1.75);box-shadow:var(--shadow),var(--ring)}
-body[data-card="3"] .card:hover .art{box-shadow:var(--shadow-lg),var(--ring)}
-body[data-card="3"] .row .sc{--gap:var(--s3)}
-body[data-card="3"] .card .t{font-size:var(--t-body);margin-top:var(--s2)}
+/* 3 패널: 썸네일과 제목·종류가 옅은 판 하나에 담김 (앱스토어 투데이·스팀) */
+body[data-card="3"] .card{background:var(--ink-4);border-radius:var(--r2);padding:var(--s1) var(--s1) var(--s2);transition:background var(--d-micro) var(--ease)}
+body[data-card="3"] .card:hover{background:var(--ink-3)}
+body[data-card="3"] .card :is(.t,.s){padding-inline:var(--s05)}
+body[data-card="3"] .card .t{font-size:var(--t-body);margin-top:var(--s1)}
+body[data-card="3"]:is([data-info="3"],[data-info="4"]) .card{padding-bottom:var(--s1)}
+body[data-card="3"]:is([data-info="3"],[data-info="4"]) .card :is(.t,.s){padding-inline:var(--s1)}
 
 /* ==========================================================================
    모듈: 카드 크기 (size) — 1 작게 · 2 기본 · 3 크게

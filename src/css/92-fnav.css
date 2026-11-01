@@ -1,0 +1,46 @@
+/* ==========================================================================
+   모듈: 피처드 전환 방식 (fnav) — 피처드 작품을 넘기는 손잡이
+   1 점 표시(기본, .fctl 막대) · 2 미니 썸네일 레일(.frail — 피처드 아래, 애플 TV)
+   3 옆 작품이 보이는 캐러셀(가운데 작품 양옆에 이전·다음이 살짝, 제목은 아래 — 디즈니+·애플 TV 웹) · 4 한 작품 고정(넘기지 않고 구간 반복)
+   ========================================================================== */
+.frail{display:none}
+
+/* ---- 2 미니 썸네일 레일: 점 대신 작품 썸네일 줄, 지금 작품은 진하게 + 아래 진행 막대 ---- */
+body[data-fnav="2"] .fctl button[data-i]{display:none}
+body[data-fnav="2"] .fctl .pp{margin-left:0}
+body[data-fnav="2"] .frail{display:flex;gap:var(--s1);max-width:var(--maxw);margin:calc(var(--s1) * -1) auto var(--s5);padding:var(--s05) var(--gut);position:relative;z-index:2;overflow-x:auto;scrollbar-width:none}
+body[data-fnav="2"] .frail::-webkit-scrollbar{display:none}
+.frail button{position:relative;flex:none;width:calc(var(--u) * 17);border-radius:var(--r);overflow:hidden;background:var(--ink-4);opacity:.45;filter:saturate(.7);box-shadow:var(--ring);transition:opacity var(--d-half) var(--ease),filter var(--d-half) var(--ease),box-shadow var(--d-half) var(--ease)}
+.frail button:hover{opacity:.85;filter:none}
+.frail button.on{opacity:1;filter:none;box-shadow:0 0 0 2px var(--ink)}
+.frail .th{position:relative;display:block;aspect-ratio:16/9;overflow:hidden}
+.frail .th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frail .th.fill img:not(.bg){object-fit:contain}
+.frail .th.fill img.bg{filter:blur(12px) brightness(.85) saturate(1.35);transform:scale(1.15)}
+.frail button i{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--acc)}
+.frail button:not(.on) i{width:0!important}
+
+/* ---- 3 옆 작품이 보이는 캐러셀: 피처드 크기(--featw)의 카드가 가운데, 양옆 작품은 흐리게 걸쳐 보임 ---- */
+body[data-fnav="3"] .feat{max-width:none;overflow-x:clip}
+body.home[data-fnav="3"] main{padding-top:calc(var(--nav-h) + var(--s2))}
+body[data-fnav="3"] .feat .fbox{display:block;width:min(var(--featw,1120px),calc(100vw - (var(--gut) + 8vw) * 2));padding:0;margin:0 auto}
+body[data-fnav="3"] .feat .fv{overflow:visible;-webkit-mask-image:none;mask-image:none;background:none}
+body[data-fnav="3"] .feat .fv .veil{display:none}
+body[data-fnav="3"] .feat{padding-bottom:var(--s5)}
+body[data-fnav="3"] .feat .fs{--o:0;opacity:.5;transform:translateX(calc(var(--o) * (96% + var(--s2)))) scale(.92);border-radius:var(--r2);overflow:hidden;background:var(--frame);cursor:pointer;
+  transition:transform calc(var(--dur) * 2) var(--ease),opacity calc(var(--dur) * 1.5) var(--ease),box-shadow var(--dur) var(--ease)}
+body[data-fnav="3"] .feat .fs:hover{opacity:.75}
+body[data-fnav="3"] .feat .fs.on{opacity:1;transform:none;cursor:default;box-shadow:var(--shadow-lg),var(--ring);z-index:1}
+body[data-fnav="3"] .feat .fs.far{opacity:0;pointer-events:none}
+body[data-fnav="3"] .feat .fs.jump{transition:opacity calc(var(--dur) * 1.5) var(--ease)}
+body[data-fnav="3"] .feat .ft{position:static;display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s3);max-width:none;margin:var(--s3) 0 0;padding:0}
+body[data-fnav="3"] .feat .fx h2{font-size:var(--t-title)}
+body[data-fnav="3"] .feat .fctl{margin-top:0}
+
+/* ---- 4 한 작품 고정: 넘기지 않음 — 점·레일 숨김, 재생·소리 단추만 ---- */
+body[data-fnav="4"] .fctl button[data-i],body[data-fnav="4"] .frail{display:none}
+body[data-fnav="4"] .fctl .pp{margin-left:0}
+@media (max-width:760px){
+  body[data-fnav="3"] .feat .ft{flex-direction:column;align-items:flex-start;gap:var(--s2)}
+  body[data-fnav="3"] .feat .fx h2{font-size:var(--t-h)!important}
+}

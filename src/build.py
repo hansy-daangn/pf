@@ -93,7 +93,7 @@ def bb_range(w):
     m = w.get('media') or {}; v = feat_video(w); dur = (v or {}).get('dur') or 8
     a, b = (m.get('billboard') or [m.get('start') or 0, (m.get('start') or 0) + 8])[:2]
     a = max(0.0, min(float(a), dur - 1)); b = min(float(b), dur)
-    if b - a < 3: b = min(dur, a + 6)
+    if b - a < 3 - 1e-6: b = min(dur, a + 6)
     return round(a, 2), round(b, 2)
 def bb_poster(w):
     """피처드 첫 화면 = 재생 구간 시작 프레임(영상이 시작될 때 장면이 튀지 않게). assets/poster/bb/<id>_<시작초>.jpg"""
@@ -202,7 +202,7 @@ def home(edit=False):
     body = f'''<body class="home" data-base="./"{' data-edit="1"' if edit else ''}>{nav('index.html')}<main>
 <section class="feat" aria-label="피처드 작업"></section><div class="rows"></div>{noscript(W)}
 </main>{foot()}{tail('<script src="js/edit.js" defer></script>' if edit else '', edit)}'''
-    h = head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat0) if feat0 else None, VP('home'))
+    h = head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat0) if feat0 else None, 'width=device-width,initial-scale=1,viewport-fit=cover' if edit else VP('home'))
     if edit: h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8"><base href="../"><meta name="robots" content="noindex">', 1).replace('<link rel="stylesheet" href="css/site.css">', '<link rel="stylesheet" href="css/site.css"><link rel="stylesheet" href="css/edit.css">')
     return h + body
 

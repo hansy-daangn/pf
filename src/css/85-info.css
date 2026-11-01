@@ -14,7 +14,7 @@ body[data-info="3"] .card .t{bottom:calc(var(--s1) + var(--t-micro) * 1.55);-web
 body[data-info="3"] .card .s{bottom:var(--s1);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
 body[data-info="3"] .card.tall :is(.t,.s){left:var(--s1);right:var(--s1)}
 body[data-info="3"] .card.playing :is(.t,.s,.art:after){opacity:0}
-body[data-info="3"][data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.t,.s){left:calc(var(--rk-w) + var(--s2))}
+body[data-info="3"][data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card :is(.t,.s){left:calc(var(--rk) + var(--s2))}
 
 /* ---- 4 호버 때만: 평소엔 썸네일 벽(제목 자리도 없음), 올리면 3과 같은 자리에 제목이 떠오름 (드리블·tvOS 포커스) — 터치 화면은 항상 보임 ---- */
 body[data-info="4"] .card{position:relative}
@@ -24,7 +24,7 @@ body[data-info="4"] .card .t{bottom:calc(var(--s1) + var(--t-micro) * 1.55);-web
 body[data-info="4"] .card .s{bottom:var(--s1);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
 body[data-info="4"] .card.tall :is(.t,.s){left:var(--s1);right:var(--s1)}
 body[data-info="4"] .card.playing :is(.t,.s,.art:after){opacity:0}
-body[data-info="4"][data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.t,.s){left:calc(var(--rk-w) + var(--s2))}
+body[data-info="4"][data-rows="4"] :is(.rows > .row:first-child:not(.tiles),.row.tiles + .row) .card :is(.t,.s){left:calc(var(--rk) + var(--s2))}
 @media (hover:hover){
   body[data-info="4"] .card:not(:hover):not(:focus-visible) :is(.t,.s,.art:after){opacity:0}
   body[data-info="4"] .card:not(:hover):not(:focus-visible) :is(.t,.s){transform:translateY(var(--s05))}

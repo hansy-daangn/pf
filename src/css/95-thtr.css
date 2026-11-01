@@ -1,0 +1,10 @@
+/* ==========================================================================
+   모듈: 카드 → 상영관 전환 모션 (thtr)
+   1 페이드(기본) — 상영관이 페이드로 나타남
+   2 썸네일이 커짐 — 누른 썸네일(카드·확장 카드·피처드)이 상영관 화면 자리로 커지고, 닫으면 제자리로 돌아감
+      View Transitions API(site.js morph). 미지원 브라우저·움직임 줄이기·편집 화면은 1과 같음
+   ========================================================================== */
+.theater.vt,.theater.vt .stage,.theater.vt .panel,.theater.vt .top{transition:none!important}
+::view-transition-group(pf-hero){animation-duration:calc(var(--vt-dur,400ms) * 1.25);animation-timing-function:cubic-bezier(.32,.72,0,1)}
+::view-transition-old(pf-hero),::view-transition-new(pf-hero){height:100%;object-fit:contain;animation-duration:calc(var(--vt-dur,400ms) * .8)}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--vt-dur,400ms);animation-timing-function:cubic-bezier(.32,.72,0,1)}
