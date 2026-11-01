@@ -11,6 +11,8 @@
   --ratio:1.3;
   --u:8px;
   --dur:400ms; --ease:cubic-bezier(.32,.72,0,1);
+  /* 영상 프레임(레터박스)과 그 위 글자 — 테마와 무관하게 항상 어두운 틀 */
+  --frame:#0b0b0d; --on-frame:#f2f0ea;
 }
 :root,body,.theater{
   /* 색 파생 */
@@ -21,22 +23,23 @@
   --shadow:0 2px 12px color-mix(in oklab,var(--ink) 14%,transparent);
   --shadow-lg:0 18px 50px color-mix(in oklab,var(--ink) 28%,transparent);
   --ring:inset 0 0 0 1px color-mix(in oklab,var(--ink) 6%,transparent);
-  /* 글자 파생 (body 16 고정) */
-  --t-micro:calc(1rem / var(--ratio));
-  --t-body:1rem;
-  --t-h:calc(1rem * var(--ratio));
-  --t-title:calc(1rem * var(--ratio) * var(--ratio));
-  --t-disp:calc(1rem * var(--ratio) * var(--ratio) * var(--ratio));
-  --t-hero:clamp(calc(1rem * var(--ratio) * var(--ratio) * var(--ratio)),4.2vw,calc(1rem * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio)));
+  /* 글자 파생 (본문 16 — 슬라이더 fz로 14~20) */
+  --t-micro:calc(var(--fz,1rem) / var(--ratio));
+  --t-body:var(--fz,1rem);
+  --t-h:calc(var(--fz,1rem) * var(--ratio));
+  --t-title:calc(var(--fz,1rem) * var(--ratio) * var(--ratio));
+  --t-disp:calc(var(--fz,1rem) * var(--ratio) * var(--ratio) * var(--ratio));
+  --t-hero:clamp(calc(var(--fz,1rem) * var(--ratio) * var(--ratio) * var(--ratio)),4.2vw,calc(var(--fz,1rem) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio) * var(--ratio)));
   /* 간격 파생 (unit × 피보나치, 반 단위 1개) */
   --s05:calc(var(--u)/2);--s1:var(--u);--s2:calc(var(--u)*2);--s3:calc(var(--u)*3);--s5:calc(var(--u)*5);--s8:calc(var(--u)*8);--s13:calc(var(--u)*13);
-  --r:var(--u);--r2:calc(var(--u)*1.5);
+  --r:var(--radius,var(--u));--r2:calc(var(--r)*1.5);
+  --scrim:color-mix(in oklab,var(--frame) 78%,transparent);
   --d-micro:calc(var(--dur)/4);--d-half:calc(var(--dur)/2);
   --t-sm:calc((var(--t-body) + var(--t-micro)) / 2);
   --tap:calc(var(--u)*5.5);
   --nav-h:calc(var(--u)*7);
-  /* 레이아웃: 최대 폭 1440 + 좌우 여백(화면의 4%, 16~64px) — 넓은 화면에서도 내용이 가운데 모임 */
-  --maxw:calc(var(--u)*180);
+  /* 레이아웃: 최대 폭 1440(슬라이더 sitew) + 좌우 여백(화면의 4%, 16~64px) — 넓은 화면에서도 내용이 가운데 모임 */
+  --maxw:var(--sitew,calc(var(--u)*180));
   --gut:clamp(var(--s2),4vw,var(--s8));
 }
 @media (prefers-reduced-motion:reduce){:root,body{--dur:0ms}}
@@ -47,6 +50,11 @@ body[data-theme="2"].home,body[data-theme="3"]{--bg:#0b0b0d;--ink:#f2f0ea;--shad
 /* ---- 모듈: 움직임 속도 (motion) ---- 1 280ms · 2 400ms · 3 520ms */
 body[data-motion="1"]{--dur:280ms}
 body[data-motion="3"]{--dur:520ms}
+/* ---- 모듈: 강조색 (acc) ---- 1 레드 · 2 당근 오렌지 · 3 잉크(무채색) · 4 블루 — 쓰는 곳: 쇼릴 버튼·현재 탭 밑줄·진행 바·포커스 링 */
+body[data-acc="2"]{--acc:#ff6f0f}
+body[data-acc="3"],body[data-acc="3"] .theater{--acc:var(--ink)}
+body[data-acc="3"] .btn.acc{color:var(--bg)}
+body[data-acc="4"]{--acc:#0a66e8}
 
 /* ===== 10-base.css ===== */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -87,6 +95,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 main{padding-top:var(--nav-h);animation:pagein calc(var(--dur)*1.5) var(--ease) both}
 @keyframes pagein{from{opacity:0;transform:translateY(var(--s1))}to{opacity:1;transform:none}}
+/* ---- 모듈: 페이지 등장 (pagein) ---- 1 살짝 올라옴(위) · 2 페이드만 · 3 확대(98%→100%, 애플) · 4 없음 */
+@keyframes pagein-fade{from{opacity:0}to{opacity:1}}
+@keyframes pagein-zoom{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
+body[data-pagein="2"] main{animation-name:pagein-fade}
+body[data-pagein="3"] main{animation-name:pagein-zoom;transform-origin:50% 0}
+body[data-pagein="4"] main{animation:none}
 
 /* ---- 섹션 공통 ---- */
 .sec{padding-block:var(--s8)}
@@ -183,8 +197,8 @@ body[data-feat="4"] .fctl{margin-top:0}
    모듈: 줄 화살표 (arrow) — 장르 줄(선반). 넘칠 때만 화살표, 항상 보임, 끝이면 흐리게
    1 제목 오른쪽 · 2 줄 양 끝(카드 옆 여백)
    ========================================================================== */
-.row{padding-top:var(--s8)}
-.feat + .row{padding-top:var(--s5)}
+.row{padding-top:var(--rowgap,var(--s8))}
+.feat + .rows > .row:first-child{padding-top:var(--s5)}
 .row .wrap{position:relative}
 .row .hd{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s2);min-height:var(--s5)}
 .row .hd h2{font-size:var(--t-h);font-weight:700;letter-spacing:-.02em}
@@ -227,10 +241,10 @@ body[data-arrow="2"] .row .ar:disabled{opacity:0;pointer-events:none}
 /* ==========================================================================
    모듈: 카드 모양 (card) — 1 기본 · 2 미니멀(썸네일만) · 3 부드럽게
    ========================================================================== */
-body[data-card="2"] .card .art{border-radius:4px}
+body[data-card="2"] .card .art{border-radius:calc(var(--r) / 2)}
 body[data-card="2"] .card .t,body[data-card="2"] .card .s{display:none}
 body[data-card="2"] .row .sc{--gap:var(--s1)}
-body[data-card="3"] .card .art{border-radius:14px;box-shadow:var(--shadow),var(--ring)}
+body[data-card="3"] .card .art{border-radius:calc(var(--r) * 1.75);box-shadow:var(--shadow),var(--ring)}
 body[data-card="3"] .card:hover .art{box-shadow:var(--shadow-lg),var(--ring)}
 body[data-card="3"] .row .sc{--gap:var(--s3)}
 body[data-card="3"] .card .t{font-size:var(--t-body);margin-top:var(--s2)}
@@ -242,6 +256,10 @@ body[data-size="1"] .card.wide{--cw:clamp(168px,15vw,224px)}
 body[data-size="1"] .card.tall{--cw:clamp(108px,9.5vw,140px)}
 body[data-size="3"] .card.wide{--cw:clamp(240px,25vw,360px)}
 body[data-size="3"] .card.tall{--cw:clamp(150px,14vw,210px)}
+
+/* 16:9 썸네일이 아직 없을 때(편집 직후): 같은 이미지를 흐리게 깔고 원비율로 올림 */
+.card .art.fill img.bg{filter:blur(18px) brightness(.75);transform:scale(1.15)}
+.card .art.fill img:not(.bg){object-fit:contain}
 
 /* ===== 50-hover.css ===== */
 /* ---- 확장 카드 (hover 1) ---- */
@@ -429,20 +447,348 @@ body[data-hover="3"] .row .sc{padding-block:var(--s2) var(--s2)}
   body[data-theater="2"] .theater .infob{display:none}
 }
 
-/* ===== 90-design.css ===== */
-/* ---- 디자인 패널 (?design 일 때만, 방문자에겐 안 보임) ---- */
-.dz{position:fixed;right:var(--s2);bottom:var(--s2);z-index:80;font-size:var(--t-micro);color:#f2f0ea}
-.dz .dzb{padding:var(--s1) var(--s2);border-radius:999px;background:#0e0e10;color:#f2f0ea;font-weight:600;box-shadow:var(--shadow-lg)}
-.dz .dzp{position:absolute;right:0;bottom:calc(100% + var(--s1));width:320px;max-height:min(76vh,720px);overflow:auto;background:#0e0e10;border-radius:var(--r2);padding:var(--s2);box-shadow:var(--shadow-lg);display:none;flex-direction:column;gap:var(--s2);scrollbar-width:thin}
-.dz.on .dzp{display:flex}
-.dz h5{font-size:var(--t-micro);font-weight:700;color:#f2f0ea;margin-bottom:var(--s05)}
-.dz h5 small{font-weight:500;color:color-mix(in oklab,#f2f0ea 50%,transparent);margin-left:var(--s05)}
-.dz label{display:grid;grid-template-columns:auto 1fr;gap:var(--s1);align-items:start;padding:3px 0;cursor:pointer;color:color-mix(in oklab,#f2f0ea 80%,transparent);line-height:1.4}
-.dz label input{margin-top:2px;accent-color:#cc1433}
-.dz label b{color:#f2f0ea;font-weight:600;margin-right:var(--s05)}
-.dz .sum{border-top:1px solid color-mix(in oklab,#f2f0ea 18%,transparent);padding-top:var(--s1);display:flex;flex-direction:column;gap:var(--s1)}
-.dz .sum code{font:inherit;color:#f2f0ea;word-break:keep-all}
-.dz .sum span{display:flex;gap:var(--s1);flex-wrap:wrap}
-.dz .sum button{padding:var(--s05) var(--s1);border-radius:999px;background:#f2f0ea;color:#0e0e10;font-weight:600}
-.dz label.rg{grid-template-columns:1fr auto;align-items:center}
-.dz label.rg input{width:100%;margin:0}
+
+/* ==========================================================================
+   모듈: 상영관 배경 (thbg) — .theater > .bgart(작품 그림 흐리게) + .veil(덮개)
+   1 블러 포스터(기본) · 2 순수 검정(넷플릭스 플레이어) · 3 페이지 색(애플 TV 앱 라이트) · 4 앰비언트 진하게(유튜브)
+   ========================================================================== */
+body[data-thbg="2"] .theater{--bg:#000}
+body[data-thbg="2"] .theater .bgart,body[data-thbg="2"] .theater .veil{display:none}
+/* 3: 상영관 색 토큰을 페이지에서 그대로 물려받음(라이트면 흰 배경) — 영상 틀 안만 어둡게 유지 */
+body[data-thbg="3"] .theater{--bg:inherit;--ink:inherit;--shadow:inherit;--shadow-lg:inherit}
+body[data-thbg="3"] .theater .bgart{opacity:.3}
+body[data-thbg="3"] .theater .vw{--bg:var(--frame);--ink:var(--on-frame);--ink-2:color-mix(in oklab,var(--ink) 60%,transparent);--ink-3:color-mix(in oklab,var(--ink) 12%,transparent);box-shadow:var(--shadow-lg),var(--ring)}
+body[data-thbg="4"] .theater .bgart{opacity:.75;filter:blur(calc(var(--u) * 12)) saturate(1.8)}
+body[data-thbg="4"] .theater .veil{background:radial-gradient(ellipse at 50% 45%,color-mix(in oklab,var(--bg) 30%,transparent),color-mix(in oklab,var(--bg) 72%,transparent))}
+
+/* ===== 80-nav.css ===== */
+/* ==========================================================================
+   모듈: 내비 (nav) — 마크업 그대로(header.nav > .wrap.in > a.lg + nav.tabs + .cta), CSS만 바꿈
+   1 가운데 탭(기본) · 2 왼쪽 사이드바(애플 TV tvOS 17.2 · 애플 뮤직 웹)
+   3 왼쪽 정렬(넷플릭스 웹) · 4 떠 있는 알약(iOS 26 탭 바 — 데스크톱 위, 폰은 아래)
+   ========================================================================== */
+
+/* ---- 2 왼쪽 사이드바: 넓은 화면에서만 세로 레일, 좁으면 1과 같은 위 막대 ---- */
+@media (min-width:1100px){
+  body[data-nav="2"]{--side-w:calc(var(--u)*30)}
+  body[data-nav="2"] .nav,body[data-nav="2"].home .nav:not(.sc){inset:0 auto 0 0;width:var(--side-w);height:auto;border-bottom:0;border-right:1px solid var(--ink-3);background:color-mix(in oklab,var(--ink) 3%,var(--bg));backdrop-filter:none;-webkit-backdrop-filter:none}
+  body[data-nav="2"] .nav .in{max-width:none;height:100%;padding:var(--s3) var(--s2);display:flex;flex-direction:column;align-items:stretch;gap:var(--s5)}
+  body[data-nav="2"] .nav .lg{padding:var(--s05) var(--s1) 0}
+  body[data-nav="2"] .nav .lg small{display:block;margin:var(--s05) 0 0}
+  body[data-nav="2"] .nav .tabs{flex-direction:column;gap:var(--s05);overflow:visible}
+  body[data-nav="2"] .nav .tabs a{padding:var(--s1) var(--s2);border-radius:var(--r);transition:background var(--d-micro) var(--ease),color var(--d-micro) var(--ease)}
+  body[data-nav="2"] .nav .tabs a:hover,body[data-nav="2"] .nav .tabs a[aria-current="page"]{background:var(--ink-4)}
+  body[data-nav="2"] .nav .tabs a[aria-current="page"]:after{left:0;right:auto;top:var(--s1);bottom:var(--s1);width:3px;height:auto;border-radius:2px}
+  body[data-nav="2"] .nav .cta{margin-top:auto}
+  body[data-nav="2"] .nav .cta .btn{width:100%;justify-content:center}
+  body[data-nav="2"] main,body[data-nav="2"] footer{margin-left:var(--side-w)}
+  body[data-nav="2"] main{padding-top:0}
+  body[data-nav="2"] .rail,body[data-nav="2"] .trail{top:var(--s3)}
+}
+
+/* ---- 3 왼쪽 정렬: 로고는 강조색, 탭은 로고 바로 옆, 현재 탭은 굵게만 ---- */
+body[data-nav="3"] .nav .lg{color:var(--acc);font-weight:800;font-size:var(--t-sm);letter-spacing:.1em}
+body[data-nav="3"] .nav .tabs{font-size:var(--t-sm)}
+body[data-nav="3"] .nav .tabs a[aria-current="page"]{font-weight:700}
+body[data-nav="3"] .nav .tabs a[aria-current="page"]:after{display:none}
+@media (min-width:761px){
+  body[data-nav="3"] .nav .in{grid-template-columns:auto 1fr auto;column-gap:var(--s5)}
+}
+
+/* ---- 4 떠 있는 알약: 막대 대신 유리 알약 하나, 폰에서는 엄지 닿는 아래로 ---- */
+body[data-nav="4"] .nav,body[data-nav="4"].home .nav:not(.sc){inset:var(--s2) 0 auto 0;height:calc(var(--nav-h) - var(--s1));background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;pointer-events:none}
+body[data-nav="4"] .nav .in{pointer-events:auto;display:flex;align-items:center;gap:var(--s3);width:max-content;max-width:calc(100% - var(--gut) * 2);height:100%;margin:0 auto;padding:0 var(--s1) 0 var(--s3);border-radius:999px;background:var(--bg-glass);backdrop-filter:saturate(1.6) blur(24px);-webkit-backdrop-filter:saturate(1.6) blur(24px);box-shadow:var(--shadow),var(--ring)}
+body[data-nav="4"] .nav .lg small{display:none}
+body[data-nav="4"] .nav .tabs{gap:var(--s05)}
+body[data-nav="4"] .nav .tabs a{padding:var(--s1) var(--s2);border-radius:999px;transition:background var(--d-micro) var(--ease),color var(--d-micro) var(--ease)}
+body[data-nav="4"] .nav .tabs a[aria-current="page"]{background:var(--ink-4)}
+body[data-nav="4"] .nav .tabs a[aria-current="page"]:after{display:none}
+body[data-nav="4"] main{padding-top:calc(var(--nav-h) + var(--s2))}
+@media (max-width:760px){
+  body[data-nav="4"] .nav,body.home[data-nav="4"] .nav:not(.sc){inset:auto 0 calc(var(--s2) + env(safe-area-inset-bottom,0px)) 0;background:none!important}
+  body[data-nav="4"] .nav .lg{display:none}
+  body[data-nav="4"] .nav .in{gap:var(--s05);padding:0 var(--s05) 0 var(--s1)}
+  body[data-nav="4"] .nav .tabs{gap:0;font-size:var(--t-sm)}
+  body[data-nav="4"] .nav .tabs a{padding:var(--s1) calc(var(--u) * 1.25)}
+  body[data-nav="4"] .nav .cta .btn{width:var(--s5);padding:0;justify-content:center}
+  body[data-nav="4"] main,body.home[data-nav="4"] main{padding-top:0!important}
+  body[data-nav="4"] footer{padding-bottom:calc(var(--nav-h) + var(--s8))}
+}
+
+/* ===== 81-rows.css ===== */
+/* ==========================================================================
+   모듈: 줄 레이아웃 (rows) — 마크업 그대로(section.row > .hd + .trk > .arr + .sc > a.card)
+   1 가로 선반(기본) · 2 그리드(유튜브 홈) · 3 첫 카드 크게(애플 TV) · 4 숫자 랭킹(넷플릭스 톱 10)
+   ========================================================================== */
+
+/* ---- 2 그리드: 넘기지 않고 펼침. 열 수는 카드 크기(size)를 따르고, 두 줄까지만(나머지는 「더보기」) ---- */
+body[data-rows="2"]{--cols:4;--cols-t:8}
+body[data-rows="2"][data-size="1"]{--cols:5;--cols-t:10}
+body[data-rows="2"][data-size="3"]{--cols:3;--cols-t:6}
+body[data-rows="2"] .row .sc{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--s3) var(--gap,var(--s2));overflow:visible;margin-inline:0;padding-inline:0;scroll-snap-type:none}
+body[data-rows="2"] .row .sc:has(> .card.tall){grid-template-columns:repeat(var(--cols-t),minmax(0,1fr))}
+body[data-rows="2"] .row .card{width:auto}
+body[data-rows="2"] .row .arr{display:none}
+body[data-rows="2"] .row .sc > .card.wide:nth-child(n+9),
+body[data-rows="2"][data-size="1"] .row .sc > .card.wide:nth-child(n+11),
+body[data-rows="2"] .row .sc > .card.tall:nth-child(n+9),
+body[data-rows="2"][data-size="1"] .row .sc > .card.tall:nth-child(n+11){display:none}
+body[data-rows="2"][data-size="1"] .row .sc > .card.wide:nth-child(-n+10),
+body[data-rows="2"][data-size="1"] .row .sc > .card.tall:nth-child(-n+10){display:block}
+body[data-rows="2"][data-size="3"] .row .sc > .card.wide:nth-child(n+7),
+body[data-rows="2"][data-size="3"] .row .sc > .card.tall:nth-child(n+7){display:none}
+@media (max-width:760px){
+  body[data-rows="2"] .row .sc{--cols:2!important;--cols-t:3!important;gap:var(--s2) var(--s1)}
+  body[data-rows="2"] .row .sc > .card.wide:nth-child(n+5),body[data-rows="2"] .row .sc > .card.tall:nth-child(n+4){display:none!important}
+  body[data-rows="2"] .row .sc > .card.wide:nth-child(-n+4),body[data-rows="2"] .row .sc > .card.tall:nth-child(-n+3){display:block!important}
+}
+
+/* ---- 3 첫 카드 크게: 맨 앞 작품이 2×2칸, 제목은 그림 아래쪽 위에 (애플 TV 히어로 타일) ---- */
+body[data-rows="3"] .row .sc > .card.wide:first-child{position:relative;display:flex;flex-direction:column}
+body[data-rows="3"] .row .sc > .card.wide:first-child .art{flex:1 1 auto;min-height:0}
+body[data-rows="3"] .row .sc > .card.wide:first-child .art:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(to top,var(--scrim),transparent);pointer-events:none;z-index:1;transition:opacity var(--dur) var(--ease)}
+body[data-rows="3"] .row .sc > .card.wide:first-child .t,body[data-rows="3"] .row .sc > .card.wide:first-child .s{position:absolute;left:var(--s3);right:var(--s3);z-index:2;margin:0;color:var(--on-frame);pointer-events:none;transition:opacity var(--dur) var(--ease)}
+body[data-rows="3"] .row .sc > .card.wide:first-child .t{bottom:calc(var(--s3) + var(--t-micro) * 1.55 + var(--s05));font-size:var(--t-title);font-weight:700;letter-spacing:-.025em;line-height:1.15}
+body[data-rows="3"] .row .sc > .card.wide:first-child .s{bottom:var(--s3);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
+body[data-rows="3"] .row .sc > .card.wide.playing:first-child :is(.t,.s,.art:after){opacity:0}
+@media (min-width:761px){
+  body[data-rows="3"] .row .sc:has(> .card.wide){display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:max-content;row-gap:var(--s2)}
+  body[data-rows="3"] .row .sc > .card.wide:first-child{grid-row:1 / span 2;grid-column:span 2;width:calc(var(--cw) * 2 + var(--gap,var(--s2)))}
+  body[data-rows="3"] .row .sc > .card.wide:first-child .art{aspect-ratio:auto}
+}
+@media (max-width:760px){
+  body[data-rows="3"] .row .sc > .card.wide:first-child{--cw:min(82vw,calc(var(--u) * 60))}
+  body[data-rows="3"] .row .sc > .card.wide:first-child .t{font-size:var(--t-h)}
+}
+
+/* ---- 4 숫자 랭킹: 대표 작업 줄(맨 앞 줄)에만 1~10 큰 윤곽 숫자 — 숫자 높이 ≈ 썸네일 높이 ---- */
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .sc{counter-reset:rk}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card{--rk-w:calc(var(--cw) * .42);counter-increment:rk;display:grid;grid-template-columns:var(--rk-w) var(--cw);width:auto}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:nth-child(n+11){display:none}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:before{content:counter(rk);grid-row:1 / span 3;align-self:start;justify-self:end;margin-right:calc(var(--s2) * -1);font-size:calc(var(--cw) * .5625 * 1.32);line-height:.76;font-weight:900;letter-spacing:-.1em;font-variant-numeric:tabular-nums;color:var(--bg);-webkit-text-stroke:calc(var(--u) * .375) color-mix(in oklab,var(--ink) 42%,transparent);pointer-events:none;transition:-webkit-text-stroke-color var(--d-half) var(--ease)}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.art,.t,.s){grid-column:2}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:hover:before{-webkit-text-stroke-color:var(--ink)}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:nth-child(10){--rk-w:calc(var(--cw) * .62)}
+
+/* ===== 82-ambient.css ===== */
+/* ==========================================================================
+   모듈: 배경 분위기 (amb) — body 뒤에 한 겹(body:before)을 깔아 분위기만 바꿈. 내용·색 토큰은 그대로
+   1 단색(기본) · 2 앰비언트(유튜브 앰비언트 모드·애플 뮤직) · 3 은은한 그라데이션 · 4 필름 그레인
+   --feat-img: site.js가 지금 피처드 포스터를 url(...)로 넣어 줌. 없으면(작업·도구·이력서) 3과 같은 빛으로 대신함
+   ========================================================================== */
+body[data-amb="2"],body[data-amb="3"]{position:relative;isolation:isolate}
+body[data-amb="2"]:before,body[data-amb="3"]:before{content:"";position:absolute;inset:0 0 auto;height:min(calc(var(--u) * 150),140vh);z-index:-1;pointer-events:none;-webkit-mask-image:linear-gradient(#000 25%,transparent);mask-image:linear-gradient(#000 25%,transparent)}
+body[data-amb="3"]:before,body[data-amb="2"]:before{background:radial-gradient(60% 55% at 12% 0%,color-mix(in oklab,var(--acc) 14%,transparent),transparent 70%),radial-gradient(45% 45% at 88% 6%,color-mix(in oklab,var(--ink) 7%,transparent),transparent 70%)}
+
+/* ---- 2 앰비언트: 포스터를 크게 흐려 위쪽에 번지게. 피처드가 바뀌면 같이 바뀜(전환은 site.js 훅) ---- */
+body[data-amb="2"].home:before{background:var(--feat-img) center / cover no-repeat;filter:blur(calc(var(--u) * 12)) saturate(1.6);opacity:.42;transition:background-image calc(var(--dur) * 2) var(--ease)}
+body[data-amb="2"][data-theme="3"].home:before,body[data-amb="2"][data-theme="2"].home:before{opacity:.55}
+
+/* ---- 4 필름 그레인: 화면 전체에 고정된 회색 입자를 오버레이로 — 흰·검정 바탕은 그대로, 영상·사진 같은 중간 톤에만 입자가 앉음 ---- */
+body[data-amb="4"]:after{content:"";position:fixed;inset:0;z-index:45;pointer-events:none;mix-blend-mode:overlay;opacity:.16;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='3 0 0 0 -1  3 0 0 0 -1  3 0 0 0 -1  0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ===== 83-type.css ===== */
+/* ==========================================================================
+   모듈: 글자 위계 (typo) — 글자 크기는 토큰(--fz × --ratio 거듭제곱)에서만 파생, 여기선 비율·굵기·자간·위치만
+   1 기본 · 2 에디토리얼(매거진) · 3 콤팩트(비율 1.2) · 4 모노 라벨
+   ========================================================================== */
+
+/* ---- 2 에디토리얼: 큰 제목, 굵기 대비, 줄 제목 위에 가는 선 ---- */
+body[data-typo="2"] .pg-h{font-size:clamp(var(--t-disp),6.4vw,calc(var(--t-disp) * 2));font-weight:800;letter-spacing:-.045em;line-height:.98}
+body[data-typo="2"] .row .hd{border-top:1px solid var(--ink);padding-top:var(--s2);align-items:baseline}
+body[data-typo="2"] .row .hd h2{font-size:var(--t-title);font-weight:800;letter-spacing:-.035em}
+body[data-typo="2"] .row .hd .more{margin-left:auto;font-weight:500}
+body[data-typo="2"][data-arrow="1"] .row .hd .more{margin-right:calc(var(--s5) * 2 + var(--s2))}
+body[data-typo="2"] .fx h2{font-weight:800;letter-spacing:-.04em;line-height:1.04}
+body[data-typo="2"] .fx .k{letter-spacing:.06em}
+body[data-typo="2"] .card .t{font-weight:700;letter-spacing:-.01em}
+body[data-typo="2"] .cv .nm{font-size:calc(var(--t-disp) * 1.4);font-weight:800;letter-spacing:-.045em}
+body[data-typo="2"] .cv .tag{font-weight:700;letter-spacing:-.03em}
+body[data-typo="2"] .cv h3{border-top:1px solid var(--ink);padding-top:var(--s2);font-size:var(--t-title);font-weight:800;letter-spacing:-.035em}
+body[data-typo="2"] .tdesc h2,body[data-typo="2"] .theater .meta h1,body[data-typo="2"] .theater .panel h2{font-weight:800;letter-spacing:-.04em}
+
+/* ---- 3 콤팩트: 비율 1.3 → 1.2 (모든 제목이 한 단계씩 작아짐), 제목 아래 여백도 줄임 ---- */
+body[data-typo="3"]{--ratio:1.2}
+body[data-typo="3"] .row .hd{margin-bottom:var(--s1);min-height:var(--s3)}
+body[data-typo="3"] .pg-h{margin-bottom:var(--s3)}
+body[data-typo="3"] .card .t{margin-top:var(--s05)}
+
+/* ---- 4 인덱스: 줄·이력서 제목 앞에 번호(01·02…), 작은 메타 글자(종류·연도·개수·날짜·더보기)는 고정폭 — 한글은 본문 서체로 자연히 대체 ---- */
+body[data-typo="4"]{--mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,var(--font)}
+body[data-typo="4"] :is(.fx .k,.row .hd .more,.card .s,.lib .tb .cnt,.rail button small,.trail .ti small,.cv td.d,.cv h3 small,.cv .em,.cv .base,.theater .meta .s,.theater .tm,.theater .panel .spec span,.tdesc .meta-tbl span,.pop .bd .s,footer){font-family:var(--mono);font-size:var(--t-micro);letter-spacing:.01em;text-transform:uppercase}
+body[data-typo="4"] :is(.rows,main){counter-reset:sec}
+body[data-typo="4"] .row{counter-increment:sec}
+body[data-typo="4"] .row .hd h2:before,body[data-typo="4"] .cv h3:before{content:counter(sec,decimal-leading-zero);font-family:var(--mono);font-size:var(--t-micro);font-weight:500;letter-spacing:0;color:var(--ink-2);margin-right:var(--s1);vertical-align:.2em}
+body[data-typo="4"] .cv{counter-reset:sec}
+body[data-typo="4"] .cv h3{counter-increment:sec}
+body[data-typo="4"] .cv h3:before{margin-right:0}
+
+/* ===== 84-btn.css ===== */
+/* ==========================================================================
+   모듈: 버튼 모양 (btn) — .btn(재생·상세·쇼릴·도구 링크) + 같은 모양 언어를 쓰는 칩·검색칸
+   1 알약(기본) · 2 둥근 사각(애플 TV·넷플릭스) · 3 테두리 · 4 글자형
+   ========================================================================== */
+/* ---- 2 둥근 사각: 모서리 토큰(--r, 슬라이더 radius)과 같은 둥글기 ---- */
+body[data-btn="2"] .btn{border-radius:var(--r)}
+body[data-btn="2"] :is(.chip,.lib .q){border-radius:calc(var(--r) * .75)}
+
+/* ---- 3 테두리: 채움 없이 선만, 강조 버튼은 강조색 선 ---- */
+body[data-btn="3"] .btn,body[data-btn="3"] .fx .bt .btn:not(.ghost),body[data-btn="3"] .fx .bt .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px currentColor}
+body[data-btn="3"] .btn.acc{color:var(--acc)}
+body[data-btn="3"] .btn.ghost,body[data-btn="3"] .fx .bt .btn.ghost{box-shadow:inset 0 0 0 1px var(--ink-3)}
+body[data-btn="3"] .btn:hover{opacity:1;background:var(--ink-4)}
+
+/* ---- 4 글자형: 배경 없이 글자 + 밑줄, 강조는 강조색 글자 ---- */
+body[data-btn="4"] .btn,body[data-btn="4"] .fx .bt .btn:not(.ghost),body[data-btn="4"] .fx .bt .btn.ghost{background:transparent;color:var(--ink);padding-inline:0;border-radius:0;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:.4em}
+body[data-btn="4"] .btn.acc{color:var(--acc)}
+body[data-btn="4"] .btn.ghost,body[data-btn="4"] .fx .bt .btn.ghost{color:var(--ink-2);text-decoration-color:var(--ink-3)}
+body[data-btn="4"] .btn:hover{opacity:1;text-decoration-color:var(--acc)}
+body[data-btn="4"] :is(.fx .bt,.pop .bd .bt,.tdesc .lk){gap:var(--s3)}
+
+/* ===== 85-info.css ===== */
+/* ==========================================================================
+   모듈: 카드 정보 (info) — 카드 제목(.t)·종류(.s)를 어디에 어떻게 보일지. 홈 줄·작업 그리드 공통
+   1 아래 두 줄(기본) · 2 아래 한 줄(애플 TV 웹) · 3 그림 위(디즈니+·왓챠) · 4 호버 때만(tvOS 포커스)
+   ========================================================================== */
+/* ---- 2 아래 한 줄: 제목만 한 줄, 종류는 숨김 ---- */
+body[data-info="2"] .card .t{-webkit-line-clamp:1;line-clamp:1}
+body[data-info="2"] .card .s{display:none}
+
+/* ---- 3 그림 위: 썸네일 아래쪽 어둠(스크림) 위에 제목·종류, 재생 중엔 비켜 줌 ---- */
+body[data-info="3"] .card{position:relative}
+body[data-info="3"] .card .art:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(to top,var(--scrim),transparent);z-index:1;pointer-events:none;transition:opacity var(--d-half) var(--ease)}
+body[data-info="3"] .card :is(.t,.s){position:absolute;left:var(--s2);right:var(--s2);z-index:2;margin:0;color:var(--on-frame);pointer-events:none;transition:opacity var(--d-half) var(--ease)}
+body[data-info="3"] .card .t{bottom:calc(var(--s1) + var(--t-micro) * 1.55);-webkit-line-clamp:1;line-clamp:1}
+body[data-info="3"] .card .s{bottom:var(--s1);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
+body[data-info="3"] .card.tall :is(.t,.s){left:var(--s1);right:var(--s1)}
+body[data-info="3"] .card.playing :is(.t,.s,.art:after){opacity:0}
+body[data-info="3"][data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.t,.s){left:calc(var(--rk-w) + var(--s2))}
+
+/* ---- 4 호버 때만: 평소엔 썸네일 벽(제목 자리도 없음), 올리면 3과 같은 자리에 제목이 떠오름 (드리블·tvOS 포커스) — 터치 화면은 항상 보임 ---- */
+body[data-info="4"] .card{position:relative}
+body[data-info="4"] .card .art:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(to top,var(--scrim),transparent);z-index:1;pointer-events:none;transition:opacity var(--d-half) var(--ease)}
+body[data-info="4"] .card :is(.t,.s){position:absolute;left:var(--s2);right:var(--s2);z-index:2;margin:0;color:var(--on-frame);pointer-events:none;transition:opacity var(--d-half) var(--ease),transform var(--d-half) var(--ease)}
+body[data-info="4"] .card .t{bottom:calc(var(--s1) + var(--t-micro) * 1.55);-webkit-line-clamp:1;line-clamp:1}
+body[data-info="4"] .card .s{bottom:var(--s1);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
+body[data-info="4"] .card.tall :is(.t,.s){left:var(--s1);right:var(--s1)}
+body[data-info="4"] .card.playing :is(.t,.s,.art:after){opacity:0}
+body[data-info="4"][data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.t,.s){left:calc(var(--rk-w) + var(--s2))}
+@media (hover:hover){
+  body[data-info="4"] .card:not(:hover):not(:focus-visible) :is(.t,.s,.art:after){opacity:0}
+  body[data-info="4"] .card:not(:hover):not(:focus-visible) :is(.t,.s){transform:translateY(var(--s05))}
+}
+
+/* ===== 86-works.css ===== */
+/* ==========================================================================
+   모듈: 작업 페이지 (works) — .lib > aside.rail(분류) + div(.tb 검색·개수 + .grid > a.card)
+   1 왼쪽 분류 + 그리드(기본) · 2 위쪽 탭 + 큰 그리드(유튜브 칩 막대) · 3 리스트(애플 뮤직 목록)
+   ========================================================================== */
+/* ---- 2 위쪽 탭 + 큰 그리드: 분류가 내비 바로 아래에 붙어 따라옴, 카드는 한 줄 3~4개 ---- */
+body[data-works="2"] .lib{grid-template-columns:minmax(0,1fr);gap:var(--s2)}
+body[data-works="2"] .rail{position:sticky;top:var(--nav-h);z-index:5;display:flex;gap:var(--s1);overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gut) * -1);padding:var(--s1) var(--gut);background:var(--bg-glass);backdrop-filter:saturate(1.4) blur(20px);-webkit-backdrop-filter:saturate(1.4) blur(20px)}
+body[data-works="2"] .rail::-webkit-scrollbar{display:none}
+body[data-works="2"] .rail button{flex:none;width:auto;gap:var(--s1);white-space:nowrap;min-height:var(--s5);padding:var(--s05) var(--s2);border:0;border-radius:999px;background:var(--ink-4);font-size:var(--t-sm);font-weight:500}
+body[data-works="2"] .rail button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+body[data-works="2"] .grid{grid-template-columns:repeat(auto-fill,minmax(calc(var(--u) * 38),1fr));gap:var(--s5) var(--s3)}
+body[data-works="2"] .grid .card .t{font-size:var(--t-body)}
+@media (min-width:1100px){body[data-works="2"][data-nav="2"] .rail{top:0}}
+body[data-works="2"][data-nav="4"] .rail{top:calc(var(--nav-h) + var(--s1));background:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (max-width:760px){body[data-works="2"][data-nav="4"] .rail{top:0;background:var(--bg-glass)}}
+
+/* ---- 3 리스트: 번호 · 썸네일 · 제목/종류 한 줄씩, 줄 사이 가는 선 ---- */
+body[data-works="3"] .grid{grid-template-columns:minmax(0,1fr);gap:0;counter-reset:wk}
+body[data-works="3"] .grid .card{counter-increment:wk;display:grid;grid-template-columns:var(--s5) calc(var(--u) * 24) minmax(0,1fr);grid-template-rows:1fr 1fr;column-gap:var(--s3);align-items:center;padding:var(--s1) var(--s1) var(--s1) 0;border-top:1px solid var(--ink-3);transition:background var(--d-micro) var(--ease)}
+body[data-works="3"] .grid .card:hover{background:var(--ink-4)}
+body[data-works="3"] .grid .card:before{content:counter(wk);grid-row:1 / span 2;text-align:right;color:var(--ink-2);font-size:var(--t-sm);font-variant-numeric:tabular-nums}
+body[data-works="3"] .grid .card .art{grid-column:2;grid-row:1 / span 2}
+body[data-works="3"] .grid .card.card :is(.t,.s){grid-column:3;position:static;margin:0;opacity:1;transform:none;text-shadow:none;-webkit-line-clamp:1;line-clamp:1}
+body[data-works="3"] .grid .card .t{align-self:end;font-size:var(--t-body);color:var(--ink)}
+body[data-works="3"] .grid .card .s{display:block;align-self:start;margin-top:var(--s05);color:var(--ink-2)}
+body[data-works="3"] .grid .card.card .art:after{display:none}
+@media (max-width:760px){
+  body[data-works="3"] .grid .card{grid-template-columns:calc(var(--u) * 16) minmax(0,1fr);column-gap:var(--s2)}
+  body[data-works="3"] .grid .card:before{display:none}
+  body[data-works="3"] .grid .card .art{grid-column:1}
+  body[data-works="3"] .grid .card :is(.t,.s){grid-column:2}
+  body[data-works="3"] .grid .card .t{font-size:var(--t-sm)}
+}
+
+/* ===== 87-tools.css ===== */
+/* ==========================================================================
+   모듈: 도구 페이지 (tools) — .tl > aside.trail(button.ti × N) + .tmain(.tbar + .tstage > iframe + .tdesc)
+   1 왼쪽 목록 + 체험판(기본) · 2 위쪽 탭 + 넓은 체험판 · 3 오른쪽 목록(유튜브 재생 화면) · 4 카드 갤러리
+   데스크톱(981px~)만 바뀜 — 좁은 화면은 모두 기본(위쪽 가로 목록)
+   ========================================================================== */
+@media (min-width:981px){
+  /* ---- 2 위쪽 탭 + 넓은 체험판: 목록이 알약 탭 한 줄, 체험판이 화면 폭 가득(높이는 화면 안에) ---- */
+  body[data-tools="2"] .tl{grid-template-columns:minmax(0,1fr);gap:var(--s3)}
+  body[data-tools="2"] .trail{position:static;flex-direction:row;gap:var(--s1);overflow-x:auto;scrollbar-width:none;padding:var(--s05) 0}
+  body[data-tools="2"] .trail::-webkit-scrollbar{display:none}
+  body[data-tools="2"] .trail .ti{flex:none;grid-template-columns:calc(var(--u) * 5) auto;padding:var(--s05) var(--s2) var(--s05) var(--s05);border-radius:999px;background:var(--ink-4)}
+  body[data-tools="2"] .trail .ti[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+  body[data-tools="2"] .trail .ti img{border-radius:999px;aspect-ratio:1;object-position:left top}
+  body[data-tools="2"] .trail .ti b{white-space:nowrap}
+  body[data-tools="2"] .trail .ti small{display:none}
+  body[data-tools="2"] .tstage{max-height:calc(100dvh - var(--nav-h) - var(--s13));width:100%}
+
+  /* ---- 3 오른쪽 목록: 체험판이 왼쪽 크게, 다음 도구 목록이 오른쪽(큰 썸네일 + 제목) ---- */
+  body[data-tools="3"] .tl{grid-template-columns:minmax(0,1fr) calc(var(--u) * 46);gap:var(--s3)}
+  body[data-tools="3"] .tmain{grid-column:1;grid-row:1}
+  body[data-tools="3"] .trail{grid-column:2;grid-row:1;gap:var(--s1)}
+  body[data-tools="3"] .trail .ti{grid-template-columns:calc(var(--u) * 21) minmax(0,1fr);align-items:start;gap:var(--s2)}
+  body[data-tools="3"] .trail .ti b{font-size:var(--t-sm);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* ---- 4 카드 갤러리: 도구가 카드 격자(썸네일 크게), 고른 카드는 강조색 테두리, 체험판은 아래 ---- */
+  body[data-tools="4"] .tl{grid-template-columns:minmax(0,1fr);gap:var(--s5)}
+  body[data-tools="4"] .trail{position:static;display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--u) * 22),1fr));gap:var(--s3) var(--s2)}
+  body[data-tools="4"] .trail .ti,body[data-tools="4"] .trail .ti:hover,body[data-tools="4"] .trail .ti[aria-pressed="true"]{grid-template-columns:minmax(0,1fr);gap:var(--s1);padding:0;background:none;color:var(--ink);align-items:start}
+  body[data-tools="4"] .trail .ti img{border-radius:var(--r);transition:box-shadow var(--d-micro) var(--ease)}
+  body[data-tools="4"] .trail .ti:hover img{box-shadow:var(--shadow),var(--ring)}
+  body[data-tools="4"] .trail .ti[aria-pressed="true"] img{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acc)}
+  body[data-tools="4"] .trail .ti[aria-pressed="true"] small{color:var(--ink-2)}
+}
+
+/* ===== 88-resume.css ===== */
+/* ==========================================================================
+   모듈: 이력서 (cv) — .cvw > .cv(header.idc · p.tag · p.ds · h3 + table × N · details)
+   1 한 단(기본) · 2 왼쪽 고정 프로필 · 3 타임라인
+   ========================================================================== */
+/* ---- 2 왼쪽 고정 프로필: 사진·이름·연락처가 왼쪽에서 따라오고, 내용은 오른쪽 ---- */
+@media (min-width:901px){
+  body[data-cv="2"] .cvw{max-width:calc(var(--u) * 150 + var(--gut) * 2)}
+  body[data-cv="2"] .cv{display:grid;grid-template-columns:calc(var(--u) * 32) minmax(0,1fr);column-gap:var(--s8);align-items:start}
+  body[data-cv="2"] .cv > *{grid-column:2}
+  body[data-cv="2"] .cv > .idc{grid-column:1;grid-row:1 / span 40;position:sticky;top:calc(var(--nav-h) + var(--s5));display:flex;flex-direction:column;align-items:flex-start;gap:var(--s2);margin:0}
+  body[data-cv="2"] .cv .idc img{width:calc(var(--u) * 20);height:auto;aspect-ratio:13 / 17}
+  body[data-cv="2"] .cv .idc .jb{font-size:var(--t-body);line-height:1.45}
+  body[data-cv="2"] .cv .idc :is(.em,.base){line-height:1.5}
+}
+@media (min-width:1100px){body[data-cv="2"][data-nav="2"] .cv > .idc{top:var(--s8)}}
+
+/* ---- 3 타임라인: 날짜 | 세로 선 + 점 | 내용. 맨 위(최근) 점만 강조색 — 기술 표는 그대로 ---- */
+body[data-cv="3"] .cv table:not(.skills) td{border-top:0;padding-block:var(--s1) var(--s2)}
+body[data-cv="3"] .cv table:not(.skills) td.d{text-align:right;padding-right:var(--s3)}
+body[data-cv="3"] .cv table:not(.skills) td:not(.d){position:relative;border-left:2px solid var(--ink-3);padding-left:var(--s3)}
+body[data-cv="3"] .cv table:not(.skills) td:not(.d):before{content:"";position:absolute;left:calc(var(--s05) * -1 - 1px);top:calc(var(--s1) + var(--t-body) * .775 - var(--s05));width:var(--s1);height:var(--s1);border-radius:50%;background:var(--ink-2);box-shadow:0 0 0 3px var(--bg)}
+body[data-cv="3"] .cv table:not(.skills) tr:first-child td:not(.d):before{background:var(--acc)}
+
+/* ===== 89-foot.css ===== */
+/* ==========================================================================
+   모듈: 푸터 (foot) — footer > .wrap.in > span(©) + span(이메일 · GitHub)
+   1 한 줄(기본) · 2 큰 연락처 · 3 반전 띠 · 4 가운데
+   ========================================================================== */
+/* ---- 2 큰 연락처: 이메일을 화면 폭만큼 크게, GitHub·©는 아래 작게 ---- */
+body[data-foot="2"] footer{padding:var(--s13) 0}
+body[data-foot="2"] footer .in{flex-direction:column-reverse;align-items:flex-start;gap:var(--s5)}
+body[data-foot="2"] footer .in > span:last-child{font-size:0;display:flex;flex-direction:column;align-items:flex-start;gap:var(--s2)}
+body[data-foot="2"] footer .in > span:last-child a{font-size:var(--t-body);color:var(--ink-2);transition:color var(--d-micro) var(--ease)}
+body[data-foot="2"] footer .in > span:last-child a:first-child{font-size:clamp(var(--t-title),5.2vw,calc(var(--t-disp) * 2));font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink);overflow-wrap:anywhere}
+body[data-foot="2"] footer .in > span:last-child a:hover{color:var(--acc)}
+
+/* ---- 3 반전 띠: 글자색을 배경으로 한 띠(라이트면 검은 띠) ---- */
+body[data-foot="3"] footer{background:var(--ink);color:color-mix(in oklab,var(--bg) 62%,transparent);border-top:0;padding:var(--s5) 0 var(--s8)}
+body[data-foot="3"] footer a:hover{color:var(--bg)}
+
+/* ---- 4 가운데: 작게 두 줄 가운데 ---- */
+body[data-foot="4"] footer{border-top:0}
+body[data-foot="4"] footer .in{flex-direction:column;align-items:center;text-align:center;gap:var(--s05)}

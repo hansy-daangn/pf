@@ -1,0 +1,19 @@
+/* ==========================================================================
+   모듈: 푸터 (foot) — footer > .wrap.in > span(©) + span(이메일 · GitHub)
+   1 한 줄(기본) · 2 큰 연락처 · 3 반전 띠 · 4 가운데
+   ========================================================================== */
+/* ---- 2 큰 연락처: 이메일을 화면 폭만큼 크게, GitHub·©는 아래 작게 ---- */
+body[data-foot="2"] footer{padding:var(--s13) 0}
+body[data-foot="2"] footer .in{flex-direction:column-reverse;align-items:flex-start;gap:var(--s5)}
+body[data-foot="2"] footer .in > span:last-child{font-size:0;display:flex;flex-direction:column;align-items:flex-start;gap:var(--s2)}
+body[data-foot="2"] footer .in > span:last-child a{font-size:var(--t-body);color:var(--ink-2);transition:color var(--d-micro) var(--ease)}
+body[data-foot="2"] footer .in > span:last-child a:first-child{font-size:clamp(var(--t-title),5.2vw,calc(var(--t-disp) * 2));font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink);overflow-wrap:anywhere}
+body[data-foot="2"] footer .in > span:last-child a:hover{color:var(--acc)}
+
+/* ---- 3 반전 띠: 글자색을 배경으로 한 띠(라이트면 검은 띠) ---- */
+body[data-foot="3"] footer{background:var(--ink);color:color-mix(in oklab,var(--bg) 62%,transparent);border-top:0;padding:var(--s5) 0 var(--s8)}
+body[data-foot="3"] footer a:hover{color:var(--bg)}
+
+/* ---- 4 가운데: 작게 두 줄 가운데 ---- */
+body[data-foot="4"] footer{border-top:0}
+body[data-foot="4"] footer .in{flex-direction:column;align-items:center;text-align:center;gap:var(--s05)}

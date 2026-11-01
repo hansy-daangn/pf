@@ -30,7 +30,7 @@ with sync_playwright() as p:
         pg.on('pageerror', lambda e, vp=vp: errs.append(f'{vp} {e}'))
         pg.on('console', lambda m, vp=vp: errs.append(f'{vp} console: {m.text}') if m.type == 'error' and 'favicon' not in m.text and '404' not in m.text else None)
         pg.on('response', lambda r, vp=vp: errs.append(f'{vp} {r.status} {r.url}') if r.status >= 400 and '127.0.0.1' in r.url and '/api/' not in r.url else None)
-        for page in ['index.html', 'works.html', 'tools.html', 'resume.html', 'works.html?w=td_declutter', 'works.html?w=nayeon-campaign', 'edit.html']:
+        for page in ['index.html', 'works.html', 'tools.html', 'resume.html', 'works.html?w=td_declutter', 'works.html?w=nayeon-campaign', 'edit/', 'design/']:
             pg.goto(f'http://127.0.0.1:8799/{page}', wait_until='domcontentloaded'); pg.wait_for_timeout(1500)
         ctx.close()
     br.close()

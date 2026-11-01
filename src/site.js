@@ -1,5 +1,6 @@
 /* HANSY portfolio — site.js (vanilla, 외부 의존 없음)
-   구성: 공통 → 영상 고르기 → 확장 카드(호버) → 행 화살표 → 피처드 → 상영관 → 작업 목록 → 도구 → 딥링크 */
+   데이터 한 곳: data/works·home·design·derived.json → 홈(피처드·줄)·작업 그리드를 이 파일이 그림
+   순서: 공통 → 데이터 → 디자인 → 그리기 → 확장 카드 → 줄 화살표 → 피처드 → 상영관 → 작업 목록 → 도구 → 시작 */
 (() => {
   'use strict';
   const $ = (s, r = document) => r.querySelector(s);
@@ -7,11 +8,10 @@
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const SAVE = !!(navigator.connection && navigator.connection.saveData);
   const HOVER = matchMedia('(hover:hover) and (pointer:fine)').matches;
-  const DATA = (() => { try { return JSON.parse($('#works-data').textContent); } catch (e) { return []; } })();
-  const BY = Object.fromEntries(DATA.map(w => [w.id, w]));
+  const EDIT = document.body.dataset.edit === '1';
   const KINDS = { '3d': '3D 영상', ai: 'AI 영상', motion: '모션 영상', owned: '온드 콘텐츠', image: '이미지 소재', personal: '개인 작업', tools: '도구 · 자동화' };
   const BASE = document.body.dataset.base || './';
-  const url = p => (!p ? '' : /^https?:/.test(p) ? p : BASE + p);
+  const url = p => (!p ? '' : /^(https?:|data:|blob:)/.test(p) ? p : BASE + p);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const nb = s => esc(s).split(' ').map(x => `<span class="nb">${x}</span>`).join(' ');
   const ico = (n, cls = '') => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"></use></svg>`;
@@ -20,13 +20,31 @@
   const posterOf = w => (w.media && (w.media.poster || w.media.shot)) || '';
   const vidsOf = w => (w.media && w.media.videos) || [];
   const startOf = w => (w.media && +w.media.start) || 0;
+  const pr = w => (typeof w.priority === 'number' ? w.priority : 999);
+  const byPrio = (a, b) => pr(a) - pr(b) || (a.grade || 2) - (b.grade || 2) || (a.sort || 99) - (b.sort || 99);
 
-  /* ---------- 영상 화질 고르기: 1080p(hd) · 720p(sd) 두 개뿐 ---------- */
-  const big = () => !SAVE && (!!document.fullscreenElement || innerWidth >= 900);   // 데스크톱은 1080p, 모바일·데이터 절약은 720p
-  const pickBig = v => (v.sd && !big()) ? v.sd : v.hd;   // 상영관·피처드
-  const pickSmall = v => v.sd || v.hd;                    // 확장 카드(작은 화면)
+  /* ---------- 데이터: 페이지에 들어 있는 것으로 바로 그리고, 최신 파일을 받아 바뀌었으면 다시 그림 ---------- */
+  const S = { all: [], H: {}, D: { pick: {}, modules: {} }, X: {} };
+  let DATA = [], BY = {};
+  const setData = blob => {
+    if (blob.works) S.all = blob.works; if (blob.home) S.H = blob.home; if (blob.design) S.D = blob.design; if (blob.derived) S.X = blob.derived;
+    DATA = S.all.filter(w => (w.grade ?? 3) <= 2 && posterOf(w)).sort(byPrio); BY = Object.fromEntries(S.all.map(w => [w.id, w]));
+  };
+  try { setData(JSON.parse($('#pf-data').textContent)); } catch (e) { }
 
-  /* 새 video 요소 — 재사용하지 않아 이전 영상 장면이 남지 않음 */
+  /* ---------- 디자인 모듈: body data-<모듈>="번호" · 슬라이더는 --<키> 변수 ---------- */
+  const applyDesign = pick => {
+    const M = S.D.modules || {};
+    Object.entries(pick || {}).forEach(([k, v]) => { if (!M[k]) return; if (M[k].type === 'range') document.body.style.setProperty(`--${k}`, v + (M[k].unit || '')); else document.body.dataset[k] = v; });
+    dispatchEvent(new Event('resize'));
+  };
+  let previewing = false;   // /design 미리보기 안에서는 저장된 값 대신 고르는 중인 값을 씀
+  addEventListener('message', e => { if (e.origin === location.origin && e.data && e.data.pf === 'design') { previewing = true; applyDesign(e.data.pick); } });
+
+  /* ---------- 영상 화질: 1080p(hd) · 720p(sd) ---------- */
+  const big = () => !SAVE && (!!document.fullscreenElement || innerWidth >= 900);
+  const pickBig = v => (v.sd && !big()) ? v.sd : v.hd;
+  const pickSmall = v => v.sd || v.hd;
   const freshVideo = (src, at, { loopTo = null, muted = true } = {}) => {
     const v = document.createElement('video');
     v.muted = muted; v.playsInline = true; v.preload = 'auto'; v.setAttribute('aria-hidden', 'true');
@@ -38,36 +56,50 @@
   };
   const killVideo = v => { if (!v) return; try { v.pause(); v.removeAttribute('src'); v.load(); } catch (e) { } v.remove(); };
 
-  /* ---------- 디자인 모듈: data/design.json의 pick이 기본, ?design 이면 오른쪽 아래 패널에서 바꿔 보기 ---------- */
-  (() => {
-    let DZ = null; try { DZ = JSON.parse($('#design-data').textContent); } catch (e) { return; }
-    const keys = Object.keys(DZ.modules); const M = DZ.modules; let saved = null;
-    try { saved = JSON.parse(sessionStorage.getItem('pf.design') || 'null'); } catch (e) { }
-    const apply = p => keys.forEach(k => { if (p[k] == null) return; if (M[k].type === 'range') document.body.style.setProperty(`--${k}`, p[k] + (M[k].unit || '')); else document.body.dataset[k] = p[k]; });
-    if (saved) apply(saved);
-    const open = new URLSearchParams(location.search).has('design');
-    if (!open && !saved) return;
-    const cur = Object.assign({}, DZ.pick, saved || {}); keys.forEach(k => cur[k] = String(cur[k]));
-    const code = () => keys.map(k => `${M[k].name} ${cur[k]}`).join(' · ');
-    const row = k => M[k].type === 'range'
-      ? `<div><h5>${esc(M[k].name)}<small>${k}</small></h5><label class="rg"><input type="range" name="dz-${k}" min="${M[k].min}" max="${M[k].max}" step="${M[k].step}" value="${cur[k]}"><b>${cur[k]}${esc(M[k].unit || '')}</b></label></div>`
-      : `<div><h5>${esc(M[k].name)}<small>${k}</small></h5>${Object.entries(M[k].options).map(([v, t]) => `<label><input type="radio" name="dz-${k}" value="${v}"${cur[k] === v ? ' checked' : ''}><span><b>${v}</b>${esc(t)}</span></label>`).join('')}</div>`;
-    const d = document.createElement('div'); d.className = 'dz';
-    d.innerHTML = `<button class="dzb" type="button">디자인</button><div class="dzp" role="dialog" aria-label="디자인 모듈 선택">${keys.map(row).join('')}<div class="sum"><code></code><span><button type="button" data-a="copy">코드 복사</button><button type="button" data-a="reset">원래대로</button></span></div></div>`;
-    document.body.appendChild(d);
-    const sum = $('.sum code', d); const upd = () => { sum.textContent = code(); };
-    upd(); if (open && innerWidth > 900) d.classList.add('on');
-    $('.dzb', d).addEventListener('click', () => d.classList.toggle('on'));
-    $$('input', d).forEach(i => i.addEventListener('input', () => {
-      const k = i.name.slice(3); cur[k] = i.value; if (i.type === 'range') i.nextElementSibling.textContent = i.value + (M[k].unit || '');
-      apply(cur); try { sessionStorage.setItem('pf.design', JSON.stringify(cur)); } catch (e) { } upd(); dispatchEvent(new Event('resize'));
-    }));
-    $('[data-a="copy"]', d).addEventListener('click', async e => { try { await navigator.clipboard.writeText(code()); e.target.textContent = '복사됨'; setTimeout(() => e.target.textContent = '코드 복사', 1400); } catch (err) { } });
-    $('[data-a="reset"]', d).addEventListener('click', () => { try { sessionStorage.removeItem('pf.design'); } catch (e) { } location.href = location.pathname + '?design'; });
-  })();
-
-  /* ---------- 내비 ---------- */
-  const NAV = $('.nav'); const onSc = () => NAV && NAV.classList.toggle('sc', scrollY > 8); addEventListener('scroll', onSc, { passive: true }); onSc();
+  /* ---------- 그리기: 파생 이미지는 지금 데이터와 같을 때만, 아니면 원본 + CSS 블러 채움 ---------- */
+  const sigWide = w => { const m = w.media || {}; return `${m.poster_w || ''}|${posterOf(w)}|${m.poster_w_t ?? ''}`; };
+  const feVideo = w => { const vs = vidsOf(w).filter(v => v.w && v.h); return vs.length ? vs.reduce((a, b) => (b.w / b.h > a.w / a.h ? b : a)) : null; };
+  const segOf = w => { const v = feVideo(w), m = w.media || {}, dur = (v && v.dur) || 8; let [a, b] = m.billboard || [m.start || 0, (m.start || 0) + 8]; a = Math.max(0, Math.min(+a, dur - 1)); b = Math.min(+b, dur); if (b - a < 3) b = Math.min(dur, a + 6); return [+a.toFixed(2), +b.toFixed(2)]; };
+  const orientOf = w => { const x = S.X[w.id]; if (x && x.pw && x.ph && x.tall && x.tall.from === posterOf(w)) return x.ph / x.pw > 1.2 ? 'tall' : 'wide'; const v = vidsOf(w)[0]; return v && v.h / v.w > 1.2 ? 'tall' : 'wide'; };
+  const thumbOf = (w, cls) => {
+    const x = S.X[w.id] || {}, m = w.media || {};
+    if (cls === 'wide') { if (x.wide && x.wide.from === sigWide(w)) return { src: x.wide.src, srcset: x.wide.srcset }; if (m.poster_w) return { src: m.poster_w }; return { src: posterOf(w), fill: true }; }
+    if (x.tall && x.tall.from === posterOf(w)) return { src: x.tall.src, srcset: x.tall.srcset };
+    return { src: posterOf(w) };
+  };
+  const cardHTML = (w, cls = 'wide') => {
+    const t = thumbOf(w, cls); const sizes = cls === 'wide' ? '(max-width:760px) 264px, 360px' : '(max-width:760px) 132px, 210px';
+    const img = `<img src="${esc(url(t.src))}"${t.srcset ? ` srcset="${esc(t.srcset.split(', ').map(s => url(s.split(' ')[0]) + ' ' + s.split(' ')[1]).join(', '))}" sizes="${sizes}"` : ''} alt="" loading="lazy">`;
+    return `<a class="card ${cls}${(w.group === 'tools' || w.group === 'research') ? ' ui' : ''}" href="?w=${esc(w.id)}" data-id="${esc(w.id)}"><div class="art${t.fill ? ' fill' : ''}">${t.fill ? `<img class="bg" src="${esc(url(t.src))}" alt="" loading="lazy">` : ''}${img}</div><div class="t">${esc(w.title)}</div><div class="s">${esc(w.type || w.subtitle || '')}${(w.links && w.links.live) ? ' ↗' : ''}</div></a>`;
+  };
+  const rowList = () => {
+    const H = S.H, rows = [];
+    const rep = (H.rep || []).map(id => BY[id]).filter(w => w && posterOf(w) && (w.grade ?? 3) <= 2);
+    if (rep.length) rows.push({ key: 'rep', title: '대표 작업', items: rep, cls: 'wide', more: 'works.html' });
+    (H.rows || []).forEach((r, i) => {
+      const items = r.ids ? r.ids.map(id => BY[id]).filter(w => w && posterOf(w) && (w.grade ?? 3) <= 2) : DATA.filter(w => (w.kinds || []).includes(r.kind));
+      if (!items.length) return;
+      rows.push({ key: `rows.${i}`, title: r.title || KINDS[r.kind] || '', items, cls: items.every(w => orientOf(w) === 'tall') ? 'tall' : 'wide', more: r.more || (r.kind ? `works.html#${r.kind}` : 'works.html') });
+    });
+    return rows;
+  };
+  const rowHTML = r => `<section class="row" data-queue data-row="${r.key}"><div class="wrap"><div class="hd"><h2>${esc(r.title)}</h2>${r.more ? `<a class="more" href="${esc(r.more)}">더보기</a>` : ''}</div>
+<div class="trk"><span class="arr"><button class="ar l" aria-label="이전" disabled>${ico('chev-l')}</button><button class="ar r" aria-label="다음">${ico('chev-r')}</button></span><div class="sc">${r.items.map(w => cardHTML(w, r.cls)).join('')}</div></div></div></section>`;
+  const featItems = () => (S.H.billboard || []).map(id => BY[id]).filter(w => w && feVideo(w)).slice(0, 8);
+  const featHTML = items => {
+    if (!items.length) return '';
+    const frames = items.map((w, i) => { const v = feVideo(w), [a, b] = segOf(w), x = S.X[w.id] || {}; const p = (x.bb && x.bb.from === `${v.hd}@${a}`) ? x.bb.src : posterOf(w);
+      return `<div class="fs${i ? '' : ' on'}" data-id="${esc(w.id)}" data-hd="${esc(v.hd)}" data-sd="${esc(v.sd || v.hd)}" data-a="${a}" data-b="${b}"><div class="blur" style="background-image:url('${esc(url(p))}')"></div><img src="${esc(url(p))}" alt=""${i ? ' loading="lazy"' : ' fetchpriority="high"'}></div>`; }).join('');
+    const texts = items.map((w, i) => `<div class="fx${i ? '' : ' on'}"${i ? ' hidden' : ''} data-id="${esc(w.id)}"><div class="k">${esc(w.type || '')}${w.year ? ' · ' + esc(w.year) : ''}</div><h2>${nb(w.title)}</h2>${w.copy && w.copy.one ? `<p class="one">${esc(w.copy.one)}</p>` : ''}
+<div class="bt"><button class="btn" data-open="${esc(w.id)}">${ico('play', 'sm')} 재생</button><button class="btn ghost" data-info="${esc(w.id)}">상세 정보</button></div></div>`).join('');
+    const dots = items.map((w, j) => `<button data-i="${j}" class="${j ? '' : 'on'}" aria-label="${j + 1}번째 작품"><i></i></button>`).join('');
+    return `<div class="fbox"><div class="fv">${frames}<div class="veil"></div></div><div class="ft"><div class="fxs">${texts}</div><div class="fctl" role="tablist" aria-label="피처드 전환">${dots}<button class="pp" aria-label="일시정지">${ico('pause', 'sm')}</button><button class="snd" aria-label="소리 켜기">${ico('mute', 'sm')}</button></div></div></div>`;
+  };
+  const renderHome = () => {
+    const F = $('.feat'), R = $('.rows'); if (!F || !R) return;
+    Feat.unmount(); F.innerHTML = featHTML(featItems()); Feat.mount(F);
+    R.innerHTML = rowList().map(rowHTML).join(''); mountRows(R);
+  };
 
   /* ---------- 확장 카드(호버 0.5초 → 원비율 영상) ---------- */
   const queueOf = card => { const c = card.closest('[data-queue]'); return c ? $$('.card[data-id]:not([hidden])', c).map(x => x.dataset.id).filter((v, i, a) => a.indexOf(v) === i) : [card.dataset.id]; };
@@ -84,7 +116,7 @@
       const capH = innerHeight * (tall ? .5 : .46);
       let pw = Math.min(Math.max(r.width * 1.45, tall ? 0 : 320), innerWidth - 32); if (pw * ah / aw > capH) pw = capH * aw / ah; pw = Math.max(pw, tall ? 200 : 280);
       P.style.setProperty('--pw', pw + 'px'); P.style.setProperty('--pa', `${aw}/${ah}`);
-      const p = (w.media && w.media.hv) || posterOf(w);   // hv = 호버 시작 초의 프레임 → 영상이 시작돼도 장면이 안 바뀜
+      const x = S.X[w.id]; const p = (x && x.hv && v0 && x.hv.from === `${v0.sd || v0.hd}@${startOf(w)}`) ? x.hv.src : posterOf(w);   // 호버 시작 초의 프레임 → 영상이 시작돼도 장면이 안 바뀜
       ART.innerHTML = `<div class="bgb" style="background-image:url('${esc(url(p))}')"></div><img alt="" src="${esc(url(p))}">`;
       $('.t', P).textContent = w.title; $('.s', P).textContent = [w.type, w.dur].filter(Boolean).join(' · ');
       const bodyH = 120; let left = r.left + r.width / 2 - pw / 2; left = Math.max(16, Math.min(left, innerWidth - pw - 16));
@@ -129,34 +161,34 @@
   const bindCard = card => {
     const w = BY[card.dataset.id]; if (!w) return;
     card.addEventListener('click', e => { e.preventDefault(); clearTimeout(hovT); Pop.hide(true); Theater.open(w.id, { queue: queueOf(card) }); });
-    if (!HOVER) return;
+    if (!HOVER || EDIT) return;
     const mode = () => document.body.dataset.hover || '1';
     card.addEventListener('pointerenter', () => { clearTimeout(hovT); hovT = setTimeout(() => mode() === '1' ? Pop.show(card, w) : Inplace.show(card, w), mode() === '1' ? 500 : 350); });
     card.addEventListener('pointerleave', () => { clearTimeout(hovT); Pop.hide(); Inplace.hide(card); });
   };
-  $$('.card[data-id]').forEach(bindCard);
+  const mountRows = root => {
+    $$('.card[data-id]', root).forEach(bindCard);
+    $$('.row', root).forEach(row => {
+      const sc = $('.sc', row), L = $('.ar.l', row), R = $('.ar.r', row), A = $('.arr', row); if (!sc || !L) return;
+      const upd = () => { const over = sc.scrollWidth > sc.clientWidth + 4; A.hidden = !over; L.disabled = sc.scrollLeft < 8; R.disabled = sc.scrollLeft + sc.clientWidth > sc.scrollWidth - 8; sc.classList.toggle('more', over && !R.disabled); };
+      const step = d => sc.scrollBy({ left: d * sc.clientWidth * .85, behavior: RM ? 'auto' : 'smooth' });
+      L.addEventListener('click', () => step(-1)); R.addEventListener('click', () => step(1));
+      sc.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+    });
+  };
 
-  /* ---------- 행 화살표: 넘칠 때 항상 표시, 끝이면 비활성 ---------- */
-  $$('.row').forEach(row => {
-    const sc = $('.sc', row), L = $('.ar.l', row), R = $('.ar.r', row), A = $('.arr', row); if (!sc || !L) return;
-    const upd = () => { const over = sc.scrollWidth > sc.clientWidth + 4; A.hidden = !over; L.disabled = sc.scrollLeft < 8; R.disabled = sc.scrollLeft + sc.clientWidth > sc.scrollWidth - 8; sc.classList.toggle('more', over && !R.disabled); };
-    const step = d => sc.scrollBy({ left: d * sc.clientWidth * .85, behavior: RM ? 'auto' : 'smooth' });
-    L.addEventListener('click', () => step(-1)); R.addEventListener('click', () => step(1));
-    sc.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
-  });
 
   /* ---------- 피처드: 항상 재생 — 정해진 구간이 끝나면 다음 작품, 진행 바는 영상 시간 그대로 ---------- */
-  const FEAT = $('.feat');
-  if (FEAT) {
-    const frames = $$('.fs', FEAT), texts = $$('.fx', FEAT), dots = $$('.fctl button[data-i]', FEAT), pp = $('.pp', FEAT), snd = $('.snd', FEAT);
-    let i = 0, V = null, user = false, muted = true, raf = 0, fb = null;
+  const Feat = (() => {
+    let F = null, frames = [], texts = [], dots = [], i = 0, V = null, user = false, muted = true, raf = 0, fb = null, offResize = null;
     const holds = new Set(); const blocked = () => user || holds.size > 0;
-    const seg = f => { const a = +f.dataset.a || 0, b = +f.dataset.b || a + 8; return { a, b: Math.max(b, a + 3) }; };
+    const seg = f => { const a = +f.dataset.a || 0, b = +f.dataset.b || a + 8; return { a, b: Math.max(b, a + 1) }; };
     const fill = p => dots.forEach((d, k) => { d.classList.toggle('on', k === i); const x = $('i', d); if (x) x.style.width = (k === i ? Math.max(0, Math.min(1, p)) * 100 : 0) + '%'; });
-    const tick = () => { cancelAnimationFrame(raf); const v = V, s = seg(frames[i]); if (!v) return; const p = (v.currentTime - s.a) / (s.b - s.a); fill(p); if (v.currentTime >= s.b - .04 || v.ended) { go(i + 1); return; } raf = requestAnimationFrame(tick); };
+    const tick = () => { cancelAnimationFrame(raf); const v = V; if (!v || !frames[i]) return; const s = seg(frames[i]); fill((v.currentTime - s.a) / (s.b - s.a)); if (!holds.has('edit') && (v.currentTime >= s.b - .04 || v.ended)) { go(i + 1); return; } raf = requestAnimationFrame(tick); };
     const load = () => {
       if (V) { const old = V; old.pause(); setTimeout(() => killVideo(old), 1000); } V = null; cancelAnimationFrame(raf); clearTimeout(fb); fill(0);
-      const f = frames[i], s = seg(f);
+      const f = frames[i]; if (!f) return; const s = seg(f);
+      document.body.style.setProperty('--feat-img', `url('${$('img', f).src}')`);   // 절대 주소(CSS 변수 안의 상대 url은 css/ 기준으로 풀림)
       if (SAVE) { fb = setTimeout(() => go(i + 1), (s.b - s.a) * 1000); return; }
       V = freshVideo(f.dataset[big() ? 'hd' : 'sd'], s.a, { muted }); f.appendChild(V);
       const v = V; v.addEventListener('playing', () => { clearTimeout(fb); tick(); });
@@ -164,30 +196,35 @@
       if (!blocked()) v.play().catch(() => { v.muted = true; v.play().catch(() => { }); });
     };
     const go = n => {
+      if (!frames.length) return;
       frames[i].classList.remove('on'); texts[i].classList.remove('on'); texts[i].hidden = true;
       i = (n + frames.length) % frames.length;
-      frames[i].classList.add('on'); texts[i].hidden = false; requestAnimationFrame(() => texts[i].classList.add('on'));
-      load();
+      frames[i].classList.add('on'); texts[i].hidden = false; requestAnimationFrame(() => texts[i] && texts[i].classList.add('on'));
+      load(); F && F.dispatchEvent(new CustomEvent('pf:slide', { detail: { i, id: frames[i].dataset.id } }));
     };
     const hold = r => { holds.add(r); cancelAnimationFrame(raf); V && V.pause(); };
     const release = r => { holds.delete(r); if (!blocked() && V) V.play().catch(() => { }); };
-    dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.i)));
-    pp && pp.addEventListener('click', () => {
-      user = !user; pp.innerHTML = ico(user ? 'play' : 'pause', 'sm'); pp.setAttribute('aria-label', user ? '재생' : '일시정지');
-      if (user) hold('user'); else release('user');
-    });
-    snd && snd.addEventListener('click', () => { muted = !muted; if (V) V.muted = muted; snd.innerHTML = ico(muted ? 'mute' : 'vol', 'sm'); snd.setAttribute('aria-label', muted ? '소리 켜기' : '소리 끄기'); });
-    const fvEl = $('.fv', FEAT); const inset = () => fvEl.classList.toggle('inset', fvEl.getBoundingClientRect().width < innerWidth - 2);
-    addEventListener('resize', inset); inset();
-    const ids = texts.map(t => t.dataset.id);
-    $$('[data-open]', FEAT).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.open, { queue: ids, autoplay: true })));
-    $$('[data-info]', FEAT).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.info, { queue: ids, autoplay: false, info: true })));
-    window.__featPause = () => hold('theater'); window.__featResume = () => release('theater');
-    load();
-  }
+    const mount = el => {
+      F = el; frames = $$('.fs', F); texts = $$('.fx', F); dots = $$('.fctl button[data-i]', F); i = 0; if (!frames.length) return;
+      const pp = $('.pp', F), snd = $('.snd', F), fv = $('.fv', F);
+      dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.i)));
+      pp.addEventListener('click', () => { user = !user; pp.innerHTML = ico(user ? 'play' : 'pause', 'sm'); pp.setAttribute('aria-label', user ? '재생' : '일시정지'); user ? hold('user') : release('user'); });
+      snd.addEventListener('click', () => { muted = !muted; if (V) V.muted = muted; snd.innerHTML = ico(muted ? 'mute' : 'vol', 'sm'); snd.setAttribute('aria-label', muted ? '소리 켜기' : '소리 끄기'); });
+      const ids = texts.map(t => t.dataset.id);
+      $$('[data-open]', F).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.open, { queue: ids, autoplay: true })));
+      $$('[data-info]', F).forEach(b => b.addEventListener('click', () => Theater.open(b.dataset.info, { queue: ids, autoplay: false, info: true })));
+      const inset = () => fv.classList.toggle('inset', fv.getBoundingClientRect().width < innerWidth - 2);
+      addEventListener('resize', inset); offResize = () => removeEventListener('resize', inset); inset();
+      load();
+    };
+    const unmount = () => { cancelAnimationFrame(raf); clearTimeout(fb); killVideo(V); V = null; offResize && offResize(); frames = []; texts = []; dots = []; };
+    document.addEventListener('visibilitychange', () => document.hidden ? hold('tab') : release('tab'));
+    return { mount, unmount, hold, release, go, get i() { return i; }, get video() { return V; }, seg };
+  })();
+  window.__featPause = () => Feat.hold('theater'); window.__featResume = () => Feat.release('theater');
 
   /* ---------- 쇼릴 ---------- */
-  $$('[data-reel]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); const q = DATA.filter(w => w.grade === 1 && vidsOf(w).length).sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999)).map(w => w.id); if (q.length) Theater.open(q[0], { queue: q, autoplay: true }); }));
+  $$('[data-reel]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); const q = DATA.filter(w => w.grade === 1 && vidsOf(w).length).map(w => w.id); if (q.length) Theater.open(q[0], { queue: q, autoplay: true }); }));
 
   /* ---------- 상영관 ---------- */
   const Theater = (() => {
@@ -252,7 +289,7 @@
       const imgs = (w.media && w.media.images) || [];
       el.gal.innerHTML = imgs.length ? `<h3>이미지 소재 <small>${imgs.length}</small></h3><div class="gg">${imgs.map(im => `<a href="${esc(url(im.src))}" target="_blank" rel="noopener" style="--r:${(im.w / im.h).toFixed(3)}"><img src="${esc(url(im.src))}" alt="${esc(im.label)}" loading="lazy" width="${im.w}" height="${im.h}"><span>${esc(chip(im.label))}</span></a>`).join('')}</div>` : '';
       const ks = w.kinds || []; const sim = DATA.filter(x => x.id !== w.id && posterOf(x) && (x.kinds || []).some(k => ks.includes(k))).sort((a, b) => (a.priority ?? 999) - (b.priority ?? 999)).slice(0, 8);
-      el.sim.innerHTML = sim.length ? `<h3>비슷한 작업</h3><div class="sg">${sim.map(x => `<button data-id="${esc(x.id)}"><img src="${esc(url((x.media && x.media.poster16) || posterOf(x)))}" alt="" loading="lazy"><b>${esc(x.title)}</b></button>`).join('')}</div>` : '';
+      el.sim.innerHTML = sim.length ? `<h3>비슷한 작업</h3><div class="sg">${sim.map(x => `<button data-id="${esc(x.id)}"><img src="${esc(url(thumbOf(x, 'wide').src))}" alt="" loading="lazy"><b>${esc(x.title)}</b></button>`).join('')}</div>` : '';
       $$('.sg button', el.sim).forEach(b => b.addEventListener('click', () => { const q = sim.map(x => x.id); queue = q; jump(q.indexOf(b.dataset.id)); }));
       document.title = `${w.title} — HANSY`;
     };
@@ -300,7 +337,7 @@
     });
     V.addEventListener('ended', () => {
       const n = BY[queue[idx + 1]]; if (!n || el.next.dataset.dismissed) { el.vw.classList.add('paused'); return; }
-      $('img', el.next).src = url((n.media && n.media.poster16) || posterOf(n)); $('b', el.next).textContent = n.title; el.next.classList.add('on');
+      $('img', el.next).src = url(thumbOf(n, 'wide').src); $('b', el.next).textContent = n.title; el.next.classList.add('on');
       let left = 5; const cd = $('.cd', el.next); cd.textContent = left; cd.style.setProperty('--p', 0);
       clearInterval(cdT); cdT = setInterval(() => { left--; cd.textContent = left; cd.style.setProperty('--p', (5 - left) * 20); if (left <= 0) { clearInterval(cdT); jump(idx + 1); } }, 1000);
     });
@@ -326,24 +363,25 @@
   window.Theater = Theater;
 
   /* ---------- 작업 목록: 종류 + 검색 ---------- */
-  const LIB = $('.lib');
-  if (LIB) {
-    const grid = $('.grid', LIB), cnt = $('.cnt', LIB), q = $('.q', LIB);
-    const st = { kind: KINDS[location.hash.slice(1)] ? location.hash.slice(1) : null, q: '' };
-    const cards = $$('.card[data-id]', grid);
+  const renderWorks = () => {
+    const LIB = $('.lib'); if (!LIB) return;
+    const rail = $('.rail', LIB), grid = $('.grid', LIB), cnt = $('.cnt', LIB), q = $('.q', LIB);
+    const count = k => DATA.filter(w => (w.kinds || []).includes(k)).length;
+    rail.innerHTML = `<button data-v="">전체 <small>${DATA.length}</small></button>` + Object.keys(KINDS).filter(count).map(k => `<button data-v="${k}">${KINDS[k]} <small>${count(k)}</small></button>`).join('');
+    grid.innerHTML = DATA.map(w => cardHTML(w, 'wide')).join(''); mountRows(grid);
+    const st = { kind: KINDS[location.hash.slice(1)] ? location.hash.slice(1) : '', q: q.value || '' };
     const KO = { google: '구글', moloco: '몰로코', meta: '메타', localads: '로컬광고', youtube: '유튜브', instagram: '인스타그램' };
     const hay = w => [w.title, w.type, w.subtitle, (w.tools || []).join(' '), (w.channels || []).map(c => `${c} ${KO[String(c).toLowerCase()] || ''}`).join(' '), (w.kinds || []).map(k => KINDS[k]).join(' ')].join(' ').toLowerCase();
     const draw = () => {
       let n = 0; const words = st.q.toLowerCase().split(/\s+/).filter(Boolean);
-      cards.forEach(c => { const w = BY[c.dataset.id]; const ok = w && (!st.kind || (w.kinds || []).includes(st.kind)) && words.every(x => hay(w).includes(x)); c.hidden = !ok; if (ok) n++; });
-      cnt.textContent = `${n}건`;
-      $$('.rail button').forEach(b => b.setAttribute('aria-pressed', (b.dataset.v || null) === st.kind));
+      $$('.card', grid).forEach(c => { const w = BY[c.dataset.id]; const ok = w && (!st.kind || (w.kinds || []).includes(st.kind)) && words.every(x => hay(w).includes(x)); c.hidden = !ok; if (ok) n++; });
+      cnt.textContent = `${n}건`; $$('button', rail).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === st.kind));
     };
-    $$('.rail button').forEach(b => b.addEventListener('click', () => { st.kind = b.dataset.v || null; hist.replace(hist.st(), location.pathname + location.search + (st.kind ? '#' + st.kind : '')); draw(); }));
-    addEventListener('hashchange', () => { const k = location.hash.slice(1); st.kind = KINDS[k] ? k : null; draw(); });
-    q && q.addEventListener('input', () => { st.q = q.value; draw(); });
+    $$('button', rail).forEach(b => b.addEventListener('click', () => { st.kind = b.dataset.v; hist.replace(hist.st(), location.pathname + location.search + (st.kind ? '#' + st.kind : '')); draw(); }));
+    onhashchange = () => { const k = location.hash.slice(1); st.kind = KINDS[k] ? k : ''; draw(); };
+    q.oninput = () => { st.q = q.value; draw(); };
     draw();
-  }
+  };
 
   /* ---------- 도구 런처 ---------- */
   const TL = $('.tl');
@@ -366,9 +404,24 @@
   $$('[data-copy]').forEach(b => b.addEventListener('click', async e => { e.preventDefault(); try { await navigator.clipboard.writeText(b.dataset.copy); const t = b.textContent; b.textContent = '복사됨 ✓'; setTimeout(() => b.textContent = t, 1600); } catch (err) { location.href = 'mailto:' + b.dataset.copy; } }));
   $$('[data-print]').forEach(b => b.addEventListener('click', () => window.print()));
 
-  /* ---------- 딥링크 ---------- */
+  /* ---------- 시작: 그리기 → 딥링크 → 최신 데이터 확인(바뀌었으면 다시 그리기) ---------- */
+  const renderAll = () => { renderHome(); renderWorks(); ambient(); };
+  const ambient = () => { if (document.querySelector('.feat .fs')) return; const w = (S.H.billboard || []).map(id => BY[id]).find(Boolean) || DATA[0]; if (w) document.body.style.setProperty('--feat-img', `url('${new URL(url(posterOf(w)), document.baseURI).href}')`); };
+  window.PF = { S, setData, renderAll, renderHome, renderWorks, applyDesign, Feat, cardHTML, segOf, feVideo, sigWide, posterOf, vidsOf, url, esc, ico, KINDS, get BY() { return BY; }, get DATA() { return DATA; } };
+  renderAll();
   document.body.dataset.title = document.title;
   const qs = new URLSearchParams(location.search); const q = qs.get('w');
-  if (q && BY[q]) Theater.open(q, { autoplay: false, replace: true, queue: DATA.filter(w => posterOf(w)).map(w => w.id) });
+  if (q && BY[q]) Theater.open(q, { autoplay: false, replace: true, queue: DATA.map(w => w.id) });
   if (qs.has('reel')) { const b = $('[data-reel]'); b && b.click(); }
+  if (!EDIT) {
+    const get = f => fetch(`data/${f}.json`, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null);
+    Promise.all(['works', 'home', 'design', 'derived'].map(get)).then(([works, home, design, derived]) => {
+      const fresh = { works, home, design, derived }; const cur = { works: S.all, home: S.H, design: S.D, derived: S.X };
+      const changed = Object.keys(fresh).filter(k => fresh[k] && JSON.stringify(fresh[k]) !== JSON.stringify(cur[k]));
+      if (!changed.length) return;
+      setData(fresh); if (changed.includes('design') && !previewing) applyDesign(S.D.pick);
+      if (changed.some(k => k !== 'design') && !document.querySelector('.theater.on')) renderAll();
+    });
+  }
+  document.dispatchEvent(new CustomEvent('pf:ready'));
 })();

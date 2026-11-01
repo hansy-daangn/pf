@@ -14,10 +14,10 @@
 /* ==========================================================================
    모듈: 카드 모양 (card) — 1 기본 · 2 미니멀(썸네일만) · 3 부드럽게
    ========================================================================== */
-body[data-card="2"] .card .art{border-radius:4px}
+body[data-card="2"] .card .art{border-radius:calc(var(--r) / 2)}
 body[data-card="2"] .card .t,body[data-card="2"] .card .s{display:none}
 body[data-card="2"] .row .sc{--gap:var(--s1)}
-body[data-card="3"] .card .art{border-radius:14px;box-shadow:var(--shadow),var(--ring)}
+body[data-card="3"] .card .art{border-radius:calc(var(--r) * 1.75);box-shadow:var(--shadow),var(--ring)}
 body[data-card="3"] .card:hover .art{box-shadow:var(--shadow-lg),var(--ring)}
 body[data-card="3"] .row .sc{--gap:var(--s3)}
 body[data-card="3"] .card .t{font-size:var(--t-body);margin-top:var(--s2)}
@@ -29,3 +29,7 @@ body[data-size="1"] .card.wide{--cw:clamp(168px,15vw,224px)}
 body[data-size="1"] .card.tall{--cw:clamp(108px,9.5vw,140px)}
 body[data-size="3"] .card.wide{--cw:clamp(240px,25vw,360px)}
 body[data-size="3"] .card.tall{--cw:clamp(150px,14vw,210px)}
+
+/* 16:9 썸네일이 아직 없을 때(편집 직후): 같은 이미지를 흐리게 깔고 원비율로 올림 */
+.card .art.fill img.bg{filter:blur(18px) brightness(.75);transform:scale(1.15)}
+.card .art.fill img:not(.bg){object-fit:contain}

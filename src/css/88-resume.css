@@ -1,0 +1,22 @@
+/* ==========================================================================
+   모듈: 이력서 (cv) — .cvw > .cv(header.idc · p.tag · p.ds · h3 + table × N · details)
+   1 한 단(기본) · 2 왼쪽 고정 프로필 · 3 타임라인
+   ========================================================================== */
+/* ---- 2 왼쪽 고정 프로필: 사진·이름·연락처가 왼쪽에서 따라오고, 내용은 오른쪽 ---- */
+@media (min-width:901px){
+  body[data-cv="2"] .cvw{max-width:calc(var(--u) * 150 + var(--gut) * 2)}
+  body[data-cv="2"] .cv{display:grid;grid-template-columns:calc(var(--u) * 32) minmax(0,1fr);column-gap:var(--s8);align-items:start}
+  body[data-cv="2"] .cv > *{grid-column:2}
+  body[data-cv="2"] .cv > .idc{grid-column:1;grid-row:1 / span 40;position:sticky;top:calc(var(--nav-h) + var(--s5));display:flex;flex-direction:column;align-items:flex-start;gap:var(--s2);margin:0}
+  body[data-cv="2"] .cv .idc img{width:calc(var(--u) * 20);height:auto;aspect-ratio:13 / 17}
+  body[data-cv="2"] .cv .idc .jb{font-size:var(--t-body);line-height:1.45}
+  body[data-cv="2"] .cv .idc :is(.em,.base){line-height:1.5}
+}
+@media (min-width:1100px){body[data-cv="2"][data-nav="2"] .cv > .idc{top:var(--s8)}}
+
+/* ---- 3 타임라인: 날짜 | 세로 선 + 점 | 내용. 맨 위(최근) 점만 강조색 — 기술 표는 그대로 ---- */
+body[data-cv="3"] .cv table:not(.skills) td{border-top:0;padding-block:var(--s1) var(--s2)}
+body[data-cv="3"] .cv table:not(.skills) td.d{text-align:right;padding-right:var(--s3)}
+body[data-cv="3"] .cv table:not(.skills) td:not(.d){position:relative;border-left:2px solid var(--ink-3);padding-left:var(--s3)}
+body[data-cv="3"] .cv table:not(.skills) td:not(.d):before{content:"";position:absolute;left:calc(var(--s05) * -1 - 1px);top:calc(var(--s1) + var(--t-body) * .775 - var(--s05));width:var(--s1);height:var(--s1);border-radius:50%;background:var(--ink-2);box-shadow:0 0 0 3px var(--bg)}
+body[data-cv="3"] .cv table:not(.skills) tr:first-child td:not(.d):before{background:var(--acc)}

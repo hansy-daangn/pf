@@ -1,0 +1,103 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"><meta name="robots" content="noindex">
+<title>디자인 — Hansy 포트폴리오</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="css/site.css">
+<style>
+/* 디자인 고르기: 왼쪽 모듈 · 오른쪽 실제 사이트 미리보기 — 고르면 즉시 반영, 자동 저장 */
+html,body{height:100%}
+body.dz{display:grid;grid-template-columns:360px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);height:100dvh;overflow:hidden;background:var(--ink-4)}
+.dz header{grid-column:1/-1;display:flex;align-items:center;gap:var(--s2);padding:var(--s1) var(--s3);background:var(--bg);border-bottom:1px solid var(--ink-3);white-space:nowrap}
+.dz header h1{font-size:var(--t-h);font-weight:700}
+.dz header .seg{display:inline-flex;background:var(--ink-4);border-radius:999px;padding:3px}
+.dz header .seg button{padding:6px 12px;border-radius:999px;font-size:var(--t-sm);font-weight:600;color:var(--ink-2)}
+.dz header .seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:var(--shadow)}
+.dz header .st{margin-left:auto;font-size:var(--t-sm);color:var(--ink-2)}
+.dz header .st[data-s="ok"]{color:#1e8e5a}.dz header .st[data-s="err"],.dz header .st[data-s="warn"]{color:var(--acc)}
+.dz header a,.dz header .bt{font-size:var(--t-sm);font-weight:600;padding:6px 12px;border-radius:999px;background:var(--ink-4)}
+.dz header .cn{background:var(--acc);color:#fff}
+.dz aside{overflow-y:auto;background:var(--bg);border-right:1px solid var(--ink-3);padding:var(--s2) var(--s2) var(--s8);scrollbar-width:thin}
+.dz .m{padding:var(--s2) 0;border-bottom:1px solid var(--ink-3)}
+.dz .m h3{font-size:var(--t-sm);font-weight:700;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--s1)}
+.dz .m h3 small{font-weight:500;color:var(--ink-2);font-size:var(--t-micro)}
+.dz .opts{display:grid;gap:6px}
+.dz .opts button{display:grid;grid-template-columns:28px 1fr;gap:var(--s1);align-items:start;text-align:left;padding:var(--s1);border-radius:var(--r);border:1px solid var(--ink-3);background:var(--bg);color:var(--ink);font-size:var(--t-sm);line-height:1.4;transition:border-color .15s,background .15s}
+.dz .opts button:hover{border-color:var(--ink-2)}
+.dz .opts button[aria-pressed="true"]{border-color:var(--acc);background:color-mix(in oklab,var(--acc) 7%,var(--bg))}
+.dz .opts b{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink-4);font-size:var(--t-micro)}
+.dz .opts button[aria-pressed="true"] b{background:var(--acc);color:#fff}
+.dz .opts small{display:block;color:var(--ink-2);font-size:var(--t-micro)}
+.dz .rg{display:grid;grid-template-columns:1fr 64px;gap:var(--s1);align-items:center}
+.dz .rg input[type=range]{width:100%;accent-color:var(--acc)}
+.dz .rg output{font-variant-numeric:tabular-nums;font-size:var(--t-sm);text-align:right}
+.dz .stage{position:relative;overflow:hidden;display:grid;place-items:start center;padding:var(--s2)}
+.dz .frame{transform-origin:top center;background:var(--bg);box-shadow:var(--shadow-lg);border-radius:var(--r);overflow:hidden}
+.dz iframe{display:block;border:0;background:#fff}
+.emodal{position:fixed;inset:0;z-index:100;background:rgba(14,14,16,.45);display:grid;place-items:center;padding:var(--s3)}
+.emodal .box{background:var(--bg);border-radius:var(--r2);box-shadow:var(--shadow-lg);padding:var(--s3);width:min(520px,100%)}
+.emodal h3{font-size:var(--t-h);margin-bottom:var(--s2)}.emodal ol{padding-left:1.2em;display:grid;gap:6px;margin-bottom:var(--s2);line-height:1.5}.emodal ol a{color:var(--acc);font-weight:700}
+.emodal input{width:100%;font:inherit;padding:var(--s1) var(--s2);border-radius:var(--r);border:1px solid var(--ink-3)}
+.emodal .msg{font-size:var(--t-sm);color:var(--acc);min-height:1.4em;margin:6px 0}.emodal .row{display:flex;gap:var(--s1)}
+@media (max-width:900px){body.dz{grid-template-columns:1fr;grid-template-rows:auto 45dvh minmax(0,1fr)}.dz aside{border-right:0}}
+</style></head>
+<body class="dz" data-base="./">
+<header><h1>디자인</h1>
+ <span class="seg" id="dev"><button data-w="1440" aria-pressed="true">데스크톱</button><button data-w="390">모바일</button></span>
+ <span class="seg" id="pg"><button data-p="index.html" aria-pressed="true">홈</button><button data-p="works.html">작업</button><button data-p="tools.html">도구</button><button data-p="resume.html">이력서</button><button data-p="index.html?w=td_declutter">상영관</button></span>
+ <span class="st" id="st"></span><button class="bt cn" id="cn" hidden>저장 연결</button><button class="bt" id="undo">되돌리기</button><a href="edit/">편집</a><a href="index.html" target="_blank" rel="noopener">사이트 ↗</a>
+</header>
+<aside id="mods"></aside>
+<div class="stage" id="stage"><div class="frame" id="frame"><iframe id="ifr" title="미리보기" src="index.html"></iframe></div></div>
+<script>
+(() => {
+  'use strict';
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const GH = 'https://api.github.com', R = '/repos/hansy-daangn/pf', TK = 'pf.gh';
+  let token = localStorage.getItem(TK) || '', D = null, saved = null, pick = null, dev = 1440, saveT = null, hist = [];
+  const st = (t, s = '') => { $('#st').textContent = t; $('#st').dataset.s = s; };
+  const api = async (p, o = {}) => { const r = await fetch(GH + p, { ...o, headers: { Authorization: `Bearer ${token}`, Accept: o.raw ? 'application/vnd.github.raw' : 'application/vnd.github+json', ...(o.body ? { 'Content-Type': 'application/json' } : {}) } }); if (!r.ok) { const e = new Error(r.status); e.status = r.status; throw e; } return o.raw ? r.text() : r.json(); };
+  const send = () => { try { $('#ifr').contentWindow.postMessage({ pf: 'design', pick }, location.origin); } catch (e) { } };
+  const fit = () => { const s = $('#stage'), f = $('#frame'), i = $('#ifr'); const aw = s.clientWidth - 32, ah = s.clientHeight - 32; const sc = Math.min(1, aw / dev); i.style.width = dev + 'px'; i.style.height = (ah / sc) + 'px'; f.style.width = dev + 'px'; f.style.height = (ah / sc) + 'px'; f.style.transform = `scale(${sc})`; s.style.height = ''; };
+  addEventListener('resize', fit);
+  $('#ifr').addEventListener('load', () => { send(); });
+  $$('#dev button').forEach(b => b.addEventListener('click', () => { $$('#dev button').forEach(x => x.setAttribute('aria-pressed', x === b)); dev = +b.dataset.w; fit(); }));
+  $$('#pg button').forEach(b => b.addEventListener('click', () => { $$('#pg button').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#ifr').src = b.dataset.p; }));
+  const draw = () => {
+    $('#mods').innerHTML = Object.entries(D.modules).map(([k, m]) => m.type === 'range'
+      ? `<div class="m"><h3>${esc(m.name)}<small>${k}</small></h3><div class="rg"><input type="range" data-k="${k}" min="${m.min}" max="${m.max}" step="${m.step}" value="${pick[k]}"><output>${pick[k]}${esc(m.unit || '')}</output></div></div>`
+      : `<div class="m"><h3>${esc(m.name)}<small>${k}</small></h3><div class="opts">${Object.entries(m.options).map(([v, t]) => { const [n, d] = String(t).split(' — '); return `<button data-k="${k}" data-v="${v}" aria-pressed="${String(pick[k]) === v}"><b>${v}</b><span>${esc(n)}${d ? `<small>${esc(d)}</small>` : ''}</span></button>`; }).join('')}</div></div>`).join('');
+    $$('#mods button[data-k]').forEach(b => b.addEventListener('click', () => set(b.dataset.k, +b.dataset.v)));
+    $$('#mods input[type=range]').forEach(i => i.addEventListener('input', () => { i.nextElementSibling.textContent = i.value + (D.modules[i.dataset.k].unit || ''); set(i.dataset.k, +i.value, true); }));
+  };
+  const set = (k, v, keepUI) => { hist.push(JSON.stringify(pick)); pick[k] = v; if (!keepUI) $$(`#mods button[data-k="${k}"]`).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === String(v))); send(); queue(); };
+  $('#undo').addEventListener('click', () => { if (!hist.length) return; pick = JSON.parse(hist.pop()); draw(); send(); queue(); });
+  const queue = () => { st(token ? '저장 대기…' : '저장하려면 GitHub 연결 필요', token ? '' : 'warn'); clearTimeout(saveT); saveT = setTimeout(save, 1200); };
+  const save = async () => {
+    if (JSON.stringify(pick) === JSON.stringify(saved)) { st('저장됨', 'ok'); return; }
+    if (!token) { $('#cn').hidden = false; return; }
+    st('저장 중…');
+    try {
+      for (let t = 0; t < 3; t++) {
+        const ref = await api(`${R}/git/ref/heads/main`); const head = ref.object.sha; const c = await api(`${R}/git/commits/${head}`);
+        const remote = JSON.parse(await api(`${R}/contents/data/design.json?ref=${head}`, { raw: true })); remote.pick = Object.assign({}, remote.pick, pick);
+        const b = await api(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: JSON.stringify(remote, null, 1) + '\n', encoding: 'utf-8' }) });
+        const tr = await api(`${R}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: c.tree.sha, tree: [{ path: 'data/design.json', mode: '100644', type: 'blob', sha: b.sha }] }) });
+        const cm = await api(`${R}/git/commits`, { method: 'POST', body: JSON.stringify({ message: '디자인: ' + Object.keys(pick).filter(k => pick[k] !== (saved || {})[k]).map(k => `${D.modules[k] ? D.modules[k].name : k} ${pick[k]}`).join(' · '), tree: tr.sha, parents: [head] }) });
+        try { await api(`${R}/git/refs/heads/main`, { method: 'PATCH', body: JSON.stringify({ sha: cm.sha, force: false }) }); } catch (e) { if (e.status === 422 && t < 2) continue; throw e; }
+        saved = JSON.parse(JSON.stringify(pick)); st('저장됨 · 사이트 반영까지 약 1분', 'ok'); break;
+      }
+    } catch (e) { st(e.status === 401 || e.status === 403 ? '연결 만료 — 다시 연결' : '저장 실패 — 다시 시도', 'err'); if (e.status === 401 || e.status === 403) { token = ''; localStorage.removeItem(TK); $('#cn').hidden = false; } }
+  };
+  $('#cn').addEventListener('click', () => {
+    const m = document.createElement('div'); m.className = 'emodal'; m.innerHTML = `<div class="box"><h3>저장 연결 (처음 한 번)</h3><ol><li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 토큰 만들기 ↗</a></li><li>이름 <b>pf-edit</b> · 만료 <b>1년</b></li><li>Repository access → <b>Only select repositories</b> → <b>hansy-daangn/pf</b></li><li>Repository permissions → <b>Contents</b> → <b>Read and write</b></li><li>Generate token → 복사해서 붙여넣기</li></ol><input type="password" placeholder="github_pat_…"><p class="msg"></p><div class="row"><button class="btn" data-go>연결</button><button class="btn ghost" data-x>닫기</button></div></div>`;
+    document.body.appendChild(m); m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); });
+    $('[data-go]', m).addEventListener('click', async () => { token = $('input', m).value.trim(); try { const r = await api(R); if (!r.permissions || !r.permissions.push) throw 0; localStorage.setItem(TK, token); m.remove(); $('#cn').hidden = true; queue(); } catch (e) { token = ''; $('.msg', m).textContent = '연결 실패 — 저장소·Contents 권한을 확인해 주세요'; } });
+  });
+  (async () => {
+    try { D = token ? await api(`${R}/contents/data/design.json?ref=main`, { raw: true }).then(JSON.parse) : null; } catch (e) { D = null; }
+    if (!D) D = await (await fetch('data/design.json', { cache: 'no-cache' })).json();
+    pick = Object.assign({}, D.pick); saved = JSON.parse(JSON.stringify(pick));
+    draw(); fit(); send(); st(token ? '저장됨' : '저장하려면 GitHub 연결 필요', token ? 'ok' : 'warn'); $('#cn').hidden = !!token;
+  })();
+})();
+</script></body></html>

@@ -1,0 +1,52 @@
+/* ==========================================================================
+   모듈: 내비 (nav) — 마크업 그대로(header.nav > .wrap.in > a.lg + nav.tabs + .cta), CSS만 바꿈
+   1 가운데 탭(기본) · 2 왼쪽 사이드바(애플 TV tvOS 17.2 · 애플 뮤직 웹)
+   3 왼쪽 정렬(넷플릭스 웹) · 4 떠 있는 알약(iOS 26 탭 바 — 데스크톱 위, 폰은 아래)
+   ========================================================================== */
+
+/* ---- 2 왼쪽 사이드바: 넓은 화면에서만 세로 레일, 좁으면 1과 같은 위 막대 ---- */
+@media (min-width:1100px){
+  body[data-nav="2"]{--side-w:calc(var(--u)*30)}
+  body[data-nav="2"] .nav,body[data-nav="2"].home .nav:not(.sc){inset:0 auto 0 0;width:var(--side-w);height:auto;border-bottom:0;border-right:1px solid var(--ink-3);background:color-mix(in oklab,var(--ink) 3%,var(--bg));backdrop-filter:none;-webkit-backdrop-filter:none}
+  body[data-nav="2"] .nav .in{max-width:none;height:100%;padding:var(--s3) var(--s2);display:flex;flex-direction:column;align-items:stretch;gap:var(--s5)}
+  body[data-nav="2"] .nav .lg{padding:var(--s05) var(--s1) 0}
+  body[data-nav="2"] .nav .lg small{display:block;margin:var(--s05) 0 0}
+  body[data-nav="2"] .nav .tabs{flex-direction:column;gap:var(--s05);overflow:visible}
+  body[data-nav="2"] .nav .tabs a{padding:var(--s1) var(--s2);border-radius:var(--r);transition:background var(--d-micro) var(--ease),color var(--d-micro) var(--ease)}
+  body[data-nav="2"] .nav .tabs a:hover,body[data-nav="2"] .nav .tabs a[aria-current="page"]{background:var(--ink-4)}
+  body[data-nav="2"] .nav .tabs a[aria-current="page"]:after{left:0;right:auto;top:var(--s1);bottom:var(--s1);width:3px;height:auto;border-radius:2px}
+  body[data-nav="2"] .nav .cta{margin-top:auto}
+  body[data-nav="2"] .nav .cta .btn{width:100%;justify-content:center}
+  body[data-nav="2"] main,body[data-nav="2"] footer{margin-left:var(--side-w)}
+  body[data-nav="2"] main{padding-top:0}
+  body[data-nav="2"] .rail,body[data-nav="2"] .trail{top:var(--s3)}
+}
+
+/* ---- 3 왼쪽 정렬: 로고는 강조색, 탭은 로고 바로 옆, 현재 탭은 굵게만 ---- */
+body[data-nav="3"] .nav .lg{color:var(--acc);font-weight:800;font-size:var(--t-sm);letter-spacing:.1em}
+body[data-nav="3"] .nav .tabs{font-size:var(--t-sm)}
+body[data-nav="3"] .nav .tabs a[aria-current="page"]{font-weight:700}
+body[data-nav="3"] .nav .tabs a[aria-current="page"]:after{display:none}
+@media (min-width:761px){
+  body[data-nav="3"] .nav .in{grid-template-columns:auto 1fr auto;column-gap:var(--s5)}
+}
+
+/* ---- 4 떠 있는 알약: 막대 대신 유리 알약 하나, 폰에서는 엄지 닿는 아래로 ---- */
+body[data-nav="4"] .nav,body[data-nav="4"].home .nav:not(.sc){inset:var(--s2) 0 auto 0;height:calc(var(--nav-h) - var(--s1));background:none;backdrop-filter:none;-webkit-backdrop-filter:none;border:0;pointer-events:none}
+body[data-nav="4"] .nav .in{pointer-events:auto;display:flex;align-items:center;gap:var(--s3);width:max-content;max-width:calc(100% - var(--gut) * 2);height:100%;margin:0 auto;padding:0 var(--s1) 0 var(--s3);border-radius:999px;background:var(--bg-glass);backdrop-filter:saturate(1.6) blur(24px);-webkit-backdrop-filter:saturate(1.6) blur(24px);box-shadow:var(--shadow),var(--ring)}
+body[data-nav="4"] .nav .lg small{display:none}
+body[data-nav="4"] .nav .tabs{gap:var(--s05)}
+body[data-nav="4"] .nav .tabs a{padding:var(--s1) var(--s2);border-radius:999px;transition:background var(--d-micro) var(--ease),color var(--d-micro) var(--ease)}
+body[data-nav="4"] .nav .tabs a[aria-current="page"]{background:var(--ink-4)}
+body[data-nav="4"] .nav .tabs a[aria-current="page"]:after{display:none}
+body[data-nav="4"] main{padding-top:calc(var(--nav-h) + var(--s2))}
+@media (max-width:760px){
+  body[data-nav="4"] .nav,body.home[data-nav="4"] .nav:not(.sc){inset:auto 0 calc(var(--s2) + env(safe-area-inset-bottom,0px)) 0;background:none!important}
+  body[data-nav="4"] .nav .lg{display:none}
+  body[data-nav="4"] .nav .in{gap:var(--s05);padding:0 var(--s05) 0 var(--s1)}
+  body[data-nav="4"] .nav .tabs{gap:0;font-size:var(--t-sm)}
+  body[data-nav="4"] .nav .tabs a{padding:var(--s1) calc(var(--u) * 1.25)}
+  body[data-nav="4"] .nav .cta .btn{width:var(--s5);padding:0;justify-content:center}
+  body[data-nav="4"] main,body.home[data-nav="4"] main{padding-top:0!important}
+  body[data-nav="4"] footer{padding-bottom:calc(var(--nav-h) + var(--s8))}
+}

@@ -1,0 +1,53 @@
+/* ==========================================================================
+   모듈: 줄 레이아웃 (rows) — 마크업 그대로(section.row > .hd + .trk > .arr + .sc > a.card)
+   1 가로 선반(기본) · 2 그리드(유튜브 홈) · 3 첫 카드 크게(애플 TV) · 4 숫자 랭킹(넷플릭스 톱 10)
+   ========================================================================== */
+
+/* ---- 2 그리드: 넘기지 않고 펼침. 열 수는 카드 크기(size)를 따르고, 두 줄까지만(나머지는 「더보기」) ---- */
+body[data-rows="2"]{--cols:4;--cols-t:8}
+body[data-rows="2"][data-size="1"]{--cols:5;--cols-t:10}
+body[data-rows="2"][data-size="3"]{--cols:3;--cols-t:6}
+body[data-rows="2"] .row .sc{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:var(--s3) var(--gap,var(--s2));overflow:visible;margin-inline:0;padding-inline:0;scroll-snap-type:none}
+body[data-rows="2"] .row .sc:has(> .card.tall){grid-template-columns:repeat(var(--cols-t),minmax(0,1fr))}
+body[data-rows="2"] .row .card{width:auto}
+body[data-rows="2"] .row .arr{display:none}
+body[data-rows="2"] .row .sc > .card.wide:nth-child(n+9),
+body[data-rows="2"][data-size="1"] .row .sc > .card.wide:nth-child(n+11),
+body[data-rows="2"] .row .sc > .card.tall:nth-child(n+9),
+body[data-rows="2"][data-size="1"] .row .sc > .card.tall:nth-child(n+11){display:none}
+body[data-rows="2"][data-size="1"] .row .sc > .card.wide:nth-child(-n+10),
+body[data-rows="2"][data-size="1"] .row .sc > .card.tall:nth-child(-n+10){display:block}
+body[data-rows="2"][data-size="3"] .row .sc > .card.wide:nth-child(n+7),
+body[data-rows="2"][data-size="3"] .row .sc > .card.tall:nth-child(n+7){display:none}
+@media (max-width:760px){
+  body[data-rows="2"] .row .sc{--cols:2!important;--cols-t:3!important;gap:var(--s2) var(--s1)}
+  body[data-rows="2"] .row .sc > .card.wide:nth-child(n+5),body[data-rows="2"] .row .sc > .card.tall:nth-child(n+4){display:none!important}
+  body[data-rows="2"] .row .sc > .card.wide:nth-child(-n+4),body[data-rows="2"] .row .sc > .card.tall:nth-child(-n+3){display:block!important}
+}
+
+/* ---- 3 첫 카드 크게: 맨 앞 작품이 2×2칸, 제목은 그림 아래쪽 위에 (애플 TV 히어로 타일) ---- */
+body[data-rows="3"] .row .sc > .card.wide:first-child{position:relative;display:flex;flex-direction:column}
+body[data-rows="3"] .row .sc > .card.wide:first-child .art{flex:1 1 auto;min-height:0}
+body[data-rows="3"] .row .sc > .card.wide:first-child .art:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(to top,var(--scrim),transparent);pointer-events:none;z-index:1;transition:opacity var(--dur) var(--ease)}
+body[data-rows="3"] .row .sc > .card.wide:first-child .t,body[data-rows="3"] .row .sc > .card.wide:first-child .s{position:absolute;left:var(--s3);right:var(--s3);z-index:2;margin:0;color:var(--on-frame);pointer-events:none;transition:opacity var(--dur) var(--ease)}
+body[data-rows="3"] .row .sc > .card.wide:first-child .t{bottom:calc(var(--s3) + var(--t-micro) * 1.55 + var(--s05));font-size:var(--t-title);font-weight:700;letter-spacing:-.025em;line-height:1.15}
+body[data-rows="3"] .row .sc > .card.wide:first-child .s{bottom:var(--s3);color:color-mix(in oklab,var(--on-frame) 72%,transparent)}
+body[data-rows="3"] .row .sc > .card.wide.playing:first-child :is(.t,.s,.art:after){opacity:0}
+@media (min-width:761px){
+  body[data-rows="3"] .row .sc:has(> .card.wide){display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:max-content;row-gap:var(--s2)}
+  body[data-rows="3"] .row .sc > .card.wide:first-child{grid-row:1 / span 2;grid-column:span 2;width:calc(var(--cw) * 2 + var(--gap,var(--s2)))}
+  body[data-rows="3"] .row .sc > .card.wide:first-child .art{aspect-ratio:auto}
+}
+@media (max-width:760px){
+  body[data-rows="3"] .row .sc > .card.wide:first-child{--cw:min(82vw,calc(var(--u) * 60))}
+  body[data-rows="3"] .row .sc > .card.wide:first-child .t{font-size:var(--t-h)}
+}
+
+/* ---- 4 숫자 랭킹: 대표 작업 줄(맨 앞 줄)에만 1~10 큰 윤곽 숫자 — 숫자 높이 ≈ 썸네일 높이 ---- */
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .sc{counter-reset:rk}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card{--rk-w:calc(var(--cw) * .42);counter-increment:rk;display:grid;grid-template-columns:var(--rk-w) var(--cw);width:auto}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:nth-child(n+11){display:none}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:before{content:counter(rk);grid-row:1 / span 3;align-self:start;justify-self:end;margin-right:calc(var(--s2) * -1);font-size:calc(var(--cw) * .5625 * 1.32);line-height:.76;font-weight:900;letter-spacing:-.1em;font-variant-numeric:tabular-nums;color:var(--bg);-webkit-text-stroke:calc(var(--u) * .375) color-mix(in oklab,var(--ink) 42%,transparent);pointer-events:none;transition:-webkit-text-stroke-color var(--d-half) var(--ease)}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card :is(.art,.t,.s){grid-column:2}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:hover:before{-webkit-text-stroke-color:var(--ink)}
+body[data-rows="4"] :is(.rows > .row:first-child,.feat + .row) .card:nth-child(10){--rk-w:calc(var(--cw) * .62)}

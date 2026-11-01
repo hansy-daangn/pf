@@ -1,0 +1,73 @@
+/* 편집 모드(/edit/) — 사이트 화면 위에 편집 손잡이만 얹음 */
+.eb{position:fixed;left:50%;bottom:var(--s3);transform:translateX(-50%);z-index:90;display:flex;align-items:center;gap:var(--s1);padding:var(--s1) var(--s1) var(--s1) var(--s2);border-radius:999px;background:#0e0e10;color:#f2f0ea;font-size:var(--t-sm);box-shadow:0 12px 40px rgba(0,0,0,.35);white-space:nowrap}
+.eb .dot{width:8px;height:8px;border-radius:50%;background:#cc1433}
+.eb .lbl{font-weight:700;margin-right:var(--s1)}
+.eb button,.eb .lk{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;background:rgba(242,240,234,.1);color:#f2f0ea;font-weight:600}
+.eb button:hover,.eb .lk:hover{background:rgba(242,240,234,.2)}
+.eb .st{min-width:15em;color:rgba(242,240,234,.7);padding:0 var(--s1)}
+.eb[data-s="ok"] .st{color:#7ee2a8}.eb[data-s="err"] .st,.eb[data-s="warn"] .st{color:#ffb0b0}
+.eb .cn{background:#cc1433}
+.eedit{outline:1px dashed transparent;outline-offset:3px;border-radius:4px;cursor:text;transition:outline-color .15s}
+.eedit:hover{outline-color:color-mix(in oklab,var(--acc) 60%,transparent)}
+.eedit:focus{outline:2px solid var(--acc);background:color-mix(in oklab,var(--acc) 6%,transparent)}
+/* 카드 도구 · 더하기 · 끌기 */
+.card .etools{position:absolute;right:6px;top:6px;z-index:3;display:flex;gap:4px;opacity:0;transition:opacity .15s}
+.card:hover .etools{opacity:1}
+.card .etools button{padding:4px 8px;border-radius:999px;background:rgba(14,14,16,.78);color:#fff;font-size:var(--t-micro);font-weight:600}
+.card .etools button:hover{background:#cc1433}
+body[data-edit] .row .sc{cursor:grab}
+.eadd{flex:0 0 auto;align-self:flex-start;width:var(--s8);aspect-ratio:9/16;max-height:calc(var(--cw,240px) * .5625);border-radius:var(--r);border:2px dashed var(--ink-3);color:var(--ink-2);font-size:28px;display:grid;place-items:center}
+.eadd:hover{border-color:var(--acc);color:var(--acc)}
+.eadd.sm{width:44px;height:44px;aspect-ratio:auto;font-size:20px;border-radius:50%}
+.eghost{position:fixed;z-index:95;pointer-events:none;opacity:.9;transform:rotate(-1.5deg) scale(1.03);box-shadow:var(--shadow-lg);border-radius:var(--r);background:var(--bg)}
+.eph{flex:0 0 auto;border-radius:var(--r);border:2px dashed var(--acc);background:color-mix(in oklab,var(--acc) 6%,transparent)}
+.ehandle{cursor:grab;color:var(--ink-2);font-size:18px;line-height:1;padding:4px 6px;border-radius:6px}
+.ehandle:hover{background:var(--ink-4);color:var(--ink)}
+/* 피처드 트리머 · 순서 칩 */
+.etrim{margin-top:var(--s1);user-select:none}
+.etrim .track{position:relative;height:28px;border-radius:6px;background:var(--ink-4);box-shadow:var(--ring)}
+.etrim .sel{position:absolute;top:0;bottom:0;background:color-mix(in oklab,var(--acc) 22%,transparent);border:2px solid var(--acc);border-radius:6px}
+.etrim .h{position:absolute;top:-4px;bottom:-4px;width:12px;border-radius:4px;background:var(--acc);cursor:ew-resize}
+.etrim .h.a{left:-7px}.etrim .h.b{right:-7px}
+.etrim .ph{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink);pointer-events:none}
+.etrim .lab{display:flex;justify-content:space-between;font-size:var(--t-micro);color:var(--ink-2);margin-top:4px;font-variant-numeric:tabular-nums}
+.etrim .tt{font-weight:600}
+.estrip{display:flex;align-items:center;gap:var(--s2);max-width:var(--maxw);margin:var(--s2) auto 0;padding:0 var(--gut)}
+.estrip .lb{font-size:var(--t-sm);font-weight:700;flex:none}
+.estrip .chips{display:flex;gap:var(--s1);overflow-x:auto;scrollbar-width:none;align-items:center;padding:4px}
+.ech{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:4px 6px 4px 4px;border-radius:999px;background:var(--ink-4);box-shadow:var(--ring);cursor:grab;font-size:var(--t-micro);font-weight:600;max-width:220px}
+.ech img{width:36px;height:24px;object-fit:cover;border-radius:999px}
+.ech span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ech button{color:var(--ink-2);padding:0 4px}.ech button:hover{color:var(--acc)}
+/* 상영관 편집 줄 */
+.theater .etb{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:var(--s1) auto 0;width:min(100%,calc((100dvh - var(--nav-h) - 180px) * var(--vr,1.7778)));font-size:var(--t-micro)}
+.theater .etb button{padding:6px 10px;border-radius:999px;background:var(--ink-4);color:var(--ink);font-weight:600}
+.theater .etb button:hover{background:var(--ink-3)}
+.theater .etb button[aria-pressed="true"]{background:var(--acc);color:#fff}
+.theater .etb .sp{flex:1}.theater .etb .msg{color:var(--acc);font-weight:600}
+/* 창 */
+.emodal{position:fixed;inset:0;z-index:100;background:rgba(14,14,16,.45);display:grid;place-items:center;padding:var(--s3)}
+.emodal .box{background:var(--bg);color:var(--ink);border-radius:var(--r2);box-shadow:var(--shadow-lg);padding:var(--s3);width:min(520px,100%);max-height:88vh;overflow:auto}
+.emodal.wide .box{width:min(960px,100%)}
+.emodal h3{font-size:var(--t-h);margin-bottom:var(--s2)}
+.emodal ol{padding-left:1.2em;display:grid;gap:6px;margin-bottom:var(--s2);line-height:1.5}
+.emodal ol a{color:var(--acc);font-weight:700}
+.emodal input[type=password],.emodal input[type=search]{width:100%;font:inherit;padding:var(--s1) var(--s2);border-radius:var(--r);border:1px solid var(--ink-3);background:var(--bg);color:var(--ink)}
+.emodal .msg{font-size:var(--t-sm);color:var(--acc);min-height:1.4em;margin:6px 0}
+.emodal .row{display:flex;gap:var(--s1);align-items:center;flex-wrap:wrap;margin-top:var(--s1)}
+.emodal .plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:var(--s1);margin-top:var(--s2)}
+.emodal .plist button{text-align:left;font-size:var(--t-sm);border-radius:var(--r);padding:4px;color:var(--ink)}
+.emodal .plist button:hover{background:var(--ink-4)}
+.emodal .plist img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px;background:var(--ink-4)}
+.emodal .plist b{display:block;font-weight:600;margin-top:4px;line-height:1.3}.emodal .plist small{color:var(--acc)}
+.tp .pv{background:#0b0b0d;border-radius:var(--r);overflow:hidden;aspect-ratio:16/9}
+.tp .pv video{width:100%;height:100%;object-fit:contain;cursor:pointer}
+.tp .film{display:flex;gap:4px;margin-top:var(--s1);overflow-x:auto;scrollbar-width:thin;min-height:76px}
+.tp .film button{flex:none;border-radius:4px;overflow:hidden;outline:2px solid transparent}
+.tp .film button:hover{outline-color:var(--acc)}
+.tp .film canvas{display:block;height:72px}
+.tp .sl{width:100%;margin-top:var(--s1);accent-color:var(--acc)}
+.tp .tm{font-variant-numeric:tabular-nums;font-size:var(--t-sm);color:var(--ink-2);min-width:5em}
+.tp .sp{flex:1}
+.btn.up{cursor:pointer}
+@media (max-width:760px){.eb{left:var(--s1);right:var(--s1);transform:none;overflow-x:auto;bottom:var(--s1)}.eb .st{min-width:0}}
