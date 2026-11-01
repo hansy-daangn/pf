@@ -4,7 +4,7 @@
 """
 import json, pathlib, sys, threading, http.server, socketserver, functools
 REPO = pathlib.Path(__file__).resolve().parent.parent
-skip = {'.git', 'masters', 'node_modules'}
+skip = {'.git', 'masters', 'node_modules', '.cache'}
 size = sum(f.stat().st_size for f in REPO.rglob('*') if f.is_file() and not (set(f.relative_to(REPO).parts) & skip))
 print(f'게시 용량 {size / 1e6:.0f}MB / 1000MB ({size / 1e7:.0f}%)')
 W = json.load(open(REPO / 'data' / 'works.json'))
@@ -12,7 +12,7 @@ miss = []
 for w in W:
     if w.get('grade', 3) > 2: continue
     m = w.get('media') or {}
-    paths = [m.get(k) for k in ('poster', 'poster16', 'preview', 'full', 'sd', 'shot')] + [v.get(k) for v in m.get('variants') or [] for k in ('src', 'sd')]
+    paths = [m.get(k) for k in ('poster', 'shot')] + [v.get(k) for v in m.get('videos') or [] for k in ('hd', 'sd')] + [i.get('src') for i in m.get('images') or []]
     for p in paths:
         if p and '/' in p and not p.startswith('http') and not (REPO / p).exists(): miss.append((w['id'], p))
 print('누락 파일', len(miss), miss[:10])

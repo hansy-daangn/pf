@@ -69,19 +69,28 @@ def thumbs(path):
                 print('thumb fail', path, ex); return ''
         out.append(f'{tp} {wd}w')
     return ', '.join(out)
-def bbclip(w):
-    """빌보드 구간 클립: media.full(hd)에서 billboard.loop 구간만 잘라 assets/bb/<id>_<시작>_<끝>.mp4 — 구간을 바꾸면 자동으로 새로 자름"""
-    m = w.get('media') or {}; bb = m.get('billboard') or {}; src = m.get('full') or bb.get('src')
-    if not src or not (REPO / src).exists(): return None, None
-    a, b = (bb.get('loop') or [0, 8])[:2]; a = float(a or 0); b = float(b or 8)
-    if b <= a: b = a + 6
-    tag = f"{a:g}_{b:g}".replace('.', 'p'); out = pathlib.Path('assets/bb') / f"{w['id']}_{tag}.mp4"; op = REPO / out
-    if not op.exists() or op.stat().st_mtime < (REPO / src).stat().st_mtime:
+def videos(w): return (w.get('media') or {}).get('videos') or []
+def feat_video(w):
+    """피처드에 쓸 영상: 가장 가로로 긴 버전(16:9 우선)"""
+    vs = [v for v in videos(w) if v.get('w') and v.get('h')]
+    return max(vs, key=lambda v: v['w'] / v['h']) if vs else None
+def bb_range(w):
+    m = w.get('media') or {}; v = feat_video(w); dur = (v or {}).get('dur') or 8
+    a, b = (m.get('billboard') or [m.get('start') or 0, (m.get('start') or 0) + 8])[:2]
+    a = max(0.0, min(float(a), dur - 1)); b = min(float(b), dur)
+    if b - a < 3: b = min(dur, a + 6)
+    return round(a, 2), round(b, 2)
+def bb_poster(w):
+    """피처드 첫 화면 = 재생 구간 시작 프레임(영상이 시작될 때 장면이 튀지 않게). assets/poster/bb/<id>_<시작초>.jpg"""
+    v = feat_video(w)
+    if not v: return poster(w)
+    a, _ = bb_range(w); src = REPO / v['hd']; out = pathlib.Path('assets/poster/bb') / f"{w['id']}_{a:g}.jpg".replace('.', 'p', 1 if '.' in f'{a:g}' else 0); op = REPO / out
+    if not op.exists() or op.stat().st_mtime < src.stat().st_mtime:
         op.parent.mkdir(parents=True, exist_ok=True)
-        for old in op.parent.glob(f"{w['id']}_*.mp4"): old.unlink()
-        r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{a}', '-t', f'{b - a + 0.4:.2f}', '-i', str(REPO / src), '-map', '0:v:0', '-map', '0:a:0?', '-vf', "scale='min(1920,iw)':-2", '-c:v', 'libx264', '-preset', 'medium', '-crf', '21', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', str(op)], capture_output=True, text=True)
-        if r.returncode: print('bb clip fail', w['id'], r.stderr[-300:]); return None, None
-    return str(out), b - a
+        for old in op.parent.glob(f"{w['id']}_*.jpg"): old.unlink()
+        r = subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f'{a}', '-i', str(src), '-frames:v', '1', '-q:v', '3', str(op)], capture_output=True, text=True)
+        if r.returncode or not op.exists(): print('bb poster fail', w['id'], r.stderr[-200:]); return poster(w)
+    return str(out)
 def prio(w): return (w.get('priority') if isinstance(w.get('priority'), (int, float)) else 999, w.get('grade', 2), w.get('sort', 99))
 for _w in W:
     _d = pdim(poster(_w)); _m = _w.setdefault('media', {}); _m['pw'], _m['ph'] = (_d or (0, 0))
@@ -126,13 +135,12 @@ def card(w, cls='wide'):
     cls = cls or 'wide'
     m = w.get('media') or {}
     p = small((m.get('poster16') if cls == 'wide' and m.get('poster16') else poster(w))); ui = ' ui' if w['group'] in ('tools', 'research') else ''
-    hgt = {'sq': 600, 'wide': 338, 'tall': 1067}.get(cls, 338)
-    d = pdim(poster(w)); ar = (d[0] / d[1]) if d else (16 / 9)
+    hgt = {'wide': 338, 'tall': 1067}.get(cls, 338)
     ss = thumbs(p)
     sizes = '(max-width:760px) 264px, 304px' if cls == 'wide' else '(max-width:760px) 132px, 172px'
     img = (f'<img src="{e(p)}"' + (f' srcset="{e(ss)}" sizes="{sizes}"' if ss else '') + f' alt="" loading="lazy" width="600" height="{hgt}">') if p else f'<span class="pt">{e(w.get("year",""))}</span>'
     live = ' ↗' if (w.get('links') or {}).get('live') else ''
-    return f'<a class="card {cls}{ui}" style="--ar:{ar:.4f}" href="?w={e(w["id"])}" data-id="{e(w["id"])}"><div class="art{"" if p else " ph"}" data-info="{e((w.get("copy") or {}).get("one",""))}">{img}<span class="pl" aria-hidden="true">{ico("play","sm")}</span></div><div class="t">{e(w["title"])}</div><div class="s">{e(w.get("type") or w.get("subtitle",""))}{live}</div></a>'
+    return f'<a class="card {cls}{ui}" href="?w={e(w["id"])}" data-id="{e(w["id"])}"><div class="art{"" if p else " ph"}">{img}</div><div class="t">{e(w["title"])}</div><div class="s">{e(w.get("type") or w.get("subtitle",""))}{live}</div></a>'
 def row(title, items, cls=None, more='works.html'):
     items = [w for w in items if has_media(w)]
     if not items: return ''
@@ -140,37 +148,33 @@ def row(title, items, cls=None, more='works.html'):
     if cls is None:
         # 세로 소재만 모인 행은 9:16, 그 외는 전부 16:9(세로·정방은 블러 배경 합성 썸네일)
         cls = 'tall' if all(orient(w) == 'tall' for w in items) else 'wide'
-    return f'''<section class="row" data-queue><div class="wrap hd"><h2>{e(title)}</h2>{f'<a class="more" href="{more}">더보기 ›</a>' if more else ''}</div>
-<div class="wrap"><div class="trk"><div class="ar l"><button aria-label="왼쪽으로">{ico("chev-l")}</button></div><div class="sc">{''.join(card(w, cls) for w in items)}</div><div class="ar r"><button aria-label="오른쪽으로">{ico("chev-r")}</button></div></div></div></section>'''
+    return f'''<section class="row" data-queue><div class="wrap"><div class="hd"><h2>{e(title)}</h2>{f'<a class="more" href="{more}">더보기</a>' if more else ''}<span class="arr"><button class="ar l" aria-label="이전" disabled>{ico("chev-l")}</button><button class="ar r" aria-label="다음">{ico("chev-r")}</button></span></div>
+<div class="sc">{''.join(card(w, cls) for w in items)}</div></div></section>'''
 
 WHO = '김한결 — 모션·3D로 광고 영상을 만들고, 성과를 읽는 도구까지 직접 만드는 디자이너'
 def by_kind(k):
     return [w for w in W if k in (w.get('kinds') or [])]
 def home():
-    bb_ids = H.get('billboard') or [w['id'] for w in sorted([w for w in W if w.get('featured')], key=lambda w: w.get('feat_order', 99))]
-    feat = [BY[i] for i in bb_ids if i in BY and has_media(BY[i])][:8]
-    slides = []
+    bb_ids = H.get('billboard') or []
+    feat = [BY[i] for i in bb_ids if i in BY and feat_video(BY[i])][:8]
+    frames, texts = [], []
     for i, w in enumerate(feat):
-        m = w.get('media') or {}; bb = m.get('billboard') or {}
-        p = bb.get('poster') or m.get('poster16') or poster(w); pv, plen = bbclip(w)
-        if bb: portrait = (bb.get('w') or 16) / (bb.get('h') or 9) < 1.3
-        else: d = pdim(p); portrait = bool(d) and d[0] / d[1] < 1.3
-        loop = [0, round(plen, 2)] if pv else (bb.get('loop') or [0, 8])
-        src_attr = f'src="{e(p)}" fetchpriority="high"' if i == 0 else f'data-src="{e(p)}" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" loading="lazy"'
-        blur = (f'<div class="blur" style="background-image:url({e(p)})"></div>' if i == 0 else f'<div class="blur" data-bg="{e(p)}"></div>') if portrait else ''
-        art = f'<div class="art{" portrait" if portrait else ""}">{blur}<img {src_attr} alt="" width="1920" height="1080">' + (f'<video muted loop playsinline preload="none" data-src="{e(pv)}" data-loop="{loop[0]},{loop[1]}" data-dur="{bb.get('dur') or 9}" poster="{e(p)}" aria-hidden="true"></video>' if pv else '') + '</div>'
+        v = feat_video(w); a, b = bb_range(w); p = bb_poster(w)
+        img = f'<img src="{e(p)}" alt=""' + (' fetchpriority="high"' if i == 0 else ' loading="lazy"') + ' width="1920" height="1080">'
+        frames.append(f'<div class="fs{" on" if i == 0 else ""}" data-hd="{e(v["hd"])}" data-sd="{e(v.get("sd") or v["hd"])}" data-a="{a}" data-b="{b}"><div class="blur" style="background-image:url({e(p)})"></div>{img}</div>')
         c = w.get('copy') or {}
-        slides.append(f'''<div class="slide{" on" if i==0 else ""}" data-id="{e(w["id"])}" aria-hidden="{"false" if i==0 else "true"}"{"" if i==0 else " inert"}>{art}<div class="veil"></div>
-<div class="tx"><div class="wrap in"><div>{f'<p class="who">{e(WHO)}</p>' if i==0 else ''}<div class="k">{e(w.get("type") or "")} · {e(w.get("year",""))}</div><h1>{nb(w["title"])}</h1><p class="one">{e(c.get("one",""))}</p>
-<div class="bt"><button class="btn" data-open="{e(w["id"])}">{ico("play","sm")} 재생</button><button class="btn ghost" data-open="{e(w["id"])}">상세</button></div></div>
-<div class="dots" role="tablist" aria-label="피처드 전환">{''.join(f'<button data-i="{j}" class="{"on" if j==i else ""}" aria-label="{j+1}번째 작품"></button>' for j in range(len(feat)))}<button class="pp" aria-label="미리보기 일시정지">{ico("pause","sm")}</button><button class="snd" aria-label="소리 켜기" hidden>{ico("mute","sm")}</button></div></div></div></div>''')
+        texts.append(f'''<div class="fx{" on" if i == 0 else ""}"{"" if i == 0 else " hidden"} data-id="{e(w["id"])}"><div class="k">{e(w.get("type") or "")}{(" · " + e(w.get("year"))) if w.get("year") else ""}</div><h2>{nb(w["title"])}</h2><p class="one">{e(c.get("one",""))}</p>
+<div class="bt"><button class="btn" data-open="{e(w["id"])}">{ico("play","sm")} 재생</button><button class="btn ghost" data-info="{e(w["id"])}">상세 정보</button></div></div>''')
+    dots = ''.join(f'<button data-i="{j}" class="{"on" if j == 0 else ""}" aria-label="{j + 1}번째 작품"><i></i></button>' for j in range(len(feat)))
+    featured = f'''<section class="feat wrap" aria-label="피처드 작업"><div class="fv">{''.join(frames)}<button class="snd" aria-label="소리 켜기">{ico("mute","sm")}</button></div>
+<div class="ft"><p class="who">{e(WHO)}</p><div class="fxs">{''.join(texts)}</div><div class="dots" role="tablist" aria-label="피처드 전환">{dots}<button class="pp" aria-label="일시정지">{ico("pause","sm")}</button></div></div></section>''' if feat else ''
     rep = [BY[i] for i in (H.get('rep') or []) if i in BY]
     rows = [row('대표 작업', rep, 'wide')] if rep else []
     for r in H.get('rows') or []:
         items = [BY[i] for i in r.get('ids', []) if i in BY] if r.get('ids') else by_kind(r.get('kind', ''))
         rows.append(row(r.get('title') or KINDS.get(r.get('kind'), ''), items, None, r.get('more') or (f"works.html#{r['kind']}" if r.get('kind') else 'works.html')))
     body = f'''<body class="home" data-base="./">{nav('index.html')}<main>
-<section class="bb" aria-label="피처드 작업"><div class="frame">{''.join(slides)}</div></section>
+{featured}
 {''.join(rows)}
 </main>{foot()}{tail()}'''
     return head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat[0]) if feat else None) + body
@@ -181,7 +185,7 @@ def works():
     rail = '<aside class="rail" aria-label="분류"><button data-f="kind" aria-pressed="true">전체 <small>' + str(len(items)) + '</small></button>' + ''.join(f'<button data-f="kind" data-v="{k}">{KINDS[k]} <small>{kc[k]}</small></button>' for k in KINDS if kc[k]) + '</aside>'
     grid = ''.join(card(w, 'wide') for w in sorted(items, key=prio) if has_media(w))
     body = f'''<body data-base="./">{nav('works.html')}<main><div class="wrap sec"><h1 class="pg-h">작업</h1>
-<div class="lib">{rail}<div data-queue><div class="tb"><span class="cnt">{sum(1 for w in items if has_media(w))}건</span></div>
+<div class="lib">{rail}<div data-queue><div class="tb"><input class="q" type="search" placeholder="제목·툴·매체 검색" aria-label="작업 검색"><span class="cnt">{sum(1 for w in items if has_media(w))}건</span></div>
 <div class="grid">{grid}</div></div></div></div></main>{foot()}{tail()}'''
     return head('작업 — Hansy', '김한결의 전체 작업: 3D · AI · 모션 영상, 온드 콘텐츠, 도구, 개인 작업.', 'works.html') + body
 
@@ -237,14 +241,11 @@ def resume():
 </div></div></main>{foot()}{tail()}'''
     return head('이력서 — 김한결 Hansy', '김한결(Hansy) 이력서 — 경력, 학력, 기술, 수상, 논문.', 'resume.html') + body
 
-(OUT/'css').mkdir(exist_ok=True); (OUT/'js').mkdir(exist_ok=True); (OUT/'data').mkdir(exist_ok=True)
+(OUT/'css').mkdir(exist_ok=True); (OUT/'js').mkdir(exist_ok=True)
 shutil.copy(SRC/'site.css', OUT/'css/site.css'); shutil.copy(SRC/'site.js', OUT/'js/site.js')
-json.dump(W, open(OUT/'data/works.json', 'w'), ensure_ascii=False, indent=1)
 for name, fn in [('index.html', home), ('works.html', works), ('tools.html', tools), ('resume.html', resume)]:
     (OUT/name).write_text(fn(), encoding='utf-8')
 if (OUT/'about.html').exists(): (OUT/'about.html').write_text('<!DOCTYPE html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=resume.html"><title>이력서로 이동</title>', encoding='utf-8')
-for name, fn in []:
-    (OUT/name).write_text(fn(), encoding='utf-8')
 (OUT/'.nojekyll').write_text('')
 # 작품별 공유 페이지(카톡·슬랙 미리보기용) — 열면 상영관으로 이동
 (OUT/'w').mkdir(exist_ok=True)
@@ -260,5 +261,10 @@ urls = ['', 'works.html', 'tools.html', 'resume.html'] + [f"w/{w['id']}.html" fo
 (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>{SITE}{u}</loc></url>' for u in urls) + '</urlset>\n', encoding='utf-8')
 (OUT/'robots.txt').write_text(f'User-agent: *\nDisallow: /pf/edit.html\nSitemap: {SITE}sitemap.xml\n', encoding='utf-8')
 (OUT/'404.html').write_text(head('페이지를 찾을 수 없음 — Hansy', '김한결 포트폴리오', '404.html').replace('href="css/site.css"', 'href="/pf/css/site.css"') + f'''<body><main><div class="wrap sec"><h1 class="pg-h">페이지를 찾을 수 없습니다</h1><p><a class="btn" href="/pf/">홈으로</a></p></div></main></body></html>''', encoding='utf-8')
-missing = [(w['id'], p) for w in W for p in [poster(w), (w.get('media') or {}).get('preview'), (w.get('media') or {}).get('full'), (w.get('media') or {}).get('sd')] + [v.get('src') for v in (w.get('media') or {}).get('variants', [])] + [v.get('sd') for v in (w.get('media') or {}).get('variants', [])] if p and '/' in str(p) and not str(p).startswith('http') and not (OUT/p).exists()]
+def files(w):
+    m = w.get('media') or {}
+    yield poster(w)
+    for v in m.get('videos') or []: yield v.get('hd'); yield v.get('sd')
+    for i in m.get('images') or []: yield i.get('src')
+missing = [(w['id'], p) for w in W for p in files(w) if p and not str(p).startswith('http') and not (OUT/p).exists()]
 print('built', len(W), 'works; media-less:', [w['id'] for w in W if not has_media(w)], '; missing files:', missing[:10])

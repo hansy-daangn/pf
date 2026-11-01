@@ -52,15 +52,15 @@ class H(http.server.SimpleHTTPRequestHandler):
                 wf = REPO / 'data' / 'works.json'; W = json.loads(wf.read_text(encoding='utf-8'))
                 if any(w['id'] == wid for w in W): return self._json(400, {'ok': False, 'err': '이미 있는 ID'})
                 W.append({'id': wid, 'grade': 2, 'group': 'performance', 'title': body.get('title') or wid, 'subtitle': '', 'year': body.get('year') or '', 'period': '', 'role': '', 'tools': [], 'channels': [], 'formats': [], 'kinds': body.get('kinds') or [], 'type': body.get('type') or '', 'contrib': '1인 제작',
-                          'media': {'poster': None, 'preview': None, 'full': None, 'youtube': None, 'variants': [], 'shot': None}, 'links': {}, 'copy': {'one': ''}, 'metrics': [], 'tags': [], 'sort': 50})
+                          'media': {'videos': [{'label': '영상'}], 'start': 0}, 'links': {}, 'copy': {'one': ''}, 'metrics': [], 'tags': [], 'sort': 50})
                 wf.write_text(json.dumps(W, ensure_ascii=False, indent=1), encoding='utf-8')
                 if master:
-                    mf = REPO / 'data' / 'media_map.json'; M = json.loads(mf.read_text(encoding='utf-8')); M[wid] = {'full': master}; mf.write_text(json.dumps(M, ensure_ascii=False, indent=1), encoding='utf-8')
+                    mf = REPO / 'data' / 'media_map.json'; M = json.loads(mf.read_text(encoding='utf-8')); M[wid] = {'videos': [master]}; mf.write_text(json.dumps(M, ensure_ascii=False, indent=1), encoding='utf-8')
                     r = subprocess.run([sys.executable, str(REPO / 'src' / 'media.py'), wid], capture_output=True, text=True, cwd=str(REPO))
                     W = json.loads(wf.read_text(encoding='utf-8')); w = next(x for x in W if x['id'] == wid); m = w['media']
-                    if m.get('full') and not m.get('poster'):
+                    if (m.get('videos') or [{}])[0].get('hd') and not m.get('poster'):
                         out = REPO / 'assets' / 'poster' / f'{wid}.jpg'
-                        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', '1', '-i', str(REPO / m['full']), '-frames:v', '1', '-q:v', '2', str(out)])
+                        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', '1', '-i', str(REPO / m['videos'][0]['hd']), '-frames:v', '1', '-q:v', '2', str(out)])
                         if out.exists(): m['poster'] = f'assets/poster/{wid}.jpg'
                     wf.write_text(json.dumps(W, ensure_ascii=False, indent=1), encoding='utf-8')
                     return self._json(200, {'ok': True, 'out': (r.stdout + r.stderr)[-1500:]})

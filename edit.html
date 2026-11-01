@@ -55,7 +55,7 @@
   let W = [], H = {}, cur = null, server = false, dirty = false;
   const st = m => { $('#st').textContent = m; };
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const poster = w => (w.media && (w.media.poster16 || w.media.poster || w.media.shot)) || '';
+  const poster = w => (w.media && (w.media.poster || w.media.shot)) || '';
   const pr = w => (typeof w.priority === 'number' ? w.priority : 999);
   async function load() {
     try { const r = await fetch('api/ping', { cache: 'no-store' }); server = r.ok; } catch (e) { server = false; }
@@ -82,8 +82,8 @@
       field('기여도', 'contrib', w.contrib || ''), field('길이', 'dur', w.dur || ''),
       field('툴 (· 로 구분)', 'tools', (w.tools || []).join(' · ')), field('매체 (· 로 구분)', 'channels', (w.channels || []).join(' · ')),
       field('시기', 'period', w.period || ''), `<label>노출<select data-k="grade"><option value="1"${w.grade === 1 ? ' selected' : ''}>대표(1)</option><option value="2"${w.grade === 2 ? ' selected' : ''}>일반(2)</option><option value="3"${w.grade >= 3 ? ' selected' : ''}>숨김</option></select></label>`,
-      field('빌보드 구간 시작(초)', 'bb.a', (w.media && w.media.billboard && w.media.billboard.loop ? w.media.billboard.loop[0] : ''), 'number'), field('빌보드 구간 끝(초)', 'bb.b', (w.media && w.media.billboard && w.media.billboard.loop ? w.media.billboard.loop[1] : ''), 'number'),
-      field('빌보드 표시 시간(초)', 'bb.dur', (w.media && w.media.billboard && w.media.billboard.dur) || '', 'number'),
+      field('홈 피처드 구간 시작(초)', 'bb.a', (w.media && w.media.billboard ? w.media.billboard[0] : ''), 'number'), field('홈 피처드 구간 끝(초)', 'bb.b', (w.media && w.media.billboard ? w.media.billboard[1] : ''), 'number'),
+      field('호버 미리보기 시작(초)', 'start', (w.media && w.media.start) || 0, 'number'),
       `<label style="grid-column:1/-1">분류<span class="kinds">${Object.entries(KINDS).map(([k, v]) => `<label><input type="checkbox" data-kind="${k}"${(w.kinds || []).includes(k) ? ' checked' : ''}>${v}</label>`).join('')}</span></label>`,
     ].join('');
     $$('#form [data-k]').forEach(el => el.addEventListener('input', () => { apply(w, el.dataset.k, el.value); dirty = true; }));
@@ -92,23 +92,21 @@
   }
   function apply(w, k, v) {
     if (k === 'copy.one') { w.copy.one = v; return; }
-    if (k.startsWith('bb.')) { const m = w.media || (w.media = {}); const bb = m.billboard || (m.billboard = { kind: 'video', src: m.full || '', loop: [0, 8], dur: 9 }); if (!bb.loop) bb.loop = [0, 8]; if (k === 'bb.a') bb.loop[0] = +v || 0; if (k === 'bb.b') bb.loop[1] = +v || 8; if (k === 'bb.dur') bb.dur = +v || 9; return; }
+    if (k.startsWith('bb.')) { const m = w.media || (w.media = {}); const bb = m.billboard || (m.billboard = [0, 8]); if (k === 'bb.a') bb[0] = +v || 0; if (k === 'bb.b') bb[1] = +v || 8; return; }
+    if (k === 'start') { (w.media || (w.media = {})).start = +v || 0; return; }
     if (k === 'priority') { w.priority = v === '' ? undefined : +v; list(); return; }
     if (k === 'grade') { w.grade = +v; list(); return; }
     if (k === 'tools' || k === 'channels') { w[k] = v.split('·').map(s => s.trim()).filter(Boolean); return; }
     w[k] = v; if (k === 'title') list();
   }
   function thumb(w) {
-    const m = w.media || {}; const srcs = [];
-    if (m.full) srcs.push({ label: '본편', src: m.full });
-    (m.variants || []).forEach(v => { if (/\.(mp4|webm|mov)$/i.test(v.src || '')) srcs.push({ label: v.label, src: v.src }); });
-    if (m.preview && !srcs.length) srcs.push({ label: '프리뷰', src: m.preview });
+    const m = w.media || {}; const srcs = (m.videos || []).map(v => ({ label: v.label || '영상', src: v.hd }));
     const T = $('#thumb');
     if (!srcs.length) { T.innerHTML = `<div><h3>썸네일</h3><p class="sub">영상 파일이 없어 프레임 캡처는 불가 — <code>assets/poster/${esc(w.id)}.jpg</code> 파일을 직접 바꾸세요.</p></div><div class="cur"><img src="${esc(m.poster || m.shot || '')}" alt=""></div>`; return; }
     T.innerHTML = `<div><h3>썸네일 — 프레임 고르기</h3><div class="vwrap"><video preload="metadata" muted playsinline crossorigin="anonymous"></video></div>
 <div class="scrub"><span class="t">0:00.0</span><input type="range" min="0" max="1000" value="0"><span class="d">0:00.0</span></div>
-<div class="steps"><select class="src">${srcs.map((s, i) => `<option value="${esc(s.src)}">${esc(s.label)}</option>`).join('')}</select><button class="btn ghost sm" data-step="-1">−1초</button><button class="btn ghost sm" data-step="-0.04">−1프레임</button><button class="btn ghost sm" data-step="0.04">+1프레임</button><button class="btn ghost sm" data-step="1">+1초</button><button class="btn sm cap">이 프레임을 썸네일로</button><button class="btn ghost sm bba">빌보드 시작 = 여기</button><button class="btn ghost sm bbb">빌보드 끝 = 여기</button></div></div>
-<div class="cur"><h3>현재 썸네일</h3><img src="${esc((m.poster || m.shot || '') + '?' + Date.now())}" alt=""><p class="sub">저장 위치 <code>assets/poster/${esc(w.id)}.jpg</code> — 16:9 카드용 블러 합성본은 빌드 때 자동 생성</p></div>`;
+<div class="steps"><select class="src">${srcs.map((s, i) => `<option value="${esc(s.src)}">${esc(s.label)}</option>`).join('')}</select><button class="btn ghost sm" data-step="-1">−1초</button><button class="btn ghost sm" data-step="-0.04">−1프레임</button><button class="btn ghost sm" data-step="0.04">+1프레임</button><button class="btn ghost sm" data-step="1">+1초</button><button class="btn sm cap">이 프레임을 썸네일로</button><button class="btn ghost sm bba">피처드 시작 = 여기</button><button class="btn ghost sm bbb">피처드 끝 = 여기</button><button class="btn ghost sm hst">호버 시작 = 여기</button></div></div>
+<div class="cur"><h3>현재 썸네일</h3><img src="${esc((m.poster || m.shot || '') + '?' + Date.now())}" alt=""><p class="sub">저장 위치 <code>assets/poster/${esc(w.id)}.jpg</code> — 16:9 카드용 합성본은 빌드 때 자동 생성</p></div>`;
     const V = $('video', T), R = $('input[type=range]', T), tEl = $('.t', T), dEl = $('.d', T);
     const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, '0')}`;
     const setSrc = s => { V.src = s; V.pause(); V.currentTime = 0; };
@@ -118,13 +116,13 @@
     R.addEventListener('input', () => { if (V.duration) { V.pause(); V.currentTime = R.value / 1000 * V.duration; } });
     $$('[data-step]', T).forEach(b => b.addEventListener('click', () => { V.pause(); V.currentTime = Math.max(0, Math.min((V.duration || 0) - .01, V.currentTime + +b.dataset.step)); }));
     V.addEventListener('click', () => { V.paused ? V.play() : V.pause(); });
-    const setBB = (k) => { const t = +V.currentTime.toFixed(1); apply(w, k, t); const inp = $(`#form [data-k="${k}"]`); if (inp) inp.value = t; dirty = true; st(`빌보드 ${k === 'bb.a' ? '시작' : '끝'} ${t}초 — 저장 후 빌드하면 구간이 다시 잘립니다`); };
-    $('.bba', T).addEventListener('click', () => setBB('bb.a')); $('.bbb', T).addEventListener('click', () => setBB('bb.b'));
+    const setT = (k, name) => { const t = +V.currentTime.toFixed(1); apply(w, k, t); const inp = $(`#form [data-k="${k}"]`); if (inp) inp.value = t; dirty = true; st(`${name} ${t}초 — 저장 후 빌드`); };
+    $('.bba', T).addEventListener('click', () => setT('bb.a', '피처드 시작')); $('.bbb', T).addEventListener('click', () => setT('bb.b', '피처드 끝')); $('.hst', T).addEventListener('click', () => setT('start', '호버 시작'));
     $('.cap', T).addEventListener('click', async () => {
       if (!V.videoWidth) return st('영상이 아직 준비되지 않았습니다');
       const c = document.createElement('canvas'); c.width = V.videoWidth; c.height = V.videoHeight; c.getContext('2d').drawImage(V, 0, 0);
       let data; try { data = c.toDataURL('image/jpeg', .92); } catch (e) { return st('캡처 실패 — 교차 출처 영상은 로컬 서버에서만 가능'); }
-      if (server) { const r = await (await fetch('api/poster', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: w.id, data }) })).json(); if (r.ok) { w.media.poster = r.path; delete w.media.poster16; $('.cur img', T).src = r.path + '?' + Date.now(); st(`썸네일 저장: ${r.path} — 「저장」 후 「빌드」`); dirty = true; } else st('저장 실패 ' + (r.err || '')); }
+      if (server) { const r = await (await fetch('api/poster', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: w.id, data }) })).json(); if (r.ok) { w.media.poster = r.path; $('.cur img', T).src = r.path + '?' + Date.now(); st(`썸네일 저장: ${r.path} — 「저장」 후 「빌드」`); dirty = true; } else st('저장 실패 ' + (r.err || '')); }
       else { const a = document.createElement('a'); a.download = `${w.id}.jpg`; a.href = data; a.click(); st(`내려받은 ${w.id}.jpg 를 assets/poster/ 에 넣고 빌드하세요`); }
     });
   }
