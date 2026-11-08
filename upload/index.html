@@ -234,7 +234,10 @@ const api = async (path, opt = {}) => {
   if (!r.ok) { const t = await r.text(); const e = new Error(`${r.status} ${t.slice(0, 200)}`); e.status = r.status; throw e; }
   return opt.raw ? r.text() : r.json();
 };
-const b64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+const readURL = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = () => rej(r.error || new Error('read')); r.readAsDataURL(blob); });
+// 파일 → base64. FileReader가 실패하면 arrayBuffer로 한 번 더(둘 다 실패하면 어떤 파일인지 알려줌)
+const b64 = async (blob, name = '') => { try { return await readURL(blob); } catch (e1) { try { return B64(await blob.arrayBuffer()); } catch (e2) { const er = new Error(`${name || '파일'}을(를) 읽지 못했어요 — 빼고 다시 넣어 주세요`); er.read = true; throw er; } } };
+const errText = e => e instanceof Event ? ((e.target && e.target.error && e.target.error.message) || e.type) : (e && (e.message || e.name)) || String(e);
 const myLink = () => localStorage.getItem(KK) ? `${SITE}upload/#k=${localStorage.getItem(KK)}` : '';
 const connUI = () => { const c = $('#conn'); c.dataset.on = token ? '1' : '0'; c.querySelector('span').textContent = token ? '자동 연결됨' : '연결 필요(처음 한 번)'; };
 // 다른 기기용 전용 링크: 토큰을 무작위 키로 암호화해 data/gh.enc 에 저장(키는 링크 # 뒤에만 존재)
@@ -349,10 +352,13 @@ const addFiles = async fs => {
   for (const f of fs) {
     const isV = f.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(f.name), isI = f.type.startsWith('image/');
     if (!isV && !isI) continue;
-    const p = isV ? await probeVideo(f) : await probeImg(f);
-    if (!p || !p.w) { status('err', `${esc(f.name)} — 읽을 수 없는 파일이에요`); continue; }
-    const it = { kind: isV ? 'v' : 'i', file: f, name: f.name, w: p.w, h: p.h, dur: p.dur, url: p.url, label: autoLabel(isV ? 'v' : 'i', p.w, p.h) };
-    if (isI && /png$/i.test(f.type) && !hasAlpha(p.img)) { const j = await toJpg(p.img); if (j && j.size < f.size) { it.file = j; it.ext = 'jpg'; } }
+    // 놓는 순간 내용을 메모리에 복사 — 나중에 원본이 바뀌거나(인코딩 중) 옮겨져도 올리기가 실패하지 않게
+    let d = f;
+    if (f.size <= MAXMB * 1e6) { try { d = new Blob([await f.arrayBuffer()], { type: f.type || (isV ? 'video/mp4' : 'image/png') }); } catch (e) { status('err', `${esc(f.name)} — 파일을 읽을 수 없어요(인코딩·복사 중이면 끝난 뒤 다시 넣어 주세요)`); continue; } }
+    const p = isV ? await probeVideo(d) : await probeImg(d);
+    if (!p || !p.w) { status('err', `${esc(f.name)} — 열 수 없는 형식이에요(영상은 H.264 mp4 권장)`); continue; }
+    const it = { kind: isV ? 'v' : 'i', file: d, name: f.name, w: p.w, h: p.h, dur: p.dur, url: p.url, label: autoLabel(isV ? 'v' : 'i', p.w, p.h) };
+    if (isI && /png$/i.test(f.type) && !hasAlpha(p.img)) { const j = await toJpg(p.img); if (j && j.size < d.size) { it.file = j; it.ext = 'jpg'; } }
     if (isI && !it.ext) it.ext = (f.name.split('.').pop() || 'png').toLowerCase().replace('jpeg', 'jpg');
     items.push(it);
   }
@@ -482,7 +488,7 @@ const go = async () => {
       const total = files.reduce((s, [, f]) => s + f.size, 0) || 1; let done = 0;
       for (const [p, f] of files) {
         status('busy', `올리는 중 · ${Math.round(100 * done / total)}% · ${esc(p.split('/').pop())} (${mb(f.size)})`);
-        const b = await api(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: await b64(f), encoding: 'base64' }) });
+        const b = await api(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: await b64(f, p.split('/').pop()), encoding: 'base64' }) });
         tree.push({ path: p, mode: '100644', type: 'blob', sha: b.sha }); done += f.size; prog(5 + 85 * done / total);
       }
       const jb = await api(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: JSON.stringify(remote, null, 1) + '\n', encoding: 'utf-8' }) });
@@ -509,7 +515,7 @@ const go = async () => {
   } catch (e) {
     console.warn(e);
     if (e.status === 401 || (e.status === 403 && !/rate limit/i.test(e.message))) { token = ''; localStorage.removeItem(TK); connUI(); status('err', '연결이 만료됐어요 — 다시 누르면 연결 창이 떠요(입력은 그대로)'); }
-    else status('err', `올리기 실패 — 입력은 그대로예요, 다시 눌러 주세요<br><small style="opacity:.7">${esc(String(e.message || e).slice(0, 140))}</small>`);
+    else status('err', `올리기 실패 — 입력은 그대로예요, 다시 눌러 주세요<br><small style="opacity:.7">${esc(errText(e).slice(0, 160))}</small>`);
   } finally { busy = false; $('#go').disabled = false; setTimeout(() => prog(null), 2000); }
 };
 $('#go').onclick = go;
