@@ -233,7 +233,7 @@ def home(edit=False):
     feat0 = next((BY[i] for i in H.get('billboard') or [] if i in BY), None)
     body = f'''<body class="home" data-base="./"{' data-edit="1"' if edit else ''}>{nav('index.html')}<main>
 <section class="feat" aria-label="피처드 작업"></section><div class="rows"></div>{noscript(W)}
-</main>{foot()}{tail('<script src="js/edit.js" defer></script>' if edit else '', edit)}'''
+</main>{foot()}{tail('<script src="js/key.js"></script><script src="js/edit.js" defer></script>' if edit else '', edit)}'''
     h = head('Hansy — 김한결 · 모션 · 3D · AI · 도구', WHO, '', poster(feat0) if feat0 else None, 'width=device-width,initial-scale=1,viewport-fit=cover' if edit else VP())
     if edit: h = h.replace('<meta charset="utf-8">', '<meta charset="utf-8"><base href="../"><meta name="robots" content="noindex">', 1).replace('<link rel="stylesheet" href="css/site.css">', '<link rel="stylesheet" href="css/site.css"><link rel="stylesheet" href="css/edit.css">')
     return h + body
