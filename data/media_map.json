@@ -30,7 +30,8 @@
  },
  "bakery-vlog": {
   "videos": [
-   "1030_biz_alw_v3_.mp4"
+   "",
+   "video_LocalAds_aivlogBakery_1920x1080_2611_1.mp4"
   ]
  },
  "local-runners-teaser": {
@@ -45,10 +46,10 @@
  },
  "nayeon-campaign": {
   "videos": [
-   "4a775841-VD01_-_move_it_away_B_editedOn0904.mp4",
-   "9a2e5ba2-VD02Fin_-_Capcha-v-detailed.mp4",
-   "bfbd59dc-pv102.mp4",
-   "nayeon_offlineevent_v4_8.mp4"
+   "VD01 - move it away! B editedOn0904_1.mp4",
+   "VD02(Fin) - Capcha-v-detailed_1.mp4",
+   "",
+   "nayeon_offlineevent_v4.8_1.mp4"
   ]
  },
  "mg_keyword_chuseok": {
@@ -63,6 +64,43 @@
    "Dec.Raffle_1920x1080.mp4",
    "Dec.Raffle_1080x1920.mp4",
    ""
+  ]
+ },
+ "mg_ars": {
+  "videos": [
+   "ARS_contents_0615_1.mp4"
+  ]
+ },
+ "td_pickup": {
+  "videos": [
+   "PickUpMonthly_2603_1080x1920_fix_1.mp4",
+   "PickUpMonthly_2603_1920x1080_1.mp4",
+   "PickUpMonthly_2603_1080x1080_1.mp4"
+  ]
+ },
+ "ai_closet1": {
+  "videos": [
+   "",
+   "maugrowth_always_closet2_1080x1920_2603_1.mp4",
+   "maugrowth_always_closet2_1920x1080_2603_1.mp4",
+   "maugrowth_always_closet2_1080x1080_2603_1.mp4"
+  ]
+ },
+ "mg_rent1": {
+  "videos": [
+   "video_realty_RentPromo1_1080x1920_2601_1.mp4",
+   "video_realty_RentPromo1_1920x1080_2601_1.mp4",
+   "video_realty_RentPromo1_1080x1080_2601_1.mp4",
+   "video_realty_RentPromo2_1080x1920_2601_1.mp4",
+   "video_realty_RentPromo2_1920x1080_2601_1.mp4",
+   "video_realty_RentPromo2_1080x1080_2601_1.mp4"
+  ]
+ },
+ "sf_bogum": {
+  "videos": [
+   "박보검닮은사장님_0602.피부보정_1.mp4",
+   "박보검 온드6_1.mp4",
+   "부캐인터뷰_v인앱 스토리_1.mp4"
   ]
  }
 }

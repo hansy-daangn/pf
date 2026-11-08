@@ -235,10 +235,10 @@
   "pw": 1080,
   "ph": 1920,
   "wide": {
-   "src": "assets/poster16/bakery-vlog.jpg",
-   "srcset": "assets/thumb/7df4d9a7fd-640.webp 640w, assets/thumb/7df4d9a7fd-1280.webp 1280w",
+   "src": "assets/poster16/bakery-vlog_3.jpg",
+   "srcset": "assets/thumb/2332ebe276-640.webp 640w, assets/thumb/2332ebe276-1280.webp 1280w",
    "from": "|assets/poster/bakery-vlog.jpg|",
-   "c": "#7c736a"
+   "c": "#6c5945"
   },
   "tall": {
    "src": "assets/poster/bakery-vlog.jpg",
@@ -251,6 +251,11 @@
     -14.8,
     -0.7,
     21802023
+   ],
+   "assets/v/bakery-vlog-2.mp4": [
+    -14.9,
+    -0.9,
+    12061692
    ]
   },
   "hv": {
@@ -259,7 +264,7 @@
   },
   "bb": {
    "src": "assets/poster/bb/bakery-vlog_0.jpg",
-   "from": "assets/v/bakery-vlog.mp4@0.0"
+   "from": "assets/v/bakery-vlog-2.mp4@0.0"
   },
   "film": [
    {
@@ -268,6 +273,13 @@
     "fw": 40,
     "fh": 72,
     "from": "assets/v/bakery-vlog.mp4"
+   },
+   {
+    "src": "assets/film/bakery-vlog_1.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/bakery-vlog-2.mp4"
    }
   ]
  },
@@ -523,14 +535,14 @@
   },
   "lu": {
    "assets/v/nayeon-campaign.mp4": [
-    -14.3,
-    -0.4,
-    1537338
+    -14.4,
+    -0.0,
+    2777273
    ],
    "assets/v/nayeon-campaign-2.mp4": [
-    -6.3,
-    2.6,
-    2560268
+    -5.6,
+    1.5,
+    7408541
    ],
    "assets/v/nayeon-campaign-3.mp4": [
     -9.2,
@@ -539,8 +551,8 @@
    ],
    "assets/v/nayeon-campaign-4.mp4": [
     -24.7,
-    -9.0,
-    48611321
+    -9.3,
+    43227875
    ]
   },
   "hv": {
@@ -702,10 +714,10 @@
   "pw": 600,
   "ph": 1066,
   "wide": {
-   "src": "assets/poster16/td_pickup.jpg",
-   "srcset": "assets/thumb/0e8185c5f1-640.webp 640w, assets/thumb/0e8185c5f1-1280.webp 1280w",
+   "src": "assets/poster16/td_pickup_1.jpg",
+   "srcset": "assets/thumb/1baf87822e-640.webp 640w, assets/thumb/1baf87822e-1280.webp 1280w",
    "from": "|assets/poster/td_pickup.jpg|",
-   "c": "#ca888c"
+   "c": "#e69caa"
   },
   "tall": {
    "src": "assets/poster/td_pickup.jpg",
@@ -715,18 +727,28 @@
   },
   "lu": {
    "assets/v/td_pickup.mp4": [
-    -13.4,
-    0.8,
-    1182873
+    -13.2,
+    0.2,
+    7852250
+   ],
+   "assets/v/td_pickup-2.mp4": [
+    -13.2,
+    0.2,
+    7540708
+   ],
+   "assets/v/td_pickup-3.mp4": [
+    -13.2,
+    0.2,
+    7400024
    ]
   },
   "hv": {
    "src": "assets/poster/hv/td_pickup_0.jpg",
-   "from": "assets/v/td_pickup.mp4@0"
+   "from": "assets/v/td_pickup.sd.mp4@0"
   },
   "bb": {
    "src": "assets/poster/bb/td_pickup_0.jpg",
-   "from": "assets/v/td_pickup.mp4@0.0"
+   "from": "assets/v/td_pickup-2.mp4@0.0"
   },
   "film": [
    {
@@ -735,6 +757,20 @@
     "fw": 40,
     "fh": 72,
     "from": "assets/v/td_pickup.mp4"
+   },
+   {
+    "src": "assets/film/td_pickup_1.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/td_pickup-2.mp4"
+   },
+   {
+    "src": "assets/film/td_pickup_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/td_pickup-3.mp4"
    }
   ]
  },
@@ -822,10 +858,10 @@
   "pw": 600,
   "ph": 1066,
   "wide": {
-   "src": "assets/poster16/mg_rent1.jpg",
-   "srcset": "assets/thumb/b4c1f91c42-640.webp 640w, assets/thumb/b4c1f91c42-1280.webp 1280w",
+   "src": "assets/poster16/mg_rent1_1.jpg",
+   "srcset": "assets/thumb/1e17361229-640.webp 640w, assets/thumb/1e17361229-1280.webp 1280w",
    "from": "|assets/poster/mg_rent1.jpg|",
-   "c": "#4b8fe2"
+   "c": "#529df8"
   },
   "tall": {
    "src": "assets/poster/mg_rent1.jpg",
@@ -835,18 +871,43 @@
   },
   "lu": {
    "assets/v/mg_rent1.mp4": [
-    -15.0,
-    -0.2,
-    1714384
+    -14.9,
+    0.2,
+    11876559
+   ],
+   "assets/v/mg_rent1-2.mp4": [
+    -14.9,
+    0.2,
+    11990267
+   ],
+   "assets/v/mg_rent1-3.mp4": [
+    -14.9,
+    0.2,
+    11748041
+   ],
+   "assets/v/mg_rent1-4.mp4": [
+    -10.8,
+    0.8,
+    6652478
+   ],
+   "assets/v/mg_rent1-5.mp4": [
+    -10.8,
+    0.8,
+    5906481
+   ],
+   "assets/v/mg_rent1-6.mp4": [
+    -10.8,
+    0.8,
+    5446932
    ]
   },
   "hv": {
    "src": "assets/poster/hv/mg_rent1_0.jpg",
-   "from": "assets/v/mg_rent1.mp4@0"
+   "from": "assets/v/mg_rent1.sd.mp4@0"
   },
   "bb": {
    "src": "assets/poster/bb/mg_rent1_0.jpg",
-   "from": "assets/v/mg_rent1.mp4@0.0"
+   "from": "assets/v/mg_rent1-2.mp4@0.0"
   },
   "film": [
    {
@@ -855,6 +916,41 @@
     "fw": 40,
     "fh": 72,
     "from": "assets/v/mg_rent1.mp4"
+   },
+   {
+    "src": "assets/film/mg_rent1_1.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/mg_rent1-2.mp4"
+   },
+   {
+    "src": "assets/film/mg_rent1_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/mg_rent1-3.mp4"
+   },
+   {
+    "src": "assets/film/mg_rent1_3.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/mg_rent1-4.mp4"
+   },
+   {
+    "src": "assets/film/mg_rent1_4.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/mg_rent1-5.mp4"
+   },
+   {
+    "src": "assets/film/mg_rent1_5.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/mg_rent1-6.mp4"
    }
   ]
  },
@@ -862,10 +958,10 @@
   "pw": 600,
   "ph": 1066,
   "wide": {
-   "src": "assets/poster16/ai_closet1.jpg",
-   "srcset": "assets/thumb/42291ef8c1-640.webp 640w, assets/thumb/42291ef8c1-1280.webp 1280w",
+   "src": "assets/poster16/ai_closet1_1.jpg",
+   "srcset": "assets/thumb/e7edd9f6c0-640.webp 640w, assets/thumb/e7edd9f6c0-1280.webp 1280w",
    "from": "|assets/poster/ai_closet1.jpg|",
-   "c": "#bba78c"
+   "c": "#83644e"
   },
   "tall": {
    "src": "assets/poster/ai_closet1.jpg",
@@ -878,6 +974,21 @@
     -16.3,
     -0.4,
     1698599
+   ],
+   "assets/v/ai_closet1-2.mp4": [
+    -16.1,
+    0.0,
+    7725474
+   ],
+   "assets/v/ai_closet1-3.mp4": [
+    -16.1,
+    0.1,
+    6560055
+   ],
+   "assets/v/ai_closet1-4.mp4": [
+    -16.1,
+    0.0,
+    6672716
    ]
   },
   "hv": {
@@ -886,7 +997,7 @@
   },
   "bb": {
    "src": "assets/poster/bb/ai_closet1_0.jpg",
-   "from": "assets/v/ai_closet1.mp4@0.0"
+   "from": "assets/v/ai_closet1-3.mp4@0.0"
   },
   "film": [
    {
@@ -895,6 +1006,27 @@
     "fw": 40,
     "fh": 72,
     "from": "assets/v/ai_closet1.mp4"
+   },
+   {
+    "src": "assets/film/ai_closet1_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/ai_closet1-2.mp4"
+   },
+   {
+    "src": "assets/film/ai_closet1_2.jpg",
+    "n": 30,
+    "fw": 128,
+    "fh": 72,
+    "from": "assets/v/ai_closet1-3.mp4"
+   },
+   {
+    "src": "assets/film/ai_closet1_3.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/ai_closet1-4.mp4"
    }
   ]
  },
@@ -1431,14 +1563,14 @@
   },
   "lu": {
    "assets/v/mg_ars.mp4": [
-    -10.9,
-    -0.4,
-    695111
+    -10.8,
+    0.1,
+    5633695
    ]
   },
   "hv": {
    "src": "assets/poster/hv/mg_ars_0.jpg",
-   "from": "assets/v/mg_ars.mp4@0"
+   "from": "assets/v/mg_ars.sd.mp4@0"
   },
   "bb": {
    "src": "assets/poster/bb/mg_ars_0.jpg",
@@ -1633,5 +1765,69 @@
    "from": "assets/poster/mg_group_community.jpg",
    "c": "#f6f6f6"
   }
+ },
+ "sf_bogum": {
+  "pw": 1080,
+  "ph": 1920,
+  "wide": {
+   "src": "assets/poster16/sf_bogum.jpg",
+   "srcset": "assets/thumb/beebb50d11-640.webp 640w, assets/thumb/beebb50d11-1280.webp 1280w",
+   "from": "|assets/poster/sf_bogum.jpg|",
+   "c": "#978d81"
+  },
+  "tall": {
+   "src": "assets/poster/sf_bogum.jpg",
+   "srcset": "assets/thumb/f3894870f7-640.webp 640w, assets/thumb/f3894870f7-1280.webp 1280w",
+   "from": "assets/poster/sf_bogum.jpg",
+   "c": "#a29a91"
+  },
+  "lu": {
+   "assets/v/sf_bogum.mp4": [
+    -16.0,
+    -6.0,
+    3662812
+   ],
+   "assets/v/sf_bogum-2.mp4": [
+    -17.6,
+    -3.8,
+    9050231
+   ],
+   "assets/v/sf_bogum-3.mp4": [
+    -16.1,
+    0.0,
+    30372130
+   ]
+  },
+  "hv": {
+   "src": "assets/poster/hv/sf_bogum_0.jpg",
+   "from": "assets/v/sf_bogum.sd.mp4@0"
+  },
+  "bb": {
+   "src": "assets/poster/bb/sf_bogum_0.jpg",
+   "from": "assets/v/sf_bogum.mp4@0.0"
+  },
+  "film": [
+   {
+    "src": "assets/film/sf_bogum_0.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/sf_bogum.mp4"
+   },
+   {
+    "src": "assets/film/sf_bogum_1.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/sf_bogum-2.mp4"
+   },
+   {
+    "src": "assets/film/sf_bogum_2.jpg",
+    "n": 30,
+    "fw": 40,
+    "fh": 72,
+    "from": "assets/v/sf_bogum-3.mp4"
+   }
+  ]
  }
 }
