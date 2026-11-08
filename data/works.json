@@ -986,24 +986,33 @@
    "Moloco"
   ],
   "formats": [
-   "9:16",
    "16:9",
-   "320×480",
-   "1:1"
+   "9:16",
+   "1:1",
+   "320×480"
   ],
   "media": {
    "poster": "assets/poster/td_raffle_v.jpg",
    "videos": [
     {
-     "label": "9:16",
+     "label": "16:9 — 가로 · 영상",
      "hd": "assets/v/td_raffle_v.mp4",
-     "w": 720,
-     "h": 1280,
-     "dur": 19.54
+     "w": 1920,
+     "h": 1080,
+     "dur": 19.54,
+     "sd": "assets/v/td_raffle_v.sd.mp4"
+    },
+    {
+     "label": "9:16 — 세로 · 영상",
+     "hd": "assets/v/td_raffle_v-2.mp4",
+     "w": 1080,
+     "h": 1920,
+     "dur": 19.54,
+     "sd": "assets/v/td_raffle_v-2.sd.mp4"
     },
     {
      "label": "1:1 — 정방 · 영상",
-     "hd": "assets/v/td_raffle_v-2.mp4",
+     "hd": "assets/v/td_raffle_v-3.mp4",
      "w": 640,
      "h": 640,
      "dur": 19.55
@@ -3356,7 +3365,15 @@
   "formats": [
    "9:16",
    "1:1",
-   "16:9"
+   "16:9",
+   "3:4",
+   "4:5",
+   "1.91:1",
+   "320×480",
+   "480×320",
+   "300×250",
+   "320×100",
+   "2:1"
   ],
   "media": {
    "poster": "assets/poster/mg_jobs_spring.jpg",
@@ -3376,7 +3393,147 @@
      "dur": 18.53
     }
    ],
-   "start": 0
+   "start": 0,
+   "images": [
+    {
+     "label": "v1 캐릭터 · 3:4 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-1.png",
+     "w": 1200,
+     "h": 1600
+    },
+    {
+     "label": "v1 캐릭터 · 4:5 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-2.png",
+     "w": 1200,
+     "h": 1500
+    },
+    {
+     "label": "v1 캐릭터 · 9:16 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-3.png",
+     "w": 720,
+     "h": 1280
+    },
+    {
+     "label": "v1 캐릭터 · 3:4 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-4.png",
+     "w": 768,
+     "h": 1024
+    },
+    {
+     "label": "v1 캐릭터 · 1.91:1 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-5.jpg",
+     "w": 1200,
+     "h": 628
+    },
+    {
+     "label": "v1 캐릭터 · 3:4 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-6.png",
+     "w": 720,
+     "h": 960
+    },
+    {
+     "label": "v1 캐릭터 · 1:1 — 정방 · 이미지",
+     "src": "assets/i/mg_jobs_spring-7.png",
+     "w": 720,
+     "h": 720
+    },
+    {
+     "label": "v1 캐릭터 · 320×480 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-8.png",
+     "w": 320,
+     "h": 480
+    },
+    {
+     "label": "v1 캐릭터 · 480×320 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-9.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "label": "v1 캐릭터 · 300×250 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-10.jpg",
+     "w": 300,
+     "h": 250
+    },
+    {
+     "label": "v1 캐릭터 · 320×100 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-11.jpg",
+     "w": 320,
+     "h": 100
+    },
+    {
+     "label": "v2 상품권 · 3:4 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-12.png",
+     "w": 1200,
+     "h": 1600
+    },
+    {
+     "label": "v2 상품권 · 4:5 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-13.png",
+     "w": 1200,
+     "h": 1500
+    },
+    {
+     "label": "v2 상품권 · 9:16 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-14.png",
+     "w": 720,
+     "h": 1280
+    },
+    {
+     "label": "v2 상품권 · 3:4 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-15.png",
+     "w": 768,
+     "h": 1024
+    },
+    {
+     "label": "v2 상품권 · 1.91:1 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-16.jpg",
+     "w": 1200,
+     "h": 628
+    },
+    {
+     "label": "v2 상품권 · 2:1 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-17.jpg",
+     "w": 1200,
+     "h": 600
+    },
+    {
+     "label": "v2 상품권 · 3:4 — 세로 · 이미지",
+     "src": "assets/i/mg_jobs_spring-18.png",
+     "w": 720,
+     "h": 960
+    },
+    {
+     "label": "v2 상품권 · 1:1 — 정방 · 이미지",
+     "src": "assets/i/mg_jobs_spring-19.png",
+     "w": 720,
+     "h": 720
+    },
+    {
+     "label": "v2 상품권 · 320×480 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-20.png",
+     "w": 320,
+     "h": 480
+    },
+    {
+     "label": "v2 상품권 · 480×320 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-21.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "label": "v2 상품권 · 300×250 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-22.jpg",
+     "w": 300,
+     "h": 250
+    },
+    {
+     "label": "v2 상품권 · 320×100 — 배너 · 이미지",
+     "src": "assets/i/mg_jobs_spring-23.jpg",
+     "w": 320,
+     "h": 100
+    }
+   ]
   },
   "links": {
    "live": null,
@@ -3753,5 +3910,231 @@
   "made_with": [
    "hf-unlimited-runner"
   ]
+ },
+ {
+  "id": "mg_laptop",
+  "grade": 2,
+  "group": "performance",
+  "title": "중고거래 노트북 — 가격 소구 이미지 4종",
+  "subtitle": "이미지 소재 · 2026",
+  "year": 2026,
+  "period": "2026",
+  "role": "카피·레이아웃 4종 × 3규격 이미지 제작",
+  "tools": [
+   "Figma",
+   "Photoshop"
+  ],
+  "channels": [],
+  "formats": [
+   "4:5",
+   "9:16",
+   "1:1"
+  ],
+  "media": {
+   "images": [
+    {
+     "label": "300→80만원 · 4:5 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-1.jpg",
+     "w": 1440,
+     "h": 1800
+    },
+    {
+     "label": "300→80만원 · 9:16 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-2.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "300→80만원 · 1:1 — 정방 · 이미지",
+     "src": "assets/i/mg_laptop-3.jpg",
+     "w": 1440,
+     "h": 1440
+    },
+    {
+     "label": "50만원이면 · 4:5 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-4.jpg",
+     "w": 1440,
+     "h": 1800
+    },
+    {
+     "label": "50만원이면 · 9:16 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-5.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "50만원이면 · 1:1 — 정방 · 이미지",
+     "src": "assets/i/mg_laptop-6.jpg",
+     "w": 1440,
+     "h": 1440
+    },
+    {
+     "label": "뭐 살까 · 4:5 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-7.jpg",
+     "w": 1440,
+     "h": 1800
+    },
+    {
+     "label": "뭐 살까 · 9:16 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-8.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "뭐 살까 · 1:1 — 정방 · 이미지",
+     "src": "assets/i/mg_laptop-9.jpg",
+     "w": 1440,
+     "h": 1440
+    },
+    {
+     "label": "가격 폭등 · 4:5 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-10.jpg",
+     "w": 1440,
+     "h": 1800
+    },
+    {
+     "label": "가격 폭등 · 9:16 — 세로 · 이미지",
+     "src": "assets/i/mg_laptop-11.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "가격 폭등 · 1:1 — 정방 · 이미지",
+     "src": "assets/i/mg_laptop-12.jpg",
+     "w": 1440,
+     "h": 1440
+    }
+   ],
+   "poster": "assets/poster/mg_laptop.jpg"
+  },
+  "links": {
+   "live": null,
+   "github": null,
+   "artifact": null,
+   "embed": null
+  },
+  "copy": {
+   "one": "'노트북 300만원? 당근에선 80만원' — 가격 하나로 멈추게 하는 4종 × 3규격",
+   "problem": null,
+   "decision": null,
+   "result": null
+  },
+  "metrics": [],
+  "tags": [
+   "이미지 소재",
+   "중고거래",
+   "규격 세트"
+  ],
+  "kinds": [
+   "image"
+  ],
+  "type": "이미지 소재 세트",
+  "contrib": "1인 제작"
+ },
+ {
+  "id": "mg_group_community",
+  "grade": 2,
+  "group": "performance",
+  "title": "당근모임 — 커뮤니티 썰 이미지 소재 10종",
+  "subtitle": "이미지 소재 · 2025-12",
+  "year": 2025,
+  "period": "2025-12",
+  "role": "커뮤니티·단톡 캡처 형식 이미지 10종 기획·제작",
+  "tools": [
+   "Figma",
+   "Photoshop"
+  ],
+  "channels": [],
+  "formats": [
+   "9:16"
+  ],
+  "media": {
+   "images": [
+    {
+     "label": "에브리타임 1 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-1.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "에브리타임 2 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-2.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "에브리타임 3 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-3.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "에브리타임 4 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-4.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "X 4컷 1 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-5.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "X 4컷 2 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-6.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "X 4컷 3 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-7.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "X 4컷 4 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-8.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "단톡 1 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-9.jpg",
+     "w": 1080,
+     "h": 1920
+    },
+    {
+     "label": "단톡 2 — 세로 · 이미지",
+     "src": "assets/i/mg_group_community-10.jpg",
+     "w": 1080,
+     "h": 1920
+    }
+   ],
+   "poster": "assets/poster/mg_group_community.jpg"
+  },
+  "links": {
+   "live": null,
+   "github": null,
+   "artifact": null,
+   "embed": null
+  },
+  "copy": {
+   "one": "에브리타임·X·단톡 캡처처럼 — 광고 같지 않은 당근모임 '썰' 9:16 10종",
+   "problem": null,
+   "decision": null,
+   "result": null
+  },
+  "metrics": [],
+  "tags": [
+   "이미지 소재",
+   "모임",
+   "커뮤니티 밈"
+  ],
+  "kinds": [
+   "image"
+  ],
+  "type": "이미지 소재 세트",
+  "contrib": "1인 제작"
  }
 ]

@@ -331,7 +331,7 @@ for w in W:
 <meta http-equiv="refresh" content="0;url=../works.html?w={e(w["id"])}"></head><body><a href="../works.html?w={e(w["id"])}">{e(w["title"])}</a><script>location.replace('../works.html?w={e(w["id"])}'+(location.search?'&'+location.search.slice(1):''))</script></body></html>''', encoding='utf-8')
 urls = ['', 'works.html', 'tools.html', 'resume.html'] + [f"w/{w['id']}.html" for w in W if has_media(w)]
 (OUT/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + ''.join(f'<url><loc>{SITE}{u}</loc></url>' for u in urls) + '</urlset>\n', encoding='utf-8')
-(OUT/'robots.txt').write_text(f'User-agent: *\nDisallow: /pf/edit/\nDisallow: /pf/design/\nSitemap: {SITE}sitemap.xml\n', encoding='utf-8')
+(OUT/'robots.txt').write_text(f'User-agent: *\nDisallow: /pf/edit/\nDisallow: /pf/design/\nDisallow: /pf/upload/\nSitemap: {SITE}sitemap.xml\n', encoding='utf-8')
 (OUT/'404.html').write_text(head('페이지를 찾을 수 없음 — Hansy', '김한결 포트폴리오', '404.html').replace('href="css/site.css"', 'href="/pf/css/site.css"') + f'''<body{BODY_ATTR}><main><div class="wrap sec"><h1 class="pg-h">페이지를 찾을 수 없습니다</h1><p><a class="btn" href="/pf/">홈으로</a></p></div></main></body></html>''', encoding='utf-8')
 def files(w):
     m = w.get('media') or {}

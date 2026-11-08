@@ -96,8 +96,8 @@
    ]
   },
   "hv": {
-   "src": "assets/poster/hv/td_review2605_0.jpg",
-   "from": "assets/v/td_review2605.sd.mp4@0"
+   "src": "assets/poster/hv/td_review2605_8p78.jpg",
+   "from": "assets/v/td_review2605.sd.mp4@8.78"
   },
   "bb": {
    "src": "assets/poster/bb/td_review2605_0.jpg",
@@ -331,10 +331,10 @@
   "pw": 600,
   "ph": 1066,
   "wide": {
-   "src": "assets/poster16/td_raffle_v.jpg",
-   "srcset": "assets/thumb/8f77e5c619-640.webp 640w, assets/thumb/8f77e5c619-1280.webp 1280w",
+   "src": "assets/poster16/td_raffle_v_1.jpg",
+   "srcset": "assets/thumb/d9cfb9d67a-640.webp 640w, assets/thumb/d9cfb9d67a-1280.webp 1280w",
    "from": "|assets/poster/td_raffle_v.jpg|",
-   "c": "#8e232c"
+   "c": "#933039"
   },
   "tall": {
    "src": "assets/poster/td_raffle_v.jpg",
@@ -344,11 +344,16 @@
   },
   "lu": {
    "assets/v/td_raffle_v.mp4": [
-    -13.8,
-    -0.2,
-    2025438
+    -13.7,
+    -0.3,
+    6051817
    ],
    "assets/v/td_raffle_v-2.mp4": [
+    -13.7,
+    -0.3,
+    6719237
+   ],
+   "assets/v/td_raffle_v-3.mp4": [
     -13.6,
     0.3,
     1888062
@@ -356,26 +361,33 @@
   },
   "hv": {
    "src": "assets/poster/hv/td_raffle_v_0.jpg",
-   "from": "assets/v/td_raffle_v.mp4@0"
+   "from": "assets/v/td_raffle_v.sd.mp4@0"
   },
   "bb": {
    "src": "assets/poster/bb/td_raffle_v_0.jpg",
-   "from": "assets/v/td_raffle_v-2.mp4@0.0"
+   "from": "assets/v/td_raffle_v.mp4@0.0"
   },
   "film": [
    {
     "src": "assets/film/td_raffle_v_0.jpg",
     "n": 30,
-    "fw": 40,
+    "fw": 128,
     "fh": 72,
     "from": "assets/v/td_raffle_v.mp4"
    },
    {
     "src": "assets/film/td_raffle_v_1.jpg",
     "n": 30,
-    "fw": 72,
+    "fw": 40,
     "fh": 72,
     "from": "assets/v/td_raffle_v-2.mp4"
+   },
+   {
+    "src": "assets/film/td_raffle_v_2.jpg",
+    "n": 30,
+    "fw": 72,
+    "fh": 72,
+    "from": "assets/v/td_raffle_v-3.mp4"
    }
   ]
  },
@@ -1588,6 +1600,38 @@
    "srcset": "assets/thumb/c6ee5d2678-640.webp 640w, assets/thumb/c6ee5d2678-1280.webp 1280w",
    "from": "assets/shots/aipp-board.jpg",
    "c": "#bdb7b5"
+  }
+ },
+ "mg_laptop": {
+  "pw": 1440,
+  "ph": 1800,
+  "wide": {
+   "src": "assets/poster16/mg_laptop.jpg",
+   "srcset": "assets/thumb/1243d22c54-640.webp 640w, assets/thumb/1243d22c54-1280.webp 1280w",
+   "from": "|assets/poster/mg_laptop.jpg|",
+   "c": "#b4bbb6"
+  },
+  "tall": {
+   "src": "assets/poster/mg_laptop.jpg",
+   "srcset": "assets/thumb/28683561de-640.webp 640w, assets/thumb/28683561de-1280.webp 1280w",
+   "from": "assets/poster/mg_laptop.jpg",
+   "c": "#c5d0cc"
+  }
+ },
+ "mg_group_community": {
+  "pw": 1080,
+  "ph": 1920,
+  "wide": {
+   "src": "assets/poster16/mg_group_community.jpg",
+   "srcset": "assets/thumb/272487e85b-640.webp 640w, assets/thumb/272487e85b-1280.webp 1280w",
+   "from": "|assets/poster/mg_group_community.jpg|",
+   "c": "#dadbda"
+  },
+  "tall": {
+   "src": "assets/poster/mg_group_community.jpg",
+   "srcset": "assets/thumb/f20cceca71-640.webp 640w, assets/thumb/f20cceca71-1280.webp 1280w",
+   "from": "assets/poster/mg_group_community.jpg",
+   "c": "#f6f6f6"
   }
  }
 }

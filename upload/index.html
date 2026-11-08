@@ -1,0 +1,319 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>작품 올리기 — Hansy 포트폴리오</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 작품 올리기: 영상·이미지 + 제목 등 입력 → GitHub에 바로 커밋 → 약 1~2분 뒤 사이트 반영 (편집기 /edit/ 와 같은 토큰 사용) */
+:root{--bg:#fff;--ink:#0e0e10;--ink-2:#6b6b70;--ink-3:#c9c9cc;--ink-4:#f1f1f2;--acc:#cc1433;--ok:#1e8e5a}
+*{box-sizing:border-box;margin:0}
+body{font-family:"Pretendard Variable",Pretendard,system-ui,sans-serif;color:var(--ink);background:var(--ink-4);font-size:15px;line-height:1.5}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 24px;background:var(--bg);border-bottom:1px solid var(--ink-3)}
+header h1{font-size:18px;font-weight:700}
+header a{color:var(--ink-2);font-size:14px;text-decoration:none}header a:hover{color:var(--ink)}
+header .sp{flex:1}
+main{max-width:880px;margin:24px auto 120px;padding:0 16px;display:grid;gap:16px}
+section{background:var(--bg);border-radius:12px;padding:20px 24px}
+h2{font-size:16px;font-weight:700;margin-bottom:12px}
+h2 small{font-weight:500;color:var(--ink-2);margin-left:8px;font-size:13px}
+.seg{display:inline-flex;background:var(--ink-4);border-radius:999px;padding:3px;margin-bottom:14px}
+.seg button{padding:7px 16px;border-radius:999px;font-weight:600;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:0 1px 3px #0002}
+button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
+.btn{padding:9px 18px;border-radius:999px;background:var(--ink-4);font-weight:600}
+.btn.pri{background:var(--ink);color:#fff}.btn:disabled{opacity:.4;cursor:default}
+label.f{display:grid;gap:4px;font-size:13px;color:var(--ink-2);font-weight:600}
+input[type=text],input[type=password],input[type=month],select,textarea{font:inherit;font-size:15px;color:var(--ink);padding:9px 12px;border:1px solid var(--ink-3);border-radius:8px;background:#fff;width:100%}
+textarea{min-height:64px;resize:vertical}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}.grid .w{grid-column:1/-1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips label{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--ink-3);border-radius:999px;font-size:14px;cursor:pointer;color:var(--ink)}
+.chips input{accent-color:var(--ink)}
+.chips label:has(input:checked){background:var(--ink);color:#fff;border-color:var(--ink)}
+.drop{display:block;border:2px dashed var(--ink-3);border-radius:12px;padding:28px;text-align:center;color:var(--ink-2);cursor:pointer;transition:.2s}
+.drop.on,.drop:hover{border-color:var(--ink);color:var(--ink);background:var(--ink-4)}
+.drop b{display:block;font-size:16px;color:var(--ink);margin-bottom:4px}
+.list{display:grid;gap:8px;margin-top:12px}
+.it{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;padding:8px;border:1px solid var(--ink-4);border-radius:10px}
+.it .th{width:72px;height:72px;border-radius:6px;background:#000 center/contain no-repeat;object-fit:contain}
+.it .meta{display:grid;gap:4px;min-width:0}
+.it .meta small{color:var(--ink-2);font-size:12px}
+.it .meta small.bad{color:var(--acc);font-weight:600}
+.it input[type=text]{padding:6px 10px;font-size:14px}
+.it .x{width:32px;height:32px;border-radius:50%;font-size:18px;color:var(--ink-2)}.it .x:hover{background:var(--ink-4);color:var(--ink)}
+.it.del{opacity:.4}.it.del .meta input{text-decoration:line-through}
+.it .ord{display:flex;gap:2px}.it .ord button{width:28px;height:28px;border-radius:6px;color:var(--ink-2)}.it .ord button:hover{background:var(--ink-4)}
+.note{font-size:13px;color:var(--ink-2);margin-top:8px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--ink-3);padding:12px 24px;display:flex;align-items:center;gap:12px;z-index:5}
+.bar .st{flex:1;font-size:14px;color:var(--ink-2)}
+.bar .st[data-s="ok"]{color:var(--ok);font-weight:600}.bar .st[data-s="err"]{color:var(--acc);font-weight:600}
+.bar .st a{color:inherit}
+.prog{height:4px;background:var(--ink-4);border-radius:2px;overflow:hidden;width:160px}.prog i{display:block;height:100%;width:0;background:var(--ink);transition:width .3s}
+.modal{position:fixed;inset:0;background:#0008;display:grid;place-items:center;z-index:10}
+.modal .box{background:#fff;border-radius:12px;padding:24px;max-width:480px;width:calc(100% - 32px);display:grid;gap:12px}
+.modal ol{padding-left:20px;font-size:14px;display:grid;gap:4px}.modal a{color:var(--ink)}
+.modal .msg{font-size:13px;color:var(--acc);min-height:1em}
+.row{display:flex;gap:8px;justify-content:flex-end}
+.hide{display:none!important}
+.pv{display:flex;gap:12px;align-items:center}.pv img{width:160px;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:var(--ink-4)}
+</style></head>
+<body>
+<header><h1>작품 올리기</h1><a href="./">사이트</a><a href="edit/">편집기</a><span class="sp"></span><button class="btn" id="cn">GitHub 연결</button></header>
+<main>
+<section>
+  <div class="seg" role="group"><button aria-pressed="true" data-mode="new">새 작품</button><button aria-pressed="false" data-mode="add">기존 작품에 추가·교체</button></div>
+  <div id="pick" class="hide"><label class="f">작품 고르기<select id="wsel"></select></label><p class="note">고르면 아래에 지금 정보가 채워져요. 고친 칸만 바뀌어요.</p></div>
+</section>
+<section>
+  <h2>정보</h2>
+  <div class="grid">
+    <label class="f w">제목 *<input type="text" id="title" placeholder="예: 당근 래플 — 3D 모션"></label>
+    <label class="f w">한 줄 설명<input type="text" id="one" placeholder="카드·상영관에 보이는 한 줄"></label>
+    <label class="f">종류<input type="text" id="type" placeholder="예: 3D 모션 광고 / 이미지 소재 세트"></label>
+    <label class="f">시기<input type="month" id="period"></label>
+    <label class="f">툴 (쉼표로 구분)<input type="text" id="tools" placeholder="After Effects, Cinema 4D"></label>
+    <label class="f">기여도<input type="text" id="contrib" placeholder="1인 제작"></label>
+    <label class="f w">역할<input type="text" id="role" placeholder="예: 3D 공간 · 모션 · 영상 3규격 제작"></label>
+    <label class="f w">태그 (쉼표로 구분)<input type="text" id="tags" placeholder="3D, 이벤트"></label>
+  </div>
+  <h2 style="margin-top:18px">분류 <small>홈 재생목록·작업 탭 필터</small></h2>
+  <div class="chips" id="kinds"></div>
+  <h2 style="margin-top:18px">노출</h2>
+  <div class="chips" id="grade">
+    <label><input type="radio" name="g" value="1">대표 (쇼릴 포함)</label>
+    <label><input type="radio" name="g" value="2" checked>일반</label>
+    <label><input type="radio" name="g" value="3">숨김</label>
+  </div>
+</section>
+<section>
+  <h2>영상·이미지 <small>순서 = 상영관 순서 · 첫 영상이 대표 영상</small></h2>
+  <label class="drop" id="drop"><b>여기로 끌어 놓거나 눌러서 고르기</b>영상(mp4) · 이미지(png·jpg·webp·gif) 여러 개 가능<input type="file" id="file" multiple accept="video/mp4,video/quicktime,video/webm,image/*" hidden></label>
+  <div class="list" id="list"></div>
+  <p class="note">· 영상은 파일당 <b>48MB 이하</b> 권장(1080p·20초 ≈ 10~20MB). 95MB 넘으면 올릴 수 없어요(GitHub 제한).<br>· 기존 작품: ✕ 누르면 그 소재를 사이트에서 뺌(교체 = 새 파일 올리고 옛 것 ✕).<br>· PNG는 투명 배경이 없으면 화질 그대로 JPG로 줄여서 올려요.</p>
+</section>
+<section>
+  <h2>썸네일</h2>
+  <div class="pv"><img id="pimg" alt=""><div><div class="chips"><label><input type="checkbox" id="pauto" checked>첫 영상(1초) 또는 첫 이미지로 자동</label></div><p class="note">직접 고르려면 <label style="text-decoration:underline;cursor:pointer">이미지 올리기<input type="file" id="pfile" accept="image/*" hidden></label> · 저장 뒤 편집기에서 영상 장면으로도 고를 수 있어요.</p></div></div>
+</section>
+</main>
+<div class="bar"><span class="st" id="st">GitHub 연결 후 올릴 수 있어요</span><div class="prog hide" id="prog"><i></i></div><button class="btn pri" id="go">올리고 사이트에 반영</button></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const GH = { owner: 'hansy-daangn', repo: 'pf', branch: 'main', api: 'https://api.github.com' }, R = `/repos/${GH.owner}/${GH.repo}`;
+const TK = 'pf.gh';
+const KINDS = { '3d': '3D 영상', ai: 'AI 영상', motion: '모션 영상', owned: '온드 콘텐츠', image: '이미지 소재', personal: '개인 작업', tools: '도구 · 자동화' };
+const MAXMB = 95, WARNMB = 48;
+let token = localStorage.getItem(TK) || '', works = [], mode = 'new', items = [], posterBlob = null, busy = false;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const status = (s, t) => { const e = $('#st'); e.dataset.s = s; e.innerHTML = t; };
+const prog = p => { $('#prog').classList.toggle('hide', p == null); $('#prog i').style.width = (p || 0) + '%'; };
+
+/* ---------- GitHub ---------- */
+const api = async (path, opt = {}) => {
+  const r = await fetch(GH.api + path, { ...opt, headers: { Authorization: `Bearer ${token}`, Accept: opt.raw ? 'application/vnd.github.raw' : 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) } });
+  if (!r.ok) { const t = await r.text(); const e = new Error(`${r.status} ${t.slice(0, 200)}`); e.status = r.status; throw e; }
+  return opt.raw ? r.text() : r.json();
+};
+const b64 = blob => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+const connUI = () => { $('#cn').classList.toggle('hide', !!token); if (!busy) status(token ? 'idle' : 'idle', token ? '연결됨 · 입력 후 「올리고 사이트에 반영」' : 'GitHub 연결 후 올릴 수 있어요 (편집기와 같은 토큰)'); };
+const connect = () => new Promise(done => {
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="box"><h2>GitHub 연결 (처음 한 번)</h2><ol>
+<li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 토큰 만들기 ↗</a> 열기</li>
+<li>Token name <b>pf-edit</b> · Expiration <b>1년</b></li>
+<li>Repository access → <b>Only select repositories</b> → <b>hansy-daangn/pf</b></li>
+<li>Permissions → Repository permissions → <b>Contents</b> → <b>Read and write</b></li>
+<li>Generate token → 복사해서 아래에 붙여넣기</li></ol>
+<input type="password" placeholder="github_pat_…" autocomplete="off"><p class="msg"></p><div class="row"><button class="btn" data-x>닫기</button><button class="btn pri" data-go>연결</button></div></div>`;
+  document.body.appendChild(m); const inp = m.querySelector('input'); setTimeout(() => inp.focus(), 30);
+  const close = ok => { m.remove(); done(ok); };
+  m.querySelector('[data-x]').onclick = () => close(false);
+  const go = async () => { const v = inp.value.trim(); if (!v) return; const prev = token; token = v; m.querySelector('.msg').textContent = '확인 중…';
+    try { const r = await api(R); if (!r.permissions || !r.permissions.push) throw 0; localStorage.setItem(TK, token); connUI(); close(true); }
+    catch (e) { token = prev; m.querySelector('.msg').textContent = '연결 실패 — 저장소 선택과 Contents 읽기·쓰기 권한을 확인해 주세요'; } };
+  m.querySelector('[data-go]').onclick = go; inp.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+});
+$('#cn').onclick = connect;
+
+/* ---------- 데이터 ---------- */
+const loadWorks = async () => {
+  try { works = await fetch(`data/works.json?t=${Date.now()}`, { cache: 'no-store' }).then(r => r.json()); } catch (e) { works = []; }
+  const ws = [...works].sort((a, b) => String(b.period || b.year || '').localeCompare(String(a.period || a.year || '')));
+  $('#wsel').innerHTML = '<option value="">— 고르기 —</option>' + ws.map(w => `<option value="${esc(w.id)}">${esc(w.title)} · ${esc(w.period || w.year || '')}${(w.grade ?? 3) >= 3 ? ' (숨김)' : ''}</option>`).join('');
+};
+$('#kinds').innerHTML = Object.entries(KINDS).map(([k, v]) => `<label><input type="checkbox" value="${k}">${v}</label>`).join('');
+const W = id => works.find(w => w.id === id);
+const fill = w => {
+  const c = w ? (w.copy || {}) : {};
+  $('#title').value = w ? w.title || '' : ''; $('#one').value = c.one || ''; $('#type').value = w ? w.type || '' : '';
+  $('#period').value = w && /^\d{4}-\d{2}$/.test(w.period || '') ? w.period : '';
+  $('#tools').value = w ? (w.tools || []).join(', ') : ''; $('#contrib').value = w ? w.contrib || '' : ''; $('#role').value = w ? w.role || '' : ''; $('#tags').value = w ? (w.tags || []).join(', ') : '';
+  $$('#kinds input').forEach(i => i.checked = !!w && (w.kinds || []).includes(i.value));
+  $$('#grade input').forEach(i => i.checked = i.value === String(w ? (w.grade ?? 2) : 2));
+  const m = (w && w.media) || {};
+  items = [...(m.videos || []).map(v => ({ old: true, kind: 'v', label: v.label || '', w: v.w, h: v.h, dur: v.dur, src: v.hd, ref: v })),
+           ...(m.images || []).map(v => ({ old: true, kind: 'i', label: v.label || '', w: v.w, h: v.h, src: v.src, ref: v }))];
+  $('#pauto').checked = !w; posterBlob = null; $('#pimg').src = m.poster ? m.poster : ''; draw();
+};
+$$('.seg button').forEach(b => b.onclick = () => { mode = b.dataset.mode; $$('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b)); $('#pick').classList.toggle('hide', mode !== 'add'); $('#wsel').value = ''; fill(null); });
+$('#wsel').onchange = () => fill(W($('#wsel').value) || null);
+
+/* ---------- 파일 ---------- */
+const gcd = (a, b) => b ? gcd(b, a % b) : a;
+const autoLabel = (kind, w, h) => {
+  const r = w / h, big = Math.min(w, h) >= 600, g = gcd(w, h), key = `${w / g}:${h / g}`;
+  const named = { '16:9': '16:9', '9:16': '9:16', '1:1': '1:1', '3:4': '3:4', '4:5': '4:5', '2:1': '2:1', '3:2': '3:2', '2:3': '2:3', '4:3': '4:3' };
+  let k = Math.abs(r - 1.91) < .02 ? '1.91:1' : (big && named[key]) || `${w}×${h}`;
+  if (kind === 'v' && !named[key] && Math.abs(r - 1.91) >= .02) k = Math.abs(r - 16 / 9) < .03 ? '16:9' : Math.abs(r - 9 / 16) < .03 ? '9:16' : Math.abs(r - 1) < .02 ? '1:1' : `${w}×${h}`;
+  const t = !big && kind === 'i' || r >= 1.9 && kind === 'i' ? '배너' : Math.abs(r - 1) < .02 ? '정방' : r < 1 ? '세로' : '가로';
+  return `${k} — ${t} · ${kind === 'v' ? '영상' : '이미지'}`;
+};
+const probeVideo = f => new Promise(res => { const v = document.createElement('video'); v.preload = 'metadata'; v.muted = true; v.src = URL.createObjectURL(f);
+  v.onloadedmetadata = () => res({ w: v.videoWidth, h: v.videoHeight, dur: Math.round(v.duration * 100) / 100, url: v.src }); v.onerror = () => res(null); });
+const probeImg = f => new Promise(res => { const i = new Image(); i.src = URL.createObjectURL(f); i.onload = () => res({ w: i.naturalWidth, h: i.naturalHeight, url: i.src, img: i }); i.onerror = () => res(null); });
+const hasAlpha = img => { try { const s = Math.min(1, 512 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s)); const g = c.getContext('2d'); g.drawImage(img, 0, 0, c.width, c.height); const d = g.getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) if (d[i] < 255) return true; return false; } catch (e) { return true; } };
+const toJpg = (img, q = .92) => new Promise(res => { const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight; c.getContext('2d').drawImage(img, 0, 0); c.toBlob(res, 'image/jpeg', q); });
+const addFiles = async fs => {
+  for (const f of fs) {
+    const isV = f.type.startsWith('video/') || /\.(mp4|mov|webm)$/i.test(f.name), isI = f.type.startsWith('image/');
+    if (!isV && !isI) continue;
+    const p = isV ? await probeVideo(f) : await probeImg(f);
+    if (!p || !p.w) { alert(`${f.name}: 읽을 수 없는 파일이에요`); continue; }
+    const it = { kind: isV ? 'v' : 'i', file: f, name: f.name, w: p.w, h: p.h, dur: p.dur, url: p.url, label: autoLabel(isV ? 'v' : 'i', p.w, p.h) };
+    if (isI && /png$/i.test(f.type) && !hasAlpha(p.img)) { const j = await toJpg(p.img); if (j && j.size < f.size) { it.file = j; it.ext = 'jpg'; } }
+    if (isI && !it.ext) it.ext = (f.name.split('.').pop() || 'png').toLowerCase().replace('jpeg', 'jpg');
+    items.push(it);
+  }
+  draw(); autoPoster();
+};
+const mb = n => (n / 1e6).toFixed(1) + 'MB';
+const draw = () => {
+  $('#list').innerHTML = items.map((it, i) => {
+    const sz = it.file ? it.file.size : 0, big = sz > MAXMB * 1e6, warn = sz > WARNMB * 1e6;
+    const th = it.kind === 'v' ? `<video class="th" src="${esc(it.url || it.src)}#t=1" muted preload="metadata"></video>` : `<img class="th" src="${esc(it.url || it.src)}" alt="">`;
+    const info = `${it.kind === 'v' ? '영상' : '이미지'} · ${it.w}×${it.h}${it.dur ? ` · ${it.dur}초` : ''}${it.file ? ` · ${mb(sz)} · 새 파일` : ' · 지금 사이트에 있음'}`;
+    return `<div class="it${it.del ? ' del' : ''}" data-i="${i}">${th}<div class="meta"><input type="text" value="${esc(it.label)}" data-l aria-label="이름"><small class="${big || warn ? 'bad' : ''}">${esc(info)}${big ? ' · 95MB 초과 — 올릴 수 없어요' : warn ? ' · 48MB 초과 — 사이트가 무거워져요' : ''}</small></div><div class="ord"><button data-up title="위로">↑</button><button data-dn title="아래로">↓</button><button class="x" data-x title="${it.old ? '사이트에서 빼기/되살리기' : '목록에서 빼기'}">${it.del ? '↺' : '✕'}</button></div></div>`;
+  }).join('');
+};
+$('#list').addEventListener('input', e => { const r = e.target.closest('[data-i]'); if (r && e.target.matches('[data-l]')) items[+r.dataset.i].label = e.target.value; });
+$('#list').addEventListener('click', e => { const r = e.target.closest('[data-i]'); if (!r) return; const i = +r.dataset.i;
+  if (e.target.closest('[data-x]')) { if (items[i].old) items[i].del = !items[i].del; else items.splice(i, 1); }
+  else if (e.target.closest('[data-up]') && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
+  else if (e.target.closest('[data-dn]') && i < items.length - 1) [items[i + 1], items[i]] = [items[i], items[i + 1]];
+  else return; draw(); autoPoster(); });
+const drop = $('#drop');
+$('#file').onchange = e => { addFiles([...e.target.files]); e.target.value = ''; };
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('on'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('on'); }));
+drop.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+
+/* ---------- 썸네일 ---------- */
+const frame = url => new Promise(res => { const v = document.createElement('video'); v.muted = true; v.preload = 'auto'; v.src = url; v.playsInline = true;
+  const to = setTimeout(() => res(null), 8000);
+  v.onloadeddata = () => { v.currentTime = Math.min(1, (v.duration || 2) / 2); };
+  v.onseeked = () => { clearTimeout(to); const s = Math.min(1, 1920 / Math.max(v.videoWidth, v.videoHeight)), c = document.createElement('canvas'); c.width = Math.round(v.videoWidth * s); c.height = Math.round(v.videoHeight * s); c.getContext('2d').drawImage(v, 0, 0, c.width, c.height); c.toBlob(res, 'image/jpeg', .88); };
+  v.onerror = () => { clearTimeout(to); res(null); }; });
+const imgJpg = url => new Promise(res => { const i = new Image(); i.onload = () => { const s = Math.min(1, 1920 / Math.max(i.naturalWidth, i.naturalHeight)), c = document.createElement('canvas'); c.width = Math.round(i.naturalWidth * s); c.height = Math.round(i.naturalHeight * s); const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(i, 0, 0, c.width, c.height); c.toBlob(res, 'image/jpeg', .88); }; i.onerror = () => res(null); i.src = url; });
+let pT = 0;
+const autoPoster = async () => {
+  if (!$('#pauto').checked) return; const n = ++pT;
+  const live = items.filter(x => !x.del && x.file), v = live.find(x => x.kind === 'v'), i = live.find(x => x.kind === 'i');
+  const b = v ? await frame(v.url) : i ? await imgJpg(i.url) : null;
+  if (n !== pT) return; posterBlob = b; if (b) $('#pimg').src = URL.createObjectURL(b);
+};
+$('#pauto').onchange = () => { if ($('#pauto').checked) autoPoster(); else { posterBlob = null; const w = W($('#wsel').value); $('#pimg').src = w && w.media && w.media.poster ? w.media.poster : ''; } };
+$('#pfile').onchange = async e => { const f = e.target.files[0]; if (!f) return; $('#pauto').checked = false; posterBlob = await imgJpg(URL.createObjectURL(f)); if (posterBlob) $('#pimg').src = URL.createObjectURL(posterBlob); e.target.value = ''; };
+
+/* ---------- 올리기 ---------- */
+const csv = s => s.split(',').map(x => x.trim()).filter(Boolean);
+const newId = () => { const d = new Date(), p = n => String(n).padStart(2, '0'); return `up_${String(d.getFullYear()).slice(2)}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`; };
+const go = async () => {
+  if (busy) return;
+  if (!token && !(await connect())) return;
+  const title = $('#title').value.trim(); if (!title) { status('err', '제목을 넣어 주세요'); $('#title').focus(); return; }
+  if (mode === 'add' && !$('#wsel').value) { status('err', '작품을 골라 주세요'); return; }
+  const add = items.filter(x => x.file && !x.del);
+  if (add.some(x => x.file.size > MAXMB * 1e6)) { status('err', '95MB 넘는 파일이 있어요 — 줄여서 다시 넣어 주세요'); return; }
+  if (mode === 'new' && !items.some(x => !x.del)) { status('err', '영상이나 이미지를 하나 이상 넣어 주세요'); return; }
+  const kinds = $$('#kinds input:checked').map(i => i.value);
+  if (!kinds.length) { status('err', '분류를 하나 이상 골라 주세요'); return; }
+  busy = true; $('#go').disabled = true; prog(2);
+  try {
+    let sha = '', id = mode === 'new' ? newId() : $('#wsel').value, upPaths = [];
+    for (let attempt = 0; !sha; attempt++) {
+      status('busy', '최신 내용 확인 중…');
+      const head = (await api(`${R}/git/ref/heads/${GH.branch}`)).object.sha;
+      const commit = await api(`${R}/git/commits/${head}`);
+      const remote = JSON.parse(await api(`${R}/contents/data/works.json?ref=${head}`, { raw: true }));
+      let w = remote.find(x => x.id === id);
+      if (mode === 'new') { if (w) { id = newId() + 'b'; w = null; } w = { id, group: 'performance', links: { live: null, github: null, artifact: null, embed: null }, metrics: [], channels: [], copy: { one: '', problem: null, decision: null, result: null }, media: {} }; remote.push(w); }
+      else if (!w) throw new Error('작품을 찾지 못했어요 — 새로고침 후 다시 시도해 주세요');
+      const m = w.media = w.media || {};
+      // 정보
+      const period = $('#period').value, yr = period ? +period.slice(0, 4) : (w.year || new Date().getFullYear());
+      Object.assign(w, { title, grade: +($$('#grade input').find(i => i.checked) || {}).value || 2, kinds, year: yr });
+      if (period) w.period = period; else if (!w.period) w.period = String(yr);
+      (w.copy = w.copy || {}).one = $('#one').value.trim();
+      [['type', '#type'], ['contrib', '#contrib'], ['role', '#role']].forEach(([k, s]) => { const v = $(s).value.trim(); if (v) w[k] = v; else delete w[k]; });
+      w.tools = csv($('#tools').value); w.tags = csv($('#tags').value);
+      w.subtitle = `${kinds.map(k => KINDS[k].replace(/ 영상| 소재| 콘텐츠| 작업/, '').replace('도구 · 자동화', '도구')).join(' · ')} · ${w.period}`;
+      // 파일 경로 정하기(이미 있는 이름은 피함)
+      const tree = [], used = new Set([...(m.videos || []).flatMap(v => [v.hd, v.sd]), ...(m.images || []).map(v => v.src)].filter(Boolean));
+      const treeFiles = new Set((await api(`${R}/git/trees/${commit.tree.sha}?recursive=1`)).tree.map(t => t.path));
+      const pick = (dir, ext, first) => { for (let n = 1; ; n++) { const p = `assets/${dir}/${id}${n === 1 && first ? '' : '-' + n}.${ext}`; if (!used.has(p) && !treeFiles.has(p) && !upPaths.includes(p)) { upPaths.push(p); return p; } } };
+      upPaths = [];
+      const vids = [], imgs = [], files = [];
+      for (const it of items) {
+        if (it.del) continue;
+        if (it.old) { const o = { ...it.ref, label: it.label }; (it.kind === 'v' ? vids : imgs).push(o); continue; }
+        if (it.kind === 'v') { const p = pick('v', 'mp4', true); vids.push({ label: it.label, hd: p, w: it.w, h: it.h, dur: it.dur }); files.push([p, it.file]); }
+        else { const p = pick('i', it.ext, false); imgs.push({ label: it.label, src: p, w: it.w, h: it.h }); files.push([p, it.file]); }
+      }
+      if (vids.length) m.videos = vids; else delete m.videos;
+      if (imgs.length) m.images = imgs; else delete m.images;
+      if (vids.length && m.start == null) m.start = 0;
+      if (m.billboard && vids[0] && m.billboard[1] > vids[0].dur) delete m.billboard;
+      if (posterBlob) { const p = pick('poster', 'jpg', true); m.poster = p; files.push([p, posterBlob]); }
+      if (!m.poster) { const im = imgs[0]; if (im) m.poster = im.src; }
+      w.formats = [...new Set([...vids, ...imgs].map(x => (x.label || '').split(' — ')[0].split(' · ').pop()).filter(Boolean))];
+      // 파일 → blob
+      const total = files.reduce((s, [, f]) => s + f.size, 0) || 1; let done = 0;
+      for (const [p, f] of files) {
+        status('busy', `올리는 중… ${p.split('/').pop()} (${mb(f.size)})`);
+        const b = await api(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: await b64(f), encoding: 'base64' }) });
+        tree.push({ path: p, mode: '100644', type: 'blob', sha: b.sha }); done += f.size; prog(5 + 85 * done / total);
+      }
+      const jb = await api(`${R}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: JSON.stringify(remote, null, 1) + '\n', encoding: 'utf-8' }) });
+      tree.push({ path: 'data/works.json', mode: '100644', type: 'blob', sha: jb.sha });
+      status('busy', '커밋 중…');
+      const t = await api(`${R}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree }) });
+      const c = await api(`${R}/git/commits`, { method: 'POST', body: JSON.stringify({ message: `올리기: ${title}${files.length ? ` (파일 ${files.length}개)` : ''}`, tree: t.sha, parents: [head] }) });
+      try { await api(`${R}/git/refs/heads/${GH.branch}`, { method: 'PATCH', body: JSON.stringify({ sha: c.sha, force: false }) }); sha = c.sha; }
+      catch (e) { if (e.status === 422 && attempt < 3) continue; throw e; }
+    }
+    prog(95);
+    const link = `w/${id}.html`, view = `works.html?w=${encodeURIComponent(id)}`;
+    status('ok', `저장됨 · 사이트 반영 중(1~2분)… <a href="https://github.com/${GH.owner}/${GH.repo}/commit/${sha}" target="_blank" rel="noopener">커밋 ↗</a>`);
+    for (let k = 0; k < 40; k++) {
+      await sleep(k ? 6000 : 12000);
+      try { const ws = await fetch(`data/works.json?t=${Date.now()}`, { cache: 'no-store' }).then(r => r.json()); const w = ws.find(x => x.id === id);
+        if (w && w.title === title) { prog(100); status('ok', `사이트 반영됨 ✓ <a href="${view}" target="_blank">상영관에서 보기 ↗</a>`); break; } } catch (e) { }
+      if (k === 39) status('ok', `저장됨 · 반영이 늦어지고 있어요(GitHub Actions 확인) <a href="${view}" target="_blank">상영관에서 보기 ↗</a>`);
+    }
+    await loadWorks(); mode = 'add';
+    $$('.seg button').forEach(x => x.setAttribute('aria-pressed', x.dataset.mode === 'add')); $('#pick').classList.remove('hide');
+    $('#wsel').value = id; if (W(id)) fill(W(id));
+  } catch (e) {
+    console.warn(e);
+    if (e.status === 401 || (e.status === 403 && !/rate limit/i.test(e.message))) { token = ''; localStorage.removeItem(TK); connUI(); status('err', '연결이 만료됐어요 — 다시 연결 후 눌러 주세요(입력은 그대로)'); }
+    else status('err', `올리기 실패 — ${esc(e.message || e).slice(0, 160)} · 입력은 그대로, 다시 눌러 주세요`);
+  } finally { busy = false; $('#go').disabled = false; setTimeout(() => prog(null), 1500); }
+};
+$('#go').onclick = go;
+addEventListener('beforeunload', e => { if (busy) { e.preventDefault(); e.returnValue = ''; } });
+connUI(); loadWorks(); fill(null);
+})();
+</script>
+</body></html>

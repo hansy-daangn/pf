@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /pf/edit/
 Disallow: /pf/design/
+Disallow: /pf/upload/
 Sitemap: https://hansy-daangn.github.io/pf/sitemap.xml
